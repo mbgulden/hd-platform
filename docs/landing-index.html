@@ -1,622 +1,622 @@
-     1|<!DOCTYPE html>
-     2|<html lang="en">
-     3|<head>
-     4|<meta charset="UTF-8">
-     5|<meta name="viewport" content="width=device-width, initial-scale=1.0">
-     6|<title>Human Design Engine — The Engine Behind Every Chart</title>
-     7|<style>
-     8|  :root {
-     9|    --navy-deep: #060d1a;
-    10|    --navy: #0a1628;
-    11|    --navy-mid: #0f1d36;
-    12|    --navy-light: #162744;
-    13|    --navy-lighter: #1e3458;
-    14|    --gold: #c9a84c;
-    15|    --gold-light: #e0c468;
-    16|    --gold-bright: #d4af37;
-    17|    --gold-soft: rgba(201, 168, 76, 0.15);
-    18|    --gold-glow: rgba(201, 168, 76, 0.08);
-    19|    --text-primary: #e8e6e3;
-    20|    --text-secondary: #8899aa;
-    21|    --text-muted: #5a6a7a;
-    22|    --white: #ffffff;
-    23|    --card-bg: rgba(15, 29, 54, 0.7);
-    24|    --card-border: rgba(201, 168, 76, 0.12);
-    25|    --radius: 12px;
-    26|    --radius-lg: 20px;
-    27|    --shadow: 0 4px 24px rgba(0,0,0,0.3);
-    28|    --transition: 0.25s cubic-bezier(0.4, 0, 0.2, 1);
-    29|  }
-    30|
-    31|  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-    32|
-    33|  html { scroll-behavior: smooth; }
-    34|
-    35|  body {
-    36|    font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
-    37|    background: var(--navy-deep);
-    38|    color: var(--text-primary);
-    39|    line-height: 1.6;
-    40|    overflow-x: hidden;
-    41|  }
-    42|
-    43|  /* Subtle background texture */
-    44|  body::before {
-    45|    content: '';
-    46|    position: fixed;
-    47|    inset: 0;
-    48|    background:
-    49|      radial-gradient(ellipse at 20% 10%, rgba(201,168,76,0.04) 0%, transparent 60%),
-    50|      radial-gradient(ellipse at 80% 90%, rgba(201,168,76,0.03) 0%, transparent 60%),
-    51|      radial-gradient(ellipse at 50% 50%, rgba(15,29,54,0.8) 0%, var(--navy-deep) 100%);
-    52|    pointer-events: none;
-    53|    z-index: 0;
-    54|  }
-    55|
-    56|  /* ---- NAV ---- */
-    57|  nav {
-    58|    position: sticky;
-    59|    top: 0;
-    60|    z-index: 100;
-    61|    background: rgba(6, 13, 26, 0.85);
-    62|    backdrop-filter: blur(16px);
-    63|    -webkit-backdrop-filter: blur(16px);
-    64|    border-bottom: 1px solid rgba(201,168,76,0.1);
-    65|    padding: 0 20px;
-    66|  }
-    67|  .nav-inner {
-    68|    max-width: 1200px;
-    69|    margin: 0 auto;
-    70|    display: flex;
-    71|    align-items: center;
-    72|    justify-content: space-between;
-    73|    height: 64px;
-    74|    position: relative;
-    75|    z-index: 1;
-    76|  }
-    77|  .nav-logo {
-    78|    display: flex;
-    79|    align-items: center;
-    80|    gap: 10px;
-    81|    font-size: 1.4rem;
-    82|    font-weight: 700;
-    83|    color: var(--white);
-    84|    text-decoration: none;
-    85|    letter-spacing: -0.02em;
-    86|  }
-    87|  .nav-logo .icon {
-    88|    width: 32px; height: 32px;
-    89|    background: linear-gradient(135deg, var(--gold-bright), var(--gold));
-    90|    border-radius: 8px;
-    91|    display: flex; align-items: center; justify-content: center;
-    92|    font-size: 0.9rem;
-    93|    color: var(--navy-deep);
-    94|    font-weight: 900;
-    95|  }
-    96|  .nav-links { display: flex; gap: 28px; align-items: center; }
-    97|  .nav-links a {
-    98|    color: var(--text-secondary);
-    99|    text-decoration: none;
-   100|    font-size: 0.9rem;
-   101|    font-weight: 500;
-   102|    transition: var(--transition);
-   103|  }
-   104|  .nav-links a:hover { color: var(--gold-light); }
-   105|  .nav-cta {
-   106|    background: var(--gold);
-   107|    color: var(--navy-deep) !important;
-   108|    padding: 8px 20px;
-   109|    border-radius: 8px;
-   110|    font-weight: 600 !important;
-   111|    transition: var(--transition);
-   112|  }
-   113|  .nav-cta:hover {
-   114|    background: var(--gold-light);
-   115|    transform: translateY(-1px);
-   116|  }
-   117|
-   118|  /* ---- CONTAINER ---- */
-   119|  .container {
-   120|    max-width: 1200px;
-   121|    margin: 0 auto;
-   122|    padding: 0 24px;
-   123|    position: relative;
-   124|    z-index: 1;
-   125|  }
-   126|
-   127|  /* ---- HERO ---- */
-   128|  .hero {
-   129|    text-align: center;
-   130|    padding: 100px 24px 80px;
-   131|    position: relative;
-   132|    z-index: 1;
-   133|  }
-   134|  .hero-badge {
-   135|    display: inline-flex;
-   136|    align-items: center;
-   137|    gap: 8px;
-   138|    background: var(--gold-soft);
-   139|    border: 1px solid rgba(201,168,76,0.25);
-   140|    border-radius: 50px;
-   141|    padding: 6px 18px;
-   142|    font-size: 0.85rem;
-   143|    color: var(--gold-light);
-   144|    font-weight: 500;
-   145|    margin-bottom: 28px;
-   146|  }
-   147|  .hero-badge .dot {
-   148|    width: 8px; height: 8px;
-   149|    background: var(--gold-bright);
-   150|    border-radius: 50%;
-   151|    animation: pulse-dot 2s infinite;
-   152|  }
-   153|  @keyframes pulse-dot {
-   154|    0%, 100% { opacity: 1; transform: scale(1); }
-   155|    50% { opacity: 0.5; transform: scale(1.4); }
-   156|  }
-   157|  .hero h1 {
-   158|    font-size: clamp(2.2rem, 5vw, 3.6rem);
-   159|    font-weight: 800;
-   160|    letter-spacing: -0.03em;
-   161|    line-height: 1.15;
-   162|    margin-bottom: 20px;
-   163|    background: linear-gradient(180deg, #ffffff 0%, #c0c8d4 100%);
-   164|    -webkit-background-clip: text;
-   165|    -webkit-text-fill-color: transparent;
-   166|    background-clip: text;
-   167|  }
-   168|  .hero h1 .gold { -webkit-text-fill-color: var(--gold-light); }
-   169|  .hero p.subtitle {
-   170|    font-size: 1.15rem;
-   171|    color: var(--text-secondary);
-   172|    max-width: 600px;
-   173|    margin: 0 auto 36px;
-   174|    line-height: 1.7;
-   175|  }
-   176|  .hero-buttons {
-   177|    display: flex;
-   178|    gap: 16px;
-   179|    flex-wrap: wrap;
-   180|    justify-content: center;
-   181|  }
-   182|  .btn {
-   183|    display: inline-flex;
-   184|    align-items: center;
-   185|    gap: 8px;
-   186|    padding: 14px 32px;
-   187|    border-radius: 10px;
-   188|    font-size: 0.95rem;
-   189|    font-weight: 600;
-   190|    text-decoration: none;
-   191|    cursor: pointer;
-   192|    border: none;
-   193|    transition: var(--transition);
-   194|    letter-spacing: -0.01em;
-   195|  }
-   196|  .btn-primary {
-   197|    background: linear-gradient(135deg, var(--gold-bright), var(--gold));
-   198|    color: var(--navy-deep);
-   199|    box-shadow: 0 4px 20px rgba(201,168,76,0.3);
-   200|  }
-   201|  .btn-primary:hover {
-   202|    box-shadow: 0 6px 30px rgba(201,168,76,0.45);
-   203|    transform: translateY(-2px);
-   204|  }
-   205|  .btn-outline {
-   206|    background: transparent;
-   207|    color: var(--gold-light);
-   208|    border: 1.5px solid rgba(201,168,76,0.4);
-   209|  }
-   210|  .btn-outline:hover {
-   211|    background: var(--gold-soft);
-   212|    border-color: var(--gold);
-   213|  }
-   214|  .btn-ghost {
-   215|    background: transparent;
-   216|    color: var(--text-secondary);
-   217|    padding: 14px 24px;
-   218|  }
-   219|  .btn-ghost:hover { color: var(--text-primary); }
-   220|
-   221|  /* ---- TRUST BAR ---- */
-   222|  .trust-bar {
-   223|    display: flex;
-   224|    align-items: center;
-   225|    justify-content: center;
-   226|    gap: 32px;
-   227|    flex-wrap: wrap;
-   228|    padding: 36px 24px;
-   229|    border-top: 1px solid rgba(201,168,76,0.08);
-   230|    border-bottom: 1px solid rgba(201,168,76,0.08);
-   231|    margin-bottom: 80px;
-   232|  }
-   233|  .trust-item {
-   234|    display: flex;
-   235|    align-items: center;
-   236|    gap: 10px;
-   237|    font-size: 0.85rem;
-   238|    color: var(--text-muted);
-   239|    font-weight: 500;
-   240|  }
-   241|  .trust-item .check {
-   242|    color: var(--gold);
-   243|    font-size: 1rem;
-   244|  }
-   245|
-   246|  /* ---- SECTION HEADERS ---- */
-   247|  .section-header {
-   248|    text-align: center;
-   249|    margin-bottom: 56px;
-   250|  }
-   251|  .section-header .overline {
-   252|    font-size: 0.8rem;
-   253|    text-transform: uppercase;
-   254|    letter-spacing: 0.12em;
-   255|    color: var(--gold);
-   256|    font-weight: 600;
-   257|    margin-bottom: 12px;
-   258|  }
-   259|  .section-header h2 {
-   260|    font-size: clamp(1.6rem, 3vw, 2.2rem);
-   261|    font-weight: 700;
-   262|    letter-spacing: -0.02em;
-   263|    margin-bottom: 12px;
-   264|  }
-   265|  .section-header p {
-   266|    color: var(--text-secondary);
-   267|    font-size: 1rem;
-   268|    max-width: 540px;
-   269|    margin: 0 auto;
-   270|  }
-   271|
-   272|  /* ---- PRODUCT CARDS ---- */
-   273|  .products {
-   274|    padding: 0 0 80px;
-   275|  }
-   276|  .product-grid {
-   277|    display: grid;
-   278|    grid-template-columns: repeat(auto-fit, minmax(340px, 1fr));
-   279|    gap: 28px;
-   280|  }
-   281|  .product-card {
-   282|    background: var(--card-bg);
-   283|    border: 1px solid var(--card-border);
-   284|    border-radius: var(--radius-lg);
-   285|    padding: 40px 32px;
-   286|    text-decoration: none;
-   287|    color: inherit;
-   288|    transition: var(--transition);
-   289|    position: relative;
-   290|    overflow: hidden;
-   291|  }
-   292|  .product-card::before {
-   293|    content: '';
-   294|    position: absolute;
-   295|    inset: 0;
-   296|    background: radial-gradient(ellipse at 0% 0%, rgba(201,168,76,0.06) 0%, transparent 60%);
-   297|    opacity: 0;
-   298|    transition: var(--transition);
-   299|  }
-   300|  .product-card:hover {
-   301|    border-color: rgba(201,168,76,0.35);
-   302|    transform: translateY(-4px);
-   303|    box-shadow: 0 12px 40px rgba(0,0,0,0.4);
-   304|  }
-   305|  .product-card:hover::before { opacity: 1; }
-   306|  .product-icon {
-   307|    width: 52px; height: 52px;
-   308|    border-radius: 12px;
-   309|    display: flex; align-items: center; justify-content: center;
-   310|    font-size: 1.4rem;
-   311|    margin-bottom: 20px;
-   312|    position: relative;
-   313|    z-index: 1;
-   314|  }
-   315|  .product-icon.api { background: rgba(99, 179, 237, 0.15); color: #63b3ed; }
-   316|  .product-icon.reports { background: rgba(154, 230, 180, 0.15); color: #9ae6b4; }
-   317|  .product-card h3 {
-   318|    font-size: 1.3rem;
-   319|    font-weight: 700;
-   320|    margin-bottom: 8px;
-   321|    position: relative;
-   322|    z-index: 1;
-   323|  }
-   324|  .product-card p {
-   325|    color: var(--text-secondary);
-   326|    font-size: 0.9rem;
-   327|    margin-bottom: 16px;
-   328|    position: relative;
-   329|    z-index: 1;
-   330|  }
-   331|  .product-card .tag {
-   332|    display: inline-block;
-   333|    background: var(--navy-lighter);
-   334|    border-radius: 6px;
-   335|    padding: 4px 12px;
-   336|    font-size: 0.78rem;
-   337|    color: var(--text-secondary);
-   338|    font-weight: 500;
-   339|    position: relative;
-   340|    z-index: 1;
-   341|  }
-   342|  .product-card .arrow {
-   343|    position: absolute;
-   344|    bottom: 28px;
-   345|    right: 28px;
-   346|    font-size: 1.2rem;
-   347|    color: var(--gold);
-   348|    transition: var(--transition);
-   349|  }
-   350|  .product-card:hover .arrow { transform: translateX(4px); }
-   351|
-   352|  /* ---- FEATURES ---- */
-   353|  .features {
-   354|    padding: 80px 0;
-   355|  }
-   356|  .features-grid {
-   357|    display: grid;
-   358|    grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
-   359|    gap: 24px;
-   360|  }
-   361|  .feature-card {
-   362|    background: var(--card-bg);
-   363|    border: 1px solid var(--card-border);
-   364|    border-radius: var(--radius);
-   365|    padding: 28px 24px;
-   366|    transition: var(--transition);
-   367|  }
-   368|  .feature-card:hover {
-   369|    border-color: rgba(201,168,76,0.25);
-   370|    box-shadow: 0 6px 24px rgba(0,0,0,0.25);
-   371|  }
-   372|  .feature-icon {
-   373|    width: 40px; height: 40px;
-   374|    border-radius: 10px;
-   375|    background: var(--gold-soft);
-   376|    display: flex; align-items: center; justify-content: center;
-   377|    font-size: 1.1rem;
-   378|    margin-bottom: 16px;
-   379|  }
-   380|  .feature-card h4 {
-   381|    font-size: 1rem;
-   382|    font-weight: 600;
-   383|    margin-bottom: 6px;
-   384|  }
-   385|  .feature-card p {
-   386|    font-size: 0.85rem;
-   387|    color: var(--text-muted);
-   388|    line-height: 1.6;
-   389|  }
-   390|
-   391|  /* ---- PRICING ---- */
-   392|  .pricing {
-   393|    padding: 80px 0;
-   394|    background: rgba(10,22,40,0.5);
-   395|  }
-   396|  .pricing-grid {
-   397|    display: grid;
-   398|    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-   399|    gap: 24px;
-   400|    max-width: 900px;
-   401|    margin: 0 auto;
-   402|  }
-   403|  .pricing-card {
-   404|    background: var(--card-bg);
-   405|    border: 1px solid var(--card-border);
-   406|    border-radius: var(--radius-lg);
-   407|    padding: 36px 28px;
-   408|    text-align: center;
-   409|    transition: var(--transition);
-   410|    position: relative;
-   411|  }
-   412|  .pricing-card.featured {
-   413|    border-color: rgba(201,168,76,0.35);
-   414|    box-shadow: 0 0 0 1px rgba(201,168,76,0.2), 0 8px 40px rgba(201,168,76,0.08);
-   415|  }
-   416|  .pricing-card.featured::after {
-   417|    content: 'Most Popular';
-   418|    position: absolute;
-   419|    top: -12px;
-   420|    left: 50%;
-   421|    transform: translateX(-50%);
-   422|    background: var(--gold);
-   423|    color: var(--navy-deep);
-   424|    font-size: 0.72rem;
-   425|    font-weight: 700;
-   426|    padding: 4px 16px;
-   427|    border-radius: 50px;
-   428|    letter-spacing: 0.03em;
-   429|  }
-   430|  .pricing-card h4 {
-   431|    font-size: 1.1rem;
-   432|    font-weight: 600;
-   433|    margin-bottom: 12px;
-   434|  }
-   435|  .pricing-card .price {
-   436|    font-size: 2.2rem;
-   437|    font-weight: 800;
-   438|    margin-bottom: 4px;
-   439|    letter-spacing: -0.02em;
-   440|  }
-   441|  .pricing-card .price span {
-   442|    font-size: 0.9rem;
-   443|    font-weight: 500;
-   444|    color: var(--text-muted);
-   445|  }
-   446|  .pricing-card .desc {
-   447|    font-size: 0.85rem;
-   448|    color: var(--text-muted);
-   449|    margin-bottom: 20px;
-   450|  }
-   451|  .pricing-card ul {
-   452|    list-style: none;
-   453|    text-align: left;
-   454|    margin-bottom: 24px;
-   455|  }
-   456|  .pricing-card ul li {
-   457|    padding: 8px 0;
-   458|    font-size: 0.85rem;
-   459|    color: var(--text-secondary);
-   460|    border-bottom: 1px solid rgba(255,255,255,0.04);
-   461|  }
-   462|  .pricing-card ul li::before {
-   463|    content: '✓ ';
-   464|    color: var(--gold);
-   465|    font-weight: 700;
-   466|  }
-   467|  .pricing-card .btn { width: 100%; justify-content: center; }
-   468|
-   469|  /* ---- BADGE ROW ---- */
-   470|  .badge-row {
-   471|    display: flex;
-   472|    align-items: center;
-   473|    justify-content: center;
-   474|    gap: 20px;
-   475|    flex-wrap: wrap;
-   476|    padding: 48px 24px;
-   477|  }
-   478|  .oss-badge, .trust-badge {
-   479|    display: inline-flex;
-   480|    align-items: center;
-   481|    gap: 8px;
-   482|    background: var(--card-bg);
-   483|    border: 1px solid var(--card-border);
-   484|    border-radius: 50px;
-   485|    padding: 10px 22px;
-   486|    font-size: 0.82rem;
-   487|    color: var(--text-secondary);
-   488|    font-weight: 500;
-   489|  }
-   490|  .oss-badge .star { color: var(--gold); }
-   491|  .trust-badge .shield { color: #63b3ed; }
-   492|
-   493|  /* ---- CTA SECTION ---- */
-   494|  .cta-section {
-   495|    text-align: center;
-   496|    padding: 80px 24px;
-   497|    position: relative;
-   498|    z-index: 1;
-   499|  }
-   500|  .cta-section h2 {
-   501|    font-size: clamp(1.6rem, 3vw, 2rem);
-   502|    font-weight: 700;
-   503|    margin-bottom: 12px;
-   504|  }
-   505|  .cta-section p {
-   506|    color: var(--text-secondary);
-   507|    margin-bottom: 28px;
-   508|    max-width: 500px;
-   509|    margin-left: auto;
-   510|    margin-right: auto;
-   511|  }
-   512|
-   513|  /* ---- FOOTER ---- */
-   514|  footer {
-   515|    border-top: 1px solid rgba(201,168,76,0.08);
-   516|    padding: 40px 24px;
-   517|    position: relative;
-   518|    z-index: 1;
-   519|  }
-   520|  .footer-inner {
-   521|    max-width: 1200px;
-   522|    margin: 0 auto;
-   523|    display: flex;
-   524|    align-items: center;
-   525|    justify-content: space-between;
-   526|    flex-wrap: wrap;
-   527|    gap: 16px;
-   528|  }
-   529|  .footer-inner .left {
-   530|    display: flex;
-   531|    flex-direction: column;
-   532|    gap: 4px;
-   533|  }
-   534|  .footer-inner .brand {
-   535|    font-weight: 600;
-   536|    color: var(--text-primary);
-   537|    font-size: 0.9rem;
-   538|  }
-   539|  .footer-inner .license {
-   540|    font-size: 0.78rem;
-   541|    color: var(--text-muted);
-   542|  }
-   543|  .footer-links { display: flex; gap: 20px; }
-   544|  .footer-links a {
-   545|    font-size: 0.82rem;
-   546|    color: var(--text-muted);
-   547|    text-decoration: none;
-   548|    transition: var(--transition);
-   549|  }
-   550|  .footer-links a:hover { color: var(--gold-light); }
-   551|
-   552|  /* ---- RESPONSIVE ---- */
-   553|  @media (max-width: 768px) {
-   554|    .nav-links { gap: 14px; }
-   555|    .nav-links a { font-size: 0.8rem; }
-   556|    .hero { padding: 60px 16px 50px; }
-   557|    .trust-bar { gap: 16px; }
-   558|    .product-grid { grid-template-columns: 1fr; }
-   559|    .features-grid { grid-template-columns: 1fr; }
-   560|    .pricing-grid { grid-template-columns: 1fr; }
-   561|    .footer-inner { flex-direction: column; text-align: center; }
-   562|  }
-   563|
-   564|  @media (max-width: 480px) {
-   565|    .nav-links a.nav-cta { padding: 6px 14px; font-size: 0.75rem; }
-   566|    .hero-buttons { flex-direction: column; align-items: center; }
-   567|    .btn { width: 100%; max-width: 300px; justify-content: center; }
-   568|  }
-   569|</style>
-   570|</head>
-   571|<body>
-   572|
-   573|<!-- NAV -->
-   574|<nav>
-   575|  <div class="nav-inner">
-   576|    <a href="landing-index.html" class="nav-logo">
-   577|      <div class="icon">◆</div>
-   578|      Human Design Engine
-   579|    </a>
-   580|    <div class="nav-links">
-   581|      <a href="landing-api.html">API</a>
-   582|      <a href="landing-reports.html">Reports</a>
-   583|      <a href="#pricing">Pricing</a>
-   584|      <a href="landing-api.html" class="nav-cta">Get Started</a>
-   585|    </div>
-   586|  </div>
-   587|</nav>
-   588|
-   589|<!-- HERO -->
-   590|<section class="hero">
-   591|  <div class="container">
-   592|    <div class="hero-badge">
-   593|      <span class="dot"></span> Powered by OpenHumanDesignMCP
-   594|    </div>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Human Design Engine — The Engine Behind Every Chart</title>
+<style>
+  :root {
+    --navy-deep: #060d1a;
+    --navy: #0a1628;
+    --navy-mid: #0f1d36;
+    --navy-light: #162744;
+    --navy-lighter: #1e3458;
+    --gold: #c9a84c;
+    --gold-light: #e0c468;
+    --gold-bright: #d4af37;
+    --gold-soft: rgba(201, 168, 76, 0.15);
+    --gold-glow: rgba(201, 168, 76, 0.08);
+    --text-primary: #e8e6e3;
+    --text-secondary: #8899aa;
+    --text-muted: #5a6a7a;
+    --white: #ffffff;
+    --card-bg: rgba(15, 29, 54, 0.7);
+    --card-border: rgba(201, 168, 76, 0.12);
+    --radius: 12px;
+    --radius-lg: 20px;
+    --shadow: 0 4px 24px rgba(0,0,0,0.3);
+    --transition: 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
+    background: var(--navy-deep);
+    color: var(--text-primary);
+    line-height: 1.6;
+    overflow-x: hidden;
+  }
+
+  /* Subtle background texture */
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background:
+      radial-gradient(ellipse at 20% 10%, rgba(201,168,76,0.04) 0%, transparent 60%),
+      radial-gradient(ellipse at 80% 90%, rgba(201,168,76,0.03) 0%, transparent 60%),
+      radial-gradient(ellipse at 50% 50%, rgba(15,29,54,0.8) 0%, var(--navy-deep) 100%);
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  /* ---- NAV ---- */
+  nav {
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    background: rgba(6, 13, 26, 0.85);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+    border-bottom: 1px solid rgba(201,168,76,0.1);
+    padding: 0 20px;
+  }
+  .nav-inner {
+    max-width: 1200px;
+    margin: 0 auto;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    height: 64px;
+    position: relative;
+    z-index: 1;
+  }
+  .nav-logo {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 1.4rem;
+    font-weight: 700;
+    color: var(--white);
+    text-decoration: none;
+    letter-spacing: -0.02em;
+  }
+  .nav-logo .icon {
+    width: 32px; height: 32px;
+    background: linear-gradient(135deg, var(--gold-bright), var(--gold));
+    border-radius: 8px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 0.9rem;
+    color: var(--navy-deep);
+    font-weight: 900;
+  }
+  .nav-links { display: flex; gap: 28px; align-items: center; }
+  .nav-links a {
+    color: var(--text-secondary);
+    text-decoration: none;
+    font-size: 0.9rem;
+    font-weight: 500;
+    transition: var(--transition);
+  }
+  .nav-links a:hover { color: var(--gold-light); }
+  .nav-cta {
+    background: var(--gold);
+    color: var(--navy-deep) !important;
+    padding: 8px 20px;
+    border-radius: 8px;
+    font-weight: 600 !important;
+    transition: var(--transition);
+  }
+  .nav-cta:hover {
+    background: var(--gold-light);
+    transform: translateY(-1px);
+  }
+
+  /* ---- CONTAINER ---- */
+  .container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 24px;
+    position: relative;
+    z-index: 1;
+  }
+
+  /* ---- HERO ---- */
+  .hero {
+    text-align: center;
+    padding: 100px 24px 80px;
+    position: relative;
+    z-index: 1;
+  }
+  .hero-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    background: var(--gold-soft);
+    border: 1px solid rgba(201,168,76,0.25);
+    border-radius: 50px;
+    padding: 6px 18px;
+    font-size: 0.85rem;
+    color: var(--gold-light);
+    font-weight: 500;
+    margin-bottom: 28px;
+  }
+  .hero-badge .dot {
+    width: 8px; height: 8px;
+    background: var(--gold-bright);
+    border-radius: 50%;
+    animation: pulse-dot 2s infinite;
+  }
+  @keyframes pulse-dot {
+    0%, 100% { opacity: 1; transform: scale(1); }
+    50% { opacity: 0.5; transform: scale(1.4); }
+  }
+  .hero h1 {
+    font-size: clamp(2.2rem, 5vw, 3.6rem);
+    font-weight: 800;
+    letter-spacing: -0.03em;
+    line-height: 1.15;
+    margin-bottom: 20px;
+    background: linear-gradient(180deg, #ffffff 0%, #c0c8d4 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+  .hero h1 .gold { -webkit-text-fill-color: var(--gold-light); }
+  .hero p.subtitle {
+    font-size: 1.15rem;
+    color: var(--text-secondary);
+    max-width: 600px;
+    margin: 0 auto 36px;
+    line-height: 1.7;
+  }
+  .hero-buttons {
+    display: flex;
+    gap: 16px;
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+  .btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 14px 32px;
+    border-radius: 10px;
+    font-size: 0.95rem;
+    font-weight: 600;
+    text-decoration: none;
+    cursor: pointer;
+    border: none;
+    transition: var(--transition);
+    letter-spacing: -0.01em;
+  }
+  .btn-primary {
+    background: linear-gradient(135deg, var(--gold-bright), var(--gold));
+    color: var(--navy-deep);
+    box-shadow: 0 4px 20px rgba(201,168,76,0.3);
+  }
+  .btn-primary:hover {
+    box-shadow: 0 6px 30px rgba(201,168,76,0.45);
+    transform: translateY(-2px);
+  }
+  .btn-outline {
+    background: transparent;
+    color: var(--gold-light);
+    border: 1.5px solid rgba(201,168,76,0.4);
+  }
+  .btn-outline:hover {
+    background: var(--gold-soft);
+    border-color: var(--gold);
+  }
+  .btn-ghost {
+    background: transparent;
+    color: var(--text-secondary);
+    padding: 14px 24px;
+  }
+  .btn-ghost:hover { color: var(--text-primary); }
+
+  /* ---- TRUST BAR ---- */
+  .trust-bar {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 32px;
+    flex-wrap: wrap;
+    padding: 36px 24px;
+    border-top: 1px solid rgba(201,168,76,0.08);
+    border-bottom: 1px solid rgba(201,168,76,0.08);
+    margin-bottom: 80px;
+  }
+  .trust-item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 0.85rem;
+    color: var(--text-muted);
+    font-weight: 500;
+  }
+  .trust-item .check {
+    color: var(--gold);
+    font-size: 1rem;
+  }
+
+  /* ---- SECTION HEADERS ---- */
+  .section-header {
+    text-align: center;
+    margin-bottom: 56px;
+  }
+  .section-header .overline {
+    font-size: 0.8rem;
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+    color: var(--gold);
+    font-weight: 600;
+    margin-bottom: 12px;
+  }
+  .section-header h2 {
+    font-size: clamp(1.6rem, 3vw, 2.2rem);
+    font-weight: 700;
+    letter-spacing: -0.02em;
+    margin-bottom: 12px;
+  }
+  .section-header p {
+    color: var(--text-secondary);
+    font-size: 1rem;
+    max-width: 540px;
+    margin: 0 auto;
+  }
+
+  /* ---- PRODUCT CARDS ---- */
+  .products {
+    padding: 0 0 80px;
+  }
+  .product-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(340px, 1fr));
+    gap: 28px;
+  }
+  .product-card {
+    background: var(--card-bg);
+    border: 1px solid var(--card-border);
+    border-radius: var(--radius-lg);
+    padding: 40px 32px;
+    text-decoration: none;
+    color: inherit;
+    transition: var(--transition);
+    position: relative;
+    overflow: hidden;
+  }
+  .product-card::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(ellipse at 0% 0%, rgba(201,168,76,0.06) 0%, transparent 60%);
+    opacity: 0;
+    transition: var(--transition);
+  }
+  .product-card:hover {
+    border-color: rgba(201,168,76,0.35);
+    transform: translateY(-4px);
+    box-shadow: 0 12px 40px rgba(0,0,0,0.4);
+  }
+  .product-card:hover::before { opacity: 1; }
+  .product-icon {
+    width: 52px; height: 52px;
+    border-radius: 12px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 1.4rem;
+    margin-bottom: 20px;
+    position: relative;
+    z-index: 1;
+  }
+  .product-icon.api { background: rgba(99, 179, 237, 0.15); color: #63b3ed; }
+  .product-icon.reports { background: rgba(154, 230, 180, 0.15); color: #9ae6b4; }
+  .product-card h3 {
+    font-size: 1.3rem;
+    font-weight: 700;
+    margin-bottom: 8px;
+    position: relative;
+    z-index: 1;
+  }
+  .product-card p {
+    color: var(--text-secondary);
+    font-size: 0.9rem;
+    margin-bottom: 16px;
+    position: relative;
+    z-index: 1;
+  }
+  .product-card .tag {
+    display: inline-block;
+    background: var(--navy-lighter);
+    border-radius: 6px;
+    padding: 4px 12px;
+    font-size: 0.78rem;
+    color: var(--text-secondary);
+    font-weight: 500;
+    position: relative;
+    z-index: 1;
+  }
+  .product-card .arrow {
+    position: absolute;
+    bottom: 28px;
+    right: 28px;
+    font-size: 1.2rem;
+    color: var(--gold);
+    transition: var(--transition);
+  }
+  .product-card:hover .arrow { transform: translateX(4px); }
+
+  /* ---- FEATURES ---- */
+  .features {
+    padding: 80px 0;
+  }
+  .features-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+    gap: 24px;
+  }
+  .feature-card {
+    background: var(--card-bg);
+    border: 1px solid var(--card-border);
+    border-radius: var(--radius);
+    padding: 28px 24px;
+    transition: var(--transition);
+  }
+  .feature-card:hover {
+    border-color: rgba(201,168,76,0.25);
+    box-shadow: 0 6px 24px rgba(0,0,0,0.25);
+  }
+  .feature-icon {
+    width: 40px; height: 40px;
+    border-radius: 10px;
+    background: var(--gold-soft);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 1.1rem;
+    margin-bottom: 16px;
+  }
+  .feature-card h4 {
+    font-size: 1rem;
+    font-weight: 600;
+    margin-bottom: 6px;
+  }
+  .feature-card p {
+    font-size: 0.85rem;
+    color: var(--text-muted);
+    line-height: 1.6;
+  }
+
+  /* ---- PRICING ---- */
+  .pricing {
+    padding: 80px 0;
+    background: rgba(10,22,40,0.5);
+  }
+  .pricing-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 24px;
+    max-width: 900px;
+    margin: 0 auto;
+  }
+  .pricing-card {
+    background: var(--card-bg);
+    border: 1px solid var(--card-border);
+    border-radius: var(--radius-lg);
+    padding: 36px 28px;
+    text-align: center;
+    transition: var(--transition);
+    position: relative;
+  }
+  .pricing-card.featured {
+    border-color: rgba(201,168,76,0.35);
+    box-shadow: 0 0 0 1px rgba(201,168,76,0.2), 0 8px 40px rgba(201,168,76,0.08);
+  }
+  .pricing-card.featured::after {
+    content: 'Most Popular';
+    position: absolute;
+    top: -12px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: var(--gold);
+    color: var(--navy-deep);
+    font-size: 0.72rem;
+    font-weight: 700;
+    padding: 4px 16px;
+    border-radius: 50px;
+    letter-spacing: 0.03em;
+  }
+  .pricing-card h4 {
+    font-size: 1.1rem;
+    font-weight: 600;
+    margin-bottom: 12px;
+  }
+  .pricing-card .price {
+    font-size: 2.2rem;
+    font-weight: 800;
+    margin-bottom: 4px;
+    letter-spacing: -0.02em;
+  }
+  .pricing-card .price span {
+    font-size: 0.9rem;
+    font-weight: 500;
+    color: var(--text-muted);
+  }
+  .pricing-card .desc {
+    font-size: 0.85rem;
+    color: var(--text-muted);
+    margin-bottom: 20px;
+  }
+  .pricing-card ul {
+    list-style: none;
+    text-align: left;
+    margin-bottom: 24px;
+  }
+  .pricing-card ul li {
+    padding: 8px 0;
+    font-size: 0.85rem;
+    color: var(--text-secondary);
+    border-bottom: 1px solid rgba(255,255,255,0.04);
+  }
+  .pricing-card ul li::before {
+    content: '✓ ';
+    color: var(--gold);
+    font-weight: 700;
+  }
+  .pricing-card .btn { width: 100%; justify-content: center; }
+
+  /* ---- BADGE ROW ---- */
+  .badge-row {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 20px;
+    flex-wrap: wrap;
+    padding: 48px 24px;
+  }
+  .oss-badge, .trust-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    background: var(--card-bg);
+    border: 1px solid var(--card-border);
+    border-radius: 50px;
+    padding: 10px 22px;
+    font-size: 0.82rem;
+    color: var(--text-secondary);
+    font-weight: 500;
+  }
+  .oss-badge .star { color: var(--gold); }
+  .trust-badge .shield { color: #63b3ed; }
+
+  /* ---- CTA SECTION ---- */
+  .cta-section {
+    text-align: center;
+    padding: 80px 24px;
+    position: relative;
+    z-index: 1;
+  }
+  .cta-section h2 {
+    font-size: clamp(1.6rem, 3vw, 2rem);
+    font-weight: 700;
+    margin-bottom: 12px;
+  }
+  .cta-section p {
+    color: var(--text-secondary);
+    margin-bottom: 28px;
+    max-width: 500px;
+    margin-left: auto;
+    margin-right: auto;
+  }
+
+  /* ---- FOOTER ---- */
+  footer {
+    border-top: 1px solid rgba(201,168,76,0.08);
+    padding: 40px 24px;
+    position: relative;
+    z-index: 1;
+  }
+  .footer-inner {
+    max-width: 1200px;
+    margin: 0 auto;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 16px;
+  }
+  .footer-inner .left {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+  }
+  .footer-inner .brand {
+    font-weight: 600;
+    color: var(--text-primary);
+    font-size: 0.9rem;
+  }
+  .footer-inner .license {
+    font-size: 0.78rem;
+    color: var(--text-muted);
+  }
+  .footer-links { display: flex; gap: 20px; }
+  .footer-links a {
+    font-size: 0.82rem;
+    color: var(--text-muted);
+    text-decoration: none;
+    transition: var(--transition);
+  }
+  .footer-links a:hover { color: var(--gold-light); }
+
+  /* ---- RESPONSIVE ---- */
+  @media (max-width: 768px) {
+    .nav-links { gap: 14px; }
+    .nav-links a { font-size: 0.8rem; }
+    .hero { padding: 60px 16px 50px; }
+    .trust-bar { gap: 16px; }
+    .product-grid { grid-template-columns: 1fr; }
+    .features-grid { grid-template-columns: 1fr; }
+    .pricing-grid { grid-template-columns: 1fr; }
+    .footer-inner { flex-direction: column; text-align: center; }
+  }
+
+  @media (max-width: 480px) {
+    .nav-links a.nav-cta { padding: 6px 14px; font-size: 0.75rem; }
+    .hero-buttons { flex-direction: column; align-items: center; }
+    .btn { width: 100%; max-width: 300px; justify-content: center; }
+  }
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <div class="nav-inner">
+    <a href="landing-index.html" class="nav-logo">
+      <div class="icon">◆</div>
+      Human Design Engine
+    </a>
+    <div class="nav-links">
+      <a href="landing-api.html">API</a>
+      <a href="landing-reports.html">Reports</a>
+      <a href="#pricing">Pricing</a>
+      <a href="landing-api.html" class="nav-cta">Get Started</a>
+    </div>
+  </div>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="container">
+    <div class="hero-badge">
+      <span class="dot"></span> Powered by OpenHumanDesignMCP
+    </div>
     <h1>The <span class="gold">Engine</span> Behind Every Human Design Chart</h1>
     <p class="subtitle">
       The computation engine that powers Human Design apps, reports, and AI tools. Access verified chart data via REST API or download beautiful deep-dive reports — all backed by open-source, peer-reviewed calculation.
-   598|    </p>
-   599|    <div class="hero-buttons">
-   600|      <a href="landing-api.html" class="btn btn-primary">Explore the API →</a>
-   601|      <a href="landing-reports.html" class="btn btn-outline">Get Your Report →</a>
-   602|      <a href="#products" class="btn btn-ghost">Learn More ↓</a>
-   603|    </div>
-   604|  </div>
-   605|</section>
-   606|
-   607|<!-- TRUST BAR -->
-   608|<div class="trust-bar">
-   609|  <div class="trust-item"><span class="check">✓</span> Verified accuracy</div>
-   610|  <div class="trust-item"><span class="check">✓</span> AGPLv3 open-source core</div>
-   611|  <div class="trust-item"><span class="check">✓</span> Peer-reviewed algorithms</div>
-   612|  <div class="trust-item"><span class="check">✓</span> SOC 2 compliant infrastructure</div>
-   613|</div>
-   614|
-   615|<!-- PRODUCTS -->
-   616|<section class="products" id="products">
-   617|  <div class="container">
-   618|    <div class="section-header">
-   619|      <div class="overline">Our Products</div>
+    </p>
+    <div class="hero-buttons">
+      <a href="landing-api.html" class="btn btn-primary">Explore the API →</a>
+      <a href="landing-reports.html" class="btn btn-outline">Get Your Report →</a>
+      <a href="#products" class="btn btn-ghost">Learn More ↓</a>
+    </div>
+  </div>
+</section>
+
+<!-- TRUST BAR -->
+<div class="trust-bar">
+  <div class="trust-item"><span class="check">✓</span> Verified accuracy</div>
+  <div class="trust-item"><span class="check">✓</span> AGPLv3 open-source core</div>
+  <div class="trust-item"><span class="check">✓</span> Peer-reviewed algorithms</div>
+  <div class="trust-item"><span class="check">✓</span> SOC 2 compliant infrastructure</div>
+</div>
+
+<!-- PRODUCTS -->
+<section class="products" id="products">
+  <div class="container">
+    <div class="section-header">
+      <div class="overline">Our Products</div>
       <h2>Four ways to access Human Design intelligence</h2>
       <p>Whether you're building an app, getting a personal report, hosting your own MCP server, or working 1-on-1 with a certified coach — our platform covers every Human Design need.</p>
     </div>
@@ -658,142 +658,141 @@
         <span class="arrow">→</span>
       </a>
     </div>
-   643|  </div>
-   644|</section>
-   645|
-   646|<!-- FEATURES -->
-   647|<section class="features">
-   648|  <div class="container">
-   649|    <div class="section-header">
-   650|      <div class="overline">Why Human Design Engine</div>
-   651|      <h2>Built for accuracy, speed, and scale</h2>
-   652|      <p>Every calculation runs through verified, open-source algorithms — not black-box approximations. Integrate with confidence.</p>
-   653|    </div>
-   654|
-   655|    <div class="features-grid">
-   656|      <div class="feature-card">
-   657|        <div class="feature-icon">🔬</div>
-   658|        <h4>Verified Calculations</h4>
-   659|        <p>Every bodygraph, gate, and channel is computed using peer-reviewed algorithms from the OpenHumanDesignMCP project. No guesswork, no shortcuts.</p>
-   660|      </div>
-   661|      <div class="feature-card">
-   662|        <div class="feature-icon">⚡</div>
-   663|        <h4>Sub-Second Responses</h4>
-   664|        <p>Chart computations return in under 300ms. Built on a distributed compute layer that scales horizontally to handle any volume.</p>
-   665|      </div>
-   666|      <div class="feature-card">
-   667|        <div class="feature-icon">🔐</div>
-   668|        <h4>Enterprise-Grade Security</h4>
-   669|        <p>SOC 2 compliant infrastructure with encryption at rest and in transit. API keys with fine-grained permissions and usage quotas.</p>
-   670|      </div>
-   671|      <div class="feature-card">
-   672|        <div class="feature-icon">📖</div>
-   673|        <h4>Open Documentation</h4>
-   674|        <p>Interactive API docs with code samples in Python, JavaScript, Ruby, and cURL. Every endpoint documented with real request/response examples.</p>
-   675|      </div>
-   676|      <div class="feature-card">
-   677|        <div class="feature-icon">🔄</div>
-   678|        <h4>Transit & Synastry</h4>
-   679|        <p>Compute current planetary transits, synastry overlays, and composite charts. Real-time ephemeris data, always up to date.</p>
-   680|      </div>
-   681|      <div class="feature-card">
-   682|        <div class="feature-icon">🎨</div>
-   683|        <h4>Beautiful Reports</h4>
-   684|        <p>Download professionally designed PDF reports with charts, tables, and plain-English interpretation. White-label ready for your brand.</p>
-   685|      </div>
-   686|    </div>
-   687|  </div>
-   688|</section>
-   689|
-   690|<!-- PRICING -->
-   691|<section class="pricing" id="pricing">
-   692|  <div class="container">
-   693|    <div class="section-header">
-   694|      <div class="overline">Pricing</div>
-   695|      <h2>Start free, scale as you grow</h2>
-   696|      <p>From hobbyists to high-volume platforms — choose the plan that fits your needs.</p>
-   697|    </div>
-   698|
-   699|    <div class="pricing-grid">
-   700|      <div class="pricing-card">
-   701|        <h4>Hobbyist</h4>
-   702|        <div class="price">Free<span>/month</span></div>
-   703|        <p class="desc">Perfect for learning and personal projects.</p>
-   704|        <ul>
-   705|          <li>100 API calls / month</li>
-   706|          <li>Basic chart endpoints</li>
-   707|          <li>Community support</li>
-   708|          <li>API documentation access</li>
-   709|        </ul>
-   710|        <a href="landing-api.html" class="btn btn-outline">Get Started</a>
-   711|      </div>
-   712|
-   713|      <div class="pricing-card featured">
-   714|        <h4>Professional</h4>
-   715|        <div class="price">$49<span>/month</span></div>
-   716|        <p class="desc">For apps and growing platforms.</p>
-   717|        <ul>
-   718|          <li>10,000 API calls / month</li>
-   719|          <li>All chart + transit endpoints</li>
-   720|          <li>Email support</li>
-   721|          <li>99.5% uptime SLA</li>
-   722|          <li>Webhook integrations</li>
-   723|        </ul>
-   724|        <a href="landing-api.html" class="btn btn-primary">Start Free Trial</a>
-   725|      </div>
-   726|
-   727|      <div class="pricing-card">
-   728|        <h4>Enterprise</h4>
-   729|        <div class="price">Custom</div>
-   730|        <p class="desc">High-volume, custom integrations.</p>
-   731|        <ul>
-   732|          <li>Unlimited API calls</li>
-   733|          <li>Dedicated infrastructure</li>
-   734|          <li>Priority support (Slack)</li>
-   735|          <li>99.99% uptime SLA</li>
-   736|          <li>Custom contract & billing</li>
-   737|        </ul>
-   738|        <a href="landing-api.html" class="btn btn-outline">Contact Sales</a>
-   739|      </div>
-   740|    </div>
-   741|  </div>
-   742|</section>
-   743|
-   744|<!-- BADGES -->
-   745|<div class="badge-row">
-   746|  <div class="oss-badge">
-   747|    <span class="star">★</span> Powered by OpenHumanDesignMCP
-   748|  </div>
-   749|  <div class="trust-badge">
-   750|    <span class="shield">🛡</span> Verified accuracy — peer-reviewed algorithms
-   751|  </div>
-   752|</div>
-   753|
-   754|<!-- CTA -->
-   755|<section class="cta-section">
-   756|  <div class="container">
-   757|    <h2>Ready to integrate Human Design?</h2>
-   758|    <p>Get your free API key in under 30 seconds and start computing verified chart data today.</p>
-   759|    <a href="landing-api.html" class="btn btn-primary btn-lg">Get Your API Key →</a>
-   760|  </div>
-   761|</section>
-   762|
-   763|<!-- FOOTER -->
-   764|<footer>
-   765|  <div class="footer-inner">
-   766|    <div class="left">
-   767|      <span class="brand">Human Design Engine</span>
-   768|      <span class="license">Licensed under AGPLv3. Core calculation engine is open source.</span>
-   769|    </div>
-   770|    <div class="footer-links">
-   771|      <a href="landing-api.html">API</a>
-   772|      <a href="landing-reports.html">Reports</a>
-   773|      <a href="#">Docs</a>
-   774|      <a href="#">Privacy</a>
-   775|    </div>
-   776|  </div>
-   777|</footer>
-   778|
-   779|</body>
-   780|</html>
-   781|
+  </div>
+</section>
+
+<!-- FEATURES -->
+<section class="features">
+  <div class="container">
+    <div class="section-header">
+      <div class="overline">Why Human Design Engine</div>
+      <h2>Built for accuracy, speed, and scale</h2>
+      <p>Every calculation runs through verified, open-source algorithms — not black-box approximations. Integrate with confidence.</p>
+    </div>
+
+    <div class="features-grid">
+      <div class="feature-card">
+        <div class="feature-icon">🔬</div>
+        <h4>Verified Calculations</h4>
+        <p>Every bodygraph, gate, and channel is computed using peer-reviewed algorithms from the OpenHumanDesignMCP project. No guesswork, no shortcuts.</p>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon">⚡</div>
+        <h4>Sub-Second Responses</h4>
+        <p>Chart computations return in under 300ms. Built on a distributed compute layer that scales horizontally to handle any volume.</p>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon">🔐</div>
+        <h4>Enterprise-Grade Security</h4>
+        <p>SOC 2 compliant infrastructure with encryption at rest and in transit. API keys with fine-grained permissions and usage quotas.</p>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon">📖</div>
+        <h4>Open Documentation</h4>
+        <p>Interactive API docs with code samples in Python, JavaScript, Ruby, and cURL. Every endpoint documented with real request/response examples.</p>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon">🔄</div>
+        <h4>Transit & Synastry</h4>
+        <p>Compute current planetary transits, synastry overlays, and composite charts. Real-time ephemeris data, always up to date.</p>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon">🎨</div>
+        <h4>Beautiful Reports</h4>
+        <p>Download professionally designed PDF reports with charts, tables, and plain-English interpretation. White-label ready for your brand.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- PRICING -->
+<section class="pricing" id="pricing">
+  <div class="container">
+    <div class="section-header">
+      <div class="overline">Pricing</div>
+      <h2>Start free, scale as you grow</h2>
+      <p>From hobbyists to high-volume platforms — choose the plan that fits your needs.</p>
+    </div>
+
+    <div class="pricing-grid">
+      <div class="pricing-card">
+        <h4>Hobbyist</h4>
+        <div class="price">Free<span>/month</span></div>
+        <p class="desc">Perfect for learning and personal projects.</p>
+        <ul>
+          <li>100 API calls / month</li>
+          <li>Basic chart endpoints</li>
+          <li>Community support</li>
+          <li>API documentation access</li>
+        </ul>
+        <a href="landing-api.html" class="btn btn-outline">Get Started</a>
+      </div>
+
+      <div class="pricing-card featured">
+        <h4>Professional</h4>
+        <div class="price">$49<span>/month</span></div>
+        <p class="desc">For apps and growing platforms.</p>
+        <ul>
+          <li>10,000 API calls / month</li>
+          <li>All chart + transit endpoints</li>
+          <li>Email support</li>
+          <li>99.5% uptime SLA</li>
+          <li>Webhook integrations</li>
+        </ul>
+        <a href="landing-api.html" class="btn btn-primary">Start Free Trial</a>
+      </div>
+
+      <div class="pricing-card">
+        <h4>Enterprise</h4>
+        <div class="price">Custom</div>
+        <p class="desc">High-volume, custom integrations.</p>
+        <ul>
+          <li>Unlimited API calls</li>
+          <li>Dedicated infrastructure</li>
+          <li>Priority support (Slack)</li>
+          <li>99.99% uptime SLA</li>
+          <li>Custom contract & billing</li>
+        </ul>
+        <a href="landing-api.html" class="btn btn-outline">Contact Sales</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- BADGES -->
+<div class="badge-row">
+  <div class="oss-badge">
+    <span class="star">★</span> Powered by OpenHumanDesignMCP
+  </div>
+  <div class="trust-badge">
+    <span class="shield">🛡</span> Verified accuracy — peer-reviewed algorithms
+  </div>
+</div>
+
+<!-- CTA -->
+<section class="cta-section">
+  <div class="container">
+    <h2>Ready to integrate Human Design?</h2>
+    <p>Get your free API key in under 30 seconds and start computing verified chart data today.</p>
+    <a href="landing-api.html" class="btn btn-primary btn-lg">Get Your API Key →</a>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-inner">
+    <div class="left">
+      <span class="brand">Human Design Engine</span>
+      <span class="license">Licensed under AGPLv3. Core calculation engine is open source.</span>
+    </div>
+    <div class="footer-links">
+      <a href="landing-api.html">API</a>
+      <a href="landing-reports.html">Reports</a>
+      <a href="#">Docs</a>
+      <a href="#">Privacy</a>
+    </div>
+  </div>
+</footer>
+
+</body>
+</html>
