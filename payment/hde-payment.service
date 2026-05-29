@@ -1,0 +1,15 @@
+[Unit]
+Description=Human Design Engine Payment Server
+After=network.target
+
+[Service]
+Type=simple
+User=ubuntu
+WorkingDirectory=/home/ubuntu/work/hd-platform/payment
+EnvironmentFile=/home/ubuntu/work/hd-platform/payment/.env
+ExecStart=/usr/bin/python3 /home/ubuntu/work/hd-platform/payment/server.py
+Restart=always
+RestartSec=5
+
+[Install]
+WantedBy=multi-user.target
