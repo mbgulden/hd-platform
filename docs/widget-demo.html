@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Human Design Engine — Free Chart Widget Demo</title>
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+    background: #0a0a1a;
+    color: #e8e6e3;
+    min-height: 100vh;
+  }
+  body::before {
+    content: ''; position: fixed; inset: 0; z-index: -1;
+    background:
+      radial-gradient(ellipse at 30% 20%, rgba(102,126,234,0.06) 0%, transparent 60%),
+      radial-gradient(ellipse at 70% 80%, rgba(118,75,162,0.06) 0%, transparent 60%),
+      radial-gradient(ellipse at 50% 50%, #0a0a1a 0%, #06060f 100%);
+  }
+  .hero {
+    text-align: center; padding: 80px 24px 40px; max-width: 800px; margin: 0 auto;
+  }
+  .hero h1 {
+    font-size: clamp(2rem, 5vw, 3rem); font-weight: 800; letter-spacing: -0.03em;
+    background: linear-gradient(135deg, #667eea, #a78bfa, #764ba2);
+    -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+  .hero p { color: #8899aa; font-size: 1.1rem; margin-top: 12px; line-height: 1.7; }
+  .hero .badge {
+    display: inline-block; margin-top: 16px; padding: 6px 16px;
+    background: rgba(102,126,234,0.15); border: 1px solid rgba(102,126,234,0.3);
+    border-radius: 20px; font-size: 0.8rem; color: #a78bfa; letter-spacing: 0.04em;
+  }
+  .widget-container {
+    max-width: 520px; margin: 0 auto 60px; padding: 0 24px;
+  }
+  .demo-section {
+    max-width: 800px; margin: 0 auto 80px; padding: 0 24px;
+  }
+  .demo-section h2 {
+    font-size: 1.4rem; color: #e8e6e3; margin-bottom: 16px;
+  }
+  .code-block {
+    background: rgba(15,20,40,0.9); border: 1px solid rgba(102,126,234,0.2);
+    border-radius: 12px; padding: 20px 24px; overflow-x: auto; margin-bottom: 24px;
+  }
+  .code-block pre {
+    color: #a78bfa; font-family: 'SF Mono', 'Fira Code', monospace; font-size: 0.85rem;
+    line-height: 1.7; white-space: pre-wrap; word-break: break-all;
+  }
+  .code-block pre .tag { color: #667eea; }
+  .code-block pre .attr { color: #e8e6e3; }
+  .code-block pre .val { color: #f0a070; }
+  .code-block pre .comment { color: #5a6a7a; }
+  .features {
+    display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 16px; margin-bottom: 40px;
+  }
+  .feature-card {
+    background: rgba(15,20,40,0.7); border: 1px solid rgba(102,126,234,0.15);
+    border-radius: 12px; padding: 20px;
+  }
+  .feature-card .icon { font-size: 1.5rem; margin-bottom: 8px; }
+  .feature-card h3 { font-size: 1rem; color: #a78bfa; margin-bottom: 6px; }
+  .feature-card p { color: #8899aa; font-size: 0.85rem; line-height: 1.5; }
+  footer {
+    text-align: center; padding: 40px 24px; color: #5a6a7a; font-size: 0.8rem;
+    border-top: 1px solid rgba(102,126,234,0.1);
+  }
+  footer a { color: #667eea; text-decoration: none; }
+</style>
+</head>
+<body>
+
+<div class="hero">
+  <h1>Free Human Design Chart Widget</h1>
+  <p>Discover your Type, Strategy, Authority, and more — instantly.</p>
+  <span class="badge">🔮 No sign-up required</span>
+</div>
+
+<!-- The widget goes here -->
+<div class="widget-container">
+  <div class="hde-chart-widget" data-api="http://localhost:8081"></div>
+</div>
+
+<div class="demo-section">
+  <h2>📦 Embed on Your Site</h2>
+  <p style="color:#8899aa;margin-bottom:16px;line-height:1.7;">
+    Drop this one script tag and a placeholder div anywhere on your page. The widget
+    auto-discovers <code>.hde-chart-widget</code> elements and initializes itself.
+  </p>
+
+  <div class="code-block">
+    <pre><span class="comment">&lt;!-- 1. Include the widget script --&gt;</span>
+<span class="tag">&lt;script</span> <span class="attr">src</span>=<span class="val">"https://humandesignengine.com/widget.js"</span><span class="tag">&gt;&lt;/script&gt;</span>
+
+<span class="comment">&lt;!-- 2. Place a widget container --&gt;</span>
+<span class="tag">&lt;div</span> <span class="attr">class</span>=<span class="val">"hde-chart-widget"</span><span class="tag">&gt;&lt;/div&gt;</span></pre>
+  </div>
+
+  <h2>⚙️ Manual Initialization</h2>
+  <div class="code-block">
+    <pre><span class="comment">// Target any element by selector</span>
+<span class="tag">HDEWidget</span>.<span class="attr">init</span>(<span class="val">'#my-widget'</span>, {
+  <span class="attr">apiUrl</span>: <span class="val">'https://api.humandesignengine.com'</span>
+});</pre>
+  </div>
+
+  <h2>✨ Widget Features</h2>
+  <div class="features">
+    <div class="feature-card">
+      <div class="icon">🎯</div>
+      <h3>Type & Strategy</h3>
+      <p>Your Human Design Type and how you're designed to navigate decisions.</p>
+    </div>
+    <div class="feature-card">
+      <div class="icon">📊</div>
+      <h3>Profile & Authority</h3>
+      <p>Your personality profile and inner decision-making authority.</p>
+    </div>
+    <div class="feature-card">
+      <div class="icon">🧬</div>
+      <h3>Defined Centers</h3>
+      <p>Which of your nine centers carry consistent, reliable energy.</p>
+    </div>
+    <div class="feature-card">
+      <div class="icon">✨</div>
+      <h3>Signature Theme</h3>
+      <p>How you feel when you're living in alignment with your design.</p>
+    </div>
+    <div class="feature-card">
+      <div class="icon">📱</div>
+      <h3>Fully Responsive</h3>
+      <p>Looks beautiful on mobile, tablet, and desktop — right out of the box.</p>
+    </div>
+    <div class="feature-card">
+      <div class="icon">🔓</div>
+      <h3>No API Key</h3>
+      <p>Free for everyone. No registration, no key, no limits.</p>
+    </div>
+    <div class="feature-card">
+      <div class="icon">⚡</div>
+      <h3>Under 20KB</h3>
+      <p>Tiny footprint. Won't slow down your site.</p>
+    </div>
+    <div class="feature-card">
+      <div class="icon">🛡️</div>
+      <h3>Privacy First</h3>
+      <p>Birth data stays between your visitors and the API. No tracking.</p>
+    </div>
+  </div>
+</div>
+
+<footer>
+  Powered by <a href="https://humandesignengine.com">Human Design Engine</a> &mdash;
+  Open-source calculations via OpenHumanDesignMCP (AGPLv3)
+</footer>
+
+<!-- Include the widget script -->
+<script src="widget.js"></script>
+
+</body>
+</html>

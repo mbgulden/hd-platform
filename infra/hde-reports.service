@@ -1,0 +1,20 @@
+[Unit]
+Description=Human Design Engine — Report Server
+After=network.target
+
+[Service]
+Type=simple
+User=ubuntu
+WorkingDirectory=/home/ubuntu/work/hd-platform
+Environment="HDE_API_KEY=change-me-to-a-secure-key"
+Environment="SMTP_HOST="
+Environment="SMTP_PORT=587"
+Environment="SMTP_USER="
+Environment="SMTP_PASS="
+Environment="FROM_EMAIL=reports@humandesignengine.com"
+ExecStart=/usr/bin/python3 /home/ubuntu/work/hd-platform/reports/server.py
+Restart=always
+RestartSec=5
+
+[Install]
+WantedBy=multi-user.target

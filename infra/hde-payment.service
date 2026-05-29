@@ -1,0 +1,24 @@
+[Unit]
+Description=Human Design Engine — Payment Server
+After=network.target hde-reports.service
+
+[Service]
+Type=simple
+User=ubuntu
+WorkingDirectory=/home/ubuntu/work/hd-platform
+Environment="STRIPE_SECRET_KEY=sk_live_..."
+Environment="STRIPE_WEBHOOK_SECRET=whsec_..."
+Environment="HDE_API_KEY=change-me-to-a-secure-key"
+Environment="REPORTS_SERVER=http://localhost:8081"
+Environment="SMTP_HOST=smtp.gmail.com"
+Environment="SMTP_PORT=587"
+Environment="SMTP_USER=your-email@gmail.com"
+Environment="SMTP_PASS=your-app-password"
+Environment="FROM_EMAIL=reports@humandesignengine.com"
+Environment="PORT=8000"
+ExecStart=/usr/bin/python3 /home/ubuntu/work/hd-platform/payment/server.py
+Restart=always
+RestartSec=5
+
+[Install]
+WantedBy=multi-user.target
