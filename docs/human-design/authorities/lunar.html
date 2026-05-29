@@ -1,0 +1,663 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Human Design Lunar Authority — None (Reflector — all centers undefined) | Complete Guide | Human Design Engine</title>
+<meta name="description" content="Complete guide to Lunar Authority in Human Design: how the None (Reflector — all centers undefined) works mechanically, how to use your Lunar Authority for decisions, the waiting period, common mistakes, practical experiments, which Types have it, and FAQs.">
+<meta name="keywords" content="Human Design, Lunar Authority, None (Reflector — all centers undefined), inner authority, Human Design authority types, how lunar authority works, Human Design decision making, Human Design Engine">
+<meta name="robots" content="index, follow">
+<link rel="canonical" href="https://humandesignengine.com/human-design/authorities/lunar/">
+<meta property="og:title" content="Human Design Lunar Authority — None (Reflector — all centers undefined) | Complete Guide">
+<meta property="og:description" content="Deep dive into Lunar Authority in Human Design. Learn how your None (Reflector — all centers undefined) operates as your inner authority, the waiting period, common mistakes, which Types share this authority, and practical daily experiments.">
+<meta property="og:type" content="article">
+<meta property="og:url" content="https://humandesignengine.com/human-design/authorities/lunar/">
+<meta property="og:site_name" content="Human Design Engine">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Human Design Lunar Authority — None (Reflector — all centers undefined) | Complete Guide">
+<meta name="twitter:description" content="Deep dive into Lunar Authority in Human Design. Learn how your None (Reflector — all centers undefined) operates as your inner authority, the waiting period, common mistakes, which Types share this authority, and practical daily experiments.">
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "Article",
+  "headline": "Lunar Authority in Human Design: Complete Guide",
+  "description": "Complete guide to Lunar Authority in Human Design: how the None (Reflector — all centers undefined) works mechanically, how to use your Lunar Authority for decisions, the waiting period, common mistakes, practical experiments, which Types have it, and FAQs.",
+  "author": { "@type": "Organization", "name": "Human Design Engine" },
+  "publisher": { "@type": "Organization", "name": "Human Design Engine", "url": "https://humandesignengine.com" },
+  "mainEntityOfPage": { "@type": "WebPage", "@id": "https://humandesignengine.com/human-design/authorities/lunar/" }
+}
+</script>
+<style>
+  :root {
+    --navy-deep: #060d1a;
+    --navy: #0a1628;
+    --navy-mid: #0f1d36;
+    --navy-light: #162744;
+    --navy-lighter: #1e3458;
+    --gold: #c9a84c;
+    --gold-light: #e0c468;
+    --gold-bright: #d4af37;
+    --gold-soft: rgba(201, 168, 76, 0.15);
+    --gold-glow: rgba(201, 168, 76, 0.08);
+    --text-primary: #e8e6e3;
+    --text-secondary: #8899aa;
+    --text-muted: #5a6a7a;
+    --white: #ffffff;
+    --card-bg: rgba(15, 29, 54, 0.7);
+    --card-border: rgba(201, 168, 76, 0.12);
+    --radius: 12px;
+    --radius-lg: 20px;
+    --shadow: 0 4px 24px rgba(0,0,0,0.3);
+    --transition: 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
+    background: var(--navy-deep);
+    color: var(--text-primary);
+    line-height: 1.7;
+    overflow-x: hidden;
+  }
+
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background:
+      radial-gradient(ellipse at 20% 10%, rgba(201,168,76,0.04) 0%, transparent 60%),
+      radial-gradient(ellipse at 80% 90%, rgba(201,168,76,0.03) 0%, transparent 60%),
+      radial-gradient(ellipse at 50% 50%, rgba(15,29,54,0.8) 0%, var(--navy-deep) 100%);
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  nav {
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    background: rgba(6, 13, 26, 0.85);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+    border-bottom: 1px solid rgba(201,168,76,0.1);
+    padding: 0 20px;
+  }
+  .nav-inner {
+    max-width: 1200px;
+    margin: 0 auto;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    height: 64px;
+    position: relative;
+    z-index: 1;
+  }
+  .nav-logo {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 1.25rem;
+    font-weight: 700;
+    color: var(--white);
+    text-decoration: none;
+    letter-spacing: -0.02em;
+  }
+  .nav-logo .icon {
+    width: 32px; height: 32px;
+    background: linear-gradient(135deg, var(--gold-bright), var(--gold));
+    border-radius: 8px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 0.85rem;
+    color: var(--navy-deep);
+    font-weight: 900;
+  }
+  .nav-links { display: flex; gap: 24px; align-items: center; }
+  .nav-links a {
+    color: var(--text-secondary);
+    text-decoration: none;
+    font-size: 0.88rem;
+    font-weight: 500;
+    transition: var(--transition);
+  }
+  .nav-links a:hover { color: var(--gold-light); }
+
+  .container {
+    max-width: 900px;
+    margin: 0 auto;
+    padding: 0 24px;
+    position: relative;
+    z-index: 1;
+  }
+
+  .breadcrumb {
+    padding: 18px 0;
+    font-size: 0.82rem;
+    color: var(--text-muted);
+  }
+  .breadcrumb a {
+    color: var(--gold);
+    text-decoration: none;
+    transition: var(--transition);
+  }
+  .breadcrumb a:hover { color: var(--gold-light); }
+  .breadcrumb span { margin: 0 6px; }
+
+  .hero {
+    text-align: center;
+    padding: 48px 24px 40px;
+    position: relative;
+    z-index: 1;
+  }
+  .hero-icon {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 88px;
+    height: 88px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, rgba(201,168,76,0.2), rgba(201,168,76,0.08));
+    border: 2px solid rgba(201,168,76,0.35);
+    font-size: 2rem;
+    color: var(--gold-light);
+    margin-bottom: 20px;
+  }
+  .hero h1 {
+    font-size: clamp(1.8rem, 4vw, 2.6rem);
+    font-weight: 800;
+    letter-spacing: -0.03em;
+    line-height: 1.2;
+    margin-bottom: 12px;
+    background: linear-gradient(180deg, #ffffff 0%, #c0c8d4 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+  .hero .subtitle {
+    font-size: 1.05rem;
+    color: var(--text-secondary);
+    max-width: 560px;
+    margin: 0 auto;
+  }
+  .hero .authority-tag {
+    display: inline-block;
+    margin-top: 16px;
+    padding: 6px 18px;
+    background: var(--gold-soft);
+    color: var(--gold-light);
+    border-radius: 20px;
+    font-size: 0.88rem;
+    font-weight: 600;
+  }
+
+  .info-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 16px;
+    margin-bottom: 48px;
+  }
+  .info-card {
+    background: var(--card-bg);
+    border: 1px solid var(--card-border);
+    border-radius: var(--radius);
+    padding: 20px 18px;
+    text-align: center;
+  }
+  .info-card .label {
+    font-size: 0.72rem;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: var(--gold);
+    font-weight: 600;
+    margin-bottom: 6px;
+  }
+  .info-card .value {
+    font-size: 1rem;
+    font-weight: 600;
+    color: var(--text-primary);
+  }
+
+  .content {
+    background: var(--card-bg);
+    border: 1px solid var(--card-border);
+    border-radius: var(--radius-lg);
+    padding: 40px 36px;
+    margin-bottom: 48px;
+  }
+  .content h2 {
+    font-size: 1.5rem;
+    font-weight: 700;
+    margin-bottom: 20px;
+    color: var(--white);
+    letter-spacing: -0.02em;
+  }
+  .content h3 {
+    font-size: 1.15rem;
+    font-weight: 600;
+    color: var(--gold-light);
+    margin: 32px 0 14px;
+    letter-spacing: -0.01em;
+  }
+  .content p {
+    font-size: 1rem;
+    color: var(--text-secondary);
+    line-height: 1.75;
+    margin-bottom: 16px;
+  }
+  .content .highlight {
+    color: var(--gold-light);
+    font-weight: 500;
+  }
+  .content ul {
+    list-style: none;
+    padding: 0;
+    margin: 12px 0;
+  }
+  .content ul li {
+    padding: 10px 0;
+    font-size: 0.92rem;
+    color: var(--text-secondary);
+    border-bottom: 1px solid rgba(255,255,255,0.04);
+  }
+  .content ul li::before {
+    content: "▸ ";
+    color: var(--gold);
+  }
+
+  .mistake-list li {
+    padding: 10px 0;
+    line-height: 1.65;
+  }
+  .mistake-list li strong {
+    color: var(--gold-light);
+  }
+
+  .experiment-list li {
+    padding: 12px 0 !important;
+  }
+  .experiment-list li strong {
+    color: var(--gold-light);
+  }
+
+  .related-authorities {
+    background: var(--card-bg);
+    border: 1px solid var(--card-border);
+    border-radius: var(--radius-lg);
+    padding: 40px 36px;
+    margin-bottom: 48px;
+  }
+  .related-authorities h2 {
+    font-size: 1.5rem;
+    font-weight: 700;
+    margin-bottom: 20px;
+    color: var(--white);
+    letter-spacing: -0.02em;
+  }
+  .related-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+    gap: 12px;
+  }
+  .related-chip {
+    display: block;
+    padding: 12px 16px;
+    background: rgba(201,168,76,0.06);
+    border: 1px solid var(--card-border);
+    border-radius: var(--radius);
+    text-decoration: none;
+    color: var(--text-secondary);
+    font-size: 0.88rem;
+    transition: var(--transition);
+    text-align: center;
+  }
+  .related-chip:hover {
+    border-color: var(--gold);
+    color: var(--gold-light);
+  }
+
+  .faq {
+    padding: 0 0 24px;
+  }
+  .faq h2 {
+    text-align: center;
+    font-size: 1.6rem;
+    font-weight: 700;
+    margin-bottom: 32px;
+    letter-spacing: -0.02em;
+  }
+  .faq-item {
+    background: var(--card-bg);
+    border: 1px solid var(--card-border);
+    border-radius: var(--radius);
+    padding: 24px 28px;
+    margin-bottom: 12px;
+  }
+  .faq-item h3 {
+    font-size: 1rem;
+    font-weight: 600;
+    color: var(--gold-light);
+    margin-bottom: 8px;
+  }
+  .faq-item p {
+    font-size: 0.9rem;
+    color: var(--text-secondary);
+    line-height: 1.65;
+  }
+
+  .cta-section {
+    text-align: center;
+    padding: 48px 24px 64px;
+    position: relative;
+    z-index: 1;
+  }
+  .cta-section h2 {
+    font-size: clamp(1.3rem, 2.5vw, 1.7rem);
+    font-weight: 700;
+    margin-bottom: 12px;
+    letter-spacing: -0.02em;
+  }
+  .cta-section p {
+    color: var(--text-secondary);
+    font-size: 0.95rem;
+    max-width: 480px;
+    margin: 0 auto 24px;
+  }
+  .btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 13px 28px;
+    border-radius: 10px;
+    font-size: 0.92rem;
+    font-weight: 600;
+    text-decoration: none;
+    cursor: pointer;
+    border: none;
+    transition: var(--transition);
+    letter-spacing: -0.01em;
+  }
+  .btn-primary {
+    background: linear-gradient(135deg, var(--gold-bright), var(--gold));
+    color: var(--navy-deep);
+    box-shadow: 0 4px 20px rgba(201,168,76,0.3);
+  }
+  .btn-primary:hover {
+    box-shadow: 0 6px 30px rgba(201,168,76,0.45);
+    transform: translateY(-2px);
+  }
+
+  footer {
+    background: rgba(6, 13, 26, 0.6);
+    border-top: 1px solid rgba(201,168,76,0.08);
+    padding: 28px 20px;
+    text-align: center;
+    position: relative;
+    z-index: 1;
+  }
+  .footer-inner {
+    max-width: 1200px;
+    margin: 0 auto;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 16px;
+  }
+  .footer-inner .left { display: flex; flex-direction: column; gap: 4px; text-align: left; }
+  .footer-inner .brand { font-weight: 600; color: var(--text-primary); font-size: 0.88rem; }
+  .footer-inner .license { font-size: 0.76rem; color: var(--text-muted); }
+  .footer-links { display: flex; gap: 18px; }
+  .footer-links a {
+    font-size: 0.8rem;
+    color: var(--text-muted);
+    text-decoration: none;
+    transition: var(--transition);
+  }
+  .footer-links a:hover { color: var(--gold-light); }
+
+  /* Index page extras */
+  .page-header {
+    text-align: center;
+    padding: 60px 24px 48px;
+  }
+  .page-header h1 {
+    font-size: clamp(2rem, 5vw, 3rem);
+    font-weight: 800;
+    letter-spacing: -0.03em;
+    line-height: 1.2;
+    margin-bottom: 16px;
+    background: linear-gradient(180deg, #ffffff 0%, #c0c8d4 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+  .page-header p {
+    font-size: 1.1rem;
+    color: var(--text-secondary);
+    max-width: 640px;
+    margin: 0 auto;
+  }
+
+  .authority-index-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 20px;
+    margin-bottom: 60px;
+  }
+  .authority-index-card {
+    background: var(--card-bg);
+    border: 1px solid var(--card-border);
+    border-radius: var(--radius-lg);
+    padding: 28px 24px;
+    text-decoration: none;
+    transition: var(--transition);
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+  .authority-index-card:hover {
+    border-color: rgba(201,168,76,0.3);
+    transform: translateY(-2px);
+    box-shadow: 0 8px 32px rgba(201,168,76,0.08);
+  }
+  .authority-index-icon {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 48px;
+    height: 48px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, rgba(201,168,76,0.2), rgba(201,168,76,0.06));
+    border: 1.5px solid rgba(201,168,76,0.3);
+    font-size: 1.1rem;
+    font-weight: 700;
+    color: var(--gold-light);
+  }
+  .authority-index-card h3 {
+    font-size: 1.15rem;
+    font-weight: 700;
+    color: var(--white);
+    letter-spacing: -0.01em;
+  }
+  .authority-index-desc {
+    font-size: 0.85rem;
+    color: var(--text-muted);
+    line-height: 1.5;
+  }
+  .authority-index-meta {
+    display: flex;
+    gap: 16px;
+    font-size: 0.78rem;
+    color: var(--gold);
+    font-weight: 500;
+  }
+
+  @media (max-width: 768px) {
+    .nav-links { gap: 12px; }
+    .nav-links a { font-size: 0.78rem; }
+    .content, .related-authorities { padding: 28px 20px; }
+    .footer-inner { flex-direction: column; text-align: center; }
+  }
+
+</style>
+</head>
+<body>
+
+<nav>
+  <div class="nav-inner">
+    <a href="/" class="nav-logo">
+      <div class="icon">◆</div>
+      Human Design Engine
+    </a>
+    <div class="nav-links">
+      <a href="/human-design/types/">Types</a>
+      <a href="/human-design/profiles/">Profiles</a>
+      <a href="/human-design/authorities/">Authorities</a>
+      <a href="/human-design/centers/">Centers</a>
+      <a href="/human-design/channels/">Channels</a>
+      <a href="/human-design/gates/">Gates</a>
+    </div>
+  </div>
+</nav>
+
+<div class="container">
+
+  <div class="breadcrumb">
+    <a href="/">Home</a> <span>›</span>
+    <a href="/human-design/authorities/">Authorities</a> <span>›</span>
+    Lunar Authority
+  </div>
+
+  <section class="hero">
+    <div class="hero-icon">☽</div>
+    <h1>Lunar Authority</h1>
+    <p class="subtitle">Your decision-making authority is located in your <span class="highlight">None (Reflector — all centers undefined)</span>. Learn how it works, how to use it, and why trusting it is the most important skill you can develop in Human Design.</p>
+    <div class="authority-tag">~1% of the population (Reflectors exclusively)</div>
+  </section>
+
+  <div class="info-grid">
+    <div class="info-card">
+      <div class="label">Authority Center</div>
+      <div class="value">None (Reflector — all centers undefined)</div>
+    </div>
+    <div class="info-card">
+      <div class="label">Waiting Period</div>
+      <div class="value">A full lunar cycle — approximately 28.5 days. This is non-negotiable f...</div>
+    </div>
+    <div class="info-card">
+      <div class="label">Population</div>
+      <div class="value">~1% of the population</div>
+    </div>
+    <div class="info-card">
+      <div class="label">Types With This Authority</div>
+      <div class="value">Lunar Authority is exclusive to Reflectors</div>
+    </div>
+  </div>
+
+  <article class="content">
+    <h2>What Is Lunar Authority?</h2>
+    <p>Lunar Authority is unique to Reflectors — the only type with no defined centers at all. Without a consistent internal decision-making mechanism, the Reflector's authority is the transit of the Moon through the 64 gates of the bodygraph over approximately 28.5 days (a full lunar cycle). As the Moon moves, it temporarily defines different centers in the Reflector's chart, creating different 'flavors' of experience and perspective. By tracking how a decision feels across the lunar cycle, the Reflector samples every possible perspective on that decision, and the clarity that emerges is absolute — because it's been informed by all angles.</p>
+
+    <h3>How the None (Reflector — all centers undefined) Works Mechanically</h3>
+    <p>The Reflector is the only type with zero defined centers. This means the Reflector has no consistent internal energy to draw on for decision-making and this is by design. The Reflector authority center is the entire transit field, with the Moon as the primary timer. The Moon takes approximately 28.5 days to transit all 64 gates, creating temporary definitions. By waiting the full cycle, the Reflector integrates all lenses into a holographic understanding. Authority and Strategy are perfectly aligned.</p>
+
+    <h2>How to Use Your Lunar Authority for Decisions</h2>
+    <p>When a significant decision arises, you don't decide immediately. You hold the question and notice how you feel about it as the Moon moves through the cycle — day by day, week by week. Some days the decision will feel clearly right; other days clearly wrong; other days you'll feel entirely differently about it. The practice is to observe without attaching to any single day's perspective. After approximately 28 days, you will have sampled the full spectrum, and a stable, integrated knowing will emerge. This is not your opinion — it's the wisdom of having seen the decision from every angle the lunar cycle offers. This takes patience, but the clarity is unshakable.</p>
+
+    <h2>The Waiting Period</h2>
+    <p>A full lunar cycle — approximately 28.5 days. This is non-negotiable for major life decisions. For smaller decisions, you may not need the full cycle — a week may suffice — but the principle remains: don't decide from a single day's perspective. Reflectors who consistently make fast decisions eventually experience the pain of discovering that 'what felt right on Tuesday' was completely wrong by the following week. The lunar cycle is your protection. Use it.</p>
+
+    <h2>Common Mistakes</h2>
+    <p>Even when you understand your authority intellectually, actually living it requires unlearning deeply conditioned patterns. Here are the most common mistakes people with Lunar Authority make — and why they derail your decision-making.</p>
+    <ul class="mistake-list">
+      <li><strong>Making decisions from a single day's clarity</strong> — Tuesday-you feels 100% certain. But Tuesday-you is only sampling one gate's worth of lunar definition. By Thursday, you may feel completely opposite. Wednesday's certainty is not the full picture.</li>
+      <li><strong>Letting others pressure you into faster decisions</strong> — Almost nobody else has a 28-day decision cycle. They will find your pace unbearably slow and may push you. Holding your boundary here is essential to your wellbeing.</li>
+      <li><strong>Confusing the lunar cycle with procrastination</strong> — You're not avoiding the decision; you're completing the process. Procrastination has an energy of avoidance. Lunar Authority has an energy of patient, deliberate observation.</li>
+      <li><strong>Not tracking your experience across the cycle</strong> — If you don't journal or note how you feel day to day, you lose the data. The lunar cycle only works if you pay attention to the moving perspective.</li>
+      <li><strong>Isolating during the lunar cycle</strong> — Reflectors sample the energy of people around them. Being around the same people or isolating completely limits the data you receive. Variety of human contact enriches the lunar process.</li>
+    </ul>
+
+    <h2>Which Types Have Lunar Authority?</h2>
+    <p>Lunar Authority is exclusive to Reflectors. By definition, all Reflectors have Lunar Authority — it's the only authority available because Reflectors have no defined centers that could provide a different authority. If you are a Reflector, you have Lunar Authority. Period. No exceptions.</p>
+
+    <h2>Practical Experiments</h2>
+    <p>Human Design is not a belief system — it's an experiment. These practices are designed to help you discover firsthand how your Lunar Authority operates. Approach them with curiosity, not expectation.</p>
+    <ul class="experiment-list">
+      <li><strong>Start a lunar journal</strong> — Pick one decision you're holding and track it daily for a full lunar cycle. One sentence per day. At the end, read back through and look for the pattern. This single experiment can transform your relationship with your authority.</li>
+      <li><strong>Map your cycle</strong> — Download a lunar calendar app. Start noticing which days of the lunar cycle you tend to feel expansive/clear vs contracted/confused. Over a few months, you'll identify your personal rhythm within the cycle.</li>
+      <li><strong>Tell people your timeline</strong> — Next time someone asks for a decision, say: 'I move on a lunar cycle — I'll get back to you in about 28 days.' Notice who respects this and who pushes. The pushers are revealing that they don't respect your design.</li>
+      <li><strong>Sample different environments across the cycle</strong> — Since you're sampling lunar definition, also sample different physical environments and social circles. Spend time in nature, in the city, with friends, alone. The richer the sampling, the richer the clarity.</li>
+    </ul>
+
+    <h3>Living in Alignment: The Signature</h3>
+    <p>When you follow Lunar Authority, you experience Surprise — the signature of the Reflector. Surprise is the delight of discovering what's really correct after the cycle completes — often something you would never have chosen from any single day's perspective. Your life becomes an unfolding revelation rather than a forced march. When you ignore Lunar Authority, you experience Disappointment — the not-self theme. Disappointment is the feeling of having committed to something that the full picture would have revealed as wrong. The lunar cycle is your protection against disappointment.</p>
+  </article>
+
+  <section class="related-authorities">
+    <h2>Explore All 7 Authorities</h2>
+    <p style="color:var(--text-secondary);margin-bottom:20px;">Each Human Design Authority is a distinct decision-making mechanism. Understanding all seven helps you see how your authority fits into the full spectrum — and how to interact with people who have different authorities.</p>
+    <div class="related-grid">
+      <a href="emotional.html" class="related-chip">☉ Emotional Authority</a>
+      <a href="sacral.html" class="related-chip">⚡ Sacral Authority</a>
+      <a href="splenic.html" class="related-chip">✦ Splenic Authority</a>
+      <a href="ego.html" class="related-chip">♛ Ego Authority</a>
+      <a href="self-projected.html" class="related-chip">◎ Self-Projected Authority</a>
+      <a href="environmental.html" class="related-chip">◈ Environmental Authority</a>
+      <a href="index.html" class="related-chip">All 7 Authorities →</a>
+    </div>
+  </section>
+
+  <section class="faq">
+    <h2>Frequently Asked Questions — Lunar Authority</h2>
+    <div class="faq-item">
+      <h3>Do I really have to wait 28 days for every decision?</h3>
+      <p>For major life decisions (moving, career changes, relationship commitments, big purchases): yes, the full cycle. For medium decisions (saying yes to a project, planning a trip): at least a week. For small daily decisions (what to eat, which route to take): you can respond in the moment — but know that even daily preferences may shift across the cycle.</p>
+    </div>
+    <div class="faq-item">
+      <h3>What if I can't wait 28 days because of an external deadline?</h3>
+      <p>For true external deadlines, you do what you must — but know that you're making the decision without your full authority. When possible, negotiate for more time: 'I need a month to feel into this. Can we revisit then?' Many deadlines are more flexible than they appear. For decisions others impose on you, ask: is the urgency real or manufactured?</p>
+    </div>
+    <div class="faq-item">
+      <h3>How do I track my lunar cycle effectively?</h3>
+      <p>Keep a simple journal. Each day, write the date and a one-sentence check-in on the decision: 'Today: feels like a clear yes.' 'Today: uncertain, leaning no.' 'Today: completely different perspective — seeing the risks.' At the end of the cycle, review your journal. The pattern across 28 entries reveals the integrated truth.</p>
+    </div>
+    <div class="faq-item">
+      <h3>What if the lunar cycle ends and I still don't feel clear?</h3>
+      <p>Sometimes one cycle isn't enough for extremely complex decisions — give yourself a second cycle. But also check: are you truly uncertain, or are you afraid of the answer? Lunar clarity is quiet and steady. It doesn't arrive with fanfare. If you're waiting for a dramatic revelation, you may have already received your clarity and dismissed it.</p>
+    </div>
+    <div class="faq-item">
+      <h3>Does the lunar cycle mean my life moves slowly?</h3>
+      <p>Not slowly — rhythmically. Reflectors who embrace the lunar cycle find that their lives move with surprising precision. They avoid big mistakes that others (who decide quickly) stumble into. They may appear to move slowly from the outside, but internally they're running a sophisticated, complete decision process that produces remarkably accurate results.</p>
+    </div>
+  </section>
+
+  <section class="cta-section">
+    <h2>Discover Your Unique Authority</h2>
+    <p>Your Inner Authority is revealed in your full Human Design chart — along with your Type, Profile, defined Centers, Channels, Gates, and Incarnation Cross. Get your personalized 70+ page report and learn exactly how your authority operates in your unique design.</p>
+    <a href="/buy-report.html" class="btn btn-primary">Get Your Full Personalized Report →</a>
+  </section>
+
+</div>
+
+<footer>
+  <div class="footer-inner">
+    <div class="left">
+      <span class="brand">Human Design Engine</span>
+      <span class="license">Verified chart data — open-source computation engine.</span>
+    </div>
+    <div class="footer-links">
+      <a href="/human-design/types/">Types</a>
+      <a href="/human-design/profiles/">Profiles</a>
+      <a href="/human-design/authorities/">Authorities</a>
+      <a href="/human-design/centers/">Centers</a>
+      <a href="/human-design/channels/">Channels</a>
+      <a href="/human-design/gates/">Gates</a>
+      <a href="/privacy">Privacy</a>
+    </div>
+  </div>
+</footer>
+
+</body>
+</html>
