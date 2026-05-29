@@ -1185,6 +1185,38 @@ class Handler(BaseHTTPRequestHandler):
                 log.exception("Public compute chart failed")
                 self._json({"success": False, "error": str(e)}, 500)
         
+        elif path == '/api/public/capture-lead':
+            # Public endpoint — capture lead email from free chart widget
+            length = int(self.headers.get('Content-Length', 0))
+            body = json.loads(self.rfile.read(length)) if length else {}
+            
+            email = body.get('email', '').strip()
+            if not email:
+                self._json({"success": False, "error": "Email required"}, 400)
+                return
+            
+            lead = {
+                "email": email,
+                "source": body.get("source", "free-chart-widget"),
+                "page": body.get("page", ""),
+                "timestamp": body.get("timestamp", datetime.now().isoformat()),
+                "ip": self.client_address[0],
+            }
+            
+            # Save to leads file
+            leads_file = REPORTS_DIR / "leads.json"
+            leads = []
+            if leads_file.exists():
+                try:
+                    leads = json.loads(leads_file.read_text())
+                except Exception:
+                    pass
+            leads.append(lead)
+            leads_file.write_text(json.dumps(leads, indent=2))
+            
+            log.info("Lead captured: %s from %s", email, lead["source"])
+            self._json({"success": True, "message": "Lead captured"})
+        
         else:
             self._json({"error": "Not found"}, 404)
     
@@ -1195,5 +1227,5 @@ class Handler(BaseHTTPRequestHandler):
 if __name__ == '__main__':
     log.info("🚀 HDE Report Server starting on port %d", PORT)
     log.info("   Engine: %s", ENGINE_PATH)
-    log.info("   Endpoints: /ping /api/compute /api/compute-chart /api/public/compute-chart")
+    log.info("   Endpoints: /ping /api/compute /api/compute-chart /api/public/compute-chart /api/public/capture-lead")
     HTTPServer(('0.0.0.0', PORT), Handler).serve_forever()

@@ -1,89 +1,36 @@
 """
-Async HTTP client for the OpenHumanDesign MCP engine.
+Engine client for HD Platform — direct import, no HTTP/MCP transport.
 
-Uses httpx for async communication with configurable retry logic,
-timeouts, and structured error handling.
+Imports the OpenHumanDesignMCP engine directly (same pattern as
+reports/server.py) so the FastAPI wrapper can compute charts
+without relying on an external MCP server.
 """
 
-import asyncio
-import json
 import logging
 import os
+import sys
+from datetime import datetime
 from typing import Any, Dict, Optional
 
-import httpx
+# ── Engine path ────────────────────────────────────────────────────────
+ENGINE_PATH = os.environ.get(
+    "ENGINE_PATH",
+    "/home/ubuntu/work/OpenHumanDesignMCP/hd-mcp-server/src",
+)
+sys.path.insert(0, ENGINE_PATH)
+
+from cosmic_calculator import calculate_natal_chart
+from ephemeris_engine import init_ephemeris
+from transit_engine import compute_transit_overlay, datetime_to_jd
+
+# Initialise once at module load (idempotent)
+init_ephemeris()
 
 logger = logging.getLogger(__name__)
 
-MCP_SERVER_URL: str = os.getenv("MCP_SERVER_URL", "http://localhost:8765")
-
-DEFAULT_TIMEOUT: float = 30.0
-MAX_RETRIES: int = 3
-BASE_DELAY: float = 1.0  # seconds, multiplied by 2**attempt for back-off
-
-
-def _client() -> httpx.AsyncClient:
-    """Return a new httpx client with shared defaults (not reused across invocations)."""
-    return httpx.AsyncClient(timeout=httpx.Timeout(DEFAULT_TIMEOUT))
-
 
 # ---------------------------------------------------------------------------
-# Internal helpers
-# ---------------------------------------------------------------------------
-
-
-def _error_dict(endpoint: str, detail: Any) -> Dict[str, Any]:
-    """Build a standardised error dict for callers."""
-    logger.warning("MCP error on %s: %s", endpoint, detail)
-    return {
-        "error": True,
-        "endpoint": endpoint,
-        "detail": str(detail),
-    }
-
-
-async def _post(
-    path: str,
-    payload: Dict[str, Any],
-) -> Dict[str, Any]:
-    """
-    POST *payload* to *path* on the MCP server with retry + back-off.
-
-    Returns the JSON-parsed response body on success, or a structured
-    error dict on failure.
-    """
-    url = f"{MCP_SERVER_URL.rstrip('/')}{path}"
-
-    for attempt in range(1, MAX_RETRIES + 1):
-        try:
-            async with _client() as client:
-                resp = await client.post(url, json=payload)
-                resp.raise_for_status()
-                return resp.json()
-        except httpx.TimeoutException:
-            detail = f"Timeout after {DEFAULT_TIMEOUT}s"
-            if attempt == MAX_RETRIES:
-                return _error_dict(path, detail)
-        except httpx.HTTPStatusError as exc:
-            detail = f"HTTP {exc.response.status_code}: {exc.response.text[:500]}"
-            if attempt == MAX_RETRIES:
-                return _error_dict(path, detail)
-        except Exception as exc:
-            detail = str(exc)
-            if attempt == MAX_RETRIES:
-                return _error_dict(path, detail)
-
-        # Exponential back-off: 1s, 2s, 4s
-        delay = BASE_DELAY * (2 ** (attempt - 1))
-        logger.debug("MCP retry %d/%d for %s — sleeping %.1fs", attempt, MAX_RETRIES, path, delay)
-        await asyncio.sleep(delay)
-
-    # Should never be reached; kept for type-safety
-    return _error_dict(path, "Max retries exceeded")
-
-
-# ---------------------------------------------------------------------------
-# Public API
+# Public API — async wrappers matching the original signatures
 # ---------------------------------------------------------------------------
 
 
@@ -95,45 +42,30 @@ async def compute_natal_chart(
     hour: int,
     lat: float,
     lon: float,
+    minute: int = 0,
     location: Optional[str] = None,
     timezone: Optional[str] = None,
 ) -> Dict[str, Any]:
     """
-    Compute a natal / birth chart via the MCP engine.
+    Compute a natal (birth) chart via direct engine import.
 
-    Parameters
-    ----------
-    name : str
-        Person or entity name.
-    year, month, day, hour : int
-        Birth date / time components.
-    lat, lon : float
-        Geographic coordinates.
-    location : str, optional
-        Human-readable location name.
-    timezone : str, optional
-        IANA timezone string (e.g. 'America/New_York').
-
-    Returns
-    -------
-    dict
-        MCP response body or structured error dict.
+    Returns the full chart dict on success, or ``{"error": True,
+    "detail": "..."}`` on failure.
     """
-    payload: Dict[str, Any] = {
-        "name": name,
-        "year": year,
-        "month": month,
-        "day": day,
-        "hour": hour,
-        "lat": lat,
-        "lon": lon,
-    }
-    if location:
-        payload["location"] = location
-    if timezone:
-        payload["timezone"] = timezone
-
-    return await _post("/compute/natal", payload)
+    try:
+        birth_dt = datetime(year, month, day, hour, minute)
+        chart = calculate_natal_chart(
+            name=name,
+            birth_dt=birth_dt,
+            lat=lat,
+            lon=lon,
+            timezone=timezone or "UTC",
+        )
+        logger.info("Natal chart computed for %s", name)
+        return chart
+    except Exception as exc:
+        logger.exception("Engine error computing natal chart for %s", name)
+        return {"error": True, "detail": str(exc)}
 
 
 async def compute_transits(
@@ -144,45 +76,46 @@ async def compute_transits(
     hour: int,
     lat: float,
     lon: float,
+    minute: int = 0,
     location: Optional[str] = None,
+    timezone: Optional[str] = None,
     target_date: Optional[str] = None,
 ) -> Dict[str, Any]:
     """
-    Compute transit overlays for a given birth chart and target date.
+    Compute a transit overlay for a natal chart via direct engine import.
 
     Parameters
     ----------
-    name : str
-        Person or entity name.
-    year, month, day, hour : int
-        Birth date / time components.
-    lat, lon : float
-        Geographic coordinates.
-    location : str, optional
-        Human-readable location name.
     target_date : str, optional
-        ISO date string for transit snapshot (defaults to today).
-
-    Returns
-    -------
-    dict
-        MCP response body or structured error dict.
+        ISO date string (YYYY-MM-DD) for the transit snapshot.
+        Defaults to today when omitted.
     """
-    payload: Dict[str, Any] = {
-        "name": name,
-        "year": year,
-        "month": month,
-        "day": day,
-        "hour": hour,
-        "lat": lat,
-        "lon": lon,
-    }
-    if location:
-        payload["location"] = location
-    if target_date:
-        payload["target_date"] = target_date
+    try:
+        birth_dt = datetime(year, month, day, hour, minute)
+        natal = calculate_natal_chart(
+            name=name,
+            birth_dt=birth_dt,
+            lat=lat,
+            lon=lon,
+            timezone=timezone or "UTC",
+        )
 
-    return await _post("/compute/transits", payload)
+        if target_date:
+            target_dt = datetime.strptime(target_date, "%Y-%m-%d")
+            target_jd = datetime_to_jd(target_dt)
+        else:
+            target_jd = None  # defaults to now inside the engine
+
+        overlay = compute_transit_overlay(natal, target_jd)
+
+        logger.info("Transit overlay computed for %s", name)
+        return {
+            "natal": natal,
+            "overlay": overlay,
+        }
+    except Exception as exc:
+        logger.exception("Engine error computing transits for %s", name)
+        return {"error": True, "detail": str(exc)}
 
 
 async def compute_synastry(
@@ -196,19 +129,55 @@ async def compute_synastry(
 
     Parameters
     ----------
-    name_a, name_b : str
-        Names for each chart.
     birth_a, birth_b : dict
         Dicts containing keys: year, month, day, hour, lat, lon,
-        and optionally location, timezone.
-
-    Returns
-    -------
-    dict
-        MCP response body or structured error dict.
+        and optionally minute, location, timezone.
     """
-    payload: Dict[str, Any] = {
-        "person_a": {"name": name_a, **birth_a},
-        "person_b": {"name": name_b, **birth_b},
-    }
-    return await _post("/compute/synastry", payload)
+    try:
+        birth_dt_a = datetime(
+            birth_a["year"],
+            birth_a["month"],
+            birth_a["day"],
+            birth_a.get("hour", 12),
+            birth_a.get("minute", 0),
+        )
+        birth_dt_b = datetime(
+            birth_b["year"],
+            birth_b["month"],
+            birth_b["day"],
+            birth_b.get("hour", 12),
+            birth_b.get("minute", 0),
+        )
+
+        chart_a = calculate_natal_chart(
+            name=name_a,
+            birth_dt=birth_dt_a,
+            lat=birth_a.get("lat", 0),
+            lon=birth_a.get("lon", 0),
+            timezone=birth_a.get("timezone", "UTC"),
+        )
+        chart_b = calculate_natal_chart(
+            name=name_b,
+            birth_dt=birth_dt_b,
+            lat=birth_b.get("lat", 0),
+            lon=birth_b.get("lon", 0),
+            timezone=birth_b.get("timezone", "UTC"),
+        )
+
+        # Optional composite (synastry_engine may not exist in all versions)
+        try:
+            from synastry_engine import calculate_composite
+            composite = calculate_composite(chart_a, chart_b)
+        except ImportError:
+            logger.warning("synastry_engine not available — composite skipped")
+            composite = None
+
+        logger.info("Synastry computed for %s & %s", name_a, name_b)
+        return {
+            "chart_a": chart_a,
+            "chart_b": chart_b,
+            "composite": composite,
+        }
+    except Exception as exc:
+        logger.exception("Engine error computing synastry for %s & %s", name_a, name_b)
+        return {"error": True, "detail": str(exc)}

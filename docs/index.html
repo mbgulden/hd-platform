@@ -943,8 +943,30 @@
   <div class="container">
     <h2>Try Your Chart — Free</h2>
     <p class="widget-subtitle">Enter your birth details below and see your Human Design type, profile, and strategy instantly. No email required.</p>
-    <div class="hde-chart-widget" data-api="https://api.humandesignengine.com"></div>
+    <div class="hde-chart-widget" data-api="http://localhost:8081"></div>
     <p class="widget-note">👆 Your chart is computed on the fly using verified open-source algorithms.</p>
+
+    <!-- Email Capture (hidden until chart loads) -->
+    <div class="email-capture" id="email-capture" style="display:none;">
+      <div class="email-capture-card">
+        <div class="ec-icon">📊</div>
+        <h3>Want Your Full Report?</h3>
+        <p>Enter your email to get a complete 40+ page Human Design blueprint — including Centers, Channels, Gates, Incarnation Cross, and personalized experiments.</p>
+        <form id="email-capture-form" class="ec-form">
+          <input type="email" id="ec-email" placeholder="Your email address" required autocomplete="email">
+          <button type="submit" class="btn btn-primary ec-btn">Get My Full Report →</button>
+        </form>
+        <p class="ec-privacy">🔒 No spam. Your birth data and email are never shared.</p>
+        <div class="ec-success" id="ec-success" style="display:none;">
+          <div class="ec-check">✅</div>
+          <h4>You're in!</h4>
+          <p>Your full report is on its way. Check your inbox (and spam folder) in the next few minutes.</p>
+        </div>
+        <div class="ec-error" id="ec-error" style="display:none;">
+          <p>Something went wrong. Please try again or contact support.</p>
+        </div>
+      </div>
+    </div>
   </div>
 </section>
 
@@ -952,8 +974,197 @@
   .widget-section { padding: 80px 0; background: var(--navy-deep); }
   .widget-subtitle { color: var(--text-secondary); margin-bottom: 30px; max-width: 600px; margin-left: auto; margin-right: auto; text-align: center; }
   .widget-note { text-align: center; color: var(--text-muted); font-size: 12px; margin-top: 20px; }
+
+  /* Email Capture */
+  .email-capture { margin-top: 36px; animation: ec-fadein 0.6s ease-out; }
+  @keyframes ec-fadein { from { opacity: 0; transform: translateY(12px); } to { opacity: 1; transform: translateY(0); } }
+  .email-capture-card {
+    background: var(--card-bg);
+    border: 1px solid var(--card-border);
+    border-radius: var(--radius-lg);
+    padding: 36px 28px;
+    max-width: 520px;
+    margin: 0 auto;
+    text-align: center;
+  }
+  .email-capture-card .ec-icon { font-size: 2.2rem; margin-bottom: 12px; }
+  .email-capture-card h3 {
+    font-size: 1.3rem;
+    font-weight: 700;
+    margin-bottom: 8px;
+    color: var(--white);
+  }
+  .email-capture-card > p {
+    color: var(--text-secondary);
+    font-size: 0.9rem;
+    margin-bottom: 20px;
+    line-height: 1.6;
+  }
+  .ec-form {
+    display: flex;
+    gap: 10px;
+    max-width: 420px;
+    margin: 0 auto;
+  }
+  .ec-form input[type="email"] {
+    flex: 1;
+    padding: 12px 16px;
+    background: var(--navy-mid);
+    border: 1px solid var(--card-border);
+    border-radius: 8px;
+    color: var(--text-primary);
+    font-size: 0.9rem;
+    font-family: inherit;
+    outline: none;
+    transition: var(--transition);
+  }
+  .ec-form input[type="email"]:focus {
+    border-color: var(--gold);
+  }
+  .ec-form .ec-btn {
+    padding: 12px 20px;
+    font-size: 0.88rem;
+    white-space: nowrap;
+  }
+  .ec-privacy {
+    font-size: 0.75rem;
+    color: var(--text-muted);
+    margin-top: 14px;
+  }
+  .ec-success { padding: 12px 0; }
+  .ec-success .ec-check { font-size: 2rem; margin-bottom: 8px; }
+  .ec-success h4 { font-size: 1.1rem; color: var(--gold-light); margin-bottom: 6px; }
+  .ec-success p { color: var(--text-secondary); font-size: 0.88rem; line-height: 1.5; }
+  .ec-error p { color: #f87171; font-size: 0.88rem; }
+
+  @media (max-width: 480px) {
+    .ec-form { flex-direction: column; }
+    .ec-form .ec-btn { width: 100%; }
+  }
 </style>
+
 <script src="widget.js"></script>
+<script>
+(function() {
+  // Watch for widget result rendering, then show email capture
+  var widgetEl = document.querySelector('.hde-chart-widget');
+  if (!widgetEl) return;
+
+  var observer = new MutationObserver(function(mutations) {
+    for (var i = 0; i < mutations.length; i++) {
+      var addedNodes = mutations[i].addedNodes;
+      for (var j = 0; j < addedNodes.length; j++) {
+        var node = addedNodes[j];
+        if (node.nodeType === 1) {
+          // Check if a result section appeared (contains hde-w-*-result-name)
+          var resultName = node.querySelector ? node.querySelector('[class*="-result-name"]') : null;
+          if (!resultName && node.className && node.className.indexOf('-result') > -1) {
+            resultName = node; // the node itself might be the result container
+          }
+          if (resultName || (node.innerHTML && node.innerHTML.indexOf('result-name') > -1)) {
+            showEmailCapture();
+            return;
+          }
+        }
+      }
+      // Also check attribute changes on the card
+      if (mutations[i].target.innerHTML && mutations[i].target.innerHTML.indexOf('result-name') > -1) {
+        showEmailCapture();
+        return;
+      }
+      // Check for any child that might be the rendered result
+      if (mutations[i].target.querySelector) {
+        var maybeResult = mutations[i].target.querySelector('[class*="-result-name"]');
+        if (maybeResult) {
+          showEmailCapture();
+          return;
+        }
+      }
+    }
+  });
+
+  observer.observe(widgetEl, { childList: true, subtree: true });
+
+  // Fallback: also observe attribute changes
+  var attrObserver = new MutationObserver(function() {
+    var resultName = widgetEl.querySelector('[class*="-result-name"]');
+    if (resultName) {
+      showEmailCapture();
+      attrObserver.disconnect();
+    }
+  });
+  attrObserver.observe(widgetEl, { attributes: true, subtree: true, attributeFilter: ['class', 'style'] });
+
+  // Show email capture section
+  function showEmailCapture() {
+    var ec = document.getElementById('email-capture');
+    if (ec && ec.style.display === 'none') {
+      ec.style.display = 'block';
+      // Scroll into view smoothly
+      setTimeout(function() {
+        ec.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      }, 200);
+      observer.disconnect();
+      attrObserver.disconnect();
+    }
+  }
+
+  // Handle email form submission
+  var form = document.getElementById('email-capture-form');
+  if (form) {
+    form.addEventListener('submit', function(e) {
+      e.preventDefault();
+      var email = document.getElementById('ec-email').value.trim();
+      if (!email) return;
+
+      var btn = form.querySelector('button');
+      var origText = btn.textContent;
+      btn.textContent = 'Submitting...';
+      btn.disabled = true;
+
+      // Capture lead: post to leads endpoint or fallback to localStorage
+      var apiBase = (widgetEl && widgetEl.getAttribute('data-api')) || 'http://localhost:8081';
+      var payload = {
+        email: email,
+        source: 'free-chart-widget',
+        page: window.location.href,
+        timestamp: new Date().toISOString()
+      };
+
+      fetch(apiBase + '/api/public/capture-lead', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload)
+      })
+      .then(function(r) { return r.json(); })
+      .then(function(data) {
+        document.getElementById('ec-success').style.display = 'block';
+        form.style.display = 'none';
+        document.querySelector('.email-capture-card > p').style.display = 'none';
+        document.querySelector('.ec-privacy').style.display = 'none';
+        // Also store in localStorage as backup
+        var leads = JSON.parse(localStorage.getItem('hde_leads') || '[]');
+        leads.push(payload);
+        localStorage.setItem('hde_leads', JSON.stringify(leads));
+      })
+      .catch(function() {
+        // Fallback: store locally if endpoint unavailable
+        var leads = JSON.parse(localStorage.getItem('hde_leads') || '[]');
+        leads.push(payload);
+        localStorage.setItem('hde_leads', JSON.stringify(leads));
+        document.getElementById('ec-success').style.display = 'block';
+        form.style.display = 'none';
+        document.querySelector('.email-capture-card > p').style.display = 'none';
+        document.querySelector('.ec-privacy').style.display = 'none';
+      })
+      .finally(function() {
+        btn.textContent = origText;
+        btn.disabled = false;
+      });
+    });
+  }
+})();
+</script>
 
 <!-- SOCIAL PROOF -->
 <section class="social-proof">
