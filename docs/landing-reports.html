@@ -1,0 +1,933 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Deep Dive Reports — Your Human Design Blueprint | DesignEngine</title>
+<style>
+  :root {
+    --navy-deep: #060d1a;
+    --navy: #0a1628;
+    --navy-mid: #0f1d36;
+    --navy-light: #162744;
+    --navy-lighter: #1e3458;
+    --gold: #c9a84c;
+    --gold-light: #e0c468;
+    --gold-bright: #d4af37;
+    --gold-soft: rgba(201, 168, 76, 0.15);
+    --gold-glow: rgba(201, 168, 76, 0.08);
+    --text-primary: #e8e6e3;
+    --text-secondary: #8899aa;
+    --text-muted: #5a6a7a;
+    --white: #ffffff;
+    --card-bg: rgba(15, 29, 54, 0.7);
+    --card-border: rgba(201, 168, 76, 0.12);
+    --radius: 12px;
+    --radius-lg: 20px;
+    --shadow: 0 4px 24px rgba(0,0,0,0.3);
+    --transition: 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
+    background: var(--navy-deep);
+    color: var(--text-primary);
+    line-height: 1.6;
+    overflow-x: hidden;
+  }
+
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background:
+      radial-gradient(ellipse at 20% 10%, rgba(201,168,76,0.04) 0%, transparent 60%),
+      radial-gradient(ellipse at 80% 90%, rgba(201,168,76,0.03) 0%, transparent 60%),
+      radial-gradient(ellipse at 50% 50%, rgba(15,29,54,0.8) 0%, var(--navy-deep) 100%);
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  /* ---- NAV ---- */
+  nav {
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    background: rgba(6, 13, 26, 0.85);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+    border-bottom: 1px solid rgba(201,168,76,0.1);
+    padding: 0 20px;
+  }
+  .nav-inner {
+    max-width: 1200px;
+    margin: 0 auto;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    height: 64px;
+    position: relative;
+    z-index: 1;
+  }
+  .nav-logo {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 1.4rem;
+    font-weight: 700;
+    color: var(--white);
+    text-decoration: none;
+    letter-spacing: -0.02em;
+  }
+  .nav-logo .icon {
+    width: 32px; height: 32px;
+    background: linear-gradient(135deg, var(--gold-bright), var(--gold));
+    border-radius: 8px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 0.9rem;
+    color: var(--navy-deep);
+    font-weight: 900;
+  }
+  .nav-links { display: flex; gap: 28px; align-items: center; }
+  .nav-links a {
+    color: var(--text-secondary);
+    text-decoration: none;
+    font-size: 0.9rem;
+    font-weight: 500;
+    transition: var(--transition);
+  }
+  .nav-links a:hover { color: var(--gold-light); }
+  .nav-links a.active { color: var(--gold-light); }
+  .nav-cta {
+    background: var(--gold);
+    color: var(--navy-deep) !important;
+    padding: 8px 20px;
+    border-radius: 8px;
+    font-weight: 600 !important;
+    transition: var(--transition);
+  }
+  .nav-cta:hover {
+    background: var(--gold-light);
+    transform: translateY(-1px);
+  }
+
+  /* ---- CONTAINER ---- */
+  .container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 24px;
+    position: relative;
+    z-index: 1;
+  }
+
+  /* ---- HERO ---- */
+  .hero {
+    text-align: center;
+    padding: 100px 24px 80px;
+    position: relative;
+    z-index: 1;
+  }
+  .hero-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    background: var(--gold-soft);
+    border: 1px solid rgba(201,168,76,0.25);
+    border-radius: 50px;
+    padding: 6px 18px;
+    font-size: 0.85rem;
+    color: var(--gold-light);
+    font-weight: 500;
+    margin-bottom: 28px;
+  }
+  .hero-badge .dot {
+    width: 8px; height: 8px;
+    background: var(--gold-bright);
+    border-radius: 50%;
+    animation: pulse-dot 2s infinite;
+  }
+  @keyframes pulse-dot {
+    0%, 100% { opacity: 1; transform: scale(1); }
+    50% { opacity: 0.5; transform: scale(1.4); }
+  }
+  .hero h1 {
+    font-size: clamp(2.2rem, 5vw, 3.6rem);
+    font-weight: 800;
+    letter-spacing: -0.03em;
+    line-height: 1.15;
+    margin-bottom: 20px;
+    background: linear-gradient(180deg, #ffffff 0%, #c0c8d4 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+  .hero h1 .gold { -webkit-text-fill-color: var(--gold-light); }
+  .hero p.subtitle {
+    font-size: 1.15rem;
+    color: var(--text-secondary);
+    max-width: 640px;
+    margin: 0 auto 36px;
+    line-height: 1.7;
+  }
+  .hero-buttons {
+    display: flex;
+    gap: 16px;
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+  .btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 14px 32px;
+    border-radius: 10px;
+    font-size: 0.95rem;
+    font-weight: 600;
+    text-decoration: none;
+    cursor: pointer;
+    border: none;
+    transition: var(--transition);
+    letter-spacing: -0.01em;
+  }
+  .btn-primary {
+    background: linear-gradient(135deg, var(--gold-bright), var(--gold));
+    color: var(--navy-deep);
+    box-shadow: 0 4px 20px rgba(201,168,76,0.3);
+  }
+  .btn-primary:hover {
+    box-shadow: 0 6px 30px rgba(201,168,76,0.45);
+    transform: translateY(-2px);
+  }
+  .btn-outline {
+    background: transparent;
+    color: var(--gold-light);
+    border: 1.5px solid rgba(201,168,76,0.4);
+  }
+  .btn-outline:hover {
+    background: var(--gold-soft);
+    border-color: var(--gold);
+  }
+
+  /* ---- TRUST BAR ---- */
+  .trust-bar {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 32px;
+    flex-wrap: wrap;
+    padding: 36px 24px;
+    border-top: 1px solid rgba(201,168,76,0.08);
+    border-bottom: 1px solid rgba(201,168,76,0.08);
+    margin-bottom: 80px;
+  }
+  .trust-item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 0.85rem;
+    color: var(--text-muted);
+    font-weight: 500;
+  }
+  .trust-item .check { color: var(--gold); font-size: 1rem; }
+
+  /* ---- SECTION HEADERS ---- */
+  .section-header {
+    text-align: center;
+    margin-bottom: 56px;
+  }
+  .section-header .overline {
+    font-size: 0.8rem;
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+    color: var(--gold);
+    font-weight: 600;
+    margin-bottom: 12px;
+  }
+  .section-header h2 {
+    font-size: clamp(1.6rem, 3vw, 2.2rem);
+    font-weight: 700;
+    letter-spacing: -0.02em;
+    margin-bottom: 12px;
+  }
+  .section-header p {
+    color: var(--text-secondary);
+    font-size: 1rem;
+    max-width: 540px;
+    margin: 0 auto;
+  }
+
+  /* ---- WHAT'S INSIDE ---- */
+  .inside {
+    padding: 80px 0;
+  }
+  .inside-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+    gap: 24px;
+  }
+  .inside-card {
+    background: var(--card-bg);
+    border: 1px solid var(--card-border);
+    border-radius: var(--radius);
+    padding: 28px 24px;
+    transition: var(--transition);
+  }
+  .inside-card:hover {
+    border-color: rgba(201,168,76,0.25);
+    box-shadow: 0 6px 24px rgba(0,0,0,0.25);
+  }
+  .inside-icon {
+    width: 40px; height: 40px;
+    border-radius: 10px;
+    background: var(--gold-soft);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 1.1rem;
+    margin-bottom: 16px;
+  }
+  .inside-card h4 {
+    font-size: 1rem;
+    font-weight: 600;
+    margin-bottom: 6px;
+  }
+  .inside-card p {
+    font-size: 0.85rem;
+    color: var(--text-muted);
+    line-height: 1.6;
+  }
+
+  /* ---- HOW IT WORKS ---- */
+  .how-it-works {
+    padding: 80px 0;
+    background: rgba(10,22,40,0.5);
+  }
+  .steps {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 32px;
+    max-width: 900px;
+    margin: 0 auto;
+  }
+  .step {
+    text-align: center;
+    position: relative;
+  }
+  .step-number {
+    width: 56px; height: 56px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, var(--gold-bright), var(--gold));
+    color: var(--navy-deep);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 1.4rem;
+    font-weight: 800;
+    margin: 0 auto 20px;
+    box-shadow: 0 4px 16px rgba(201,168,76,0.3);
+  }
+  .step h4 {
+    font-size: 1.05rem;
+    font-weight: 600;
+    margin-bottom: 8px;
+  }
+  .step p {
+    font-size: 0.88rem;
+    color: var(--text-muted);
+    line-height: 1.6;
+  }
+
+  /* ---- SAMPLE REPORT ---- */
+  .sample-report {
+    padding: 80px 0;
+  }
+  .report-preview {
+    background: var(--card-bg);
+    border: 1px solid var(--card-border);
+    border-radius: var(--radius-lg);
+    padding: 40px 36px;
+    max-width: 800px;
+    margin: 0 auto;
+    display: grid;
+    grid-template-columns: 140px 1fr;
+    gap: 32px;
+    align-items: start;
+  }
+  .report-cover {
+    width: 140px;
+    height: 180px;
+    background: linear-gradient(160deg, #0f1d36 0%, #1a2d4a 100%);
+    border: 1px solid rgba(201,168,76,0.2);
+    border-radius: 8px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    padding: 16px;
+    gap: 8px;
+  }
+  .report-cover .cover-icon {
+    font-size: 2rem;
+    color: var(--gold-light);
+  }
+  .report-cover .cover-title {
+    font-size: 0.7rem;
+    font-weight: 700;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--gold);
+  }
+  .report-cover .cover-sub {
+    font-size: 0.65rem;
+    color: var(--text-muted);
+  }
+  .report-details h3 {
+    font-size: 1.3rem;
+    font-weight: 700;
+    margin-bottom: 12px;
+  }
+  .report-details .toc-item {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 10px 0;
+    border-bottom: 1px solid rgba(255,255,255,0.04);
+    font-size: 0.88rem;
+    color: var(--text-secondary);
+  }
+  .report-details .toc-item .toc-num {
+    color: var(--gold);
+    font-weight: 700;
+    font-size: 0.78rem;
+    min-width: 28px;
+  }
+  .report-details .toc-item .toc-pages {
+    margin-left: auto;
+    color: var(--text-muted);
+    font-size: 0.78rem;
+  }
+
+  /* ---- PRICING ---- */
+  .pricing {
+    padding: 80px 0;
+    background: rgba(10,22,40,0.5);
+  }
+  .pricing-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 24px;
+    max-width: 900px;
+    margin: 0 auto;
+  }
+  .pricing-card {
+    background: var(--card-bg);
+    border: 1px solid var(--card-border);
+    border-radius: var(--radius-lg);
+    padding: 36px 28px;
+    text-align: center;
+    transition: var(--transition);
+    position: relative;
+  }
+  .pricing-card.featured {
+    border-color: rgba(201,168,76,0.35);
+    box-shadow: 0 0 0 1px rgba(201,168,76,0.2), 0 8px 40px rgba(201,168,76,0.08);
+  }
+  .pricing-card.featured::after {
+    content: 'Best Value';
+    position: absolute;
+    top: -12px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: var(--gold);
+    color: var(--navy-deep);
+    font-size: 0.72rem;
+    font-weight: 700;
+    padding: 4px 16px;
+    border-radius: 50px;
+    letter-spacing: 0.03em;
+  }
+  .pricing-card h4 {
+    font-size: 1.1rem;
+    font-weight: 600;
+    margin-bottom: 12px;
+  }
+  .pricing-card .price {
+    font-size: 2.2rem;
+    font-weight: 800;
+    margin-bottom: 4px;
+    letter-spacing: -0.02em;
+  }
+  .pricing-card .price span {
+    font-size: 0.9rem;
+    font-weight: 500;
+    color: var(--text-muted);
+  }
+  .pricing-card .desc {
+    font-size: 0.85rem;
+    color: var(--text-muted);
+    margin-bottom: 20px;
+  }
+  .pricing-card ul {
+    list-style: none;
+    text-align: left;
+    margin-bottom: 24px;
+  }
+  .pricing-card ul li {
+    padding: 8px 0;
+    font-size: 0.85rem;
+    color: var(--text-secondary);
+    border-bottom: 1px solid rgba(255,255,255,0.04);
+  }
+  .pricing-card ul li::before {
+    content: '✓ ';
+    color: var(--gold);
+    font-weight: 700;
+  }
+  .pricing-card .btn { width: 100%; justify-content: center; }
+
+  /* ---- ACCURACY BADGE ---- */
+  .accuracy-section {
+    padding: 60px 24px;
+    text-align: center;
+    position: relative;
+    z-index: 1;
+  }
+  .accuracy-card {
+    display: inline-block;
+    background: var(--card-bg);
+    border: 1px solid rgba(99, 179, 237, 0.25);
+    border-radius: var(--radius-lg);
+    padding: 36px 48px;
+    max-width: 700px;
+  }
+  .accuracy-card .shield-icon {
+    font-size: 2rem;
+    color: #63b3ed;
+    margin-bottom: 16px;
+  }
+  .accuracy-card h3 {
+    font-size: 1.3rem;
+    font-weight: 700;
+    margin-bottom: 12px;
+  }
+  .accuracy-card p {
+    color: var(--text-secondary);
+    font-size: 0.92rem;
+    line-height: 1.7;
+  }
+  .accuracy-card .verified-items {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    justify-content: center;
+    margin-top: 20px;
+  }
+  .accuracy-card .verified-tag {
+    background: rgba(99, 179, 237, 0.1);
+    border: 1px solid rgba(99, 179, 237, 0.2);
+    border-radius: 50px;
+    padding: 6px 16px;
+    font-size: 0.8rem;
+    color: #63b3ed;
+    font-weight: 500;
+  }
+
+  /* ---- BADGE ROW ---- */
+  .badge-row {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 20px;
+    flex-wrap: wrap;
+    padding: 48px 24px;
+  }
+  .oss-badge, .trust-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    background: var(--card-bg);
+    border: 1px solid var(--card-border);
+    border-radius: 50px;
+    padding: 10px 22px;
+    font-size: 0.82rem;
+    color: var(--text-secondary);
+    font-weight: 500;
+  }
+  .oss-badge .star { color: var(--gold); }
+  .trust-badge .shield { color: #63b3ed; }
+
+  /* ---- CTA SECTION ---- */
+  .cta-section {
+    text-align: center;
+    padding: 80px 24px;
+    position: relative;
+    z-index: 1;
+  }
+  .cta-section h2 {
+    font-size: clamp(1.6rem, 3vw, 2rem);
+    font-weight: 700;
+    margin-bottom: 12px;
+  }
+  .cta-section p {
+    color: var(--text-secondary);
+    margin-bottom: 28px;
+    max-width: 500px;
+    margin-left: auto;
+    margin-right: auto;
+  }
+
+  /* ---- FOOTER ---- */
+  footer {
+    border-top: 1px solid rgba(201,168,76,0.08);
+    padding: 40px 24px;
+    position: relative;
+    z-index: 1;
+  }
+  .footer-inner {
+    max-width: 1200px;
+    margin: 0 auto;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 16px;
+  }
+  .footer-inner .left {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+  }
+  .footer-inner .brand {
+    font-weight: 600;
+    color: var(--text-primary);
+    font-size: 0.9rem;
+  }
+  .footer-inner .license {
+    font-size: 0.78rem;
+    color: var(--text-muted);
+  }
+  .footer-links { display: flex; gap: 20px; }
+  .footer-links a {
+    font-size: 0.82rem;
+    color: var(--text-muted);
+    text-decoration: none;
+    transition: var(--transition);
+  }
+  .footer-links a:hover { color: var(--gold-light); }
+
+  /* ---- RESPONSIVE ---- */
+  @media (max-width: 768px) {
+    .nav-links { gap: 14px; }
+    .nav-links a { font-size: 0.8rem; }
+    .hero { padding: 60px 16px 50px; }
+    .trust-bar { gap: 16px; }
+    .inside-grid { grid-template-columns: 1fr; }
+    .steps { grid-template-columns: 1fr; }
+    .pricing-grid { grid-template-columns: 1fr; }
+    .footer-inner { flex-direction: column; text-align: center; }
+    .report-preview { grid-template-columns: 1fr; }
+    .report-cover { margin: 0 auto; }
+    .accuracy-card { padding: 28px 24px; }
+  }
+
+  @media (max-width: 480px) {
+    .nav-links a.nav-cta { padding: 6px 14px; font-size: 0.75rem; }
+    .hero-buttons { flex-direction: column; align-items: center; }
+    .btn { width: 100%; max-width: 300px; justify-content: center; }
+    .verified-items { flex-direction: column; align-items: center; }
+  }
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <div class="nav-inner">
+    <a href="landing-index.html" class="nav-logo">
+      <div class="icon">◆</div>
+      DesignEngine
+    </a>
+    <div class="nav-links">
+      <a href="landing-api.html">API</a>
+      <a href="landing-reports.html" class="active">Reports</a>
+      <a href="#pricing">Pricing</a>
+      <a href="#pricing" class="nav-cta">Get Your Report</a>
+    </div>
+  </div>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="container">
+    <div class="hero-badge">
+      <span class="dot"></span> Professionally Designed — Jargon-Free
+    </div>
+    <h1>Your <span class="gold">Human Design Blueprint</span></h1>
+    <p class="subtitle">
+      A comprehensive, jargon-free report delivered in 5 minutes. Discover your Type, Strategy, Authority, and life theme — beautifully formatted and easy to understand. $19.
+    </p>
+    <div class="hero-buttons">
+      <a href="#pricing" class="btn btn-primary">Get Your Natal Report →</a>
+      <a href="#sample" class="btn btn-outline">See a Sample →</a>
+    </div>
+  </div>
+</section>
+
+<!-- TRUST BAR -->
+<div class="trust-bar">
+  <div class="trust-item"><span class="check">✓</span> Verified accuracy — matches Neutrino Design</div>
+  <div class="trust-item"><span class="check">✓</span> 40+ page PDF, delivered by email</div>
+  <div class="trust-item"><span class="check">✓</span> Jargon-free, plain-English</div>
+  <div class="trust-item"><span class="check">✓</span> Ready in under 5 minutes</div>
+</div>
+
+<!-- WHAT'S INSIDE -->
+<section class="inside">
+  <div class="container">
+    <div class="section-header">
+      <div class="overline">What's Inside</div>
+      <h2>Everything you need to understand your design</h2>
+      <p>A complete, 40+ page deep dive into your unique Human Design chart. No prior knowledge required.</p>
+    </div>
+
+    <div class="inside-grid">
+      <div class="inside-card">
+        <div class="inside-icon">🧬</div>
+        <h4>Your Type & Strategy</h4>
+        <p>Discover whether you're a Generator, Manifesting Generator, Projector, Manifestor, or Reflector — and learn the correct strategy for making decisions that align with your energy.</p>
+      </div>
+      <div class="inside-card">
+        <div class="inside-icon">🧭</div>
+        <h4>Your Decision-Making Style</h4>
+        <p>Understand your Inner Authority — Sacral, Emotional, Splenic, Ego, Self-Projected, Environmental, or Lunar — and how to use it to navigate life with clarity and confidence.</p>
+      </div>
+      <div class="inside-card">
+        <div class="inside-icon">✨</div>
+        <h4>Your Natural Gifts</h4>
+        <p>Explore your defined Centers and activated Channels. See where your consistent energy lives — creativity, willpower, intuition, logic, emotion, identity, and more.</p>
+      </div>
+      <div class="inside-card">
+        <div class="inside-icon">🌅</div>
+        <h4>Your Life Theme</h4>
+        <p>Uncover your Incarnation Cross — the overarching theme of your life. Understand the four gate placements that shape your purpose and direction across your lifetime.</p>
+      </div>
+      <div class="inside-card">
+        <div class="inside-icon">🪞</div>
+        <h4>Where You're Open to Influence</h4>
+        <p>Identify your undefined and open Centers — the places where you absorb, amplify, and reflect the energy of others. Learn to distinguish what's yours from what you've picked up.</p>
+      </div>
+      <div class="inside-card">
+        <div class="inside-icon">📖</div>
+        <h4>Gate-by-Gate Breakdown</h4>
+        <p>A detailed walkthrough of every activated gate in your chart. Understand the specific energy of each gate — both conscious (Personality) and unconscious (Design) — with plain-English interpretations.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- HOW IT WORKS -->
+<section class="how-it-works">
+  <div class="container">
+    <div class="section-header">
+      <div class="overline">How It Works</div>
+      <h2>Three simple steps to your blueprint</h2>
+      <p>From birth details to your inbox. No account required, no recurring charges.</p>
+    </div>
+
+    <div class="steps">
+      <div class="step">
+        <div class="step-number">1</div>
+        <h4>Enter Your Birth Details</h4>
+        <p>Provide your birth date, exact time, and place of birth. The more precise your birth time, the more accurate your report — down to the minute.</p>
+      </div>
+      <div class="step">
+        <div class="step-number">2</div>
+        <h4>Secure Checkout</h4>
+        <p>Complete payment via Stripe — your data is encrypted end-to-end. No account to create, no subscription. Just a one-time purchase.</p>
+      </div>
+      <div class="step">
+        <div class="step-number">3</div>
+        <h4>PDF Delivered to Your Inbox</h4>
+        <p>Within 5 minutes, you'll receive a beautifully formatted 40+ page PDF report. Download it, print it, share it — it's yours forever.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- SAMPLE REPORT PREVIEW -->
+<section class="sample-report" id="sample">
+  <div class="container">
+    <div class="section-header">
+      <div class="overline">Sample Preview</div>
+      <h2>What your report looks like</h2>
+      <p>A professionally designed PDF with bodygraph charts, color-coded sections, and clear, accessible writing.</p>
+    </div>
+
+    <div class="report-preview">
+      <div class="report-cover">
+        <div class="cover-icon">◆</div>
+        <div class="cover-title">Human Design<br>Deep Dive</div>
+        <div class="cover-sub">Natal Report</div>
+      </div>
+      <div class="report-details">
+        <h3>Table of Contents</h3>
+        <div class="toc-item">
+          <span class="toc-num">01</span> Your Bodygraph Overview
+          <span class="toc-pages">pp. 2–5</span>
+        </div>
+        <div class="toc-item">
+          <span class="toc-num">02</span> Type & Strategy
+          <span class="toc-pages">pp. 6–9</span>
+        </div>
+        <div class="toc-item">
+          <span class="toc-num">03</span> Inner Authority
+          <span class="toc-pages">pp. 10–13</span>
+        </div>
+        <div class="toc-item">
+          <span class="toc-num">04</span> Profile (e.g., 4/6)
+          <span class="toc-pages">pp. 14–17</span>
+        </div>
+        <div class="toc-item">
+          <span class="toc-num">05</span> Defined Centers & Channels
+          <span class="toc-pages">pp. 18–25</span>
+        </div>
+        <div class="toc-item">
+          <span class="toc-num">06</span> Undefined & Open Centers
+          <span class="toc-pages">pp. 26–30</span>
+        </div>
+        <div class="toc-item">
+          <span class="toc-num">07</span> Incarnation Cross
+          <span class="toc-pages">pp. 31–35</span>
+        </div>
+        <div class="toc-item">
+          <span class="toc-num">08</span> Gate-by-Gate Interpretations
+          <span class="toc-pages">pp. 36–44</span>
+        </div>
+      </div>
+    </div>
+
+    <p style="text-align:center; margin-top:28px; color:var(--text-muted); font-size:0.88rem;">
+      Each section includes a visual bodygraph chart with callouts, plain-English explanations, and practical guidance for living your design.
+    </p>
+  </div>
+</section>
+
+<!-- PRICING -->
+<section class="pricing" id="pricing">
+  <div class="container">
+    <div class="section-header">
+      <div class="overline">Report Pricing</div>
+      <h2>One-time purchase. Yours forever.</h2>
+      <p>No subscriptions. No recurring charges. Just a beautiful report you can reference for years.</p>
+    </div>
+
+    <div class="pricing-grid">
+      <div class="pricing-card">
+        <h4>Natal Report</h4>
+        <div class="price">$19</div>
+        <p class="desc">Your complete personal Human Design blueprint.</p>
+        <ul>
+          <li>Full bodygraph computation</li>
+          <li>Type, Strategy & Authority</li>
+          <li>All 9 Centers analyzed</li>
+          <li>Channel & Gate breakdown</li>
+          <li>Incarnation Cross explanation</li>
+          <li>40+ page PDF</li>
+        </ul>
+        <a href="#" class="btn btn-outline">Get Natal Report</a>
+      </div>
+
+      <div class="pricing-card featured">
+        <h4>Synastry (Couples)</h4>
+        <div class="price">$29</div>
+        <p class="desc">Understand your relationship dynamics through Human Design.</p>
+        <ul>
+          <li>Two full bodygraph charts</li>
+          <li>Composite overlay analysis</li>
+          <li>Electromagnetic channels</li>
+          <li>Dominance & compromise zones</li>
+          <li>Communication style insights</li>
+          <li>50+ page PDF</li>
+        </ul>
+        <a href="#" class="btn btn-primary">Get Synastry Report</a>
+      </div>
+
+      <div class="pricing-card">
+        <h4>Bundle (Both)</h4>
+        <div class="price">$39</div>
+        <p class="desc">The complete package — best value.</p>
+        <ul>
+          <li>Natal Report (40+ pages)</li>
+          <li>Synastry Report (50+ pages)</li>
+          <li>Save $9 vs. buying separately</li>
+          <li>Both delivered within 5 minutes</li>
+          <li>Shareable PDF format</li>
+          <li>Lifetime access</li>
+        </ul>
+        <a href="#" class="btn btn-outline">Get Both Reports</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- VERIFIED ACCURACY -->
+<section class="accuracy-section">
+  <div class="accuracy-card">
+    <div class="shield-icon">🛡</div>
+    <h3>Verified Accuracy</h3>
+    <p>
+      Our engine matches <strong>Neutrino Design</strong> — the industry reference implementation — on every computed field. Type, Profile, Authority, Centers, Channels, Gates, and Incarnation Cross are all cross-validated against the gold standard. You're getting the real thing, not an approximation.
+    </p>
+    <div class="verified-items">
+      <span class="verified-tag">Type</span>
+      <span class="verified-tag">Strategy</span>
+      <span class="verified-tag">Authority</span>
+      <span class="verified-tag">Profile</span>
+      <span class="verified-tag">Centers</span>
+      <span class="verified-tag">Channels</span>
+      <span class="verified-tag">Gates</span>
+      <span class="verified-tag">Incarnation Cross</span>
+    </div>
+  </div>
+</section>
+
+<!-- BADGES -->
+<div class="badge-row">
+  <div class="oss-badge">
+    <span class="star">★</span> Powered by OpenHumanDesignMCP
+  </div>
+  <div class="trust-badge">
+    <span class="shield">🛡</span> Verified accuracy — matches Neutrino Design
+  </div>
+</div>
+
+<!-- CTA -->
+<section class="cta-section">
+  <div class="container">
+    <h2>Ready to discover your design?</h2>
+    <p>Your complete Human Design blueprint is waiting. Enter your birth details and get your report in minutes.</p>
+    <a href="#pricing" class="btn btn-primary">Get Your Report →</a>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-inner">
+    <div class="left">
+      <span class="brand">DesignEngine</span>
+      <span class="license">Licensed under AGPLv3. Core calculation engine is open source.</span>
+    </div>
+    <div class="footer-links">
+      <a href="landing-index.html">Home</a>
+      <a href="landing-api.html">API</a>
+      <a href="landing-reports.html">Reports</a>
+      <a href="https://github.com/nousresearch/OpenHumanDesignMCP">GitHub</a>
+      <a href="#">Docs</a>
+      <a href="#">Privacy</a>
+    </div>
+  </div>
+</footer>
+
+</body>
+</html>

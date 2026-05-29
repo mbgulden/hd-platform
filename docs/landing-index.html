@@ -1,0 +1,780 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>DesignEngine — Human Design Intelligence Platform</title>
+<style>
+  :root {
+    --navy-deep: #060d1a;
+    --navy: #0a1628;
+    --navy-mid: #0f1d36;
+    --navy-light: #162744;
+    --navy-lighter: #1e3458;
+    --gold: #c9a84c;
+    --gold-light: #e0c468;
+    --gold-bright: #d4af37;
+    --gold-soft: rgba(201, 168, 76, 0.15);
+    --gold-glow: rgba(201, 168, 76, 0.08);
+    --text-primary: #e8e6e3;
+    --text-secondary: #8899aa;
+    --text-muted: #5a6a7a;
+    --white: #ffffff;
+    --card-bg: rgba(15, 29, 54, 0.7);
+    --card-border: rgba(201, 168, 76, 0.12);
+    --radius: 12px;
+    --radius-lg: 20px;
+    --shadow: 0 4px 24px rgba(0,0,0,0.3);
+    --transition: 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
+    background: var(--navy-deep);
+    color: var(--text-primary);
+    line-height: 1.6;
+    overflow-x: hidden;
+  }
+
+  /* Subtle background texture */
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background:
+      radial-gradient(ellipse at 20% 10%, rgba(201,168,76,0.04) 0%, transparent 60%),
+      radial-gradient(ellipse at 80% 90%, rgba(201,168,76,0.03) 0%, transparent 60%),
+      radial-gradient(ellipse at 50% 50%, rgba(15,29,54,0.8) 0%, var(--navy-deep) 100%);
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  /* ---- NAV ---- */
+  nav {
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    background: rgba(6, 13, 26, 0.85);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+    border-bottom: 1px solid rgba(201,168,76,0.1);
+    padding: 0 20px;
+  }
+  .nav-inner {
+    max-width: 1200px;
+    margin: 0 auto;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    height: 64px;
+    position: relative;
+    z-index: 1;
+  }
+  .nav-logo {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 1.4rem;
+    font-weight: 700;
+    color: var(--white);
+    text-decoration: none;
+    letter-spacing: -0.02em;
+  }
+  .nav-logo .icon {
+    width: 32px; height: 32px;
+    background: linear-gradient(135deg, var(--gold-bright), var(--gold));
+    border-radius: 8px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 0.9rem;
+    color: var(--navy-deep);
+    font-weight: 900;
+  }
+  .nav-links { display: flex; gap: 28px; align-items: center; }
+  .nav-links a {
+    color: var(--text-secondary);
+    text-decoration: none;
+    font-size: 0.9rem;
+    font-weight: 500;
+    transition: var(--transition);
+  }
+  .nav-links a:hover { color: var(--gold-light); }
+  .nav-cta {
+    background: var(--gold);
+    color: var(--navy-deep) !important;
+    padding: 8px 20px;
+    border-radius: 8px;
+    font-weight: 600 !important;
+    transition: var(--transition);
+  }
+  .nav-cta:hover {
+    background: var(--gold-light);
+    transform: translateY(-1px);
+  }
+
+  /* ---- CONTAINER ---- */
+  .container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 24px;
+    position: relative;
+    z-index: 1;
+  }
+
+  /* ---- HERO ---- */
+  .hero {
+    text-align: center;
+    padding: 100px 24px 80px;
+    position: relative;
+    z-index: 1;
+  }
+  .hero-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    background: var(--gold-soft);
+    border: 1px solid rgba(201,168,76,0.25);
+    border-radius: 50px;
+    padding: 6px 18px;
+    font-size: 0.85rem;
+    color: var(--gold-light);
+    font-weight: 500;
+    margin-bottom: 28px;
+  }
+  .hero-badge .dot {
+    width: 8px; height: 8px;
+    background: var(--gold-bright);
+    border-radius: 50%;
+    animation: pulse-dot 2s infinite;
+  }
+  @keyframes pulse-dot {
+    0%, 100% { opacity: 1; transform: scale(1); }
+    50% { opacity: 0.5; transform: scale(1.4); }
+  }
+  .hero h1 {
+    font-size: clamp(2.2rem, 5vw, 3.6rem);
+    font-weight: 800;
+    letter-spacing: -0.03em;
+    line-height: 1.15;
+    margin-bottom: 20px;
+    background: linear-gradient(180deg, #ffffff 0%, #c0c8d4 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+  .hero h1 .gold { -webkit-text-fill-color: var(--gold-light); }
+  .hero p.subtitle {
+    font-size: 1.15rem;
+    color: var(--text-secondary);
+    max-width: 600px;
+    margin: 0 auto 36px;
+    line-height: 1.7;
+  }
+  .hero-buttons {
+    display: flex;
+    gap: 16px;
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+  .btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 14px 32px;
+    border-radius: 10px;
+    font-size: 0.95rem;
+    font-weight: 600;
+    text-decoration: none;
+    cursor: pointer;
+    border: none;
+    transition: var(--transition);
+    letter-spacing: -0.01em;
+  }
+  .btn-primary {
+    background: linear-gradient(135deg, var(--gold-bright), var(--gold));
+    color: var(--navy-deep);
+    box-shadow: 0 4px 20px rgba(201,168,76,0.3);
+  }
+  .btn-primary:hover {
+    box-shadow: 0 6px 30px rgba(201,168,76,0.45);
+    transform: translateY(-2px);
+  }
+  .btn-outline {
+    background: transparent;
+    color: var(--gold-light);
+    border: 1.5px solid rgba(201,168,76,0.4);
+  }
+  .btn-outline:hover {
+    background: var(--gold-soft);
+    border-color: var(--gold);
+  }
+  .btn-ghost {
+    background: transparent;
+    color: var(--text-secondary);
+    padding: 14px 24px;
+  }
+  .btn-ghost:hover { color: var(--text-primary); }
+
+  /* ---- TRUST BAR ---- */
+  .trust-bar {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 32px;
+    flex-wrap: wrap;
+    padding: 36px 24px;
+    border-top: 1px solid rgba(201,168,76,0.08);
+    border-bottom: 1px solid rgba(201,168,76,0.08);
+    margin-bottom: 80px;
+  }
+  .trust-item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 0.85rem;
+    color: var(--text-muted);
+    font-weight: 500;
+  }
+  .trust-item .check {
+    color: var(--gold);
+    font-size: 1rem;
+  }
+
+  /* ---- SECTION HEADERS ---- */
+  .section-header {
+    text-align: center;
+    margin-bottom: 56px;
+  }
+  .section-header .overline {
+    font-size: 0.8rem;
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+    color: var(--gold);
+    font-weight: 600;
+    margin-bottom: 12px;
+  }
+  .section-header h2 {
+    font-size: clamp(1.6rem, 3vw, 2.2rem);
+    font-weight: 700;
+    letter-spacing: -0.02em;
+    margin-bottom: 12px;
+  }
+  .section-header p {
+    color: var(--text-secondary);
+    font-size: 1rem;
+    max-width: 540px;
+    margin: 0 auto;
+  }
+
+  /* ---- PRODUCT CARDS ---- */
+  .products {
+    padding: 0 0 80px;
+  }
+  .product-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(340px, 1fr));
+    gap: 28px;
+  }
+  .product-card {
+    background: var(--card-bg);
+    border: 1px solid var(--card-border);
+    border-radius: var(--radius-lg);
+    padding: 40px 32px;
+    text-decoration: none;
+    color: inherit;
+    transition: var(--transition);
+    position: relative;
+    overflow: hidden;
+  }
+  .product-card::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(ellipse at 0% 0%, rgba(201,168,76,0.06) 0%, transparent 60%);
+    opacity: 0;
+    transition: var(--transition);
+  }
+  .product-card:hover {
+    border-color: rgba(201,168,76,0.35);
+    transform: translateY(-4px);
+    box-shadow: 0 12px 40px rgba(0,0,0,0.4);
+  }
+  .product-card:hover::before { opacity: 1; }
+  .product-icon {
+    width: 52px; height: 52px;
+    border-radius: 12px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 1.4rem;
+    margin-bottom: 20px;
+    position: relative;
+    z-index: 1;
+  }
+  .product-icon.api { background: rgba(99, 179, 237, 0.15); color: #63b3ed; }
+  .product-icon.reports { background: rgba(154, 230, 180, 0.15); color: #9ae6b4; }
+  .product-card h3 {
+    font-size: 1.3rem;
+    font-weight: 700;
+    margin-bottom: 8px;
+    position: relative;
+    z-index: 1;
+  }
+  .product-card p {
+    color: var(--text-secondary);
+    font-size: 0.9rem;
+    margin-bottom: 16px;
+    position: relative;
+    z-index: 1;
+  }
+  .product-card .tag {
+    display: inline-block;
+    background: var(--navy-lighter);
+    border-radius: 6px;
+    padding: 4px 12px;
+    font-size: 0.78rem;
+    color: var(--text-secondary);
+    font-weight: 500;
+    position: relative;
+    z-index: 1;
+  }
+  .product-card .arrow {
+    position: absolute;
+    bottom: 28px;
+    right: 28px;
+    font-size: 1.2rem;
+    color: var(--gold);
+    transition: var(--transition);
+  }
+  .product-card:hover .arrow { transform: translateX(4px); }
+
+  /* ---- FEATURES ---- */
+  .features {
+    padding: 80px 0;
+  }
+  .features-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+    gap: 24px;
+  }
+  .feature-card {
+    background: var(--card-bg);
+    border: 1px solid var(--card-border);
+    border-radius: var(--radius);
+    padding: 28px 24px;
+    transition: var(--transition);
+  }
+  .feature-card:hover {
+    border-color: rgba(201,168,76,0.25);
+    box-shadow: 0 6px 24px rgba(0,0,0,0.25);
+  }
+  .feature-icon {
+    width: 40px; height: 40px;
+    border-radius: 10px;
+    background: var(--gold-soft);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 1.1rem;
+    margin-bottom: 16px;
+  }
+  .feature-card h4 {
+    font-size: 1rem;
+    font-weight: 600;
+    margin-bottom: 6px;
+  }
+  .feature-card p {
+    font-size: 0.85rem;
+    color: var(--text-muted);
+    line-height: 1.6;
+  }
+
+  /* ---- PRICING ---- */
+  .pricing {
+    padding: 80px 0;
+    background: rgba(10,22,40,0.5);
+  }
+  .pricing-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 24px;
+    max-width: 900px;
+    margin: 0 auto;
+  }
+  .pricing-card {
+    background: var(--card-bg);
+    border: 1px solid var(--card-border);
+    border-radius: var(--radius-lg);
+    padding: 36px 28px;
+    text-align: center;
+    transition: var(--transition);
+    position: relative;
+  }
+  .pricing-card.featured {
+    border-color: rgba(201,168,76,0.35);
+    box-shadow: 0 0 0 1px rgba(201,168,76,0.2), 0 8px 40px rgba(201,168,76,0.08);
+  }
+  .pricing-card.featured::after {
+    content: 'Most Popular';
+    position: absolute;
+    top: -12px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: var(--gold);
+    color: var(--navy-deep);
+    font-size: 0.72rem;
+    font-weight: 700;
+    padding: 4px 16px;
+    border-radius: 50px;
+    letter-spacing: 0.03em;
+  }
+  .pricing-card h4 {
+    font-size: 1.1rem;
+    font-weight: 600;
+    margin-bottom: 12px;
+  }
+  .pricing-card .price {
+    font-size: 2.2rem;
+    font-weight: 800;
+    margin-bottom: 4px;
+    letter-spacing: -0.02em;
+  }
+  .pricing-card .price span {
+    font-size: 0.9rem;
+    font-weight: 500;
+    color: var(--text-muted);
+  }
+  .pricing-card .desc {
+    font-size: 0.85rem;
+    color: var(--text-muted);
+    margin-bottom: 20px;
+  }
+  .pricing-card ul {
+    list-style: none;
+    text-align: left;
+    margin-bottom: 24px;
+  }
+  .pricing-card ul li {
+    padding: 8px 0;
+    font-size: 0.85rem;
+    color: var(--text-secondary);
+    border-bottom: 1px solid rgba(255,255,255,0.04);
+  }
+  .pricing-card ul li::before {
+    content: '✓ ';
+    color: var(--gold);
+    font-weight: 700;
+  }
+  .pricing-card .btn { width: 100%; justify-content: center; }
+
+  /* ---- BADGE ROW ---- */
+  .badge-row {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 20px;
+    flex-wrap: wrap;
+    padding: 48px 24px;
+  }
+  .oss-badge, .trust-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    background: var(--card-bg);
+    border: 1px solid var(--card-border);
+    border-radius: 50px;
+    padding: 10px 22px;
+    font-size: 0.82rem;
+    color: var(--text-secondary);
+    font-weight: 500;
+  }
+  .oss-badge .star { color: var(--gold); }
+  .trust-badge .shield { color: #63b3ed; }
+
+  /* ---- CTA SECTION ---- */
+  .cta-section {
+    text-align: center;
+    padding: 80px 24px;
+    position: relative;
+    z-index: 1;
+  }
+  .cta-section h2 {
+    font-size: clamp(1.6rem, 3vw, 2rem);
+    font-weight: 700;
+    margin-bottom: 12px;
+  }
+  .cta-section p {
+    color: var(--text-secondary);
+    margin-bottom: 28px;
+    max-width: 500px;
+    margin-left: auto;
+    margin-right: auto;
+  }
+
+  /* ---- FOOTER ---- */
+  footer {
+    border-top: 1px solid rgba(201,168,76,0.08);
+    padding: 40px 24px;
+    position: relative;
+    z-index: 1;
+  }
+  .footer-inner {
+    max-width: 1200px;
+    margin: 0 auto;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 16px;
+  }
+  .footer-inner .left {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+  }
+  .footer-inner .brand {
+    font-weight: 600;
+    color: var(--text-primary);
+    font-size: 0.9rem;
+  }
+  .footer-inner .license {
+    font-size: 0.78rem;
+    color: var(--text-muted);
+  }
+  .footer-links { display: flex; gap: 20px; }
+  .footer-links a {
+    font-size: 0.82rem;
+    color: var(--text-muted);
+    text-decoration: none;
+    transition: var(--transition);
+  }
+  .footer-links a:hover { color: var(--gold-light); }
+
+  /* ---- RESPONSIVE ---- */
+  @media (max-width: 768px) {
+    .nav-links { gap: 14px; }
+    .nav-links a { font-size: 0.8rem; }
+    .hero { padding: 60px 16px 50px; }
+    .trust-bar { gap: 16px; }
+    .product-grid { grid-template-columns: 1fr; }
+    .features-grid { grid-template-columns: 1fr; }
+    .pricing-grid { grid-template-columns: 1fr; }
+    .footer-inner { flex-direction: column; text-align: center; }
+  }
+
+  @media (max-width: 480px) {
+    .nav-links a.nav-cta { padding: 6px 14px; font-size: 0.75rem; }
+    .hero-buttons { flex-direction: column; align-items: center; }
+    .btn { width: 100%; max-width: 300px; justify-content: center; }
+  }
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <div class="nav-inner">
+    <a href="landing-index.html" class="nav-logo">
+      <div class="icon">◆</div>
+      DesignEngine
+    </a>
+    <div class="nav-links">
+      <a href="landing-api.html">API</a>
+      <a href="landing-reports.html">Reports</a>
+      <a href="#pricing">Pricing</a>
+      <a href="landing-api.html" class="nav-cta">Get Started</a>
+    </div>
+  </div>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="container">
+    <div class="hero-badge">
+      <span class="dot"></span> Powered by OpenHumanDesignMCP
+    </div>
+    <h1>Human Design Intelligence<br>for the <span class="gold">Modern Platform</span></h1>
+    <p class="subtitle">
+      The unified platform for Human Design computation. Access verified chart data via REST API or download beautiful deep-dive reports — all backed by open-source, peer-reviewed calculation engines.
+    </p>
+    <div class="hero-buttons">
+      <a href="landing-api.html" class="btn btn-primary">Explore the API →</a>
+      <a href="landing-reports.html" class="btn btn-outline">Get Your Report →</a>
+      <a href="#products" class="btn btn-ghost">Learn More ↓</a>
+    </div>
+  </div>
+</section>
+
+<!-- TRUST BAR -->
+<div class="trust-bar">
+  <div class="trust-item"><span class="check">✓</span> Verified accuracy</div>
+  <div class="trust-item"><span class="check">✓</span> AGPLv3 open-source core</div>
+  <div class="trust-item"><span class="check">✓</span> Peer-reviewed algorithms</div>
+  <div class="trust-item"><span class="check">✓</span> SOC 2 compliant infrastructure</div>
+</div>
+
+<!-- PRODUCTS -->
+<section class="products" id="products">
+  <div class="container">
+    <div class="section-header">
+      <div class="overline">Our Products</div>
+      <h2>Two ways to access Human Design intelligence</h2>
+      <p>Whether you're building an app that needs chart data at scale, or you want a beautifully formatted personal report — we've got you covered.</p>
+    </div>
+
+    <div class="product-grid">
+      <!-- API Card -->
+      <a href="landing-api.html" class="product-card">
+        <div class="product-icon api">⚡</div>
+        <h3>HD Cloud API</h3>
+        <p>The first production-grade Human Design REST API. Compute bodygraphs, extract gates and channels, generate transit data, and integrate verified chart calculations into your own applications.</p>
+        <span class="tag">Developer Platform</span>
+        <span class="arrow">→</span>
+      </a>
+
+      <!-- Reports Card -->
+      <a href="landing-reports.html" class="product-card">
+        <div class="product-icon reports">📊</div>
+        <h3>Deep Dive Reports</h3>
+        <p>Your complete Human Design blueprint — a professionally formatted, 40+ page deep-dive report covering Type, Strategy, Authority, Profile, Centers, Channels, Gates, and Incarnation Cross.</p>
+        <span class="tag">Personal Report</span>
+        <span class="arrow">→</span>
+      </a>
+    </div>
+  </div>
+</section>
+
+<!-- FEATURES -->
+<section class="features">
+  <div class="container">
+    <div class="section-header">
+      <div class="overline">Why DesignEngine</div>
+      <h2>Built for accuracy, speed, and scale</h2>
+      <p>Every calculation runs through verified, open-source algorithms — not black-box approximations. Integrate with confidence.</p>
+    </div>
+
+    <div class="features-grid">
+      <div class="feature-card">
+        <div class="feature-icon">🔬</div>
+        <h4>Verified Calculations</h4>
+        <p>Every bodygraph, gate, and channel is computed using peer-reviewed algorithms from the OpenHumanDesignMCP project. No guesswork, no shortcuts.</p>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon">⚡</div>
+        <h4>Sub-Second Responses</h4>
+        <p>Chart computations return in under 300ms. Built on a distributed compute layer that scales horizontally to handle any volume.</p>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon">🔐</div>
+        <h4>Enterprise-Grade Security</h4>
+        <p>SOC 2 compliant infrastructure with encryption at rest and in transit. API keys with fine-grained permissions and usage quotas.</p>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon">📖</div>
+        <h4>Open Documentation</h4>
+        <p>Interactive API docs with code samples in Python, JavaScript, Ruby, and cURL. Every endpoint documented with real request/response examples.</p>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon">🔄</div>
+        <h4>Transit & Synastry</h4>
+        <p>Compute current planetary transits, synastry overlays, and composite charts. Real-time ephemeris data, always up to date.</p>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon">🎨</div>
+        <h4>Beautiful Reports</h4>
+        <p>Download professionally designed PDF reports with charts, tables, and plain-English interpretation. White-label ready for your brand.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- PRICING -->
+<section class="pricing" id="pricing">
+  <div class="container">
+    <div class="section-header">
+      <div class="overline">Pricing</div>
+      <h2>Start free, scale as you grow</h2>
+      <p>From hobbyists to high-volume platforms — choose the plan that fits your needs.</p>
+    </div>
+
+    <div class="pricing-grid">
+      <div class="pricing-card">
+        <h4>Hobbyist</h4>
+        <div class="price">Free<span>/month</span></div>
+        <p class="desc">Perfect for learning and personal projects.</p>
+        <ul>
+          <li>100 API calls / month</li>
+          <li>Basic chart endpoints</li>
+          <li>Community support</li>
+          <li>API documentation access</li>
+        </ul>
+        <a href="landing-api.html" class="btn btn-outline">Get Started</a>
+      </div>
+
+      <div class="pricing-card featured">
+        <h4>Professional</h4>
+        <div class="price">$49<span>/month</span></div>
+        <p class="desc">For apps and growing platforms.</p>
+        <ul>
+          <li>10,000 API calls / month</li>
+          <li>All chart + transit endpoints</li>
+          <li>Email support</li>
+          <li>99.5% uptime SLA</li>
+          <li>Webhook integrations</li>
+        </ul>
+        <a href="landing-api.html" class="btn btn-primary">Start Free Trial</a>
+      </div>
+
+      <div class="pricing-card">
+        <h4>Enterprise</h4>
+        <div class="price">Custom</div>
+        <p class="desc">High-volume, custom integrations.</p>
+        <ul>
+          <li>Unlimited API calls</li>
+          <li>Dedicated infrastructure</li>
+          <li>Priority support (Slack)</li>
+          <li>99.99% uptime SLA</li>
+          <li>Custom contract & billing</li>
+        </ul>
+        <a href="landing-api.html" class="btn btn-outline">Contact Sales</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- BADGES -->
+<div class="badge-row">
+  <div class="oss-badge">
+    <span class="star">★</span> Powered by OpenHumanDesignMCP
+  </div>
+  <div class="trust-badge">
+    <span class="shield">🛡</span> Verified accuracy — peer-reviewed algorithms
+  </div>
+</div>
+
+<!-- CTA -->
+<section class="cta-section">
+  <div class="container">
+    <h2>Ready to integrate Human Design?</h2>
+    <p>Get your free API key in under 30 seconds and start computing verified chart data today.</p>
+    <a href="landing-api.html" class="btn btn-primary btn-lg">Get Your API Key →</a>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-inner">
+    <div class="left">
+      <span class="brand">DesignEngine</span>
+      <span class="license">Licensed under AGPLv3. Core calculation engine is open source.</span>
+    </div>
+    <div class="footer-links">
+      <a href="landing-api.html">API</a>
+      <a href="landing-reports.html">Reports</a>
+      <a href="#">Docs</a>
+      <a href="#">Privacy</a>
+    </div>
+  </div>
+</footer>
+
+</body>
+</html>
