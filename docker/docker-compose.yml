@@ -1,0 +1,92 @@
+services:
+  traefik:
+    image: traefik:v3.1
+    command:
+      - "--api.insecure=false"
+      - "--providers.docker=true"
+      - "--entrypoints.web.address=:80"
+      - "--entrypoints.websecure.address=:443"
+      - "--certificatesresolvers.letsencrypt.acme.tlschallenge=true"
+      - "--certificatesresolvers.letsencrypt.acme.email=admin@hdapi.io"
+      - "--certificatesresolvers.letsencrypt.acme.storage=/letsencrypt/acme.json"
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - "/var/run/docker.sock:/var/run/docker.sock:ro"
+      - "./data/letsencrypt:/letsencrypt"
+    networks:
+      - hd-platform
+    restart: unless-stopped
+
+  api:
+    build: ./api
+    environment:
+      - DATABASE_URL=postgresql://hduser:${DB_PASSWORD}@postgres:5432/hdplatform
+      - REDIS_URL=redis://redis:6379/0
+      - STRIPE_SECRET_KEY=${STRIPE_SECRET_KEY}
+      - STRIPE_WEBHOOK_SECRET=${STRIPE_WEBHOOK_SECRET}
+      - GEMINI_API_KEY=${GEMINI_API_KEY}
+      - MCP_SERVER_URL=http://mcp-engine:8765
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.api.rule=Host(`api.hdapi.io`)"
+      - "traefik.http.routers.api.entrypoints=websecure"
+      - "traefik.http.routers.api.tls.certresolver=letsencrypt"
+    depends_on:
+      - postgres
+      - redis
+      - mcp-engine
+    networks:
+      - hd-platform
+    restart: unless-stopped
+
+  mcp-engine:
+    build:
+      context: ../OpenHumanDesignMCP
+      dockerfile: Dockerfile
+    volumes:
+      - "./data/ephemeris:/app/ephemeris"
+    networks:
+      - hd-platform
+    restart: unless-stopped
+
+  reports-worker:
+    build: ./reports
+    environment:
+      - DATABASE_URL=postgresql://hduser:${DB_PASSWORD}@postgres:5432/hdplatform
+      - REDIS_URL=redis://redis:6379/0
+      - GEMINI_API_KEY=${GEMINI_API_KEY}
+      - RESEND_API_KEY=${RESEND_API_KEY}
+      - MCP_SERVER_URL=http://mcp-engine:8765
+    depends_on:
+      - postgres
+      - redis
+      - mcp-engine
+    networks:
+      - hd-platform
+    restart: unless-stopped
+
+  postgres:
+    image: postgres:16-alpine
+    environment:
+      - POSTGRES_USER=hduser
+      - POSTGRES_PASSWORD=${DB_PASSWORD}
+      - POSTGRES_DB=hdplatform
+    volumes:
+      - "./data/postgres:/var/lib/postgresql/data"
+    networks:
+      - hd-platform
+    restart: unless-stopped
+
+  redis:
+    image: redis:7-alpine
+    volumes:
+      - "./data/redis:/data"
+    networks:
+      - hd-platform
+    restart: unless-stopped
+
+networks:
+  hd-platform:
+    driver: bridge
