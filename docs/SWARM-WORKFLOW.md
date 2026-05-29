@@ -3,25 +3,27 @@
 ## The Three-Layer Architecture
 
 ```
-┌─────────────────────────────────────────────────┐
-│                  LINEAR                         │
-│  Task Ledger — every task has an issue          │
-│  Labels route work: agent:jules, agent:agy, etc │
-└──────────────────┬──────────────────────────────┘
+┌──────────────────────────────────────────────────────────────┐
+│                         LINEAR                              │
+│  Task Ledger — every task has an issue                       │
+│  Labels route work: agent:jules, agent:agy, agent:chatgpt55 │
+└──────────────────┬───────────────────────────────────────────┘
                    │
-    ┌──────────────┼──────────────┐
-    ▼              ▼              ▼
-┌─────────┐  ┌──────────┐  ┌──────────────┐
-│  JULES  │  │   AGY    │  │ HERMES/FRED  │
-│  Coder  │  │Research  │  │ Orchestrator │
-└────┬────┘  └────┬─────┘  └──────┬───────┘
-     │            │               │
-     ▼            ▼               ▼
-┌─────────────────────────────────────────────────┐
-│                 GITHUB                          │
-│  Code + PRs + Reviews — the durable ledger      │
-│  Feature branches per Linear issue              │
-└─────────────────────────────────────────────────┘
+    ┌──────────────┼──────────────┬──────────────┐
+    ▼              ▼              ▼              ▼
+┌─────────┐  ┌──────────┐  ┌───────────┐  ┌──────────────┐
+│  JULES  │  │   AGY    │  │CHATGPT5.5 │  │ HERMES/FRED  │
+│  Coder  │  │Research  │  │ Reviewer  │  │ Orchestrator │
+│ 300/day │  │ +Vision  │  │ +Auditor  │  │              │
+└────┬────┘  └────┬─────┘  └─────┬─────┘  └──────┬───────┘
+     │            │              │                │
+     ▼            ▼              ▼                ▼
+┌──────────────────────────────────────────────────────────────┐
+│                       GITHUB                                 │
+│  Code + PRs + Reviews — the durable ledger                   │
+│  Feature branches per Linear issue                           │
+│  Branch discipline enforced for ALL agents                   │
+└──────────────────────────────────────────────────────────────┘
 ```
 
 ## Repo Map — Which Linear Project → Which GitHub Repo
@@ -36,13 +38,34 @@
 | Project Honeybadger | `mbgulden/hd-platform` | `hd-platform` |
 | AI Consulting | `mbgulden/ai-consulting` | `ai-consulting` |
 
-## Branch Convention
+## Branch Convention (ALL Agents — Mandatory)
 
-Every task uses a feature branch named after its Linear issue:
+Every agent MUST create a feature branch before modifying any file:
 
 ```
 gro-XX/brief-description
 ```
+
+**How each agent enforces this:**
+
+| Agent | Branch Method |
+|-------|--------------|
+| **Jules** | Auto-creates branch on `jules new` |
+| **AGY** | Prompt includes: "First, run: `source ops/branch-discipline.sh <repo> <ISSUE> <desc>`" |
+| **Fred (Hermes)** | Runs `ops/branch-discipline.py` before any `write_file`/`patch` call |
+| **ChatGPT5.5** | Prompt includes: "First, create branch: `git checkout -b <issue>/<desc>`" |
+
+**The branch-discipline script** (`ops/branch-discipline.py`):
+- Checks if already on a feature branch → no-op
+- If on `main`: stashes changes, pulls latest, creates `gro-XX/description` branch, pops stash
+- Safe to call repeatedly — idempotent
+
+```bash
+# Before any file edits:
+python3 /home/ubuntu/work/agentic-swarm-ops/ops/branch-discipline.py hd-platform GRO-123 "fix payment bug"
+```
+
+**Why:** Prevents Fred, AGY, and Jules from editing the same files simultaneously. Each agent works in its own branch. Conflicts are resolved at PR time through the review pipeline.
 
 Examples:
 - `gro-100/weekly-podcast-automation`
@@ -92,12 +115,68 @@ To request a Jules review of completed work:
 
 ## Agent Role Matrix
 
-| Agent | Best For | How to Invoke |
-|-------|----------|---------------|
-| **Jules** | Coding, PRs, docs, tests, refactors, security audits | Label `agent:jules` on Linear |
-| **AGY** | Research, Google Docs analysis, broad synthesis, vision | Label `agent:agy` on Linear |
-| **Hermes/Fred** | Orchestration, planning, validation, cross-agent coordination | Default — no label needed |
-| **Codex** | Local interactive debugging, conflict resolution, review | Label `agent:codex` on Linear |
+| Agent | Profile/CLI | Best For | How to Invoke | Fallback |
+|-------|-----------|----------|---------------|----------|
+| **Jules** | `jules` CLI | Coding, PRs, docs, tests, refactors | Label `agent:jules` on Linear | — |
+| **AGY** | `agy` CLI (PTY mode) | Research, Google Docs analysis, vision, broad synthesis, Drive/Takeout extraction | Label `agent:agy` on Linear or `/goal` prompt | — |
+| **ChatGPT5.5** | `codex-5-5` profile | **Code Review + Security Audit**: Reviews PRs for correctness, security, style. Audits codebases. Provides proactive improvement advice. Second set of eyes after Jules completes work. | Label `agent:chatgpt55` on Linear | deepseek-v4-flash (3hr token refresh) |
+| **Hermes/Fred** | `orchestrator` profile | Orchestration, planning, validation, cross-agent coordination, direct file edits | Default — no label needed | deepseek-v4-flash |
+
+## AGY — Research & Vision Agent
+
+**Role:** Broad research, document analysis, vision tasks, and long-running synthesis.
+
+**Strengths:**
+- Google Docs/Drive analysis and extraction
+- Google Takeout archive processing
+- Multi-document cross-referencing
+- Vision/pipeline tasks (screenshots, diagrams)
+- Long-running research sessions (--print-timeout)
+
+**How to assign:**
+1. Add label `agent:agy` to a Linear issue with a clear research question
+2. Or launch directly: `agy --print '/goal Research: <topic>' --print-timeout 600s`
+3. AGY writes artifacts to the repo (with branch discipline)
+4. Hermes/Fred picks up the artifact for next steps
+
+**Branch discipline:** AGY prompts include: `source /home/ubuntu/work/agentic-swarm-ops/ops/branch-discipline.sh <repo> <ISSUE>`
+
+## ChatGPT5.5 — Code Reviewer & Security Auditor
+
+**Role:** Reviews code, audits for security issues, and provides proactive improvement suggestions.
+
+**Strengths:**
+- PR review with detailed feedback
+- Security vulnerability scanning
+- Code quality and style assessment
+- Architecture and design pattern review
+- Proactive advice: "I noticed X could be improved by Y"
+
+**Token limit:** ~3-hour refresh cycle. When tokens exhausted, falls back to deepseek-v4-flash automatically.
+
+**How to assign:**
+1. Add label `agent:chatgpt55` to a Linear issue with an open PR
+2. ChatGPT5.5 reviews the PR diff and posts findings as Linear comments
+3. Or launch the `codex-5-5` profile: `hermes -p codex-5-5 -z "Review PR #X in repo Y"`
+
+**Review workflow:**
+```
+Jules completes PR → add label agent:chatgpt55
+    ↓
+ChatGPT5.5 reviews diff, checks:
+  - Logic correctness
+  - Security (credentials, injection, auth)
+  - Code style and patterns
+  - Test coverage
+    ↓
+Posts review with: ✅ Approved / ⚠️ Changes Requested / 🔴 Blocked
+    ↓
+If approved → PR auto-merger merges
+If changes requested → Jules revises
+If blocked → Hermes/Fred investigates
+```
+
+**Proactive mode:** ChatGPT5.5 periodically scans repos for improvement opportunities and files issues or suggestions without being asked.
 
 ## Jules Capacity & Limits
 
