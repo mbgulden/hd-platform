@@ -1,0 +1,506 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>The 9 Centers of Human Design — Complete Guide | Human Design Engine</title>
+<meta name="description" content="Explore all 9 Human Design centers. Each center explained with function, gates, channels, and the difference between defined and undefined. Comprehensive center reference from Human Design Engine.">
+<meta name="keywords" content="Human Design centers, 9 centers, Head Center, Ajna, Throat, G Center, Heart, Sacral, Spleen, Solar Plexus, Root, bodygraph, defined, undefined, Human Design Engine">
+<link rel="canonical" href="https://humandesignengine.com/human-design/centers/">
+<meta property="og:title" content="The 9 Centers of Human Design — Complete Guide | Human Design Engine">
+<meta property="og:description" content="Explore every Human Design center with detailed explanations. Learn about defined vs. undefined, gates, channels, and functions for all 9 centers.">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://humandesignengine.com/human-design/centers/">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="The 9 Centers of Human Design — Complete Guide">
+<meta name="twitter:description" content="Complete reference for all 9 Human Design centers with functions, gates, and channels.">
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "CollectionPage",
+  "name": "The 9 Centers of Human Design",
+  "description": "A complete guide to all 9 centers in the Human Design bodygraph, including functions, gates, channels, and the difference between defined and undefined states.",
+  "url": "https://humandesignengine.com/human-design/centers/",
+  "publisher": { "@type": "Organization", "name": "Human Design Engine", "url": "https://humandesignengine.com" }
+}
+</script>
+<style>
+  :root {
+    --navy-deep: #060d1a;
+    --navy: #0a1628;
+    --navy-mid: #0f1d36;
+    --navy-light: #162744;
+    --navy-lighter: #1e3458;
+    --gold: #c9a84c;
+    --gold-light: #e0c468;
+    --gold-bright: #d4af37;
+    --gold-soft: rgba(201, 168, 76, 0.15);
+    --gold-glow: rgba(201, 168, 76, 0.08);
+    --text-primary: #e8e6e3;
+    --text-secondary: #8899aa;
+    --text-muted: #5a6a7a;
+    --white: #ffffff;
+    --card-bg: rgba(15, 29, 54, 0.7);
+    --card-border: rgba(201, 168, 76, 0.12);
+    --radius: 12px;
+    --radius-lg: 20px;
+    --shadow: 0 4px 24px rgba(0,0,0,0.3);
+    --transition: 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
+    background: var(--navy-deep);
+    color: var(--text-primary);
+    line-height: 1.7;
+    overflow-x: hidden;
+  }
+
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background:
+      radial-gradient(ellipse at 20% 10%, rgba(201,168,76,0.04) 0%, transparent 60%),
+      radial-gradient(ellipse at 80% 90%, rgba(201,168,76,0.03) 0%, transparent 60%),
+      radial-gradient(ellipse at 50% 50%, rgba(15,29,54,0.8) 0%, var(--navy-deep) 100%);
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  nav {
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    background: rgba(6, 13, 26, 0.85);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+    border-bottom: 1px solid rgba(201,168,76,0.1);
+    padding: 0 20px;
+  }
+  .nav-inner {
+    max-width: 1200px;
+    margin: 0 auto;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    height: 64px;
+    position: relative;
+    z-index: 1;
+  }
+  .nav-logo {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 1.25rem;
+    font-weight: 700;
+    color: var(--white);
+    text-decoration: none;
+    letter-spacing: -0.02em;
+  }
+  .nav-logo .icon {
+    width: 32px; height: 32px;
+    background: linear-gradient(135deg, var(--gold-bright), var(--gold));
+    border-radius: 8px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 0.85rem;
+    color: var(--navy-deep);
+    font-weight: 900;
+  }
+  .nav-links { display: flex; gap: 24px; align-items: center; }
+  .nav-links a {
+    color: var(--text-secondary);
+    text-decoration: none;
+    font-size: 0.88rem;
+    font-weight: 500;
+    transition: var(--transition);
+  }
+  .nav-links a:hover { color: var(--gold-light); }
+
+  .container {
+    max-width: 900px;
+    margin: 0 auto;
+    padding: 0 24px;
+    position: relative;
+    z-index: 1;
+  }
+
+  .breadcrumb {
+    padding: 18px 0;
+    font-size: 0.82rem;
+    color: var(--text-muted);
+  }
+  .breadcrumb a {
+    color: var(--gold);
+    text-decoration: none;
+    transition: var(--transition);
+  }
+  .breadcrumb a:hover { color: var(--gold-light); }
+  .breadcrumb span { margin: 0 6px; }
+
+  .hero {
+    text-align: center;
+    padding: 48px 24px 40px;
+  }
+  .hero-icon {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 88px;
+    height: 88px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, rgba(201,168,76,0.2), rgba(201,168,76,0.08));
+    border: 2px solid rgba(201,168,76,0.35);
+    font-size: 2rem;
+    color: var(--gold-light);
+    margin-bottom: 20px;
+  }
+  .hero h1 {
+    font-size: clamp(1.8rem, 4vw, 2.6rem);
+    font-weight: 800;
+    letter-spacing: -0.03em;
+    line-height: 1.2;
+    margin-bottom: 12px;
+    background: linear-gradient(180deg, #ffffff 0%, #c0c8d4 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+  .hero .subtitle {
+    font-size: 1.05rem;
+    color: var(--text-secondary);
+    max-width: 560px;
+    margin: 0 auto;
+  }
+
+  .info-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 16px;
+    margin-bottom: 48px;
+  }
+  .info-card {
+    background: var(--card-bg);
+    border: 1px solid var(--card-border);
+    border-radius: var(--radius);
+    padding: 20px 18px;
+    text-align: center;
+  }
+  .info-card .label {
+    font-size: 0.72rem;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: var(--gold);
+    font-weight: 600;
+    margin-bottom: 6px;
+  }
+  .info-card .value {
+    font-size: 1rem;
+    font-weight: 600;
+    color: var(--text-primary);
+  }
+
+  .content {
+    background: var(--card-bg);
+    border: 1px solid var(--card-border);
+    border-radius: var(--radius-lg);
+    padding: 40px 36px;
+    margin-bottom: 48px;
+  }
+  .content h2 {
+    font-size: 1.5rem;
+    font-weight: 700;
+    margin-bottom: 20px;
+    color: var(--white);
+    letter-spacing: -0.02em;
+  }
+  .content h3 {
+    font-size: 1.15rem;
+    font-weight: 600;
+    color: var(--gold-light);
+    margin: 32px 0 14px;
+    letter-spacing: -0.01em;
+  }
+  .content p {
+    font-size: 1rem;
+    color: var(--text-secondary);
+    line-height: 1.75;
+    margin-bottom: 16px;
+  }
+  .content .highlight {
+    color: var(--gold-light);
+    font-weight: 500;
+  }
+  .content ul {
+    list-style: none;
+    padding: 0;
+    margin: 12px 0;
+  }
+  .content ul li {
+    padding: 8px 0;
+    font-size: 0.92rem;
+    color: var(--text-secondary);
+    border-bottom: 1px solid rgba(255,255,255,0.04);
+  }
+  .content ul li:before {
+    content: "▸ ";
+    color: var(--gold);
+  }
+  .content ul li a {
+    color: var(--gold-light);
+    text-decoration: none;
+  }
+  .content ul li a:hover { text-decoration: underline; }
+
+  .nav-footer {
+    display: flex;
+    justify-content: space-between;
+    padding: 20px 0 60px;
+  }
+  .nav-footer a {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    color: var(--gold);
+    text-decoration: none;
+    font-weight: 500;
+    font-size: 0.92rem;
+    transition: var(--transition);
+    padding: 10px 18px;
+    background: var(--card-bg);
+    border: 1px solid var(--card-border);
+    border-radius: var(--radius);
+  }
+  .nav-footer a:hover {
+    color: var(--gold-light);
+    border-color: rgba(201,168,76,0.3);
+  }
+
+  footer {
+    text-align: center;
+    padding: 40px 24px 60px;
+    color: var(--text-muted);
+    font-size: 0.82rem;
+    border-top: 1px solid rgba(255,255,255,0.04);
+  }
+  footer a { color: var(--gold); text-decoration: none; }
+  footer a:hover { color: var(--gold-light); }
+
+
+  .page-header {
+    text-align: center;
+    padding: 60px 24px 48px;
+  }
+  .page-header h1 {
+    font-size: clamp(2rem, 5vw, 3rem);
+    font-weight: 800;
+    letter-spacing: -0.03em;
+    line-height: 1.2;
+    margin-bottom: 16px;
+    background: linear-gradient(180deg, #ffffff 0%, #c0c8d4 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+  .page-header p {
+    font-size: 1.1rem;
+    color: var(--text-secondary);
+    max-width: 640px;
+    margin: 0 auto;
+  }
+
+  .center-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 20px;
+    margin-bottom: 60px;
+  }
+
+  .center-card {
+    background: var(--card-bg);
+    border: 1px solid var(--card-border);
+    border-radius: var(--radius-lg);
+    padding: 28px 24px;
+    text-decoration: none;
+    transition: var(--transition);
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+  }
+  .center-card:hover {
+    border-color: rgba(201,168,76,0.3);
+    transform: translateY(-2px);
+    box-shadow: 0 8px 32px rgba(201,168,76,0.08);
+  }
+  .center-number {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 48px;
+    height: 48px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, rgba(201,168,76,0.2), rgba(201,168,76,0.06));
+    border: 1.5px solid rgba(201,168,76,0.3);
+    font-size: 1.1rem;
+    font-weight: 700;
+    color: var(--gold-light);
+  }
+  .center-card h3 {
+    font-size: 1.2rem;
+    font-weight: 700;
+    color: var(--white);
+    letter-spacing: -0.01em;
+  }
+  .center-function {
+    font-size: 0.85rem;
+    color: var(--text-muted);
+    line-height: 1.5;
+  }
+  .center-meta {
+    display: flex;
+    gap: 16px;
+    font-size: 0.78rem;
+    color: var(--gold);
+    font-weight: 500;
+  }
+  .center-gates {
+    font-size: 0.8rem;
+    color: var(--text-muted);
+    line-height: 1.5;
+  }
+</style>
+</head>
+<body>
+
+<nav>
+  <div class="nav-inner">
+    <a class="nav-logo" href="/">
+      <span class="icon">HD</span>
+      Human Design Engine
+    </a>
+    <div class="nav-links">
+      <a href="/human-design/gates/">Gates</a>
+      <a href="/human-design/channels/">Channels</a>
+      <a href="/human-design/centers/">Centers</a>
+    </div>
+  </div>
+</nav>
+
+<div class="container">
+
+  <div class="breadcrumb">
+    <a href="/">Home</a> <span>›</span>
+    Centers
+  </div>
+
+  <div class="page-header">
+    <h1>The 9 Centers of Human Design</h1>
+    <p>Every Human Design bodygraph contains 9 geometric centers. Some are defined (colored in), others are undefined (white). Defined centers represent consistent, reliable energy — your inherent gifts and fixed way of operating. Undefined centers are where you take in, amplify, and gain wisdom from the world around you.</p>
+  </div>
+
+  <div class="center-grid">
+
+    <a href="/human-design/centers/head/" class="center-card">
+      <div class="center-number">61</div>
+      <h3>Head Center</h3>
+      <p class="center-function">Pressure center — generates questions, inspiration, and mental pressure...</p>
+      <div class="center-meta">
+        <span>3 gates</span>
+        <span>3 channels</span>
+      </div>
+      <div class="center-gates">Gate 61, Gate 63, Gate 64</div>
+    </a>
+    <a href="/human-design/centers/ajna/" class="center-card">
+      <div class="center-number">4</div>
+      <h3>Ajna Center</h3>
+      <p class="center-function">Awareness center — conceptualization, opinions, and mental processing...</p>
+      <div class="center-meta">
+        <span>6 gates</span>
+        <span>6 channels</span>
+      </div>
+      <div class="center-gates">Gate 4, Gate 11, Gate 17, Gate 24, Gate 43, Gate 47</div>
+    </a>
+    <a href="/human-design/centers/throat/" class="center-card">
+      <div class="center-number">8</div>
+      <h3>Throat Center</h3>
+      <p class="center-function">Manifestation center — communication, action, and expression...</p>
+      <div class="center-meta">
+        <span>11 gates</span>
+        <span>14 channels</span>
+      </div>
+      <div class="center-gates">Gate 8, Gate 12, Gate 16, Gate 20, Gate 23, Gate 31, Gate 33, Gate 35, Gate 45, Gate 56, Gate 62</div>
+    </a>
+    <a href="/human-design/centers/g/" class="center-card">
+      <div class="center-number">1</div>
+      <h3>G Center</h3>
+      <p class="center-function">Identity center — direction, love, and sense of self...</p>
+      <div class="center-meta">
+        <span>8 gates</span>
+        <span>10 channels</span>
+      </div>
+      <div class="center-gates">Gate 1, Gate 2, Gate 7, Gate 10, Gate 13, Gate 15, Gate 25, Gate 46</div>
+    </a>
+    <a href="/human-design/centers/heart-ego/" class="center-card">
+      <div class="center-number">21</div>
+      <h3>Heart/Ego Center</h3>
+      <p class="center-function">Motor center — willpower, self-worth, and commitment...</p>
+      <div class="center-meta">
+        <span>4 gates</span>
+        <span>4 channels</span>
+      </div>
+      <div class="center-gates">Gate 21, Gate 26, Gate 40, Gate 51</div>
+    </a>
+    <a href="/human-design/centers/sacral/" class="center-card">
+      <div class="center-number">3</div>
+      <h3>Sacral Center</h3>
+      <p class="center-function">Motor center — life force, creativity, sexuality, and sustainable work energy...</p>
+      <div class="center-meta">
+        <span>9 gates</span>
+        <span>11 channels</span>
+      </div>
+      <div class="center-gates">Gate 3, Gate 5, Gate 9, Gate 14, Gate 27, Gate 29, Gate 34, Gate 42, Gate 59</div>
+    </a>
+    <a href="/human-design/centers/spleen/" class="center-card">
+      <div class="center-number">18</div>
+      <h3>Spleen Center</h3>
+      <p class="center-function">Awareness center — intuition, instinct, immune system, and survival intelligence...</p>
+      <div class="center-meta">
+        <span>7 gates</span>
+        <span>9 channels</span>
+      </div>
+      <div class="center-gates">Gate 18, Gate 28, Gate 32, Gate 44, Gate 48, Gate 50, Gate 57</div>
+    </a>
+    <a href="/human-design/centers/solar-plexus/" class="center-card">
+      <div class="center-number">6</div>
+      <h3>Solar Plexus Center</h3>
+      <p class="center-function">Motor and awareness center — emotions, feelings, desire, and the emotional wave...</p>
+      <div class="center-meta">
+        <span>8 gates</span>
+        <span>7 channels</span>
+      </div>
+      <div class="center-gates">Gate 6, Gate 22, Gate 30, Gate 36, Gate 37, Gate 39, Gate 49, Gate 55</div>
+    </a>
+    <a href="/human-design/centers/root/" class="center-card">
+      <div class="center-number">19</div>
+      <h3>Root Center</h3>
+      <p class="center-function">Pressure and motor center — adrenaline, stress, and the drive to move forward...</p>
+      <div class="center-meta">
+        <span>8 gates</span>
+        <span>9 channels</span>
+      </div>
+      <div class="center-gates">Gate 19, Gate 38, Gate 41, Gate 52, Gate 53, Gate 54, Gate 58, Gate 60</div>
+    </a>
+  </div>
+
+</div>
+
+<footer>
+  <p>&copy; 2026 <a href="https://humandesignengine.com">Human Design Engine</a>. Explore your unique design. All 9 centers, 64 gates, and 36 channels.</p>
+</footer>
+
+</body>
+</html>
