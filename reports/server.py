@@ -37,7 +37,12 @@ sys.path.insert(0, ENGINE_PATH)
 from cosmic_calculator import calculate_natal_chart
 from synastry_engine import calculate_composite, calculate_penta
 from matrix_mapper import GATE_NAMES, GATE_CENTER, CHANNELS
-from ephemeris_engine import init_ephemeris
+from ephemeris_engine import init_ephemeris, get_planet_position, SUN
+from transit_engine import (
+    compute_transit_overlay,
+    calculate_transit_positions,
+    datetime_to_jd,
+)
 
 init_ephemeris()
 log.info("Ephemeris initialized — engine ready.")
@@ -465,42 +470,427 @@ def build_relationship_report(chart_a: dict, chart_b: dict, composite: dict) -> 
     return html
 
 
-def build_transit_report(natal: dict, transits: dict) -> str:
-    """Generate a transit forecast report."""
+def compute_30day_solar_transits() -> list:
+    """Compute solar gate positions for the next 30 days.
+    Groups consecutive days with the same gate into date-range entries.
+    Returns list of {start_date, end_date, gate, gate_name, center} dicts."""
+    from datetime import datetime, timezone, timedelta
+    
+    raw = []
+    for i in range(30):
+        dt = datetime.now(timezone.utc) + timedelta(days=i)
+        jd = datetime_to_jd(dt)
+        try:
+            pos = get_planet_position(jd, SUN)
+            from matrix_mapper import longitude_to_gate_line
+            hd = longitude_to_gate_line(pos["longitude"])
+            raw.append({
+                "date_str": dt.strftime("%B %d"),
+                "iso_date": dt.strftime("%Y-%m-%d"),
+                "gate": hd["gate"],
+                "gate_name": hd["gate_name"],
+                "center": hd["center"],
+            })
+        except Exception:
+            continue
+    
+    if not raw:
+        return []
+    
+    # Group consecutive days with the same gate
+    grouped = []
+    current = dict(raw[0], start_date=raw[0]["date_str"], end_date=raw[0]["date_str"])
+    for entry in raw[1:]:
+        if entry["gate"] == current["gate"]:
+            current["end_date"] = entry["date_str"]
+        else:
+            grouped.append({
+                "start_date": current["start_date"],
+                "end_date": current["end_date"],
+                "gate": current["gate"],
+                "gate_name": current["gate_name"],
+                "center": current["center"],
+            })
+            current = dict(entry, start_date=entry["date_str"], end_date=entry["date_str"])
+    grouped.append({
+        "start_date": current["start_date"],
+        "end_date": current["end_date"],
+        "gate": current["gate"],
+        "gate_name": current["gate_name"],
+        "center": current["center"],
+    })
+    return grouped
+
+
+def build_transit_report(natal: dict, overlay: dict, solar_forecast: list = None) -> str:
+    """Generate a comprehensive transit forecast report."""
     name = natal.get("name", "Friend")
     date_str = datetime.now().strftime("%B %d, %Y")
     
+    # ── Extract data ──────────────────────────────────────────────────
+    overlay = overlay or {}
+    conditioning = overlay.get("conditioning", {})
+    conditioned_channels = conditioning.get("conditioned_channels", [])
+    conditioned_centers = conditioning.get("conditioned_centers", [])
+    new_transit_gates = conditioning.get("new_transit_gates", [])
+    interpretation_hints = overlay.get("interpretation_hints", [])
+    
+    # Get full transit positions (with retrograde, longitude for the table)
+    try:
+        full_positions = calculate_transit_positions()
+    except Exception:
+        full_positions = {}
+    
+    # Get simplified transit positions from overlay
+    transit_positions = overlay.get("transit_positions", full_positions)
+    
+    natal_type = natal.get("hd_type", "Unknown")
+    natal_authority = natal.get("authority", "Unknown")
+    natal_strategy = natal.get("strategy", "Unknown")
+    natal_signature = natal.get("signature", "fulfillment")
+    natal_not_self = natal.get("not_self_theme", "frustration")
+    natal_defined = set(natal.get("defined_centers", []))
+    natal_undefined = set(natal.get("undefined_centers", []))
+    
+    # All transit gates for the badge display
+    all_transit_gates = sorted(set(
+        p.get("gate") for p in transit_positions.values() if p.get("gate")
+    ))
+    
+    # Conditioned but normally undefined centers
+    conditioned_open = [c for c in conditioned_centers if c not in natal_defined]
+    
+    # Solar forecast data
+    solar_forecast = solar_forecast or []
+    current_solar_gate = solar_forecast[0] if solar_forecast else None
+    
+    # ── HTML Generation ───────────────────────────────────────────────
     html = f"""<!DOCTYPE html>
 <html><head><meta charset="utf-8"><title>{name}'s Transit Forecast</title>{CSS}</head><body>
 {make_cover(name, 'transit', date_str)}
 <div class="page">
 
   <h2>🌟 Your Current Transit Snapshot</h2>
-  <p class="section-intro">Planetary transits activate different parts of your chart each day. This report shows what's being lit up in your design right now — and how to work with it.</p>
+  <p class="section-intro">Planetary transits are like cosmic weather — they activate different parts of your chart each day. This report shows what's being lit up in your unique design right now, how it's conditioning your open centers, and what themes the coming month holds for you.</p>
   
   <div class="stat-grid">
     <div class="stat-card">
       <div class="label">Your Type</div>
-      <div class="value">{natal.get('hd_type', 'Unknown')}</div>
+      <div class="value">{natal_type}</div>
     </div>
     <div class="stat-card">
       <div class="label">Your Authority</div>
-      <div class="value">{natal.get('authority', 'Unknown')}</div>
+      <div class="value">{natal_authority}</div>
+    </div>
+    <div class="stat-card">
+      <div class="label">Your Strategy</div>
+      <div class="value">{natal_strategy}</div>
     </div>
     <div class="stat-card">
       <div class="label">Transit Date</div>
       <div class="value">{date_str}</div>
     </div>
+    <div class="stat-card">
+      <div class="label">Channels Being Conditioned</div>
+      <div class="value">{conditioning.get('total_conditioned_channels', 0)}</div>
+    </div>
+    <div class="stat-card">
+      <div class="label">Centers Being Conditioned</div>
+      <div class="value">{len(conditioned_centers)}</div>
+    </div>
   </div>
   
   <div class="highlight-box">
-    <h3>🌊 Working With Transits</h3>
-    <p>Transits condition your open centers — they bring temporary definition and themes. Notice what you're feeling today and ask: is this my consistent energy, or is this a transit passing through?</p>
+    <h3>🌊 What Are Transits?</h3>
+    <p>As the planets move through the sky, they pass through different gates — activating specific themes and energies. For your <strong>{natal_type}</strong> design, transits temporarily condition your undefined centers. They bring experiences and flavors that aren't consistently yours — like visiting a new city. The key is awareness: <em>is this my energy, or am I sampling something passing through?</em> Your signature of <strong>{natal_signature}</strong> is your compass. When you feel <strong>{natal_not_self}</strong>, a transit may be pulling you off-center.</p>
+  </div>
+  
+  <h2>🪐 Current Planetary Positions</h2>
+  <p class="section-intro">Each planet carries a unique frequency as it moves through the gates. Below are the exact positions at the moment this report was generated.</p>
+  <table>
+    <tr><th>Planet</th><th>Gate</th><th>Gate Name</th><th>Line</th><th>Center</th><th>Rx</th></tr>
+"""
+    
+    # Build planet position rows
+    planet_order = ["Sun", "Earth", "Moon", "North Node", "South Node", 
+                    "Mercury", "Venus", "Mars", "Jupiter", "Saturn",
+                    "Uranus", "Neptune", "Pluto", "Chiron", "Mean Lilith", "True Lilith"]
+    for planet_name in planet_order:
+        pos = full_positions.get(planet_name)
+        if pos and pos.get("gate"):
+            retro = "℞" if pos.get("retrograde") else ""
+            html += f"""    <tr>
+      <td><strong>{planet_name}</strong></td>
+      <td>Gate {pos['gate']}</td>
+      <td>{pos.get('gate_name', '')}</td>
+      <td>Line {pos['line']}</td>
+      <td>{pos.get('center', '')}</td>
+      <td>{retro}</td>
+    </tr>
+"""
+    
+    # Any remaining planets not in our order
+    for planet_name, pos in full_positions.items():
+        if planet_name not in planet_order and pos.get("gate"):
+            retro = "℞" if pos.get("retrograde") else ""
+            html += f"""    <tr>
+      <td><strong>{planet_name}</strong></td>
+      <td>Gate {pos['gate']}</td>
+      <td>{pos.get('gate_name', '')}</td>
+      <td>Line {pos['line']}</td>
+      <td>{pos.get('center', '')}</td>
+      <td>{retro}</td>
+    </tr>
+"""
+    
+    html += """  </table>
+  
+  <h2>🧬 All Activated Transit Gates</h2>
+  <p class="section-intro">These are all the gates currently being activated by planetary transits. When a transit gate matches one in your natal chart, it amplifies your natural expression. When it's new to you, it introduces a temporary theme to explore.</p>
+  <div class="gate-list">
+"""
+    for g in all_transit_gates:
+        gname = GATE_NAMES.get(int(g), f"Gate {g}")
+        html += f'    <span class="gate-badge">Gate {g}: {gname}</span>\n'
+    html += """  </div>
+  
+"""
+    
+    # ── Section 2: Conditioning Analysis ──
+    html += """  <h2>🔮 How Transits Are Conditioning Your Chart</h2>
+  <p class="section-intro">Transits interact with your natal design in specific, measurable ways. Below is a personalized analysis of what's being conditioned in your chart right now.</p>
+"""
+    
+    # Conditioned channels
+    if conditioned_channels:
+        html += f"""  
+  <h3>🔗 Temporarily Completed Channels ({len(conditioned_channels)})</h3>
+  <p class="section-intro">When a transit provides the missing gate to one of your hanging gates, a full channel temporarily lights up. This is <em>borrowed definition</em> — energy available to you right now that isn't consistently yours.</p>
+"""
+        for ch in conditioned_channels:
+            gates = ch.get("gates", (0, 0))
+            name = ch.get("name", "Unknown Channel")
+            natal_has = ch.get("natal_has", gates[0])
+            transit_provides = ch.get("transit_provides", gates[1])
+            html += f"""  <div class="channel-row">
+    <span class="channel-name">{name}</span>
+    <span class="channel-gates">Your Gate {natal_has} + Transit Gate {transit_provides} → Gates {gates[0]}–{gates[1]}</span>
+  </div>
+"""
+    else:
+        html += """  <h3>🔗 Temporarily Completed Channels</h3>
+  <p><em>No channels are being completed by transits at this time. Your hanging gates remain open — this is a time of pure self, without borrowed definition.</em></p>
+"""
+    
+    # Conditioned open centers
+    if conditioned_open:
+        open_wisdom = {
+            "Head": "You may feel extra mental pressure or sudden inspiration. Notice: is this idea yours, or is it the transit speaking? Let questions arise but don't feel pressured to answer them immediately.",
+            "Ajna": "Your mind may feel unusually certain right now — or flooded with competing ideas. This is borrowed conceptual energy. Hold ideas lightly; your open mind's gift is seeing all perspectives, not being locked into one.",
+            "Throat": "You may feel a strong urge to speak, initiate, or be heard. Is it your truth, or are you amplifying the transit's need to express? Wait for recognition before speaking — your words land differently under transit influence.",
+            "G": "Your sense of identity or direction may feel temporarily clear — or suddenly confused. Transits through the G center can make you feel like you've 'found yourself' or lost yourself entirely. Both are temporary. Trust your environment to hold you.",
+            "Heart/Ego": "You may feel a surge of willpower or a pressure to prove your worth. Remember: your value is inherent, not measured by what you accomplish during this transit window. Rest is still valid.",
+            "Sacral": "You may feel an unusual burst of sustainable energy — or absolutely drained. Transits through an undefined Sacral can make you overwork trying to 'keep up' with borrowed life force. Your not-knowing what to do is healthy. Wait to respond.",
+            "Spleen": "Your intuition may feel sharper, or you may feel inexplicably anxious about health and safety. Transits through the Spleen give you access to instinctual awareness you don't normally carry. Trust the hits, but don't hold onto fear that isn't yours.",
+            "Solar Plexus": "Emotions may feel intense, dramatic, or unusually clear. You're sampling the emotional wave of the transit. Ask: is this feeling mine, or am I amplifying something from outside? Wait for clarity before making emotional decisions.",
+            "Root": "You may feel a surge of urgency or pressure to act immediately. This is borrowed adrenaline. Practice doing things at your own pace — the pressure will pass with the transit.",
+        }
+        html += f"""  
+  <h3>🌊 Conditioned Open Centers ({len(conditioned_open)})</h3>
+  <p class="section-intro">These are your normally undefined centers that are being temporarily conditioned by current transits. This is where you're most likely to feel something <em>different</em> today.</p>
+"""
+        for c in conditioned_open:
+            wisdom = open_wisdom.get(c, "This center is being temporarily conditioned — notice what feels different and ask yourself if it's truly yours.")
+            html += f"""  <div class="highlight-box">
+    <h3>✦ {c} Center</h3>
+    <p>{wisdom}</p>
+  </div>
+"""
+    
+    # Interpretation hints
+    if interpretation_hints:
+        html += """  
+  <h3>💡 Key Transit Messages for You</h3>
+"""
+        for hint in interpretation_hints:
+            html += f'  <p>▸ {hint}</p>\n'
+    
+    # New transit gates
+    if new_transit_gates:
+        html += f"""  
+  <h3>🆕 Gates New to Your Design ({len(new_transit_gates)})</h3>
+  <p class="section-intro">These gates are being activated by transits but don't appear in your natal chart. They represent themes that are visiting you — temporary flavors to sample and learn from.</p>
+  <div class="gate-list">
+"""
+        for g in new_transit_gates:
+            gname = GATE_NAMES.get(int(g), f"Gate {g}")
+            html += f'    <span class="gate-badge">Gate {g}: {gname}</span>\n'
+        html += """  </div>
+"""
+    
+    # ── Section 3: 30-Day Solar Transit Forecast ──
+    html += """  
+  <h2>📅 Your 30-Day Solar Transit Forecast</h2>
+  <p class="section-intro">The Sun moves approximately one degree per day, spending about 5–6 days in each gate. As it shifts, different themes light up in your chart. Below is your forecast for the coming month.</p>
+"""
+    
+    if solar_forecast:
+        html += """  <table>
+    <tr><th>Period</th><th>Gate</th><th>Theme</th><th>Center</th></tr>
+"""
+        for entry in solar_forecast:
+            period = entry["start_date"]
+            if entry["start_date"] != entry["end_date"]:
+                period += f" – {entry['end_date']}"
+            html += f"""    <tr>
+      <td><strong>{period}</strong></td>
+      <td>Gate {entry['gate']}</td>
+      <td>{entry['gate_name']}</td>
+      <td>{entry['center']}</td>
+    </tr>
+"""
+        html += """  </table>
+"""
+        
+        # Current solar gate theme
+        if current_solar_gate:
+            html += f"""  
+  <div class="highlight-box">
+    <h3>☀️ Current Solar Theme: Gate {current_solar_gate['gate']} — {current_solar_gate['gate_name']}</h3>
+    <p>Right now, the Sun is activating <strong>Gate {current_solar_gate['gate']} ({current_solar_gate['gate_name']})</strong> in the <strong>{current_solar_gate['center']}</strong> center. This sets the collective tone — the question or theme that humanity as a whole is working with. For you personally, this gate {'is part of your consistent definition — it may feel amplified and familiar' if current_solar_gate['gate'] in (natal.get('all_active_gates', []) or []) else 'is not in your natal chart — it brings a visiting theme that you get to explore and learn from temporarily'}.</p>
+  </div>
+"""
+    else:
+        html += """  <p><em>Solar transit forecast data is being calculated. Check back shortly for your personalized 30-day forecast.</em></p>
+"""
+    
+    # ── Section 4: Practical Guidance ──
+    html += f"""  
+  <h2>🧭 Practical Guidance for Current Transits</h2>
+  <p class="section-intro">Transits are not here to derail you — they're here to awaken you. Here's how to navigate current cosmic weather as your unique design type.</p>
+"""
+    
+    # Type-specific transit advice
+    type_advice = {
+        "manifestor": {
+            "strategy": "Inform before you act — even under transit influence, your power lies in clearing the path by communicating your intentions.",
+            "practice": "Before taking action on any transit-inspired impulse, pause and inform at least one person who'll be affected. Notice if the urge is truly yours or transit-driven.",
+            "gift": "Transits can amplify your natural initiating power. Use borrowed definition to start things, but don't get attached — the energy may leave when the transit does.",
+        },
+        "generator": {
+            "strategy": "Respond, don't initiate — transits may create mental pressure to start something new, but your power is in answering what life brings you.",
+            "practice": "When a transit lights up a new gate, wait for something in your outer reality to ask something of you before engaging. Trust your sacral sound: uh-huh (yes) or uh-uh (no).",
+            "gift": "Transits through your undefined centers give you a taste of other ways of being. Notice what feels satisfying vs. frustrating — this is feedback about alignment.",
+        },
+        "manifesting generator": {
+            "strategy": "Respond, then inform — transits may accelerate your already-fast nature. Don't skip the response step — wait for the sacral yes before leaping.",
+            "practice": "When a transit lights you up with a new idea or direction, check in with your gut first. Then inform those who need to know before you move at your natural speed.",
+            "gift": "Transits can give you access to even more life force. Channel borrowed energy into what already lights you up, not into new commitments you can't sustain.",
+        },
+        "projector": {
+            "strategy": "Wait for the invitation — transits may make you feel like a Generator, but your success still comes through recognition and invitation.",
+            "practice": "If a transit makes you want to work harder or initiate more, pause. Ask: have I been recognized and invited for this specific thing? Your guidance is most potent when asked for.",
+            "gift": "Transits through your open centers give you a deeper read on others. Use this temporary clarity to see more, but don't feel you must act on everything you perceive.",
+        },
+        "reflector": {
+            "strategy": "Wait a full lunar cycle (28 days) — transits ARE your definition. You're designed to sample everything. Don't make big decisions based on temporary definition.",
+            "practice": "Track how you feel as the Moon and Sun move through different gates. Your experience literally changes with the transit weather — this isn't inconsistency, it's your design.",
+            "gift": "You're the most transit-sensitive type. Use this report to understand WHY you feel different day to day. Your wellbeing is a barometer of the collective.",
+        },
+    }
+    
+    type_key = natal_type.lower().replace(" ", " ").strip()
+    # Normalize lookup
+    type_lookup = {
+        "manifestor": "manifestor", "generator": "generator",
+        "manifesting generator": "manifesting generator", "manifesting-generator": "manifesting generator",
+        "projector": "projector", "reflector": "reflector",
+    }
+    advice_key = type_lookup.get(type_key, "generator")
+    advice = type_advice.get(advice_key, type_advice["generator"])
+    
+    html += f"""  
+  <div class="experiment-box">
+    <h3>🎯 Your Strategy Under Transits: {natal_strategy}</h3>
+    <p>{advice['strategy']}</p>
+  </div>
+  
+  <div class="experiment-box">
+    <h3>🧪 Practical Experiment for This Transit Period</h3>
+    <p>{advice['practice']}</p>
+  </div>
+  
+  <div class="experiment-box">
+    <h3>🎁 The Gift of Current Transits for Your Design</h3>
+    <p>{advice['gift']}</p>
+  </div>
+"""
+    
+    # Conditioned center-specific practices
+    if conditioned_open:
+        html += """  
+  <h3>🔬 Working With Your Currently Conditioned Open Centers</h3>
+"""
+        for c in conditioned_open:
+            center_practices = {
+                "Head": "When you feel mental pressure, write down the questions but don't answer them yet. Let inspiration marinate.",
+                "Ajna": "Practice saying 'I'm not sure yet' — your open mind's honesty is more powerful than borrowed certainty.",
+                "Throat": "Notice when you're speaking to fill silence vs. speaking from truth. A simple pause before speaking changes everything.",
+                "G": "If you feel lost or found, don't cling to either state. Let your environment and the right people guide you home.",
+                "Heart/Ego": "Practice resting in the middle of productive energy. Take a break even when you feel driven — prove to yourself that your worth isn't in doing.",
+                "Sacral": "Set a timer for work periods and honor it. When the timer goes off, stop — even if you still feel energized. This builds trust with your body.",
+                "Spleen": "If you feel fear or intuitive hits, write them down and revisit in 24 hours. What was truly intuitive will persist; what was transit noise will fade.",
+                "Solar Plexus": "Delay emotional decisions by at least one sleep cycle. Tell people: 'I need to feel through this before I know what's true.'",
+                "Root": "When urgency strikes, ask: will this matter in a week? A month? Most transit-driven urgency dissolves when examined.",
+            }
+            practice = center_practices.get(c, "Notice what feels different. Ask: is this mine to carry, or can I let it pass through?")
+            html += f"""  <p><strong>{c}:</strong> {practice}</p>
+"""
+    
+    # ── Section 5: Monthly Themes ──
+    html += """  
+  <h2>🌙 Monthly Transit Themes</h2>
+  <p class="section-intro">Zooming out, here's the broader transit landscape for the coming month — the energetic weather report for your journey.</p>
+"""
+    
+    if solar_forecast and len(solar_forecast) >= 2:
+        # Get unique centers being activated by upcoming solar transits
+        upcoming_centers = sorted(set(e["center"] for e in solar_forecast if e.get("center")))
+        upcoming_gates = [e["gate"] for e in solar_forecast]
+        
+        html += f"""  
+  <div class="highlight-box">
+    <h3>🗓️ Centers Being Highlighted This Month</h3>
+    <p>Over the next 30 days, the Sun will move through these centers: <strong>{', '.join(upcoming_centers)}</strong>. Each center brings its own flavor of experience and conditioning. Pay special attention to days when the Sun activates a center that is undefined in your chart — those are the days you'll feel the transit most strongly.</p>
+  </div>
+  
+  <div class="highlight-box">
+    <h3>🔢 Gate Count This Month</h3>
+    <p>The Sun will activate <strong>{len(set(upcoming_gates))} distinct gates</strong> over {len(solar_forecast)} transit periods. Some gates may feel more resonant than others — those that match your natal gates will amplify what's already you. Those that don't are your curriculum for the month.</p>
+  </div>
+"""
+    
+    # General monthly guidance
+    html += f"""  
+  <div class="experiment-box">
+    <h3>📓 Your Transit Journal Prompt for This Month</h3>
+    <p>For the next 30 days, each morning ask yourself: <em>"What center am I feeling most today?"</em> Write down one word and one observation. At the end of the month, look back — you'll see the transit weather written in your own experience. This practice builds self-awareness that no report can give you.</p>
+  </div>
+  
+  <div class="experiment-box">
+    <h3>🌿 A Note on Timing</h3>
+    <p>Remember: transits are temporary. The energy you feel today will shift within days. Don't make permanent decisions based on temporary conditioning — especially if you're a <strong>Reflector</strong> (wait 28 days) or <strong>Projector</strong> (wait for the invitation). Use transits as a spotlight: they show you what's available to learn, not what you must become.</p>
+  </div>
+  
+  <div class="cert-badge">
+    🌿 Verified by OpenHumanDesignMCP — open-source calculations (AGPLv3) <span class="badge">Certified by Light Filled Human Design</span>
   </div>
   
   <div class="footer">
     <p>Report generated by <a href="https://humandesignengine.com">Human Design Engine</a></p>
-    <p>AGPLv3</p>
+    <p>Calculations powered by OpenHumanDesignMCP v0.3.0 · <a href="https://github.com/mbgulden/OpenHumanDesignMCP">github.com/mbgulden/OpenHumanDesignMCP</a></p>
+    <p>Transit positions calculated at {date_str} · Forecast covers 30 days from today</p>
+    <p>AGPLv3 — Free Software</p>
   </div>
 </div>
 </body></html>"""
@@ -559,7 +949,10 @@ def compute_and_render(metadata: dict) -> dict:
     if report_type == "natal":
         html = build_natal_report(chart)
     elif report_type == "transit":
-        html = build_transit_report(chart, {})
+        # Compute actual transit overlay
+        overlay = compute_transit_overlay(chart)
+        solar_forecast = compute_30day_solar_transits()
+        html = build_transit_report(chart, overlay, solar_forecast)
     elif report_type == "relationship":
         partner = metadata.get("partner", {})
         if isinstance(partner, str) and partner:

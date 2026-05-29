@@ -1,0 +1,725 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>The 12 Human Design Profiles — Complete Guide | Human Design Engine</title>
+<meta name="description" content="Explore all 12 Human Design profiles: Investigator, Hermit, Martyr, Opportunist, Heretic, and Role Model in their 12 combinations. Learn line meanings, life themes, and interaction styles for every profile.">
+<meta name="keywords" content="Human Design profiles, 12 profiles, 1/3, 1/4, 2/4, 2/5, 3/5, 3/6, 4/6, 4/1, 5/1, 5/2, 6/2, 6/3, Investigator, Hermit, Martyr, Opportunist, Heretic, Role Model, Human Design Engine">
+<link rel="canonical" href="https://humandesignengine.com/human-design/profiles/">
+<meta property="og:title" content="The 12 Human Design Profiles — Complete Guide | Human Design Engine">
+<meta property="og:description" content="Complete reference for all 12 Human Design profiles: life themes, line meanings, interaction styles, FAQ, and practical experiments for every profile combination.">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://humandesignengine.com/human-design/profiles/">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="The 12 Human Design Profiles — Complete Guide">
+<meta name="twitter:description" content="Complete reference for all 12 Human Design profiles with life themes, line meanings, and practical experiments.">
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "CollectionPage",
+  "name": "The 12 Human Design Profiles",
+  "description": "A complete guide to all 12 Human Design profiles, including the 6 lines (Investigator, Hermit, Martyr, Opportunist, Heretic, Role Model) in their 12 unique combinations with life themes, interaction styles, and practical experiments.",
+  "url": "https://humandesignengine.com/human-design/profiles/",
+  "publisher": { "@type": "Organization", "name": "Human Design Engine", "url": "https://humandesignengine.com" }
+}
+</script>
+<style>
+  :root {
+    --navy-deep: #060d1a;
+    --navy: #0a1628;
+    --navy-mid: #0f1d36;
+    --navy-light: #162744;
+    --navy-lighter: #1e3458;
+    --gold: #c9a84c;
+    --gold-light: #e0c468;
+    --gold-bright: #d4af37;
+    --gold-soft: rgba(201, 168, 76, 0.15);
+    --gold-glow: rgba(201, 168, 76, 0.08);
+    --text-primary: #e8e6e3;
+    --text-secondary: #8899aa;
+    --text-muted: #5a6a7a;
+    --white: #ffffff;
+    --card-bg: rgba(15, 29, 54, 0.7);
+    --card-border: rgba(201, 168, 76, 0.12);
+    --radius: 12px;
+    --radius-lg: 20px;
+    --shadow: 0 4px 24px rgba(0,0,0,0.3);
+    --transition: 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
+    background: var(--navy-deep);
+    color: var(--text-primary);
+    line-height: 1.7;
+    overflow-x: hidden;
+  }
+
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background:
+      radial-gradient(ellipse at 20% 10%, rgba(201,168,76,0.04) 0%, transparent 60%),
+      radial-gradient(ellipse at 80% 90%, rgba(201,168,76,0.03) 0%, transparent 60%),
+      radial-gradient(ellipse at 50% 50%, rgba(15,29,54,0.8) 0%, var(--navy-deep) 100%);
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  nav {
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    background: rgba(6, 13, 26, 0.85);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+    border-bottom: 1px solid rgba(201,168,76,0.1);
+    padding: 0 20px;
+  }
+  .nav-inner {
+    max-width: 1200px;
+    margin: 0 auto;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    height: 64px;
+    position: relative;
+    z-index: 1;
+  }
+  .nav-logo {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 1.25rem;
+    font-weight: 700;
+    color: var(--white);
+    text-decoration: none;
+    letter-spacing: -0.02em;
+  }
+  .nav-logo .icon {
+    width: 32px; height: 32px;
+    background: linear-gradient(135deg, var(--gold-bright), var(--gold));
+    border-radius: 8px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 0.85rem;
+    color: var(--navy-deep);
+    font-weight: 900;
+  }
+  .nav-links { display: flex; gap: 24px; align-items: center; }
+  .nav-links a {
+    color: var(--text-secondary);
+    text-decoration: none;
+    font-size: 0.88rem;
+    font-weight: 500;
+    transition: var(--transition);
+  }
+  .nav-links a:hover { color: var(--gold-light); }
+
+  .container {
+    max-width: 900px;
+    margin: 0 auto;
+    padding: 0 24px;
+    position: relative;
+    z-index: 1;
+  }
+
+  .breadcrumb {
+    padding: 18px 0;
+    font-size: 0.82rem;
+    color: var(--text-muted);
+  }
+  .breadcrumb a {
+    color: var(--gold);
+    text-decoration: none;
+    transition: var(--transition);
+  }
+  .breadcrumb a:hover { color: var(--gold-light); }
+  .breadcrumb span { margin: 0 6px; }
+
+  .hero {
+    text-align: center;
+    padding: 48px 24px 40px;
+    position: relative;
+    z-index: 1;
+  }
+  .hero-icon {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 88px;
+    height: 88px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, rgba(201,168,76,0.2), rgba(201,168,76,0.08));
+    border: 2px solid rgba(201,168,76,0.35);
+    font-size: 2rem;
+    color: var(--gold-light);
+    margin-bottom: 20px;
+  }
+  .hero h1 {
+    font-size: clamp(1.8rem, 4vw, 2.6rem);
+    font-weight: 800;
+    letter-spacing: -0.03em;
+    line-height: 1.2;
+    margin-bottom: 12px;
+    background: linear-gradient(180deg, #ffffff 0%, #c0c8d4 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+  .hero .subtitle {
+    font-size: 1.05rem;
+    color: var(--text-secondary);
+    max-width: 560px;
+    margin: 0 auto;
+  }
+  .hero .profile-tag {
+    display: inline-block;
+    margin-top: 16px;
+    padding: 6px 18px;
+    background: var(--gold-soft);
+    color: var(--gold-light);
+    border-radius: 20px;
+    font-size: 0.88rem;
+    font-weight: 600;
+  }
+
+  .info-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 16px;
+    margin-bottom: 48px;
+  }
+  .info-card {
+    background: var(--card-bg);
+    border: 1px solid var(--card-border);
+    border-radius: var(--radius);
+    padding: 20px 18px;
+    text-align: center;
+  }
+  .info-card .label {
+    font-size: 0.72rem;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: var(--gold);
+    font-weight: 600;
+    margin-bottom: 6px;
+  }
+  .info-card .value {
+    font-size: 1rem;
+    font-weight: 600;
+    color: var(--text-primary);
+  }
+
+  .content {
+    background: var(--card-bg);
+    border: 1px solid var(--card-border);
+    border-radius: var(--radius-lg);
+    padding: 40px 36px;
+    margin-bottom: 48px;
+  }
+  .content h2 {
+    font-size: 1.5rem;
+    font-weight: 700;
+    margin-bottom: 20px;
+    color: var(--white);
+    letter-spacing: -0.02em;
+  }
+  .content h3 {
+    font-size: 1.15rem;
+    font-weight: 600;
+    color: var(--gold-light);
+    margin: 32px 0 14px;
+    letter-spacing: -0.01em;
+  }
+  .content p {
+    font-size: 1rem;
+    color: var(--text-secondary);
+    line-height: 1.75;
+    margin-bottom: 16px;
+  }
+  .content .highlight {
+    color: var(--gold-light);
+    font-weight: 500;
+  }
+  .content ul {
+    list-style: none;
+    padding: 0;
+    margin: 12px 0;
+  }
+  .content ul li {
+    padding: 10px 0;
+    font-size: 0.92rem;
+    color: var(--text-secondary);
+    border-bottom: 1px solid rgba(255,255,255,0.04);
+  }
+  .content ul li::before {
+    content: "▸ ";
+    color: var(--gold);
+  }
+
+  .profile-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+    margin-bottom: 48px;
+  }
+  .profile-card {
+    background: var(--card-bg);
+    border: 1px solid var(--card-border);
+    border-radius: var(--radius-lg);
+    padding: 28px 24px;
+  }
+  .profile-card .line-number {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 48px;
+    height: 48px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, rgba(201,168,76,0.2), rgba(201,168,76,0.06));
+    border: 1.5px solid rgba(201,168,76,0.3);
+    font-size: 1.1rem;
+    font-weight: 700;
+    color: var(--gold-light);
+    margin-bottom: 12px;
+  }
+  .profile-card h3 {
+    font-size: 1.1rem;
+    font-weight: 700;
+    color: var(--white);
+    margin-bottom: 10px;
+  }
+  .profile-card p {
+    font-size: 0.9rem;
+    color: var(--text-secondary);
+    line-height: 1.65;
+  }
+
+  .related-profiles {
+    background: var(--card-bg);
+    border: 1px solid var(--card-border);
+    border-radius: var(--radius-lg);
+    padding: 40px 36px;
+    margin-bottom: 48px;
+  }
+  .related-profiles h2 {
+    font-size: 1.5rem;
+    font-weight: 700;
+    margin-bottom: 20px;
+    color: var(--white);
+    letter-spacing: -0.02em;
+  }
+  .related-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+    gap: 12px;
+  }
+  .related-chip {
+    display: block;
+    padding: 12px 16px;
+    background: rgba(201,168,76,0.06);
+    border: 1px solid var(--card-border);
+    border-radius: var(--radius);
+    text-decoration: none;
+    color: var(--text-secondary);
+    font-size: 0.88rem;
+    transition: var(--transition);
+    text-align: center;
+  }
+  .related-chip:hover {
+    border-color: var(--gold);
+    color: var(--gold-light);
+  }
+
+  .faq {
+    padding: 0 0 24px;
+  }
+  .faq h2 {
+    text-align: center;
+    font-size: 1.6rem;
+    font-weight: 700;
+    margin-bottom: 32px;
+    letter-spacing: -0.02em;
+  }
+  .faq-item {
+    background: var(--card-bg);
+    border: 1px solid var(--card-border);
+    border-radius: var(--radius);
+    padding: 24px 28px;
+    margin-bottom: 12px;
+  }
+  .faq-item h3 {
+    font-size: 1rem;
+    font-weight: 600;
+    color: var(--gold-light);
+    margin-bottom: 8px;
+  }
+  .faq-item p {
+    font-size: 0.9rem;
+    color: var(--text-secondary);
+    line-height: 1.65;
+  }
+
+  .experiment-list li {
+    padding: 12px 0 !important;
+  }
+  .experiment-list li strong {
+    color: var(--gold-light);
+  }
+
+  .cta-section {
+    text-align: center;
+    padding: 48px 24px 64px;
+    position: relative;
+    z-index: 1;
+  }
+  .cta-section h2 {
+    font-size: clamp(1.3rem, 2.5vw, 1.7rem);
+    font-weight: 700;
+    margin-bottom: 12px;
+    letter-spacing: -0.02em;
+  }
+  .cta-section p {
+    color: var(--text-secondary);
+    font-size: 0.95rem;
+    max-width: 480px;
+    margin: 0 auto 24px;
+  }
+  .btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 13px 28px;
+    border-radius: 10px;
+    font-size: 0.92rem;
+    font-weight: 600;
+    text-decoration: none;
+    cursor: pointer;
+    border: none;
+    transition: var(--transition);
+    letter-spacing: -0.01em;
+  }
+  .btn-primary {
+    background: linear-gradient(135deg, var(--gold-bright), var(--gold));
+    color: var(--navy-deep);
+    box-shadow: 0 4px 20px rgba(201,168,76,0.3);
+  }
+  .btn-primary:hover {
+    box-shadow: 0 6px 30px rgba(201,168,76,0.45);
+    transform: translateY(-2px);
+  }
+
+  footer {
+    background: rgba(6, 13, 26, 0.6);
+    border-top: 1px solid rgba(201,168,76,0.08);
+    padding: 28px 20px;
+    text-align: center;
+    position: relative;
+    z-index: 1;
+  }
+  .footer-inner {
+    max-width: 1200px;
+    margin: 0 auto;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 16px;
+  }
+  .footer-inner .left { display: flex; flex-direction: column; gap: 4px; text-align: left; }
+  .footer-inner .brand { font-weight: 600; color: var(--text-primary); font-size: 0.88rem; }
+  .footer-inner .license { font-size: 0.76rem; color: var(--text-muted); }
+  .footer-links { display: flex; gap: 18px; }
+  .footer-links a {
+    font-size: 0.8rem;
+    color: var(--text-muted);
+    text-decoration: none;
+    transition: var(--transition);
+  }
+  .footer-links a:hover { color: var(--gold-light); }
+
+  @media (max-width: 768px) {
+    .nav-links { gap: 12px; }
+    .nav-links a { font-size: 0.78rem; }
+    .content, .related-profiles { padding: 28px 20px; }
+    .profile-grid { grid-template-columns: 1fr; }
+    .footer-inner { flex-direction: column; text-align: center; }
+  }
+
+  /* Index page extras */
+  .page-header {
+    text-align: center;
+    padding: 60px 24px 48px;
+  }
+  .page-header h1 {
+    font-size: clamp(2rem, 5vw, 3rem);
+    font-weight: 800;
+    letter-spacing: -0.03em;
+    line-height: 1.2;
+    margin-bottom: 16px;
+    background: linear-gradient(180deg, #ffffff 0%, #c0c8d4 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+  .page-header p {
+    font-size: 1.1rem;
+    color: var(--text-secondary);
+    max-width: 640px;
+    margin: 0 auto;
+  }
+
+  .profile-index-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 20px;
+    margin-bottom: 60px;
+  }
+  .profile-index-card {
+    background: var(--card-bg);
+    border: 1px solid var(--card-border);
+    border-radius: var(--radius-lg);
+    padding: 28px 24px;
+    text-decoration: none;
+    transition: var(--transition);
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+  .profile-index-card:hover {
+    border-color: rgba(201,168,76,0.3);
+    transform: translateY(-2px);
+    box-shadow: 0 8px 32px rgba(201,168,76,0.08);
+  }
+  .profile-index-number {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 48px;
+    height: 48px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, rgba(201,168,76,0.2), rgba(201,168,76,0.06));
+    border: 1.5px solid rgba(201,168,76,0.3);
+    font-size: 1.1rem;
+    font-weight: 700;
+    color: var(--gold-light);
+  }
+  .profile-index-card h3 {
+    font-size: 1.15rem;
+    font-weight: 700;
+    color: var(--white);
+    letter-spacing: -0.01em;
+  }
+  .profile-index-theme {
+    font-size: 0.85rem;
+    color: var(--text-muted);
+    line-height: 1.5;
+  }
+  .profile-index-meta {
+    display: flex;
+    gap: 16px;
+    font-size: 0.78rem;
+    color: var(--gold);
+    font-weight: 500;
+  }
+
+</style>
+</head>
+<body>
+
+<nav>
+  <div class="nav-inner">
+    <a href="/" class="nav-logo">
+      <div class="icon">◆</div>
+      Human Design Engine
+    </a>
+    <div class="nav-links">
+      <a href="/human-design/types/">Types</a>
+      <a href="/human-design/centers/">Centers</a>
+      <a href="/human-design/channels/">Channels</a>
+      <a href="/human-design/gates/">Gates</a>
+      <a href="/human-design/profiles/">Profiles</a>
+    </div>
+  </div>
+</nav>
+
+<div class="container">
+
+  <div class="breadcrumb">
+    <a href="/">Home</a> <span>›</span>
+    Profiles
+  </div>
+
+  <div class="page-header">
+    <h1>The 12 Profiles of Human Design</h1>
+    <p>Your Profile is the costume you wear in this lifetime — the role you play and the geometry of how you interact with the world. It combines your conscious Personality line (who you think you are) with your unconscious Design line (the body's wisdom others see in you).</p>
+    <p style="margin-top:16px;">The six lines — <span class="highlight">Investigator (1), Hermit (2), Martyr (3), Opportunist (4), Heretic (5), Role Model (6)</span> — combine into 12 unique profiles. Each one is a distinct life path with its own theme, interaction style, and purpose.</p>
+  </div>
+
+  <div class="profile-index-grid">
+    <a href="1-3.html" class="profile-index-card">
+      <div class="profile-index-number">1-3</div>
+      <h3>The Investigator / Martyr</h3>
+      <p class="profile-index-theme">Knowledge Built on Experience</p>
+      <div class="profile-index-meta">
+        <span>Line 1 + Line 3</span>
+        <span>~14% of the population</span>
+      </div>
+    </a>
+    <a href="1-4.html" class="profile-index-card">
+      <div class="profile-index-number">1-4</div>
+      <h3>The Investigator / Opportunist</h3>
+      <p class="profile-index-theme">Knowledge Shared Through Connection</p>
+      <div class="profile-index-meta">
+        <span>Line 1 + Line 4</span>
+        <span>~2% of the population</span>
+      </div>
+    </a>
+    <a href="2-4.html" class="profile-index-card">
+      <div class="profile-index-number">2-4</div>
+      <h3>The Hermit / Opportunist</h3>
+      <p class="profile-index-theme">Natural Talent Shared Through Community</p>
+      <div class="profile-index-meta">
+        <span>Line 1 + Line 3</span>
+        <span>~14% of the population</span>
+      </div>
+    </a>
+    <a href="2-5.html" class="profile-index-card">
+      <div class="profile-index-number">2-5</div>
+      <h3>The Hermit / Heretic</h3>
+      <p class="profile-index-theme">Natural Gift Projected as Universal Solution</p>
+      <div class="profile-index-meta">
+        <span>Line 2 + Line 5</span>
+        <span>~2% of the population</span>
+      </div>
+    </a>
+    <a href="3-5.html" class="profile-index-card">
+      <div class="profile-index-number">3-5</div>
+      <h3>The Martyr / Heretic</h3>
+      <p class="profile-index-theme">Practical Solutions Forged in Experience</p>
+      <div class="profile-index-meta">
+        <span>Line 3 + Line 5</span>
+        <span>~14% of the population</span>
+      </div>
+    </a>
+    <a href="3-6.html" class="profile-index-card">
+      <div class="profile-index-number">3-6</div>
+      <h3>The Martyr / Role Model</h3>
+      <p class="profile-index-theme">Wisdom Earned Across a Lifetime of Experience</p>
+      <div class="profile-index-meta">
+        <span>Line 3 + Line 6</span>
+        <span>~2% of the population</span>
+      </div>
+    </a>
+    <a href="4-6.html" class="profile-index-card">
+      <div class="profile-index-number">4-6</div>
+      <h3>The Opportunist / Role Model</h3>
+      <p class="profile-index-theme">Community-Built Wisdom Over a Lifetime</p>
+      <div class="profile-index-meta">
+        <span>Line 4 + Line 6</span>
+        <span>~14% of the population</span>
+      </div>
+    </a>
+    <a href="4-1.html" class="profile-index-card">
+      <div class="profile-index-number">4-1</div>
+      <h3>The Opportunist / Investigator</h3>
+      <p class="profile-index-theme">Deep Knowledge Built Through and For Community</p>
+      <div class="profile-index-meta">
+        <span>Line 4 + Line 1</span>
+        <span>~1% of the population</span>
+      </div>
+    </a>
+    <a href="5-1.html" class="profile-index-card">
+      <div class="profile-index-number">5-1</div>
+      <h3>The Heretic / Investigator</h3>
+      <p class="profile-index-theme">Authoritative Solutions Grounded in Deep Knowledge</p>
+      <div class="profile-index-meta">
+        <span>Line 5 + Line 1</span>
+        <span>~14% of the population</span>
+      </div>
+    </a>
+    <a href="5-2.html" class="profile-index-card">
+      <div class="profile-index-number">5-2</div>
+      <h3>The Heretic / Hermit</h3>
+      <p class="profile-index-theme">Universal Solutions From Natural Genius</p>
+      <div class="profile-index-meta">
+        <span>Line 5 + Line 2</span>
+        <span>~2% of the population</span>
+      </div>
+    </a>
+    <a href="6-2.html" class="profile-index-card">
+      <div class="profile-index-number">6-2</div>
+      <h3>The Role Model / Hermit</h3>
+      <p class="profile-index-theme">Embodied Wisdom From Natural Genius</p>
+      <div class="profile-index-meta">
+        <span>Line 6 + Line 2</span>
+        <span>~14% of the population</span>
+      </div>
+    </a>
+    <a href="6-3.html" class="profile-index-card">
+      <div class="profile-index-number">6-3</div>
+      <h3>The Role Model / Martyr</h3>
+      <p class="profile-index-theme">Wisdom Forged Through a Lifetime of Discovery</p>
+      <div class="profile-index-meta">
+        <span>Line 6 + Line 3</span>
+        <span>~2% of the population</span>
+      </div>
+    </a>
+  </div>
+
+  <section class="content">
+    <h2>Understanding the Six Lines</h2>
+    <p>Every Human Design profile is built from two of the six lines below. The first number is your <span class="highlight">Personality (conscious) line</span> — this is who you think you are, what you identify with. The second number is your <span class="highlight">Design (unconscious) line</span> — this is the body's intelligence that operates below your awareness but that others experience powerfully.</p>
+
+    <h3>Line 1 — The Investigator</h3>
+    <p>The Investigator needs a solid foundation. You study, research, and dig deep before feeling ready to contribute. Your authority comes from genuine depth of knowledge. The shadow is insecurity — feeling you never know enough. Your gift is becoming a reliable, authoritative source others can trust.</p>
+
+    <h3>Line 2 — The Hermit</h3>
+    <p>The Hermit carries a natural, effortless genius — a talent so innate you may not recognize it as special. You need solitude to cultivate your gift and must wait to be "called out" by others before sharing it. The shadow is hiding. The gift is that your talent, when recognized and shared, is magnetic and transformative.</p>
+
+    <h3>Line 3 — The Martyr</h3>
+    <p>The Martyr learns through direct experience — trial and error is your curriculum. You make and break bonds, discover what works and what doesn't, and emerge with hard-won wisdom. The shadow is seeing failures as mistakes rather than data. The gift is resilience and the ability to say with authority: "This works. I've tested it."</p>
+
+    <h3>Line 4 — The Opportunist</h3>
+    <p>The Opportunist's life moves through relationships. Opportunities, growth, and impact come through your network of trusted connections. Your warmth draws people in. The shadow is vulnerability — extending yourself into relationships opens you to hurt. The gift is a rich, supportive community that carries you through life.</p>
+
+    <h3>Line 5 — The Heretic</h3>
+    <p>The Heretic is a universalizer — you see the practical solution that works for everyone. Others project onto you, seeing you as either savior or scapegoat. The shadow is getting entangled in projection. The gift is delivering solutions that actually work, at scale, because they're grounded in practical truth.</p>
+
+    <h3>Line 6 — The Role Model</h3>
+    <p>The Role Model lives a three-phase life: experimentation (birth to ~30), observation and integration (~30 to ~50), and embodied wisdom (~50+). The shadow is impatience with the long arc. The gift is becoming a living example of wisdom earned through a fully lived life.</p>
+  </section>
+
+  <section class="cta-section">
+    <h2>Find Your Profile</h2>
+    <p>Your Human Design chart reveals your exact profile — the combination of your Personality Sun/Earth line and your Design Sun/Earth line. Discover your full design with a personalized 70+ page report.</p>
+    <a href="/buy-report.html" class="btn btn-primary">Get Your Full Personalized Report →</a>
+  </section>
+
+</div>
+
+<footer>
+  <div class="footer-inner">
+    <div class="left">
+      <span class="brand">Human Design Engine</span>
+      <span class="license">Verified chart data — open-source computation engine.</span>
+    </div>
+    <div class="footer-links">
+      <a href="/human-design/types/">Types</a>
+      <a href="/human-design/profiles/">Profiles</a>
+      <a href="/human-design/centers/">Centers</a>
+      <a href="/human-design/channels/">Channels</a>
+      <a href="/human-design/gates/">Gates</a>
+      <a href="/privacy">Privacy</a>
+    </div>
+  </div>
+</footer>
+
+</body>
+</html>
