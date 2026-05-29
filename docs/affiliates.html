@@ -1,0 +1,346 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Affiliate Program | Human Design Engine</title>
+<style>
+  :root {
+    --navy-deep: #060d1a; --navy: #0a1628; --navy-mid: #0f1d36; --navy-light: #162744;
+    --navy-lighter: #1e3458; --gold: #c9a84c; --gold-light: #e0c468; --gold-bright: #d4af37;
+    --gold-soft: rgba(201,168,76,0.15); --gold-glow: rgba(201,168,76,0.08);
+    --text-primary: #e8e6e3; --text-secondary: #8899aa; --text-muted: #5a6a7a;
+    --white: #ffffff; --card-bg: rgba(15,29,54,0.7); --card-border: rgba(201,168,76,0.12);
+    --radius: 12px; --radius-lg: 20px; --shadow: 0 4px 24px rgba(0,0,0,0.3);
+    --transition: 0.25s cubic-bezier(0.4,0,0.2,1);
+    --green: #4ade80; --green-soft: rgba(74,222,128,0.12);
+  }
+  *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+  html{scroll-behavior:smooth}
+  body{font-family:'Inter',-apple-system,BlinkMacSystemFont,'Segoe UI',system-ui,sans-serif;background:var(--navy-deep);color:var(--text-primary);line-height:1.6;overflow-x:hidden}
+  body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellipse at 20% 10%,rgba(201,168,76,0.04) 0%,transparent 60%),radial-gradient(ellipse at 80% 90%,rgba(201,168,76,0.03) 0%,transparent 60%),radial-gradient(ellipse at 50% 50%,rgba(15,29,54,0.8) 0%,var(--navy-deep) 100%);pointer-events:none;z-index:-1}
+
+  nav{position:sticky;top:0;z-index:100;background:rgba(6,13,26,0.85);backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);border-bottom:1px solid rgba(201,168,76,0.1);padding:0 20px}
+  .nav-inner{max-width:1200px;margin:0 auto;display:flex;align-items:center;justify-content:space-between;height:64px;position:relative;z-index:1}
+  .nav-logo{display:flex;align-items:center;gap:10px;font-size:1.4rem;font-weight:700;color:var(--white);text-decoration:none;letter-spacing:-0.02em}
+  .nav-logo .icon{width:32px;height:32px;background:linear-gradient(135deg,var(--gold-bright),var(--gold));border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:0.9rem;color:var(--navy-deep);font-weight:900}
+  .nav-links{display:flex;gap:28px;align-items:center}
+  .nav-links a{color:var(--text-secondary);text-decoration:none;font-size:0.9rem;font-weight:500;transition:var(--transition)}
+  .nav-links a:hover{color:var(--gold-light)}
+  .nav-links a.active{color:var(--gold-light)}
+  .nav-cta{background:var(--gold);color:var(--navy-deep)!important;padding:8px 20px;border-radius:8px;font-weight:600!important;transition:var(--transition)}
+  .nav-cta:hover{background:var(--gold-light);transform:translateY(-1px)}
+
+  .container{max-width:1100px;margin:0 auto;padding:0 24px;position:relative;z-index:1}
+
+  .hero{text-align:center;padding:100px 24px 60px;position:relative;z-index:1}
+  .hero-badge{display:inline-flex;align-items:center;gap:8px;background:var(--green-soft);border:1px solid rgba(74,222,128,0.25);border-radius:50px;padding:6px 18px;font-size:0.85rem;color:var(--green);font-weight:500;margin-bottom:28px}
+  .hero-badge .dot{width:8px;height:8px;background:var(--green);border-radius:50%;animation:pulse-dot 2s infinite}
+  @keyframes pulse-dot{0%,100%{opacity:1;transform:scale(1)}50%{opacity:0.5;transform:scale(1.4)}}
+  .hero h1{font-size:clamp(2rem,4.5vw,3.2rem);font-weight:800;letter-spacing:-0.03em;line-height:1.15;margin-bottom:20px}
+  .hero h1 .gold{color:var(--gold-light)}
+  .hero p.subtitle{font-size:1.15rem;color:var(--text-secondary);max-width:640px;margin:0 auto 36px;line-height:1.7}
+  .hero-buttons{display:flex;gap:16px;flex-wrap:wrap;justify-content:center}
+
+  .btn{display:inline-flex;align-items:center;gap:8px;padding:14px 32px;border-radius:10px;font-size:0.95rem;font-weight:600;text-decoration:none;cursor:pointer;border:none;transition:var(--transition);letter-spacing:-0.01em}
+  .btn-primary{background:linear-gradient(135deg,var(--gold-bright),var(--gold));color:var(--navy-deep);box-shadow:0 4px 20px rgba(201,168,76,0.3)}
+  .btn-primary:hover{box-shadow:0 6px 30px rgba(201,168,76,0.45);transform:translateY(-2px)}
+  .btn-outline{background:transparent;color:var(--gold-light);border:1.5px solid rgba(201,168,76,0.4)}
+  .btn-outline:hover{background:var(--gold-soft);border-color:var(--gold)}
+  .btn-large{padding:18px 40px;font-size:1.1rem;border-radius:12px}
+
+  .section-header{text-align:center;margin-bottom:56px}
+  .section-header .overline{font-size:0.8rem;text-transform:uppercase;letter-spacing:0.12em;color:var(--gold);font-weight:600;margin-bottom:12px}
+  .section-header h2{font-size:clamp(1.6rem,3vw,2.2rem);font-weight:700;letter-spacing:-0.02em;margin-bottom:12px}
+  .section-header p{color:var(--text-secondary);font-size:1rem;max-width:540px;margin:0 auto}
+
+  .commission-banner{background:linear-gradient(135deg,rgba(74,222,128,0.08),rgba(201,168,76,0.08));border:1px solid rgba(74,222,128,0.2);border-radius:var(--radius-lg);padding:40px;text-align:center;margin-bottom:80px}
+  .commission-banner .big-num{font-size:4rem;font-weight:800;color:var(--green);line-height:1;margin-bottom:8px}
+  .commission-banner .big-label{font-size:1.2rem;color:var(--text-primary);font-weight:600;margin-bottom:8px}
+  .commission-banner .big-sub{font-size:0.9rem;color:var(--text-muted)}
+
+  .how-it-works{padding:0 0 80px}
+  .steps-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:32px;max-width:900px;margin:0 auto}
+  .step-card{text-align:center;position:relative}
+  .step-card .step-num{width:56px;height:56px;border-radius:50%;background:linear-gradient(135deg,var(--gold-bright),var(--gold));color:var(--navy-deep);display:flex;align-items:center;justify-content:center;font-size:1.4rem;font-weight:800;margin:0 auto 20px;box-shadow:0 4px 16px rgba(201,168,76,0.3)}
+  .step-card h4{font-size:1.05rem;font-weight:600;margin-bottom:8px}
+  .step-card p{font-size:0.88rem;color:var(--text-muted);line-height:1.6}
+
+  .benefits{padding:0 0 80px;background:rgba(10,22,40,0.5)}
+  .benefits-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:24px}
+  .benefit-card{background:var(--card-bg);border:1px solid var(--card-border);border-radius:var(--radius);padding:28px 24px;transition:var(--transition)}
+  .benefit-card:hover{border-color:rgba(201,168,76,0.25);box-shadow:0 6px 24px rgba(0,0,0,0.25)}
+  .benefit-icon{width:40px;height:40px;border-radius:10px;background:var(--gold-soft);display:flex;align-items:center;justify-content:center;font-size:1.1rem;margin-bottom:16px}
+  .benefit-card h4{font-size:1rem;font-weight:600;margin-bottom:6px}
+  .benefit-card p{font-size:0.85rem;color:var(--text-muted);line-height:1.6}
+
+  .who-section{padding:0 0 80px}
+  .who-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:20px}
+  .who-card{background:var(--card-bg);border:1px solid var(--card-border);border-radius:var(--radius);padding:24px 20px;text-align:center;transition:var(--transition)}
+  .who-card:hover{border-color:rgba(201,168,76,0.25)}
+  .who-card .who-emoji{font-size:2rem;margin-bottom:12px;display:block}
+  .who-card h4{font-size:1rem;font-weight:600;margin-bottom:6px}
+  .who-card p{font-size:0.82rem;color:var(--text-muted);line-height:1.5}
+
+  .earnings-section{padding:0 0 80px;background:rgba(10,22,40,0.5)}
+  .earnings-table{max-width:500px;margin:0 auto}
+  .earnings-row{display:flex;justify-content:space-between;align-items:center;padding:16px 20px;border-bottom:1px solid rgba(255,255,255,0.04)}
+  .earnings-row:last-child{border-bottom:none}
+  .earnings-row .prod{font-weight:500;color:var(--text-primary)}
+  .earnings-row .price{color:var(--text-secondary);font-size:0.9rem}
+  .earnings-row .commission{color:var(--green);font-weight:600}
+  .earnings-footer{text-align:center;margin-top:24px;padding-top:20px;border-top:1px solid rgba(201,168,76,0.12)}
+  .earnings-footer .total{font-size:1.3rem;color:var(--green);font-weight:700}
+
+  .cta-section{text-align:center;padding:80px 24px;position:relative;z-index:1}
+  .cta-section h2{font-size:clamp(1.6rem,3vw,2rem);font-weight:700;margin-bottom:12px}
+  .cta-section p{color:var(--text-secondary);margin-bottom:28px;max-width:500px;margin-left:auto;margin-right:auto}
+
+  footer{border-top:1px solid rgba(201,168,76,0.08);padding:40px 24px;position:relative;z-index:1}
+  .footer-inner{max-width:1200px;margin:0 auto;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:16px}
+  .footer-inner .left{display:flex;flex-direction:column;gap:4px}
+  .footer-inner .brand{font-weight:600;color:var(--text-primary);font-size:0.9rem}
+  .footer-inner .license{font-size:0.78rem;color:var(--text-muted)}
+  .footer-links{display:flex;gap:20px}
+  .footer-links a{font-size:0.82rem;color:var(--text-muted);text-decoration:none;transition:var(--transition)}
+  .footer-links a:hover{color:var(--gold-light)}
+
+  .trust-bar{display:flex;align-items:center;justify-content:center;gap:32px;flex-wrap:wrap;padding:36px 24px;border-top:1px solid rgba(201,168,76,0.08);border-bottom:1px solid rgba(201,168,76,0.08);margin-bottom:80px}
+  .trust-item{display:flex;align-items:center;gap:10px;font-size:0.85rem;color:var(--text-muted);font-weight:500}
+  .trust-item .check{color:var(--gold);font-size:1rem}
+
+  @media(max-width:768px){
+    .nav-links{gap:14px}.nav-links a{font-size:0.8rem}
+    .hero{padding:60px 16px 50px}
+    .commission-banner{padding:28px 20px}
+    .commission-banner .big-num{font-size:3rem}
+    .trust-bar{gap:16px}
+    .footer-inner{flex-direction:column;text-align:center}
+  }
+  @media(max-width:480px){
+    .hero-buttons{flex-direction:column;align-items:center}
+    .btn{width:100%;max-width:300px;justify-content:center}
+  }
+</style>
+</head>
+<body>
+
+<nav>
+  <div class="nav-inner">
+    <a href="/" class="nav-logo">
+      <div class="icon">◆</div>
+      Human Design Engine
+    </a>
+    <div class="nav-links">
+      <a href="/">Home</a>
+      <a href="/landing-reports.html">Reports</a>
+      <a href="/landing-api.html">API</a>
+      <a href="/affiliates.html" class="active">Affiliates</a>
+    </div>
+  </div>
+</nav>
+
+<section class="hero">
+  <div class="container">
+    <div class="hero-badge">
+      <span class="dot"></span> Earn While You Share
+    </div>
+    <h1>Share Human Design.<br>Earn <span class="gold">30% Commission</span>.</h1>
+    <p class="subtitle">
+      Join the Human Design Engine Affiliate Program. Promote verified, beautifully-designed Human Design reports and earn 30% on every sale you refer — with a 90-day cookie window.
+    </p>
+    <div class="hero-buttons">
+      <a href="affiliates/signup.html" class="btn btn-primary btn-large">Become an Affiliate →</a>
+      <a href="affiliates/dashboard.html" class="btn btn-outline btn-large">Check My Dashboard →</a>
+    </div>
+  </div>
+</section>
+
+<div class="trust-bar">
+  <div class="trust-item"><span class="check">✓</span> 30% commission on every referred sale</div>
+  <div class="trust-item"><span class="check">✓</span> 90-day cookie window</div>
+  <div class="trust-item"><span class="check">✓</span> Monthly payouts via Stripe</div>
+  <div class="trust-item"><span class="check">✓</span> Real-time dashboard</div>
+</div>
+
+<div class="container">
+  <div class="commission-banner">
+    <div class="big-num">30%</div>
+    <div class="big-label">Commission on Every Referred Purchase</div>
+    <div class="big-sub">From $19 natal reports to $59 bundles — you earn on everything your audience buys</div>
+  </div>
+</div>
+
+<section class="how-it-works">
+  <div class="container">
+    <div class="section-header">
+      <div class="overline">How It Works</div>
+      <h2>Three simple steps to start earning</h2>
+      <p>No complicated setup. No minimum audience size. Just share and earn.</p>
+    </div>
+    <div class="steps-grid">
+      <div class="step-card">
+        <div class="step-num">1</div>
+        <h4>Sign Up</h4>
+        <p>Fill out our quick form — name, email, and where you share content. You'll get a unique referral link instantly.</p>
+      </div>
+      <div class="step-card">
+        <div class="step-num">2</div>
+        <h4>Share Your Link</h4>
+        <p>Post your referral link on social media, in your newsletter, on your website, or share it directly with clients and friends.</p>
+      </div>
+      <div class="step-card">
+        <div class="step-num">3</div>
+        <h4>Earn 30%</h4>
+        <p>When someone clicks your link and buys any report within 90 days, you earn 30% commission. Track everything in your dashboard.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="benefits">
+  <div class="container">
+    <div class="section-header">
+      <div class="overline">Why Partner With Us</div>
+      <h2>Everything you need to succeed</h2>
+      <p>A program designed to reward you generously for sharing the power of Human Design.</p>
+    </div>
+    <div class="benefits-grid">
+      <div class="benefit-card">
+        <div class="benefit-icon">💰</div>
+        <h4>Generous 30% Rate</h4>
+        <p>Earn $5.70 on every $19 natal report, $8.70 on synastry/transit reports, and $17.70 on each bundle. One of the highest rates in the industry.</p>
+      </div>
+      <div class="benefit-card">
+        <div class="benefit-icon">🍪</div>
+        <h4>90-Day Cookie Window</h4>
+        <p>Your referrals have 90 days to purchase after clicking your link. If they come back and buy later, you still get credit.</p>
+      </div>
+      <div class="benefit-card">
+        <div class="benefit-icon">💳</div>
+        <h4>Monthly Stripe Payouts</h4>
+        <p>Get paid reliably every month via Stripe. No chasing invoices — your commission arrives on schedule, every time.</p>
+      </div>
+      <div class="benefit-card">
+        <div class="benefit-icon">📊</div>
+        <h4>Real-Time Dashboard</h4>
+        <p>Log in anytime to see your clicks, conversions, and earnings. Full transparency — know exactly how your referrals are performing.</p>
+      </div>
+      <div class="benefit-card">
+        <div class="benefit-icon">🔬</div>
+        <h4>Verified, Trusted Product</h4>
+        <p>Promote reports backed by verified open-source calculations that match Neutrino Design. Your audience gets the real thing.</p>
+      </div>
+      <div class="benefit-card">
+        <div class="benefit-icon">🚀</div>
+        <h4>No Minimums, No Caps</h4>
+        <p>Whether you refer 1 or 1,000 customers, the rate stays at 30%. No tiers, no fine print — just straightforward earnings.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="who-section">
+  <div class="container">
+    <div class="section-header">
+      <div class="overline">Who Should Join</div>
+      <h2>Perfect for Human Design enthusiasts</h2>
+      <p>If you talk about Human Design, you should be earning from it.</p>
+    </div>
+    <div class="who-grid">
+      <div class="who-card">
+        <span class="who-emoji">🧘</span>
+        <h4>HD Practitioners & Coaches</h4>
+        <p>Offer your clients professional reports as a complement to your readings. Earn on every report they purchase.</p>
+      </div>
+      <div class="who-card">
+        <span class="who-emoji">📱</span>
+        <h4>Content Creators</h4>
+        <p>Share your link in YouTube descriptions, Instagram bios, TikTok comments, and blog posts. Monetize your HD content.</p>
+      </div>
+      <div class="who-card">
+        <span class="who-emoji">📧</span>
+        <h4>Newsletter Authors</h4>
+        <p>Include your referral link in your HD-focused newsletter. Your readers get valuable reports, you earn commission.</p>
+      </div>
+      <div class="who-card">
+        <span class="who-emoji">🌐</span>
+        <h4>Website & Blog Owners</h4>
+        <p>Embed your referral link in relevant articles and resource pages. Passive income from content you've already written.</p>
+      </div>
+      <div class="who-card">
+        <span class="who-emoji">🎙</span>
+        <h4>Podcasters</h4>
+        <p>Mention your affiliate link in show notes and episodes. Your listeners get deeper into HD, and you get paid.</p>
+      </div>
+      <div class="who-card">
+        <span class="who-emoji">💬</span>
+        <h4>Community Leaders</h4>
+        <p>Share in Facebook groups, Discord servers, Reddit communities, and forums. Help your community discover their design.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="earnings-section">
+  <div class="container">
+    <div class="section-header">
+      <div class="overline">Your Earning Potential</div>
+      <h2>What you earn per sale</h2>
+      <p>30% of every report — straightforward and transparent.</p>
+    </div>
+    <div class="earnings-table">
+      <div class="earnings-row">
+        <span class="prod">🌱 Foundation Report</span>
+        <span class="price">$19</span>
+        <span class="commission">→ $5.70</span>
+      </div>
+      <div class="earnings-row">
+        <span class="prod">💫 Relationship Synastry</span>
+        <span class="price">$29</span>
+        <span class="commission">→ $8.70</span>
+      </div>
+      <div class="earnings-row">
+        <span class="prod">🌙 12-Month Transit Forecast</span>
+        <span class="price">$29</span>
+        <span class="commission">→ $8.70</span>
+      </div>
+      <div class="earnings-row">
+        <span class="prod">✨ Complete Bundle</span>
+        <span class="price">$59</span>
+        <span class="commission">→ $17.70</span>
+      </div>
+    </div>
+    <div class="earnings-footer">
+      <p style="color:var(--text-muted);font-size:0.9rem;margin-bottom:8px">10 referrals/month of just natal reports = <span class="total">$57/month</span></p>
+      <p style="color:var(--text-muted);font-size:0.9rem">10 referrals/month of bundle reports = <span class="total">$177/month</span></p>
+    </div>
+  </div>
+</section>
+
+<section class="cta-section">
+  <div class="container">
+    <h2>Ready to start earning?</h2>
+    <p>Join the affiliate program today and start sharing the power of Human Design. It takes less than a minute to get your unique referral link.</p>
+    <a href="affiliates/signup.html" class="btn btn-primary btn-large">Sign Up Now →</a>
+  </div>
+</section>
+
+<footer>
+  <div class="footer-inner">
+    <div class="left">
+      <span class="brand">Human Design Engine</span>
+      <span class="license">Licensed under AGPLv3. Core calculation engine is open source.</span>
+    </div>
+    <div class="footer-links">
+      <a href="/">Home</a>
+      <a href="/landing-api.html">API</a>
+      <a href="/landing-reports.html">Reports</a>
+      <a href="/affiliates.html">Affiliates</a>
+      <a href="https://github.com/nousresearch/OpenHumanDesignMCP">GitHub</a>
+    </div>
+  </div>
+</footer>
+
+</body>
+</html>

@@ -106,7 +106,10 @@
     </div>
   </div>
 
-  <button class="btn" id="buyBtn" onclick="buyReport()">🔒 Secure Checkout with Stripe →</button>
+  <input type="hidden" id="refCode" value="">
+  <div id="refNotice" style="display:none;text-align:center;margin-top:8px;padding:8px 16px;background:rgba(74,222,128,0.08);border:1px solid rgba(74,222,128,0.2);border-radius:8px;font-size:0.85rem;color:#4ade80"></div>
+
+  <button class="btn" id="buyBtn">🔒 Secure Checkout with Stripe →</button>
   <div class="error" id="error"></div>
 
   <div class="trust-row">
@@ -123,6 +126,16 @@
 
 <script>
 let selectedReport = 'natal';
+
+// Parse referral code from URL
+const urlParams = new URLSearchParams(window.location.search);
+const refCode = urlParams.get('ref') || '';
+document.getElementById('refCode').value = refCode;
+
+if (refCode) {
+  document.getElementById('refNotice').style.display = 'block';
+  document.getElementById('refNotice').textContent = '🔗 Referred by affiliate partner';
+}
 
 function selectReport(report) {
   selectedReport = report;
@@ -144,6 +157,7 @@ async function buyReport() {
   const birthtime = document.getElementById('birthtime').value;
   const location = document.getElementById('location').value.trim();
   const partner = document.getElementById('partner').value.trim();
+  const ref = document.getElementById('refCode').value;
 
   if (!name || !email || !birthdate || !birthtime || !location) {
     error.textContent = 'Please fill in all required fields.'; error.style.display = 'block';
@@ -164,7 +178,8 @@ async function buyReport() {
       body: JSON.stringify({
         name, email, birthdate, birthtime, location,
         report: selectedReport, price: prices[selectedReport],
-        partner: partner || undefined
+        partner: partner || undefined,
+        ref: ref || undefined
       })
     });
     if (!resp.ok) throw new Error('Payment server error');
