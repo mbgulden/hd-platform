@@ -1,933 +1,934 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Deep Dive Reports — Your Human Design Blueprint | DesignEngine</title>
-<style>
-  :root {
-    --navy-deep: #060d1a;
-    --navy: #0a1628;
-    --navy-mid: #0f1d36;
-    --navy-light: #162744;
-    --navy-lighter: #1e3458;
-    --gold: #c9a84c;
-    --gold-light: #e0c468;
-    --gold-bright: #d4af37;
-    --gold-soft: rgba(201, 168, 76, 0.15);
-    --gold-glow: rgba(201, 168, 76, 0.08);
-    --text-primary: #e8e6e3;
-    --text-secondary: #8899aa;
-    --text-muted: #5a6a7a;
-    --white: #ffffff;
-    --card-bg: rgba(15, 29, 54, 0.7);
-    --card-border: rgba(201, 168, 76, 0.12);
-    --radius: 12px;
-    --radius-lg: 20px;
-    --shadow: 0 4px 24px rgba(0,0,0,0.3);
-    --transition: 0.25s cubic-bezier(0.4, 0, 0.2, 1);
-  }
-
-  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-
-  html { scroll-behavior: smooth; }
-
-  body {
-    font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
-    background: var(--navy-deep);
-    color: var(--text-primary);
-    line-height: 1.6;
-    overflow-x: hidden;
-  }
-
-  body::before {
-    content: '';
-    position: fixed;
-    inset: 0;
-    background:
-      radial-gradient(ellipse at 20% 10%, rgba(201,168,76,0.04) 0%, transparent 60%),
-      radial-gradient(ellipse at 80% 90%, rgba(201,168,76,0.03) 0%, transparent 60%),
-      radial-gradient(ellipse at 50% 50%, rgba(15,29,54,0.8) 0%, var(--navy-deep) 100%);
-    pointer-events: none;
-    z-index: 0;
-  }
-
-  /* ---- NAV ---- */
-  nav {
-    position: sticky;
-    top: 0;
-    z-index: 100;
-    background: rgba(6, 13, 26, 0.85);
-    backdrop-filter: blur(16px);
-    -webkit-backdrop-filter: blur(16px);
-    border-bottom: 1px solid rgba(201,168,76,0.1);
-    padding: 0 20px;
-  }
-  .nav-inner {
-    max-width: 1200px;
-    margin: 0 auto;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    height: 64px;
-    position: relative;
-    z-index: 1;
-  }
-  .nav-logo {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    font-size: 1.4rem;
-    font-weight: 700;
-    color: var(--white);
-    text-decoration: none;
-    letter-spacing: -0.02em;
-  }
-  .nav-logo .icon {
-    width: 32px; height: 32px;
-    background: linear-gradient(135deg, var(--gold-bright), var(--gold));
-    border-radius: 8px;
-    display: flex; align-items: center; justify-content: center;
-    font-size: 0.9rem;
-    color: var(--navy-deep);
-    font-weight: 900;
-  }
-  .nav-links { display: flex; gap: 28px; align-items: center; }
-  .nav-links a {
-    color: var(--text-secondary);
-    text-decoration: none;
-    font-size: 0.9rem;
-    font-weight: 500;
-    transition: var(--transition);
-  }
-  .nav-links a:hover { color: var(--gold-light); }
-  .nav-links a.active { color: var(--gold-light); }
-  .nav-cta {
-    background: var(--gold);
-    color: var(--navy-deep) !important;
-    padding: 8px 20px;
-    border-radius: 8px;
-    font-weight: 600 !important;
-    transition: var(--transition);
-  }
-  .nav-cta:hover {
-    background: var(--gold-light);
-    transform: translateY(-1px);
-  }
-
-  /* ---- CONTAINER ---- */
-  .container {
-    max-width: 1200px;
-    margin: 0 auto;
-    padding: 0 24px;
-    position: relative;
-    z-index: 1;
-  }
-
-  /* ---- HERO ---- */
-  .hero {
-    text-align: center;
-    padding: 100px 24px 80px;
-    position: relative;
-    z-index: 1;
-  }
-  .hero-badge {
-    display: inline-flex;
-    align-items: center;
-    gap: 8px;
-    background: var(--gold-soft);
-    border: 1px solid rgba(201,168,76,0.25);
-    border-radius: 50px;
-    padding: 6px 18px;
-    font-size: 0.85rem;
-    color: var(--gold-light);
-    font-weight: 500;
-    margin-bottom: 28px;
-  }
-  .hero-badge .dot {
-    width: 8px; height: 8px;
-    background: var(--gold-bright);
-    border-radius: 50%;
-    animation: pulse-dot 2s infinite;
-  }
-  @keyframes pulse-dot {
-    0%, 100% { opacity: 1; transform: scale(1); }
-    50% { opacity: 0.5; transform: scale(1.4); }
-  }
-  .hero h1 {
-    font-size: clamp(2.2rem, 5vw, 3.6rem);
-    font-weight: 800;
-    letter-spacing: -0.03em;
-    line-height: 1.15;
-    margin-bottom: 20px;
-    background: linear-gradient(180deg, #ffffff 0%, #c0c8d4 100%);
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    background-clip: text;
-  }
-  .hero h1 .gold { -webkit-text-fill-color: var(--gold-light); }
-  .hero p.subtitle {
-    font-size: 1.15rem;
-    color: var(--text-secondary);
-    max-width: 640px;
-    margin: 0 auto 36px;
-    line-height: 1.7;
-  }
-  .hero-buttons {
-    display: flex;
-    gap: 16px;
-    flex-wrap: wrap;
-    justify-content: center;
-  }
-  .btn {
-    display: inline-flex;
-    align-items: center;
-    gap: 8px;
-    padding: 14px 32px;
-    border-radius: 10px;
-    font-size: 0.95rem;
-    font-weight: 600;
-    text-decoration: none;
-    cursor: pointer;
-    border: none;
-    transition: var(--transition);
-    letter-spacing: -0.01em;
-  }
-  .btn-primary {
-    background: linear-gradient(135deg, var(--gold-bright), var(--gold));
-    color: var(--navy-deep);
-    box-shadow: 0 4px 20px rgba(201,168,76,0.3);
-  }
-  .btn-primary:hover {
-    box-shadow: 0 6px 30px rgba(201,168,76,0.45);
-    transform: translateY(-2px);
-  }
-  .btn-outline {
-    background: transparent;
-    color: var(--gold-light);
-    border: 1.5px solid rgba(201,168,76,0.4);
-  }
-  .btn-outline:hover {
-    background: var(--gold-soft);
-    border-color: var(--gold);
-  }
-
-  /* ---- TRUST BAR ---- */
-  .trust-bar {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 32px;
-    flex-wrap: wrap;
-    padding: 36px 24px;
-    border-top: 1px solid rgba(201,168,76,0.08);
-    border-bottom: 1px solid rgba(201,168,76,0.08);
-    margin-bottom: 80px;
-  }
-  .trust-item {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    font-size: 0.85rem;
-    color: var(--text-muted);
-    font-weight: 500;
-  }
-  .trust-item .check { color: var(--gold); font-size: 1rem; }
-
-  /* ---- SECTION HEADERS ---- */
-  .section-header {
-    text-align: center;
-    margin-bottom: 56px;
-  }
-  .section-header .overline {
-    font-size: 0.8rem;
-    text-transform: uppercase;
-    letter-spacing: 0.12em;
-    color: var(--gold);
-    font-weight: 600;
-    margin-bottom: 12px;
-  }
-  .section-header h2 {
-    font-size: clamp(1.6rem, 3vw, 2.2rem);
-    font-weight: 700;
-    letter-spacing: -0.02em;
-    margin-bottom: 12px;
-  }
-  .section-header p {
-    color: var(--text-secondary);
-    font-size: 1rem;
-    max-width: 540px;
-    margin: 0 auto;
-  }
-
-  /* ---- WHAT'S INSIDE ---- */
-  .inside {
-    padding: 80px 0;
-  }
-  .inside-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
-    gap: 24px;
-  }
-  .inside-card {
-    background: var(--card-bg);
-    border: 1px solid var(--card-border);
-    border-radius: var(--radius);
-    padding: 28px 24px;
-    transition: var(--transition);
-  }
-  .inside-card:hover {
-    border-color: rgba(201,168,76,0.25);
-    box-shadow: 0 6px 24px rgba(0,0,0,0.25);
-  }
-  .inside-icon {
-    width: 40px; height: 40px;
-    border-radius: 10px;
-    background: var(--gold-soft);
-    display: flex; align-items: center; justify-content: center;
-    font-size: 1.1rem;
-    margin-bottom: 16px;
-  }
-  .inside-card h4 {
-    font-size: 1rem;
-    font-weight: 600;
-    margin-bottom: 6px;
-  }
-  .inside-card p {
-    font-size: 0.85rem;
-    color: var(--text-muted);
-    line-height: 1.6;
-  }
-
-  /* ---- HOW IT WORKS ---- */
-  .how-it-works {
-    padding: 80px 0;
-    background: rgba(10,22,40,0.5);
-  }
-  .steps {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-    gap: 32px;
-    max-width: 900px;
-    margin: 0 auto;
-  }
-  .step {
-    text-align: center;
-    position: relative;
-  }
-  .step-number {
-    width: 56px; height: 56px;
-    border-radius: 50%;
-    background: linear-gradient(135deg, var(--gold-bright), var(--gold));
-    color: var(--navy-deep);
-    display: flex; align-items: center; justify-content: center;
-    font-size: 1.4rem;
-    font-weight: 800;
-    margin: 0 auto 20px;
-    box-shadow: 0 4px 16px rgba(201,168,76,0.3);
-  }
-  .step h4 {
-    font-size: 1.05rem;
-    font-weight: 600;
-    margin-bottom: 8px;
-  }
-  .step p {
-    font-size: 0.88rem;
-    color: var(--text-muted);
-    line-height: 1.6;
-  }
-
-  /* ---- SAMPLE REPORT ---- */
-  .sample-report {
-    padding: 80px 0;
-  }
-  .report-preview {
-    background: var(--card-bg);
-    border: 1px solid var(--card-border);
-    border-radius: var(--radius-lg);
-    padding: 40px 36px;
-    max-width: 800px;
-    margin: 0 auto;
-    display: grid;
-    grid-template-columns: 140px 1fr;
-    gap: 32px;
-    align-items: start;
-  }
-  .report-cover {
-    width: 140px;
-    height: 180px;
-    background: linear-gradient(160deg, #0f1d36 0%, #1a2d4a 100%);
-    border: 1px solid rgba(201,168,76,0.2);
-    border-radius: 8px;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    text-align: center;
-    padding: 16px;
-    gap: 8px;
-  }
-  .report-cover .cover-icon {
-    font-size: 2rem;
-    color: var(--gold-light);
-  }
-  .report-cover .cover-title {
-    font-size: 0.7rem;
-    font-weight: 700;
-    letter-spacing: 0.06em;
-    text-transform: uppercase;
-    color: var(--gold);
-  }
-  .report-cover .cover-sub {
-    font-size: 0.65rem;
-    color: var(--text-muted);
-  }
-  .report-details h3 {
-    font-size: 1.3rem;
-    font-weight: 700;
-    margin-bottom: 12px;
-  }
-  .report-details .toc-item {
-    display: flex;
-    align-items: center;
-    gap: 12px;
-    padding: 10px 0;
-    border-bottom: 1px solid rgba(255,255,255,0.04);
-    font-size: 0.88rem;
-    color: var(--text-secondary);
-  }
-  .report-details .toc-item .toc-num {
-    color: var(--gold);
-    font-weight: 700;
-    font-size: 0.78rem;
-    min-width: 28px;
-  }
-  .report-details .toc-item .toc-pages {
-    margin-left: auto;
-    color: var(--text-muted);
-    font-size: 0.78rem;
-  }
-
-  /* ---- PRICING ---- */
-  .pricing {
-    padding: 80px 0;
-    background: rgba(10,22,40,0.5);
-  }
-  .pricing-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-    gap: 24px;
-    max-width: 900px;
-    margin: 0 auto;
-  }
-  .pricing-card {
-    background: var(--card-bg);
-    border: 1px solid var(--card-border);
-    border-radius: var(--radius-lg);
-    padding: 36px 28px;
-    text-align: center;
-    transition: var(--transition);
-    position: relative;
-  }
-  .pricing-card.featured {
-    border-color: rgba(201,168,76,0.35);
-    box-shadow: 0 0 0 1px rgba(201,168,76,0.2), 0 8px 40px rgba(201,168,76,0.08);
-  }
-  .pricing-card.featured::after {
-    content: 'Best Value';
-    position: absolute;
-    top: -12px;
-    left: 50%;
-    transform: translateX(-50%);
-    background: var(--gold);
-    color: var(--navy-deep);
-    font-size: 0.72rem;
-    font-weight: 700;
-    padding: 4px 16px;
-    border-radius: 50px;
-    letter-spacing: 0.03em;
-  }
-  .pricing-card h4 {
-    font-size: 1.1rem;
-    font-weight: 600;
-    margin-bottom: 12px;
-  }
-  .pricing-card .price {
-    font-size: 2.2rem;
-    font-weight: 800;
-    margin-bottom: 4px;
-    letter-spacing: -0.02em;
-  }
-  .pricing-card .price span {
-    font-size: 0.9rem;
-    font-weight: 500;
-    color: var(--text-muted);
-  }
-  .pricing-card .desc {
-    font-size: 0.85rem;
-    color: var(--text-muted);
-    margin-bottom: 20px;
-  }
-  .pricing-card ul {
-    list-style: none;
-    text-align: left;
-    margin-bottom: 24px;
-  }
-  .pricing-card ul li {
-    padding: 8px 0;
-    font-size: 0.85rem;
-    color: var(--text-secondary);
-    border-bottom: 1px solid rgba(255,255,255,0.04);
-  }
-  .pricing-card ul li::before {
-    content: '✓ ';
-    color: var(--gold);
-    font-weight: 700;
-  }
-  .pricing-card .btn { width: 100%; justify-content: center; }
-
-  /* ---- ACCURACY BADGE ---- */
-  .accuracy-section {
-    padding: 60px 24px;
-    text-align: center;
-    position: relative;
-    z-index: 1;
-  }
-  .accuracy-card {
-    display: inline-block;
-    background: var(--card-bg);
-    border: 1px solid rgba(99, 179, 237, 0.25);
-    border-radius: var(--radius-lg);
-    padding: 36px 48px;
-    max-width: 700px;
-  }
-  .accuracy-card .shield-icon {
-    font-size: 2rem;
-    color: #63b3ed;
-    margin-bottom: 16px;
-  }
-  .accuracy-card h3 {
-    font-size: 1.3rem;
-    font-weight: 700;
-    margin-bottom: 12px;
-  }
-  .accuracy-card p {
-    color: var(--text-secondary);
-    font-size: 0.92rem;
-    line-height: 1.7;
-  }
-  .accuracy-card .verified-items {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 10px;
-    justify-content: center;
-    margin-top: 20px;
-  }
-  .accuracy-card .verified-tag {
-    background: rgba(99, 179, 237, 0.1);
-    border: 1px solid rgba(99, 179, 237, 0.2);
-    border-radius: 50px;
-    padding: 6px 16px;
-    font-size: 0.8rem;
-    color: #63b3ed;
-    font-weight: 500;
-  }
-
-  /* ---- BADGE ROW ---- */
-  .badge-row {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 20px;
-    flex-wrap: wrap;
-    padding: 48px 24px;
-  }
-  .oss-badge, .trust-badge {
-    display: inline-flex;
-    align-items: center;
-    gap: 8px;
-    background: var(--card-bg);
-    border: 1px solid var(--card-border);
-    border-radius: 50px;
-    padding: 10px 22px;
-    font-size: 0.82rem;
-    color: var(--text-secondary);
-    font-weight: 500;
-  }
-  .oss-badge .star { color: var(--gold); }
-  .trust-badge .shield { color: #63b3ed; }
-
-  /* ---- CTA SECTION ---- */
-  .cta-section {
-    text-align: center;
-    padding: 80px 24px;
-    position: relative;
-    z-index: 1;
-  }
-  .cta-section h2 {
-    font-size: clamp(1.6rem, 3vw, 2rem);
-    font-weight: 700;
-    margin-bottom: 12px;
-  }
-  .cta-section p {
-    color: var(--text-secondary);
-    margin-bottom: 28px;
-    max-width: 500px;
-    margin-left: auto;
-    margin-right: auto;
-  }
-
-  /* ---- FOOTER ---- */
-  footer {
-    border-top: 1px solid rgba(201,168,76,0.08);
-    padding: 40px 24px;
-    position: relative;
-    z-index: 1;
-  }
-  .footer-inner {
-    max-width: 1200px;
-    margin: 0 auto;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    flex-wrap: wrap;
-    gap: 16px;
-  }
-  .footer-inner .left {
-    display: flex;
-    flex-direction: column;
-    gap: 4px;
-  }
-  .footer-inner .brand {
-    font-weight: 600;
-    color: var(--text-primary);
-    font-size: 0.9rem;
-  }
-  .footer-inner .license {
-    font-size: 0.78rem;
-    color: var(--text-muted);
-  }
-  .footer-links { display: flex; gap: 20px; }
-  .footer-links a {
-    font-size: 0.82rem;
-    color: var(--text-muted);
-    text-decoration: none;
-    transition: var(--transition);
-  }
-  .footer-links a:hover { color: var(--gold-light); }
-
-  /* ---- RESPONSIVE ---- */
-  @media (max-width: 768px) {
-    .nav-links { gap: 14px; }
-    .nav-links a { font-size: 0.8rem; }
-    .hero { padding: 60px 16px 50px; }
-    .trust-bar { gap: 16px; }
-    .inside-grid { grid-template-columns: 1fr; }
-    .steps { grid-template-columns: 1fr; }
-    .pricing-grid { grid-template-columns: 1fr; }
-    .footer-inner { flex-direction: column; text-align: center; }
-    .report-preview { grid-template-columns: 1fr; }
-    .report-cover { margin: 0 auto; }
-    .accuracy-card { padding: 28px 24px; }
-  }
-
-  @media (max-width: 480px) {
-    .nav-links a.nav-cta { padding: 6px 14px; font-size: 0.75rem; }
-    .hero-buttons { flex-direction: column; align-items: center; }
-    .btn { width: 100%; max-width: 300px; justify-content: center; }
-    .verified-items { flex-direction: column; align-items: center; }
-  }
-</style>
-</head>
-<body>
-
-<!-- NAV -->
-<nav>
-  <div class="nav-inner">
-    <a href="landing-index.html" class="nav-logo">
-      <div class="icon">◆</div>
-      DesignEngine
-    </a>
-    <div class="nav-links">
-      <a href="landing-api.html">API</a>
-      <a href="landing-reports.html" class="active">Reports</a>
-      <a href="#pricing">Pricing</a>
-      <a href="#pricing" class="nav-cta">Get Your Report</a>
-    </div>
-  </div>
-</nav>
-
-<!-- HERO -->
-<section class="hero">
-  <div class="container">
-    <div class="hero-badge">
-      <span class="dot"></span> Professionally Designed — Jargon-Free
-    </div>
-    <h1>Your <span class="gold">Human Design Blueprint</span></h1>
-    <p class="subtitle">
-      A comprehensive, jargon-free report delivered in 5 minutes. Discover your Type, Strategy, Authority, and life theme — beautifully formatted and easy to understand. $19.
-    </p>
-    <div class="hero-buttons">
-      <a href="#pricing" class="btn btn-primary">Get Your Natal Report →</a>
-      <a href="#sample" class="btn btn-outline">See a Sample →</a>
-    </div>
-  </div>
-</section>
-
-<!-- TRUST BAR -->
-<div class="trust-bar">
-  <div class="trust-item"><span class="check">✓</span> Verified accuracy — matches Neutrino Design</div>
-  <div class="trust-item"><span class="check">✓</span> 40+ page PDF, delivered by email</div>
-  <div class="trust-item"><span class="check">✓</span> Jargon-free, plain-English</div>
-  <div class="trust-item"><span class="check">✓</span> Ready in under 5 minutes</div>
-</div>
-
-<!-- WHAT'S INSIDE -->
-<section class="inside">
-  <div class="container">
-    <div class="section-header">
-      <div class="overline">What's Inside</div>
-      <h2>Everything you need to understand your design</h2>
-      <p>A complete, 40+ page deep dive into your unique Human Design chart. No prior knowledge required.</p>
-    </div>
-
-    <div class="inside-grid">
-      <div class="inside-card">
-        <div class="inside-icon">🧬</div>
-        <h4>Your Type & Strategy</h4>
-        <p>Discover whether you're a Generator, Manifesting Generator, Projector, Manifestor, or Reflector — and learn the correct strategy for making decisions that align with your energy.</p>
-      </div>
-      <div class="inside-card">
-        <div class="inside-icon">🧭</div>
-        <h4>Your Decision-Making Style</h4>
-        <p>Understand your Inner Authority — Sacral, Emotional, Splenic, Ego, Self-Projected, Environmental, or Lunar — and how to use it to navigate life with clarity and confidence.</p>
-      </div>
-      <div class="inside-card">
-        <div class="inside-icon">✨</div>
-        <h4>Your Natural Gifts</h4>
-        <p>Explore your defined Centers and activated Channels. See where your consistent energy lives — creativity, willpower, intuition, logic, emotion, identity, and more.</p>
-      </div>
-      <div class="inside-card">
-        <div class="inside-icon">🌅</div>
-        <h4>Your Life Theme</h4>
-        <p>Uncover your Incarnation Cross — the overarching theme of your life. Understand the four gate placements that shape your purpose and direction across your lifetime.</p>
-      </div>
-      <div class="inside-card">
-        <div class="inside-icon">🪞</div>
-        <h4>Where You're Open to Influence</h4>
-        <p>Identify your undefined and open Centers — the places where you absorb, amplify, and reflect the energy of others. Learn to distinguish what's yours from what you've picked up.</p>
-      </div>
-      <div class="inside-card">
-        <div class="inside-icon">📖</div>
-        <h4>Gate-by-Gate Breakdown</h4>
-        <p>A detailed walkthrough of every activated gate in your chart. Understand the specific energy of each gate — both conscious (Personality) and unconscious (Design) — with plain-English interpretations.</p>
-      </div>
-    </div>
-  </div>
-</section>
-
-<!-- HOW IT WORKS -->
-<section class="how-it-works">
-  <div class="container">
-    <div class="section-header">
-      <div class="overline">How It Works</div>
-      <h2>Three simple steps to your blueprint</h2>
-      <p>From birth details to your inbox. No account required, no recurring charges.</p>
-    </div>
-
-    <div class="steps">
-      <div class="step">
-        <div class="step-number">1</div>
-        <h4>Enter Your Birth Details</h4>
-        <p>Provide your birth date, exact time, and place of birth. The more precise your birth time, the more accurate your report — down to the minute.</p>
-      </div>
-      <div class="step">
-        <div class="step-number">2</div>
-        <h4>Secure Checkout</h4>
-        <p>Complete payment via Stripe — your data is encrypted end-to-end. No account to create, no subscription. Just a one-time purchase.</p>
-      </div>
-      <div class="step">
-        <div class="step-number">3</div>
-        <h4>PDF Delivered to Your Inbox</h4>
-        <p>Within 5 minutes, you'll receive a beautifully formatted 40+ page PDF report. Download it, print it, share it — it's yours forever.</p>
-      </div>
-    </div>
-  </div>
-</section>
-
-<!-- SAMPLE REPORT PREVIEW -->
-<section class="sample-report" id="sample">
-  <div class="container">
-    <div class="section-header">
-      <div class="overline">Sample Preview</div>
-      <h2>What your report looks like</h2>
-      <p>A professionally designed PDF with bodygraph charts, color-coded sections, and clear, accessible writing.</p>
-    </div>
-
-    <div class="report-preview">
-      <div class="report-cover">
-        <div class="cover-icon">◆</div>
-        <div class="cover-title">Human Design<br>Deep Dive</div>
-        <div class="cover-sub">Natal Report</div>
-      </div>
-      <div class="report-details">
-        <h3>Table of Contents</h3>
-        <div class="toc-item">
-          <span class="toc-num">01</span> Your Bodygraph Overview
-          <span class="toc-pages">pp. 2–5</span>
-        </div>
-        <div class="toc-item">
-          <span class="toc-num">02</span> Type & Strategy
-          <span class="toc-pages">pp. 6–9</span>
-        </div>
-        <div class="toc-item">
-          <span class="toc-num">03</span> Inner Authority
-          <span class="toc-pages">pp. 10–13</span>
-        </div>
-        <div class="toc-item">
-          <span class="toc-num">04</span> Profile (e.g., 4/6)
-          <span class="toc-pages">pp. 14–17</span>
-        </div>
-        <div class="toc-item">
-          <span class="toc-num">05</span> Defined Centers & Channels
-          <span class="toc-pages">pp. 18–25</span>
-        </div>
-        <div class="toc-item">
-          <span class="toc-num">06</span> Undefined & Open Centers
-          <span class="toc-pages">pp. 26–30</span>
-        </div>
-        <div class="toc-item">
-          <span class="toc-num">07</span> Incarnation Cross
-          <span class="toc-pages">pp. 31–35</span>
-        </div>
-        <div class="toc-item">
-          <span class="toc-num">08</span> Gate-by-Gate Interpretations
-          <span class="toc-pages">pp. 36–44</span>
-        </div>
-      </div>
-    </div>
-
-    <p style="text-align:center; margin-top:28px; color:var(--text-muted); font-size:0.88rem;">
-      Each section includes a visual bodygraph chart with callouts, plain-English explanations, and practical guidance for living your design.
-    </p>
-  </div>
-</section>
-
-<!-- PRICING -->
-<section class="pricing" id="pricing">
-  <div class="container">
-    <div class="section-header">
-      <div class="overline">Report Pricing</div>
-      <h2>One-time purchase. Yours forever.</h2>
-      <p>No subscriptions. No recurring charges. Just a beautiful report you can reference for years.</p>
-    </div>
-
-    <div class="pricing-grid">
-      <div class="pricing-card">
-        <h4>Natal Report</h4>
-        <div class="price">$19</div>
-        <p class="desc">Your complete personal Human Design blueprint.</p>
-        <ul>
-          <li>Full bodygraph computation</li>
-          <li>Type, Strategy & Authority</li>
-          <li>All 9 Centers analyzed</li>
-          <li>Channel & Gate breakdown</li>
-          <li>Incarnation Cross explanation</li>
-          <li>40+ page PDF</li>
-        </ul>
-        <a href="#" class="btn btn-outline">Get Natal Report</a>
-      </div>
-
-      <div class="pricing-card featured">
-        <h4>Synastry (Couples)</h4>
-        <div class="price">$29</div>
-        <p class="desc">Understand your relationship dynamics through Human Design.</p>
-        <ul>
-          <li>Two full bodygraph charts</li>
-          <li>Composite overlay analysis</li>
-          <li>Electromagnetic channels</li>
-          <li>Dominance & compromise zones</li>
-          <li>Communication style insights</li>
-          <li>50+ page PDF</li>
-        </ul>
-        <a href="#" class="btn btn-primary">Get Synastry Report</a>
-      </div>
-
-      <div class="pricing-card">
-        <h4>Bundle (Both)</h4>
-        <div class="price">$39</div>
-        <p class="desc">The complete package — best value.</p>
-        <ul>
-          <li>Natal Report (40+ pages)</li>
-          <li>Synastry Report (50+ pages)</li>
-          <li>Save $9 vs. buying separately</li>
-          <li>Both delivered within 5 minutes</li>
-          <li>Shareable PDF format</li>
-          <li>Lifetime access</li>
-        </ul>
-        <a href="#" class="btn btn-outline">Get Both Reports</a>
-      </div>
-    </div>
-  </div>
-</section>
-
-<!-- VERIFIED ACCURACY -->
-<section class="accuracy-section">
-  <div class="accuracy-card">
-    <div class="shield-icon">🛡</div>
-    <h3>Verified Accuracy</h3>
-    <p>
-      Our engine matches <strong>Neutrino Design</strong> — the industry reference implementation — on every computed field. Type, Profile, Authority, Centers, Channels, Gates, and Incarnation Cross are all cross-validated against the gold standard. You're getting the real thing, not an approximation.
-    </p>
-    <div class="verified-items">
-      <span class="verified-tag">Type</span>
-      <span class="verified-tag">Strategy</span>
-      <span class="verified-tag">Authority</span>
-      <span class="verified-tag">Profile</span>
-      <span class="verified-tag">Centers</span>
-      <span class="verified-tag">Channels</span>
-      <span class="verified-tag">Gates</span>
-      <span class="verified-tag">Incarnation Cross</span>
-    </div>
-  </div>
-</section>
-
-<!-- BADGES -->
-<div class="badge-row">
-  <div class="oss-badge">
-    <span class="star">★</span> Powered by OpenHumanDesignMCP
-  </div>
-  <div class="trust-badge">
-    <span class="shield">🛡</span> Verified accuracy — matches Neutrino Design
-  </div>
-</div>
-
-<!-- CTA -->
-<section class="cta-section">
-  <div class="container">
-    <h2>Ready to discover your design?</h2>
-    <p>Your complete Human Design blueprint is waiting. Enter your birth details and get your report in minutes.</p>
-    <a href="#pricing" class="btn btn-primary">Get Your Report →</a>
-  </div>
-</section>
-
-<!-- FOOTER -->
-<footer>
-  <div class="footer-inner">
-    <div class="left">
-      <span class="brand">DesignEngine</span>
-      <span class="license">Licensed under AGPLv3. Core calculation engine is open source.</span>
-    </div>
-    <div class="footer-links">
-      <a href="landing-index.html">Home</a>
-      <a href="landing-api.html">API</a>
-      <a href="landing-reports.html">Reports</a>
-      <a href="https://github.com/nousresearch/OpenHumanDesignMCP">GitHub</a>
-      <a href="#">Docs</a>
-      <a href="#">Privacy</a>
-    </div>
-  </div>
-</footer>
-
-</body>
-</html>
+     1|<!DOCTYPE html>
+     2|<html lang="en">
+     3|<head>
+     4|<meta charset="UTF-8">
+     5|<meta name="viewport" content="width=device-width, initial-scale=1.0">
+     6|<title>Human Design Engine Reports — Your Human Design Blueprint</title>
+     7|<style>
+     8|  :root {
+     9|    --navy-deep: #060d1a;
+    10|    --navy: #0a1628;
+    11|    --navy-mid: #0f1d36;
+    12|    --navy-light: #162744;
+    13|    --navy-lighter: #1e3458;
+    14|    --gold: #c9a84c;
+    15|    --gold-light: #e0c468;
+    16|    --gold-bright: #d4af37;
+    17|    --gold-soft: rgba(201, 168, 76, 0.15);
+    18|    --gold-glow: rgba(201, 168, 76, 0.08);
+    19|    --text-primary: #e8e6e3;
+    20|    --text-secondary: #8899aa;
+    21|    --text-muted: #5a6a7a;
+    22|    --white: #ffffff;
+    23|    --card-bg: rgba(15, 29, 54, 0.7);
+    24|    --card-border: rgba(201, 168, 76, 0.12);
+    25|    --radius: 12px;
+    26|    --radius-lg: 20px;
+    27|    --shadow: 0 4px 24px rgba(0,0,0,0.3);
+    28|    --transition: 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+    29|  }
+    30|
+    31|  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    32|
+    33|  html { scroll-behavior: smooth; }
+    34|
+    35|  body {
+    36|    font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
+    37|    background: var(--navy-deep);
+    38|    color: var(--text-primary);
+    39|    line-height: 1.6;
+    40|    overflow-x: hidden;
+    41|  }
+    42|
+    43|  body::before {
+    44|    content: '';
+    45|    position: fixed;
+    46|    inset: 0;
+    47|    background:
+    48|      radial-gradient(ellipse at 20% 10%, rgba(201,168,76,0.04) 0%, transparent 60%),
+    49|      radial-gradient(ellipse at 80% 90%, rgba(201,168,76,0.03) 0%, transparent 60%),
+    50|      radial-gradient(ellipse at 50% 50%, rgba(15,29,54,0.8) 0%, var(--navy-deep) 100%);
+    51|    pointer-events: none;
+    52|    z-index: 0;
+    53|  }
+    54|
+    55|  /* ---- NAV ---- */
+    56|  nav {
+    57|    position: sticky;
+    58|    top: 0;
+    59|    z-index: 100;
+    60|    background: rgba(6, 13, 26, 0.85);
+    61|    backdrop-filter: blur(16px);
+    62|    -webkit-backdrop-filter: blur(16px);
+    63|    border-bottom: 1px solid rgba(201,168,76,0.1);
+    64|    padding: 0 20px;
+    65|  }
+    66|  .nav-inner {
+    67|    max-width: 1200px;
+    68|    margin: 0 auto;
+    69|    display: flex;
+    70|    align-items: center;
+    71|    justify-content: space-between;
+    72|    height: 64px;
+    73|    position: relative;
+    74|    z-index: 1;
+    75|  }
+    76|  .nav-logo {
+    77|    display: flex;
+    78|    align-items: center;
+    79|    gap: 10px;
+    80|    font-size: 1.4rem;
+    81|    font-weight: 700;
+    82|    color: var(--white);
+    83|    text-decoration: none;
+    84|    letter-spacing: -0.02em;
+    85|  }
+    86|  .nav-logo .icon {
+    87|    width: 32px; height: 32px;
+    88|    background: linear-gradient(135deg, var(--gold-bright), var(--gold));
+    89|    border-radius: 8px;
+    90|    display: flex; align-items: center; justify-content: center;
+    91|    font-size: 0.9rem;
+    92|    color: var(--navy-deep);
+    93|    font-weight: 900;
+    94|  }
+    95|  .nav-links { display: flex; gap: 28px; align-items: center; }
+    96|  .nav-links a {
+    97|    color: var(--text-secondary);
+    98|    text-decoration: none;
+    99|    font-size: 0.9rem;
+   100|    font-weight: 500;
+   101|    transition: var(--transition);
+   102|  }
+   103|  .nav-links a:hover { color: var(--gold-light); }
+   104|  .nav-links a.active { color: var(--gold-light); }
+   105|  .nav-cta {
+   106|    background: var(--gold);
+   107|    color: var(--navy-deep) !important;
+   108|    padding: 8px 20px;
+   109|    border-radius: 8px;
+   110|    font-weight: 600 !important;
+   111|    transition: var(--transition);
+   112|  }
+   113|  .nav-cta:hover {
+   114|    background: var(--gold-light);
+   115|    transform: translateY(-1px);
+   116|  }
+   117|
+   118|  /* ---- CONTAINER ---- */
+   119|  .container {
+   120|    max-width: 1200px;
+   121|    margin: 0 auto;
+   122|    padding: 0 24px;
+   123|    position: relative;
+   124|    z-index: 1;
+   125|  }
+   126|
+   127|  /* ---- HERO ---- */
+   128|  .hero {
+   129|    text-align: center;
+   130|    padding: 100px 24px 80px;
+   131|    position: relative;
+   132|    z-index: 1;
+   133|  }
+   134|  .hero-badge {
+   135|    display: inline-flex;
+   136|    align-items: center;
+   137|    gap: 8px;
+   138|    background: var(--gold-soft);
+   139|    border: 1px solid rgba(201,168,76,0.25);
+   140|    border-radius: 50px;
+   141|    padding: 6px 18px;
+   142|    font-size: 0.85rem;
+   143|    color: var(--gold-light);
+   144|    font-weight: 500;
+   145|    margin-bottom: 28px;
+   146|  }
+   147|  .hero-badge .dot {
+   148|    width: 8px; height: 8px;
+   149|    background: var(--gold-bright);
+   150|    border-radius: 50%;
+   151|    animation: pulse-dot 2s infinite;
+   152|  }
+   153|  @keyframes pulse-dot {
+   154|    0%, 100% { opacity: 1; transform: scale(1); }
+   155|    50% { opacity: 0.5; transform: scale(1.4); }
+   156|  }
+   157|  .hero h1 {
+   158|    font-size: clamp(2.2rem, 5vw, 3.6rem);
+   159|    font-weight: 800;
+   160|    letter-spacing: -0.03em;
+   161|    line-height: 1.15;
+   162|    margin-bottom: 20px;
+   163|    background: linear-gradient(180deg, #ffffff 0%, #c0c8d4 100%);
+   164|    -webkit-background-clip: text;
+   165|    -webkit-text-fill-color: transparent;
+   166|    background-clip: text;
+   167|  }
+   168|  .hero h1 .gold { -webkit-text-fill-color: var(--gold-light); }
+   169|  .hero p.subtitle {
+   170|    font-size: 1.15rem;
+   171|    color: var(--text-secondary);
+   172|    max-width: 640px;
+   173|    margin: 0 auto 36px;
+   174|    line-height: 1.7;
+   175|  }
+   176|  .hero-buttons {
+   177|    display: flex;
+   178|    gap: 16px;
+   179|    flex-wrap: wrap;
+   180|    justify-content: center;
+   181|  }
+   182|  .btn {
+   183|    display: inline-flex;
+   184|    align-items: center;
+   185|    gap: 8px;
+   186|    padding: 14px 32px;
+   187|    border-radius: 10px;
+   188|    font-size: 0.95rem;
+   189|    font-weight: 600;
+   190|    text-decoration: none;
+   191|    cursor: pointer;
+   192|    border: none;
+   193|    transition: var(--transition);
+   194|    letter-spacing: -0.01em;
+   195|  }
+   196|  .btn-primary {
+   197|    background: linear-gradient(135deg, var(--gold-bright), var(--gold));
+   198|    color: var(--navy-deep);
+   199|    box-shadow: 0 4px 20px rgba(201,168,76,0.3);
+   200|  }
+   201|  .btn-primary:hover {
+   202|    box-shadow: 0 6px 30px rgba(201,168,76,0.45);
+   203|    transform: translateY(-2px);
+   204|  }
+   205|  .btn-outline {
+   206|    background: transparent;
+   207|    color: var(--gold-light);
+   208|    border: 1.5px solid rgba(201,168,76,0.4);
+   209|  }
+   210|  .btn-outline:hover {
+   211|    background: var(--gold-soft);
+   212|    border-color: var(--gold);
+   213|  }
+   214|
+   215|  /* ---- TRUST BAR ---- */
+   216|  .trust-bar {
+   217|    display: flex;
+   218|    align-items: center;
+   219|    justify-content: center;
+   220|    gap: 32px;
+   221|    flex-wrap: wrap;
+   222|    padding: 36px 24px;
+   223|    border-top: 1px solid rgba(201,168,76,0.08);
+   224|    border-bottom: 1px solid rgba(201,168,76,0.08);
+   225|    margin-bottom: 80px;
+   226|  }
+   227|  .trust-item {
+   228|    display: flex;
+   229|    align-items: center;
+   230|    gap: 10px;
+   231|    font-size: 0.85rem;
+   232|    color: var(--text-muted);
+   233|    font-weight: 500;
+   234|  }
+   235|  .trust-item .check { color: var(--gold); font-size: 1rem; }
+   236|
+   237|  /* ---- SECTION HEADERS ---- */
+   238|  .section-header {
+   239|    text-align: center;
+   240|    margin-bottom: 56px;
+   241|  }
+   242|  .section-header .overline {
+   243|    font-size: 0.8rem;
+   244|    text-transform: uppercase;
+   245|    letter-spacing: 0.12em;
+   246|    color: var(--gold);
+   247|    font-weight: 600;
+   248|    margin-bottom: 12px;
+   249|  }
+   250|  .section-header h2 {
+   251|    font-size: clamp(1.6rem, 3vw, 2.2rem);
+   252|    font-weight: 700;
+   253|    letter-spacing: -0.02em;
+   254|    margin-bottom: 12px;
+   255|  }
+   256|  .section-header p {
+   257|    color: var(--text-secondary);
+   258|    font-size: 1rem;
+   259|    max-width: 540px;
+   260|    margin: 0 auto;
+   261|  }
+   262|
+   263|  /* ---- WHAT'S INSIDE ---- */
+   264|  .inside {
+   265|    padding: 80px 0;
+   266|  }
+   267|  .inside-grid {
+   268|    display: grid;
+   269|    grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+   270|    gap: 24px;
+   271|  }
+   272|  .inside-card {
+   273|    background: var(--card-bg);
+   274|    border: 1px solid var(--card-border);
+   275|    border-radius: var(--radius);
+   276|    padding: 28px 24px;
+   277|    transition: var(--transition);
+   278|  }
+   279|  .inside-card:hover {
+   280|    border-color: rgba(201,168,76,0.25);
+   281|    box-shadow: 0 6px 24px rgba(0,0,0,0.25);
+   282|  }
+   283|  .inside-icon {
+   284|    width: 40px; height: 40px;
+   285|    border-radius: 10px;
+   286|    background: var(--gold-soft);
+   287|    display: flex; align-items: center; justify-content: center;
+   288|    font-size: 1.1rem;
+   289|    margin-bottom: 16px;
+   290|  }
+   291|  .inside-card h4 {
+   292|    font-size: 1rem;
+   293|    font-weight: 600;
+   294|    margin-bottom: 6px;
+   295|  }
+   296|  .inside-card p {
+   297|    font-size: 0.85rem;
+   298|    color: var(--text-muted);
+   299|    line-height: 1.6;
+   300|  }
+   301|
+   302|  /* ---- HOW IT WORKS ---- */
+   303|  .how-it-works {
+   304|    padding: 80px 0;
+   305|    background: rgba(10,22,40,0.5);
+   306|  }
+   307|  .steps {
+   308|    display: grid;
+   309|    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+   310|    gap: 32px;
+   311|    max-width: 900px;
+   312|    margin: 0 auto;
+   313|  }
+   314|  .step {
+   315|    text-align: center;
+   316|    position: relative;
+   317|  }
+   318|  .step-number {
+   319|    width: 56px; height: 56px;
+   320|    border-radius: 50%;
+   321|    background: linear-gradient(135deg, var(--gold-bright), var(--gold));
+   322|    color: var(--navy-deep);
+   323|    display: flex; align-items: center; justify-content: center;
+   324|    font-size: 1.4rem;
+   325|    font-weight: 800;
+   326|    margin: 0 auto 20px;
+   327|    box-shadow: 0 4px 16px rgba(201,168,76,0.3);
+   328|  }
+   329|  .step h4 {
+   330|    font-size: 1.05rem;
+   331|    font-weight: 600;
+   332|    margin-bottom: 8px;
+   333|  }
+   334|  .step p {
+   335|    font-size: 0.88rem;
+   336|    color: var(--text-muted);
+   337|    line-height: 1.6;
+   338|  }
+   339|
+   340|  /* ---- SAMPLE REPORT ---- */
+   341|  .sample-report {
+   342|    padding: 80px 0;
+   343|  }
+   344|  .report-preview {
+   345|    background: var(--card-bg);
+   346|    border: 1px solid var(--card-border);
+   347|    border-radius: var(--radius-lg);
+   348|    padding: 40px 36px;
+   349|    max-width: 800px;
+   350|    margin: 0 auto;
+   351|    display: grid;
+   352|    grid-template-columns: 140px 1fr;
+   353|    gap: 32px;
+   354|    align-items: start;
+   355|  }
+   356|  .report-cover {
+   357|    width: 140px;
+   358|    height: 180px;
+   359|    background: linear-gradient(160deg, #0f1d36 0%, #1a2d4a 100%);
+   360|    border: 1px solid rgba(201,168,76,0.2);
+   361|    border-radius: 8px;
+   362|    display: flex;
+   363|    flex-direction: column;
+   364|    align-items: center;
+   365|    justify-content: center;
+   366|    text-align: center;
+   367|    padding: 16px;
+   368|    gap: 8px;
+   369|  }
+   370|  .report-cover .cover-icon {
+   371|    font-size: 2rem;
+   372|    color: var(--gold-light);
+   373|  }
+   374|  .report-cover .cover-title {
+   375|    font-size: 0.7rem;
+   376|    font-weight: 700;
+   377|    letter-spacing: 0.06em;
+   378|    text-transform: uppercase;
+   379|    color: var(--gold);
+   380|  }
+   381|  .report-cover .cover-sub {
+   382|    font-size: 0.65rem;
+   383|    color: var(--text-muted);
+   384|  }
+   385|  .report-details h3 {
+   386|    font-size: 1.3rem;
+   387|    font-weight: 700;
+   388|    margin-bottom: 12px;
+   389|  }
+   390|  .report-details .toc-item {
+   391|    display: flex;
+   392|    align-items: center;
+   393|    gap: 12px;
+   394|    padding: 10px 0;
+   395|    border-bottom: 1px solid rgba(255,255,255,0.04);
+   396|    font-size: 0.88rem;
+   397|    color: var(--text-secondary);
+   398|  }
+   399|  .report-details .toc-item .toc-num {
+   400|    color: var(--gold);
+   401|    font-weight: 700;
+   402|    font-size: 0.78rem;
+   403|    min-width: 28px;
+   404|  }
+   405|  .report-details .toc-item .toc-pages {
+   406|    margin-left: auto;
+   407|    color: var(--text-muted);
+   408|    font-size: 0.78rem;
+   409|  }
+   410|
+   411|  /* ---- PRICING ---- */
+   412|  .pricing {
+   413|    padding: 80px 0;
+   414|    background: rgba(10,22,40,0.5);
+   415|  }
+   416|  .pricing-grid {
+   417|    display: grid;
+   418|    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+   419|    gap: 24px;
+   420|    max-width: 900px;
+   421|    margin: 0 auto;
+   422|  }
+   423|  .pricing-card {
+   424|    background: var(--card-bg);
+   425|    border: 1px solid var(--card-border);
+   426|    border-radius: var(--radius-lg);
+   427|    padding: 36px 28px;
+   428|    text-align: center;
+   429|    transition: var(--transition);
+   430|    position: relative;
+   431|  }
+   432|  .pricing-card.featured {
+   433|    border-color: rgba(201,168,76,0.35);
+   434|    box-shadow: 0 0 0 1px rgba(201,168,76,0.2), 0 8px 40px rgba(201,168,76,0.08);
+   435|  }
+   436|  .pricing-card.featured::after {
+   437|    content: 'Best Value';
+   438|    position: absolute;
+   439|    top: -12px;
+   440|    left: 50%;
+   441|    transform: translateX(-50%);
+   442|    background: var(--gold);
+   443|    color: var(--navy-deep);
+   444|    font-size: 0.72rem;
+   445|    font-weight: 700;
+   446|    padding: 4px 16px;
+   447|    border-radius: 50px;
+   448|    letter-spacing: 0.03em;
+   449|  }
+   450|  .pricing-card h4 {
+   451|    font-size: 1.1rem;
+   452|    font-weight: 600;
+   453|    margin-bottom: 12px;
+   454|  }
+   455|  .pricing-card .price {
+   456|    font-size: 2.2rem;
+   457|    font-weight: 800;
+   458|    margin-bottom: 4px;
+   459|    letter-spacing: -0.02em;
+   460|  }
+   461|  .pricing-card .price span {
+   462|    font-size: 0.9rem;
+   463|    font-weight: 500;
+   464|    color: var(--text-muted);
+   465|  }
+   466|  .pricing-card .desc {
+   467|    font-size: 0.85rem;
+   468|    color: var(--text-muted);
+   469|    margin-bottom: 20px;
+   470|  }
+   471|  .pricing-card ul {
+   472|    list-style: none;
+   473|    text-align: left;
+   474|    margin-bottom: 24px;
+   475|  }
+   476|  .pricing-card ul li {
+   477|    padding: 8px 0;
+   478|    font-size: 0.85rem;
+   479|    color: var(--text-secondary);
+   480|    border-bottom: 1px solid rgba(255,255,255,0.04);
+   481|  }
+   482|  .pricing-card ul li::before {
+   483|    content: '✓ ';
+   484|    color: var(--gold);
+   485|    font-weight: 700;
+   486|  }
+   487|  .pricing-card .btn { width: 100%; justify-content: center; }
+   488|
+   489|  /* ---- ACCURACY BADGE ---- */
+   490|  .accuracy-section {
+   491|    padding: 60px 24px;
+   492|    text-align: center;
+   493|    position: relative;
+   494|    z-index: 1;
+   495|  }
+   496|  .accuracy-card {
+   497|    display: inline-block;
+   498|    background: var(--card-bg);
+   499|    border: 1px solid rgba(99, 179, 237, 0.25);
+   500|    border-radius: var(--radius-lg);
+   501|    padding: 36px 48px;
+   502|    max-width: 700px;
+   503|  }
+   504|  .accuracy-card .shield-icon {
+   505|    font-size: 2rem;
+   506|    color: #63b3ed;
+   507|    margin-bottom: 16px;
+   508|  }
+   509|  .accuracy-card h3 {
+   510|    font-size: 1.3rem;
+   511|    font-weight: 700;
+   512|    margin-bottom: 12px;
+   513|  }
+   514|  .accuracy-card p {
+   515|    color: var(--text-secondary);
+   516|    font-size: 0.92rem;
+   517|    line-height: 1.7;
+   518|  }
+   519|  .accuracy-card .verified-items {
+   520|    display: flex;
+   521|    flex-wrap: wrap;
+   522|    gap: 10px;
+   523|    justify-content: center;
+   524|    margin-top: 20px;
+   525|  }
+   526|  .accuracy-card .verified-tag {
+   527|    background: rgba(99, 179, 237, 0.1);
+   528|    border: 1px solid rgba(99, 179, 237, 0.2);
+   529|    border-radius: 50px;
+   530|    padding: 6px 16px;
+   531|    font-size: 0.8rem;
+   532|    color: #63b3ed;
+   533|    font-weight: 500;
+   534|  }
+   535|
+   536|  /* ---- BADGE ROW ---- */
+   537|  .badge-row {
+   538|    display: flex;
+   539|    align-items: center;
+   540|    justify-content: center;
+   541|    gap: 20px;
+   542|    flex-wrap: wrap;
+   543|    padding: 48px 24px;
+   544|  }
+   545|  .oss-badge, .trust-badge {
+   546|    display: inline-flex;
+   547|    align-items: center;
+   548|    gap: 8px;
+   549|    background: var(--card-bg);
+   550|    border: 1px solid var(--card-border);
+   551|    border-radius: 50px;
+   552|    padding: 10px 22px;
+   553|    font-size: 0.82rem;
+   554|    color: var(--text-secondary);
+   555|    font-weight: 500;
+   556|  }
+   557|  .oss-badge .star { color: var(--gold); }
+   558|  .trust-badge .shield { color: #63b3ed; }
+   559|
+   560|  /* ---- CTA SECTION ---- */
+   561|  .cta-section {
+   562|    text-align: center;
+   563|    padding: 80px 24px;
+   564|    position: relative;
+   565|    z-index: 1;
+   566|  }
+   567|  .cta-section h2 {
+   568|    font-size: clamp(1.6rem, 3vw, 2rem);
+   569|    font-weight: 700;
+   570|    margin-bottom: 12px;
+   571|  }
+   572|  .cta-section p {
+   573|    color: var(--text-secondary);
+   574|    margin-bottom: 28px;
+   575|    max-width: 500px;
+   576|    margin-left: auto;
+   577|    margin-right: auto;
+   578|  }
+   579|
+   580|  /* ---- FOOTER ---- */
+   581|  footer {
+   582|    border-top: 1px solid rgba(201,168,76,0.08);
+   583|    padding: 40px 24px;
+   584|    position: relative;
+   585|    z-index: 1;
+   586|  }
+   587|  .footer-inner {
+   588|    max-width: 1200px;
+   589|    margin: 0 auto;
+   590|    display: flex;
+   591|    align-items: center;
+   592|    justify-content: space-between;
+   593|    flex-wrap: wrap;
+   594|    gap: 16px;
+   595|  }
+   596|  .footer-inner .left {
+   597|    display: flex;
+   598|    flex-direction: column;
+   599|    gap: 4px;
+   600|  }
+   601|  .footer-inner .brand {
+   602|    font-weight: 600;
+   603|    color: var(--text-primary);
+   604|    font-size: 0.9rem;
+   605|  }
+   606|  .footer-inner .license {
+   607|    font-size: 0.78rem;
+   608|    color: var(--text-muted);
+   609|  }
+   610|  .footer-links { display: flex; gap: 20px; }
+   611|  .footer-links a {
+   612|    font-size: 0.82rem;
+   613|    color: var(--text-muted);
+   614|    text-decoration: none;
+   615|    transition: var(--transition);
+   616|  }
+   617|  .footer-links a:hover { color: var(--gold-light); }
+   618|
+   619|  /* ---- RESPONSIVE ---- */
+   620|  @media (max-width: 768px) {
+   621|    .nav-links { gap: 14px; }
+   622|    .nav-links a { font-size: 0.8rem; }
+   623|    .hero { padding: 60px 16px 50px; }
+   624|    .trust-bar { gap: 16px; }
+   625|    .inside-grid { grid-template-columns: 1fr; }
+   626|    .steps { grid-template-columns: 1fr; }
+   627|    .pricing-grid { grid-template-columns: 1fr; }
+   628|    .footer-inner { flex-direction: column; text-align: center; }
+   629|    .report-preview { grid-template-columns: 1fr; }
+   630|    .report-cover { margin: 0 auto; }
+   631|    .accuracy-card { padding: 28px 24px; }
+   632|  }
+   633|
+   634|  @media (max-width: 480px) {
+   635|    .nav-links a.nav-cta { padding: 6px 14px; font-size: 0.75rem; }
+   636|    .hero-buttons { flex-direction: column; align-items: center; }
+   637|    .btn { width: 100%; max-width: 300px; justify-content: center; }
+   638|    .verified-items { flex-direction: column; align-items: center; }
+   639|  }
+   640|</style>
+   641|</head>
+   642|<body>
+   643|
+   644|<!-- NAV -->
+   645|<nav>
+   646|  <div class="nav-inner">
+   647|    <a href="landing-index.html" class="nav-logo">
+   648|      <div class="icon">◆</div>
+   649|      Human Design Engine
+   650|    </a>
+   651|    <div class="nav-links">
+   652|      <a href="landing-api.html">API</a>
+   653|      <a href="landing-reports.html" class="active">Reports</a>
+   654|      <a href="#pricing">Pricing</a>
+   655|      <a href="#pricing" class="nav-cta">Get Your Report</a>
+   656|    </div>
+   657|  </div>
+   658|</nav>
+   659|
+   660|<!-- HERO -->
+   661|<section class="hero">
+   662|  <div class="container">
+   663|    <div class="hero-badge">
+   664|      <span class="dot"></span> Professionally Designed — Jargon-Free
+   665|    </div>
+   666|    <h1>Your <span class="gold">Human Design Blueprint</span></h1>
+   667|    <p class="subtitle">
+   668|      A comprehensive, jargon-free report delivered in 5 minutes. Discover your Type, Strategy, Authority, and life theme — beautifully formatted and easy to understand. $19.
+   669|    </p>
+   670|    <div class="hero-buttons">
+   671|      <a href="#pricing" class="btn btn-primary">Get Your Natal Report →</a>
+   672|      <a href="#sample" class="btn btn-outline">See a Sample →</a>
+   673|    </div>
+   674|  </div>
+   675|</section>
+   676|
+   677|<!-- TRUST BAR -->
+   678|<div class="trust-bar">
+   679|  <div class="trust-item"><span class="check">✓</span> Verified accuracy — matches Neutrino Design</div>
+   680|  <div class="trust-item"><span class="check">✓</span> 40+ page PDF, delivered by email</div>
+   681|  <div class="trust-item"><span class="check">✓</span> Jargon-free, plain-English</div>
+   682|  <div class="trust-item"><span class="check">✓</span> Ready in under 5 minutes</div>
+   683|</div>
+   684|
+   685|<!-- WHAT'S INSIDE -->
+   686|<section class="inside">
+   687|  <div class="container">
+   688|    <div class="section-header">
+   689|      <div class="overline">What's Inside</div>
+   690|      <h2>Everything you need to understand your design</h2>
+   691|      <p>A complete, 40+ page deep dive into your unique Human Design chart. No prior knowledge required.</p>
+   692|    </div>
+   693|
+   694|    <div class="inside-grid">
+   695|      <div class="inside-card">
+   696|        <div class="inside-icon">🧬</div>
+   697|        <h4>Your Type & Strategy</h4>
+   698|        <p>Discover whether you're a Generator, Manifesting Generator, Projector, Manifestor, or Reflector — and learn the correct strategy for making decisions that align with your energy.</p>
+   699|      </div>
+   700|      <div class="inside-card">
+   701|        <div class="inside-icon">🧭</div>
+   702|        <h4>Your Decision-Making Style</h4>
+   703|        <p>Understand your Inner Authority — Sacral, Emotional, Splenic, Ego, Self-Projected, Environmental, or Lunar — and how to use it to navigate life with clarity and confidence.</p>
+   704|      </div>
+   705|      <div class="inside-card">
+   706|        <div class="inside-icon">✨</div>
+   707|        <h4>Your Natural Gifts</h4>
+   708|        <p>Explore your defined Centers and activated Channels. See where your consistent energy lives — creativity, willpower, intuition, logic, emotion, identity, and more.</p>
+   709|      </div>
+   710|      <div class="inside-card">
+   711|        <div class="inside-icon">🌅</div>
+   712|        <h4>Your Life Theme</h4>
+   713|        <p>Uncover your Incarnation Cross — the overarching theme of your life. Understand the four gate placements that shape your purpose and direction across your lifetime.</p>
+   714|      </div>
+   715|      <div class="inside-card">
+   716|        <div class="inside-icon">🪞</div>
+   717|        <h4>Where You're Open to Influence</h4>
+   718|        <p>Identify your undefined and open Centers — the places where you absorb, amplify, and reflect the energy of others. Learn to distinguish what's yours from what you've picked up.</p>
+   719|      </div>
+   720|      <div class="inside-card">
+   721|        <div class="inside-icon">📖</div>
+   722|        <h4>Gate-by-Gate Breakdown</h4>
+   723|        <p>A detailed walkthrough of every activated gate in your chart. Understand the specific energy of each gate — both conscious (Personality) and unconscious (Design) — with plain-English interpretations.</p>
+   724|      </div>
+   725|    </div>
+   726|  </div>
+   727|</section>
+   728|
+   729|<!-- HOW IT WORKS -->
+   730|<section class="how-it-works">
+   731|  <div class="container">
+   732|    <div class="section-header">
+   733|      <div class="overline">How It Works</div>
+   734|      <h2>Three simple steps to your blueprint</h2>
+   735|      <p>From birth details to your inbox. No account required, no recurring charges.</p>
+   736|    </div>
+   737|
+   738|    <div class="steps">
+   739|      <div class="step">
+   740|        <div class="step-number">1</div>
+   741|        <h4>Enter Your Birth Details</h4>
+   742|        <p>Provide your birth date, exact time, and place of birth. The more precise your birth time, the more accurate your report — down to the minute.</p>
+   743|      </div>
+   744|      <div class="step">
+   745|        <div class="step-number">2</div>
+   746|        <h4>Secure Checkout</h4>
+   747|        <p>Complete payment via Stripe — your data is encrypted end-to-end. No account to create, no subscription. Just a one-time purchase.</p>
+   748|      </div>
+   749|      <div class="step">
+   750|        <div class="step-number">3</div>
+   751|        <h4>PDF Delivered to Your Inbox</h4>
+   752|        <p>Within 5 minutes, you'll receive a beautifully formatted 40+ page PDF report. Download it, print it, share it — it's yours forever.</p>
+   753|      </div>
+   754|    </div>
+   755|  </div>
+   756|</section>
+   757|
+   758|<!-- SAMPLE REPORT PREVIEW -->
+   759|<section class="sample-report" id="sample">
+   760|  <div class="container">
+   761|    <div class="section-header">
+   762|      <div class="overline">Sample Preview</div>
+   763|      <h2>What your report looks like</h2>
+   764|      <p>A professionally designed PDF with bodygraph charts, color-coded sections, and clear, accessible writing.</p>
+   765|    </div>
+   766|
+   767|    <div class="report-preview">
+   768|      <div class="report-cover">
+   769|        <div class="cover-icon">◆</div>
+   770|        <div class="cover-title">Human Design<br>Deep Dive</div>
+   771|        <div class="cover-sub">Natal Report</div>
+   772|      </div>
+   773|      <div class="report-details">
+   774|        <h3>Table of Contents</h3>
+   775|        <div class="toc-item">
+   776|          <span class="toc-num">01</span> Your Bodygraph Overview
+   777|          <span class="toc-pages">pp. 2–5</span>
+   778|        </div>
+   779|        <div class="toc-item">
+   780|          <span class="toc-num">02</span> Type & Strategy
+   781|          <span class="toc-pages">pp. 6–9</span>
+   782|        </div>
+   783|        <div class="toc-item">
+   784|          <span class="toc-num">03</span> Inner Authority
+   785|          <span class="toc-pages">pp. 10–13</span>
+   786|        </div>
+   787|        <div class="toc-item">
+   788|          <span class="toc-num">04</span> Profile (e.g., 4/6)
+   789|          <span class="toc-pages">pp. 14–17</span>
+   790|        </div>
+   791|        <div class="toc-item">
+   792|          <span class="toc-num">05</span> Defined Centers & Channels
+   793|          <span class="toc-pages">pp. 18–25</span>
+   794|        </div>
+   795|        <div class="toc-item">
+   796|          <span class="toc-num">06</span> Undefined & Open Centers
+   797|          <span class="toc-pages">pp. 26–30</span>
+   798|        </div>
+   799|        <div class="toc-item">
+   800|          <span class="toc-num">07</span> Incarnation Cross
+   801|          <span class="toc-pages">pp. 31–35</span>
+   802|        </div>
+   803|        <div class="toc-item">
+   804|          <span class="toc-num">08</span> Gate-by-Gate Interpretations
+   805|          <span class="toc-pages">pp. 36–44</span>
+   806|        </div>
+   807|      </div>
+   808|    </div>
+   809|
+   810|    <p style="text-align:center; margin-top:28px; color:var(--text-muted); font-size:0.88rem;">
+   811|      Each section includes a visual bodygraph chart with callouts, plain-English explanations, and practical guidance for living your design.
+   812|    </p>
+   813|  </div>
+   814|</section>
+   815|
+   816|<!-- PRICING -->
+   817|<section class="pricing" id="pricing">
+   818|  <div class="container">
+   819|    <div class="section-header">
+   820|      <div class="overline">Report Pricing</div>
+   821|      <h2>One-time purchase. Yours forever.</h2>
+   822|      <p>No subscriptions. No recurring charges. Just a beautiful report you can reference for years.</p>
+   823|    </div>
+   824|
+   825|    <div class="pricing-grid">
+   826|      <div class="pricing-card">
+   827|        <h4>Natal Report</h4>
+   828|        <div class="price">$19</div>
+   829|        <p class="desc">Your complete personal Human Design blueprint.</p>
+   830|        <ul>
+   831|          <li>Full bodygraph computation</li>
+   832|          <li>Type, Strategy & Authority</li>
+   833|          <li>All 9 Centers analyzed</li>
+   834|          <li>Channel & Gate breakdown</li>
+   835|          <li>Incarnation Cross explanation</li>
+   836|          <li>40+ page PDF</li>
+   837|        </ul>
+   838|        <a href="#" class="btn btn-outline">Get Natal Report</a>
+   839|      </div>
+   840|
+   841|      <div class="pricing-card featured">
+   842|        <h4>Synastry (Couples)</h4>
+   843|        <div class="price">$29</div>
+   844|        <p class="desc">Understand your relationship dynamics through Human Design.</p>
+   845|        <ul>
+   846|          <li>Two full bodygraph charts</li>
+   847|          <li>Composite overlay analysis</li>
+   848|          <li>Electromagnetic channels</li>
+   849|          <li>Dominance & compromise zones</li>
+   850|          <li>Communication style insights</li>
+   851|          <li>50+ page PDF</li>
+   852|        </ul>
+   853|        <a href="#" class="btn btn-primary">Get Synastry Report</a>
+   854|      </div>
+   855|
+   856|      <div class="pricing-card">
+   857|        <h4>Bundle (Both)</h4>
+   858|        <div class="price">$39</div>
+   859|        <p class="desc">The complete package — best value.</p>
+   860|        <ul>
+   861|          <li>Natal Report (40+ pages)</li>
+   862|          <li>Synastry Report (50+ pages)</li>
+   863|          <li>Save $9 vs. buying separately</li>
+   864|          <li>Both delivered within 5 minutes</li>
+   865|          <li>Shareable PDF format</li>
+   866|          <li>Lifetime access</li>
+   867|        </ul>
+   868|        <a href="#" class="btn btn-outline">Get Both Reports</a>
+   869|      </div>
+   870|    </div>
+   871|  </div>
+   872|</section>
+   873|
+   874|<!-- VERIFIED ACCURACY -->
+   875|<section class="accuracy-section">
+   876|  <div class="accuracy-card">
+   877|    <div class="shield-icon">🛡</div>
+   878|    <h3>Verified Accuracy</h3>
+   879|    <p>
+   880|      Our engine matches <strong>Neutrino Design</strong> — the industry reference implementation — on every computed field. Type, Profile, Authority, Centers, Channels, Gates, and Incarnation Cross are all cross-validated against the gold standard. You're getting the real thing, not an approximation.
+   881|    </p>
+   882|    <div class="verified-items">
+   883|      <span class="verified-tag">Type</span>
+   884|      <span class="verified-tag">Strategy</span>
+   885|      <span class="verified-tag">Authority</span>
+   886|      <span class="verified-tag">Profile</span>
+   887|      <span class="verified-tag">Centers</span>
+   888|      <span class="verified-tag">Channels</span>
+   889|      <span class="verified-tag">Gates</span>
+   890|      <span class="verified-tag">Incarnation Cross</span>
+   891|    </div>
+   892|  </div>
+   893|</section>
+   894|
+   895|<!-- BADGES -->
+   896|<div class="badge-row">
+   897|  <div class="oss-badge">
+   898|    <span class="star">★</span> Powered by OpenHumanDesignMCP
+   899|  </div>
+   900|  <div class="trust-badge">
+   901|    <span class="shield">🛡</span> Verified accuracy — matches Neutrino Design
+   902|  </div>
+   903|</div>
+   904|
+   905|<!-- CTA -->
+   906|<section class="cta-section">
+   907|  <div class="container">
+   908|    <h2>Ready to discover your design?</h2>
+   909|    <p>Your complete Human Design blueprint is waiting. Enter your birth details and get your report in minutes.</p>
+   910|    <a href="#pricing" class="btn btn-primary">Get Your Report →</a>
+   911|  </div>
+   912|</section>
+   913|
+   914|<!-- FOOTER -->
+   915|<footer>
+   916|  <div class="footer-inner">
+   917|    <div class="left">
+   918|      <span class="brand">Human Design Engine</span>
+   919|      <span class="license">Licensed under AGPLv3. Core calculation engine is open source.</span>
+   920|    </div>
+   921|    <div class="footer-links">
+   922|      <a href="landing-index.html">Home</a>
+   923|      <a href="landing-api.html">API</a>
+   924|      <a href="landing-reports.html">Reports</a>
+   925|      <a href="https://github.com/nousresearch/OpenHumanDesignMCP">GitHub</a>
+   926|      <a href="#">Docs</a>
+   927|      <a href="#">Privacy</a>
+   928|    </div>
+   929|  </div>
+   930|</footer>
+   931|
+   932|</body>
+   933|</html>
+   934|

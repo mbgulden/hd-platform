@@ -1,0 +1,24 @@
+name = "hde-playground"
+main = "worker.js"
+compatibility_date = "2026-05-29"
+
+# Free tier: 100K requests/day, 10K Workers AI requests/day
+# Auto-deploys on git push if using Cloudflare Pages Git integration
+# Or manual deploy: npx wrangler deploy
+
+[observability]
+enabled = true
+head_sampling_rate = 1
+
+[[durable_objects.bindings]]
+name = "MY_DURABLE_OBJECT"
+class_name = "MyDurableObject"
+
+# Workers AI binding (free tier)
+[ai]
+binding = "AI"
+
+# Optional: Add Gemini API key for fallback
+# Set in Cloudflare Dashboard → Workers → Settings → Variables
+# [vars]
+# GEMINI_API_KEY = "your-key-here"

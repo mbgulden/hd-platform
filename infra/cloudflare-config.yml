@@ -1,0 +1,37 @@
+# Cloudflare Tunnel Configuration for Human Design Engine
+# ======================================================
+#
+# SETUP STEPS:
+# 1. Authenticate:  cloudflared tunnel login
+# 2. Create tunnel: cloudflared tunnel create hd-engine
+# 3. Copy the tunnel ID and credentials file path into this config
+# 4. Point DNS records in Cloudflare dashboard:
+#      humandesignengine.com    → CNAME  <TUNNEL_ID>.cfargotunnel.com
+#      api.humandesignengine.com → CNAME  <TUNNEL_ID>.cfargotunnel.com
+#      reports.humandesignengine.com → CNAME  <TUNNEL_ID>.cfargotunnel.com
+#      sheplantedatree.com      → CNAME  <TUNNEL_ID>.cfargotunnel.com
+# 5. Start: sudo systemctl start cloudflared
+
+tunnel: YOUR_TUNNEL_ID_HERE
+credentials-file: /home/ubuntu/.cloudflared/YOUR_TUNNEL_ID_HERE.json
+
+# Ingress rules — order matters, first match wins
+ingress:
+  # API service (FastAPI)
+  - hostname: api.humandesignengine.com
+    service: http://localhost:8000
+
+  # Reports store
+  - hostname: reports.humandesignengine.com
+    service: http://localhost:8081
+
+  # Umbrella landing page
+  - hostname: humandesignengine.com
+    service: http://localhost:8080
+
+  # She Planted a Tree — HD coaching
+  - hostname: sheplantedatree.com
+    service: http://localhost:8082
+
+  # Catch-all — return 404 for unmatched hostnames
+  - service: http_status:404

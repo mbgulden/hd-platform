@@ -1,916 +1,917 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>HD Cloud API — The First Human Design REST API | DesignEngine</title>
-<style>
-  :root {
-    --navy-deep: #060d1a;
-    --navy: #0a1628;
-    --navy-mid: #0f1d36;
-    --navy-light: #162744;
-    --navy-lighter: #1e3458;
-    --gold: #c9a84c;
-    --gold-light: #e0c468;
-    --gold-bright: #d4af37;
-    --gold-soft: rgba(201, 168, 76, 0.15);
-    --gold-glow: rgba(201, 168, 76, 0.08);
-    --text-primary: #e8e6e3;
-    --text-secondary: #8899aa;
-    --text-muted: #5a6a7a;
-    --white: #ffffff;
-    --card-bg: rgba(15, 29, 54, 0.7);
-    --card-border: rgba(201, 168, 76, 0.12);
-    --radius: 12px;
-    --radius-lg: 20px;
-    --shadow: 0 4px 24px rgba(0,0,0,0.3);
-    --transition: 0.25s cubic-bezier(0.4, 0, 0.2, 1);
-  }
-
-  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-
-  html { scroll-behavior: smooth; }
-
-  body {
-    font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
-    background: var(--navy-deep);
-    color: var(--text-primary);
-    line-height: 1.6;
-    overflow-x: hidden;
-  }
-
-  body::before {
-    content: '';
-    position: fixed;
-    inset: 0;
-    background:
-      radial-gradient(ellipse at 20% 10%, rgba(201,168,76,0.04) 0%, transparent 60%),
-      radial-gradient(ellipse at 80% 90%, rgba(201,168,76,0.03) 0%, transparent 60%),
-      radial-gradient(ellipse at 50% 50%, rgba(15,29,54,0.8) 0%, var(--navy-deep) 100%);
-    pointer-events: none;
-    z-index: 0;
-  }
-
-  /* ---- NAV ---- */
-  nav {
-    position: sticky;
-    top: 0;
-    z-index: 100;
-    background: rgba(6, 13, 26, 0.85);
-    backdrop-filter: blur(16px);
-    -webkit-backdrop-filter: blur(16px);
-    border-bottom: 1px solid rgba(201,168,76,0.1);
-    padding: 0 20px;
-  }
-  .nav-inner {
-    max-width: 1200px;
-    margin: 0 auto;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    height: 64px;
-    position: relative;
-    z-index: 1;
-  }
-  .nav-logo {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    font-size: 1.4rem;
-    font-weight: 700;
-    color: var(--white);
-    text-decoration: none;
-    letter-spacing: -0.02em;
-  }
-  .nav-logo .icon {
-    width: 32px; height: 32px;
-    background: linear-gradient(135deg, var(--gold-bright), var(--gold));
-    border-radius: 8px;
-    display: flex; align-items: center; justify-content: center;
-    font-size: 0.9rem;
-    color: var(--navy-deep);
-    font-weight: 900;
-  }
-  .nav-links { display: flex; gap: 28px; align-items: center; }
-  .nav-links a {
-    color: var(--text-secondary);
-    text-decoration: none;
-    font-size: 0.9rem;
-    font-weight: 500;
-    transition: var(--transition);
-  }
-  .nav-links a:hover { color: var(--gold-light); }
-  .nav-links a.active { color: var(--gold-light); }
-  .nav-cta {
-    background: var(--gold);
-    color: var(--navy-deep) !important;
-    padding: 8px 20px;
-    border-radius: 8px;
-    font-weight: 600 !important;
-    transition: var(--transition);
-  }
-  .nav-cta:hover {
-    background: var(--gold-light);
-    transform: translateY(-1px);
-  }
-
-  /* ---- CONTAINER ---- */
-  .container {
-    max-width: 1200px;
-    margin: 0 auto;
-    padding: 0 24px;
-    position: relative;
-    z-index: 1;
-  }
-
-  /* ---- HERO ---- */
-  .hero {
-    text-align: center;
-    padding: 100px 24px 80px;
-    position: relative;
-    z-index: 1;
-  }
-  .hero-badge {
-    display: inline-flex;
-    align-items: center;
-    gap: 8px;
-    background: var(--gold-soft);
-    border: 1px solid rgba(201,168,76,0.25);
-    border-radius: 50px;
-    padding: 6px 18px;
-    font-size: 0.85rem;
-    color: var(--gold-light);
-    font-weight: 500;
-    margin-bottom: 28px;
-  }
-  .hero-badge .dot {
-    width: 8px; height: 8px;
-    background: var(--gold-bright);
-    border-radius: 50%;
-    animation: pulse-dot 2s infinite;
-  }
-  @keyframes pulse-dot {
-    0%, 100% { opacity: 1; transform: scale(1); }
-    50% { opacity: 0.5; transform: scale(1.4); }
-  }
-  .hero h1 {
-    font-size: clamp(2.2rem, 5vw, 3.6rem);
-    font-weight: 800;
-    letter-spacing: -0.03em;
-    line-height: 1.15;
-    margin-bottom: 20px;
-    background: linear-gradient(180deg, #ffffff 0%, #c0c8d4 100%);
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    background-clip: text;
-  }
-  .hero h1 .gold { -webkit-text-fill-color: var(--gold-light); }
-  .hero p.subtitle {
-    font-size: 1.15rem;
-    color: var(--text-secondary);
-    max-width: 640px;
-    margin: 0 auto 36px;
-    line-height: 1.7;
-  }
-  .hero-buttons {
-    display: flex;
-    gap: 16px;
-    flex-wrap: wrap;
-    justify-content: center;
-  }
-  .btn {
-    display: inline-flex;
-    align-items: center;
-    gap: 8px;
-    padding: 14px 32px;
-    border-radius: 10px;
-    font-size: 0.95rem;
-    font-weight: 600;
-    text-decoration: none;
-    cursor: pointer;
-    border: none;
-    transition: var(--transition);
-    letter-spacing: -0.01em;
-  }
-  .btn-primary {
-    background: linear-gradient(135deg, var(--gold-bright), var(--gold));
-    color: var(--navy-deep);
-    box-shadow: 0 4px 20px rgba(201,168,76,0.3);
-  }
-  .btn-primary:hover {
-    box-shadow: 0 6px 30px rgba(201,168,76,0.45);
-    transform: translateY(-2px);
-  }
-  .btn-outline {
-    background: transparent;
-    color: var(--gold-light);
-    border: 1.5px solid rgba(201,168,76,0.4);
-  }
-  .btn-outline:hover {
-    background: var(--gold-soft);
-    border-color: var(--gold);
-  }
-  .btn-ghost {
-    background: transparent;
-    color: var(--text-secondary);
-    padding: 14px 24px;
-  }
-  .btn-ghost:hover { color: var(--text-primary); }
-
-  /* ---- TRUST BAR ---- */
-  .trust-bar {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 32px;
-    flex-wrap: wrap;
-    padding: 36px 24px;
-    border-top: 1px solid rgba(201,168,76,0.08);
-    border-bottom: 1px solid rgba(201,168,76,0.08);
-    margin-bottom: 80px;
-  }
-  .trust-item {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    font-size: 0.85rem;
-    color: var(--text-muted);
-    font-weight: 500;
-  }
-  .trust-item .check { color: var(--gold); font-size: 1rem; }
-
-  /* ---- SECTION HEADERS ---- */
-  .section-header {
-    text-align: center;
-    margin-bottom: 56px;
-  }
-  .section-header .overline {
-    font-size: 0.8rem;
-    text-transform: uppercase;
-    letter-spacing: 0.12em;
-    color: var(--gold);
-    font-weight: 600;
-    margin-bottom: 12px;
-  }
-  .section-header h2 {
-    font-size: clamp(1.6rem, 3vw, 2.2rem);
-    font-weight: 700;
-    letter-spacing: -0.02em;
-    margin-bottom: 12px;
-  }
-  .section-header p {
-    color: var(--text-secondary);
-    font-size: 1rem;
-    max-width: 540px;
-    margin: 0 auto;
-  }
-
-  /* ---- WHY SECTION ---- */
-  .why-api {
-    padding: 80px 0;
-  }
-  .why-grid {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 60px;
-    align-items: center;
-  }
-  .why-text h2 {
-    font-size: clamp(1.6rem, 3vw, 2.2rem);
-    font-weight: 700;
-    margin-bottom: 20px;
-    letter-spacing: -0.02em;
-  }
-  .why-text p {
-    color: var(--text-secondary);
-    font-size: 1rem;
-    line-height: 1.8;
-    margin-bottom: 16px;
-  }
-  .why-text .highlight {
-    color: var(--gold-light);
-    font-weight: 600;
-  }
-  .why-stats {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 16px;
-  }
-  .stat-card {
-    background: var(--card-bg);
-    border: 1px solid var(--card-border);
-    border-radius: var(--radius);
-    padding: 28px 20px;
-    text-align: center;
-    transition: var(--transition);
-  }
-  .stat-card:hover {
-    border-color: rgba(201,168,76,0.25);
-  }
-  .stat-card .stat-number {
-    font-size: 2rem;
-    font-weight: 800;
-    color: var(--gold-light);
-    letter-spacing: -0.02em;
-    margin-bottom: 6px;
-  }
-  .stat-card .stat-label {
-    font-size: 0.82rem;
-    color: var(--text-muted);
-    font-weight: 500;
-  }
-
-  /* ---- CAPABILITIES ---- */
-  .capabilities {
-    padding: 80px 0;
-    background: rgba(10,22,40,0.5);
-  }
-  .cap-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
-    gap: 24px;
-  }
-  .cap-card {
-    background: var(--card-bg);
-    border: 1px solid var(--card-border);
-    border-radius: var(--radius);
-    padding: 28px 24px;
-    transition: var(--transition);
-  }
-  .cap-card:hover {
-    border-color: rgba(201,168,76,0.25);
-    box-shadow: 0 6px 24px rgba(0,0,0,0.25);
-  }
-  .cap-icon {
-    width: 40px; height: 40px;
-    border-radius: 10px;
-    background: var(--gold-soft);
-    display: flex; align-items: center; justify-content: center;
-    font-size: 1.1rem;
-    margin-bottom: 16px;
-  }
-  .cap-card h4 {
-    font-size: 1rem;
-    font-weight: 600;
-    margin-bottom: 6px;
-  }
-  .cap-card p {
-    font-size: 0.85rem;
-    color: var(--text-muted);
-    line-height: 1.6;
-  }
-
-  /* ---- CODE EXAMPLE ---- */
-  .code-section {
-    padding: 80px 0;
-  }
-  .code-block {
-    background: #070e1a;
-    border: 1px solid rgba(201,168,76,0.2);
-    border-radius: var(--radius-lg);
-    overflow: hidden;
-    max-width: 800px;
-    margin: 0 auto;
-  }
-  .code-header {
-    background: rgba(201,168,76,0.08);
-    padding: 12px 20px;
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    border-bottom: 1px solid rgba(201,168,76,0.1);
-  }
-  .code-header .dot-terminal {
-    width: 12px; height: 12px;
-    border-radius: 50%;
-    background: #ff5f56;
-  }
-  .code-header .dot-terminal:nth-child(2) { background: #ffbd2e; }
-  .code-header .dot-terminal:nth-child(3) { background: #27c93f; }
-  .code-header .file-label {
-    font-size: 0.78rem;
-    color: var(--text-muted);
-    margin-left: 8px;
-  }
-  .code-body {
-    padding: 24px;
-    overflow-x: auto;
-  }
-  .code-body pre {
-    font-family: 'JetBrains Mono', 'Fira Code', 'Cascadia Code', 'Consolas', monospace;
-    font-size: 0.85rem;
-    line-height: 1.8;
-    color: #c9d1d9;
-    white-space: pre-wrap;
-    word-break: break-word;
-  }
-  .code-body .comment { color: #6e7681; }
-  .code-body .method { color: #79c0ff; }
-  .code-body .url { color: #a5d6ff; }
-  .code-body .json-key { color: #7ee787; }
-  .code-body .json-string { color: #a5d6ff; }
-  .code-body .json-number { color: #f2cc60; }
-
-  /* ---- PRICING ---- */
-  .pricing {
-    padding: 80px 0;
-    background: rgba(10,22,40,0.5);
-  }
-  .pricing-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-    gap: 24px;
-    max-width: 1100px;
-    margin: 0 auto;
-  }
-  .pricing-card {
-    background: var(--card-bg);
-    border: 1px solid var(--card-border);
-    border-radius: var(--radius-lg);
-    padding: 36px 28px;
-    text-align: center;
-    transition: var(--transition);
-    position: relative;
-  }
-  .pricing-card.featured {
-    border-color: rgba(201,168,76,0.35);
-    box-shadow: 0 0 0 1px rgba(201,168,76,0.2), 0 8px 40px rgba(201,168,76,0.08);
-  }
-  .pricing-card.featured::after {
-    content: 'Most Popular';
-    position: absolute;
-    top: -12px;
-    left: 50%;
-    transform: translateX(-50%);
-    background: var(--gold);
-    color: var(--navy-deep);
-    font-size: 0.72rem;
-    font-weight: 700;
-    padding: 4px 16px;
-    border-radius: 50px;
-    letter-spacing: 0.03em;
-  }
-  .pricing-card h4 {
-    font-size: 1.1rem;
-    font-weight: 600;
-    margin-bottom: 12px;
-  }
-  .pricing-card .price {
-    font-size: 2.2rem;
-    font-weight: 800;
-    margin-bottom: 4px;
-    letter-spacing: -0.02em;
-  }
-  .pricing-card .price span {
-    font-size: 0.9rem;
-    font-weight: 500;
-    color: var(--text-muted);
-  }
-  .pricing-card .desc {
-    font-size: 0.85rem;
-    color: var(--text-muted);
-    margin-bottom: 20px;
-  }
-  .pricing-card ul {
-    list-style: none;
-    text-align: left;
-    margin-bottom: 24px;
-  }
-  .pricing-card ul li {
-    padding: 8px 0;
-    font-size: 0.85rem;
-    color: var(--text-secondary);
-    border-bottom: 1px solid rgba(255,255,255,0.04);
-  }
-  .pricing-card ul li::before {
-    content: '✓ ';
-    color: var(--gold);
-    font-weight: 700;
-  }
-  .pricing-card .btn { width: 100%; justify-content: center; }
-
-  /* ---- FREE TIER BANNER ---- */
-  .free-tier {
-    text-align: center;
-    padding: 60px 24px;
-    position: relative;
-    z-index: 1;
-  }
-  .free-tier-card {
-    display: inline-block;
-    background: var(--card-bg);
-    border: 1px solid rgba(201,168,76,0.25);
-    border-radius: var(--radius-lg);
-    padding: 40px 48px;
-    max-width: 600px;
-  }
-  .free-tier-card h2 {
-    font-size: 1.6rem;
-    margin-bottom: 8px;
-  }
-  .free-tier-card .gold { color: var(--gold-light); }
-  .free-tier-card p {
-    color: var(--text-secondary);
-    margin-bottom: 24px;
-    font-size: 1rem;
-  }
-
-  /* ---- BADGE ROW ---- */
-  .badge-row {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 20px;
-    flex-wrap: wrap;
-    padding: 48px 24px;
-  }
-  .oss-badge, .trust-badge {
-    display: inline-flex;
-    align-items: center;
-    gap: 8px;
-    background: var(--card-bg);
-    border: 1px solid var(--card-border);
-    border-radius: 50px;
-    padding: 10px 22px;
-    font-size: 0.82rem;
-    color: var(--text-secondary);
-    font-weight: 500;
-  }
-  .oss-badge .star { color: var(--gold); }
-  .trust-badge .shield { color: #63b3ed; }
-
-  /* ---- CTA SECTION ---- */
-  .cta-section {
-    text-align: center;
-    padding: 80px 24px;
-    position: relative;
-    z-index: 1;
-  }
-  .cta-section h2 {
-    font-size: clamp(1.6rem, 3vw, 2rem);
-    font-weight: 700;
-    margin-bottom: 12px;
-  }
-  .cta-section p {
-    color: var(--text-secondary);
-    margin-bottom: 28px;
-    max-width: 500px;
-    margin-left: auto;
-    margin-right: auto;
-  }
-
-  /* ---- FOOTER ---- */
-  footer {
-    border-top: 1px solid rgba(201,168,76,0.08);
-    padding: 40px 24px;
-    position: relative;
-    z-index: 1;
-  }
-  .footer-inner {
-    max-width: 1200px;
-    margin: 0 auto;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    flex-wrap: wrap;
-    gap: 16px;
-  }
-  .footer-inner .left {
-    display: flex;
-    flex-direction: column;
-    gap: 4px;
-  }
-  .footer-inner .brand {
-    font-weight: 600;
-    color: var(--text-primary);
-    font-size: 0.9rem;
-  }
-  .footer-inner .license {
-    font-size: 0.78rem;
-    color: var(--text-muted);
-  }
-  .footer-links { display: flex; gap: 20px; }
-  .footer-links a {
-    font-size: 0.82rem;
-    color: var(--text-muted);
-    text-decoration: none;
-    transition: var(--transition);
-  }
-  .footer-links a:hover { color: var(--gold-light); }
-
-  /* ---- RESPONSIVE ---- */
-  @media (max-width: 768px) {
-    .nav-links { gap: 14px; }
-    .nav-links a { font-size: 0.8rem; }
-    .hero { padding: 60px 16px 50px; }
-    .trust-bar { gap: 16px; }
-    .why-grid { grid-template-columns: 1fr; gap: 36px; }
-    .why-stats { grid-template-columns: 1fr 1fr; }
-    .cap-grid { grid-template-columns: 1fr; }
-    .pricing-grid { grid-template-columns: 1fr; }
-    .footer-inner { flex-direction: column; text-align: center; }
-    .free-tier-card { padding: 28px 24px; }
-  }
-
-  @media (max-width: 480px) {
-    .nav-links a.nav-cta { padding: 6px 14px; font-size: 0.75rem; }
-    .hero-buttons { flex-direction: column; align-items: center; }
-    .btn { width: 100%; max-width: 300px; justify-content: center; }
-    .why-stats { grid-template-columns: 1fr; }
-  }
-</style>
-</head>
-<body>
-
-<!-- NAV -->
-<nav>
-  <div class="nav-inner">
-    <a href="landing-index.html" class="nav-logo">
-      <div class="icon">◆</div>
-      DesignEngine
-    </a>
-    <div class="nav-links">
-      <a href="landing-api.html" class="active">API</a>
-      <a href="landing-reports.html">Reports</a>
-      <a href="landing-index.html#pricing">Pricing</a>
-      <a href="#pricing" class="nav-cta">Get Started</a>
-    </div>
-  </div>
-</nav>
-
-<!-- HERO -->
-<section class="hero">
-  <div class="container">
-    <div class="hero-badge">
-      <span class="dot"></span> Developer Preview — Now in Public Beta
-    </div>
-    <h1>The First <span class="gold">Human Design REST API</span></h1>
-    <p class="subtitle">
-      Add accurate natal charts, transits, and synastry to your app in minutes. Developer-first. Verified accuracy. No one else offers this — you're first to market.
-    </p>
-    <div class="hero-buttons">
-      <a href="#pricing" class="btn btn-primary">View Plans →</a>
-      <a href="#try-free" class="btn btn-outline">Try Free (No CC) →</a>
-    </div>
-  </div>
-</section>
-
-<!-- TRUST BAR -->
-<div class="trust-bar">
-  <div class="trust-item"><span class="check">✓</span> REST &mdash; all JSON responses</div>
-  <div class="trust-item"><span class="check">✓</span> Sub-300ms chart computation</div>
-  <div class="trust-item"><span class="check">✓</span> 99.9% uptime SLA</div>
-  <div class="trust-item"><span class="check">✓</span> 100 free calls / month</div>
-</div>
-
-<!-- WHY AN HD API -->
-<section class="why-api">
-  <div class="container">
-    <div class="why-grid">
-      <div class="why-text">
-        <div class="section-header" style="text-align:left;margin-bottom:24px;">
-          <div class="overline">Why an HD API?</div>
-          <h2>First to market. Built for developers.</h2>
-        </div>
-        <p>
-          No one else offers a <span class="highlight">production-grade Human Design API</span>. Existing tools are black-box calculators with no developer access. We're changing that.
-        </p>
-        <p>
-          DesignEngine gives you <span class="highlight">programmatic access</span> to verified Human Design computations — bodygraphs, gates, channels, centers, profiles, authorities, incarnation crosses, planetary transits, and synastry overlays. All through a clean REST interface with predictable JSON responses.
-        </p>
-        <p>
-          Built on the <span class="highlight">OpenHumanDesignMCP</span> open-source calculation engine — the same peer-reviewed algorithms trusted by thousands. Every computation is transparent, auditable, and accurate.
-        </p>
-      </div>
-      <div class="why-stats">
-        <div class="stat-card">
-          <div class="stat-number">&lt;300ms</div>
-          <div class="stat-label">Average Response Time</div>
-        </div>
-        <div class="stat-card">
-          <div class="stat-number">64</div>
-          <div class="stat-label">Gates Computed</div>
-        </div>
-        <div class="stat-card">
-          <div class="stat-number">36</div>
-          <div class="stat-label">Channels Mapped</div>
-        </div>
-        <div class="stat-card">
-          <div class="stat-number">9</div>
-          <div class="stat-label">Center Activations</div>
-        </div>
-      </div>
-    </div>
-  </div>
-</section>
-
-<!-- WHAT YOU GET -->
-<section class="capabilities">
-  <div class="container">
-    <div class="section-header">
-      <div class="overline">What You Get</div>
-      <h2>Every endpoint you need to ship Human Design</h2>
-      <p>RESTful. JSON. Predictable. Built for integration from day one.</p>
-    </div>
-
-    <div class="cap-grid">
-      <div class="cap-card">
-        <div class="cap-icon">🪐</div>
-        <h4>Natal Charts</h4>
-        <p>Compute a full bodygraph from birth date, time, and location. Returns Type, Strategy, Authority, Profile, all nine Centers with activation states, 64 Gates, 36 Channels, and Incarnation Cross.</p>
-      </div>
-      <div class="cap-card">
-        <div class="cap-icon">🌍</div>
-        <h4>Planetary Transits</h4>
-        <p>Get real-time planetary positions mapped to gates and lines. Compute transit overlays against any natal chart. Always current — ephemeris data auto-updates daily.</p>
-      </div>
-      <div class="cap-card">
-        <div class="cap-icon">💞</div>
-        <h4>Synastry & Composite</h4>
-        <p>Compare two charts side by side. Identify electromagnetic channels, dominance, compromise, and companionship dynamics. Generate composite bodygraph overlays.</p>
-      </div>
-      <div class="cap-card">
-        <div class="cap-icon">🔍</div>
-        <h4>Gate & Channel Lookup</h4>
-        <p>Retrieve detailed interpretations for any gate or channel. Includes I Ching hexagram mapping, circuitry (Individual, Tribal, Collective), and line-level descriptions.</p>
-      </div>
-      <div class="cap-card">
-        <div class="cap-icon">📊</div>
-        <h4>Bodygraph Data</h4>
-        <p>Get raw activation data for rendering your own bodygraph visualizations. Defined/undefined centers, activated gates with line and color, and channel connections — all structured for canvas or SVG rendering.</p>
-      </div>
-      <div class="cap-card">
-        <div class="cap-icon">🔑</div>
-        <h4>API Keys & Rate Limits</h4>
-        <p>Simple key-based authentication. Usage dashboards track every call. Rate limits scale with your plan. Webhooks notify you when you approach your monthly quota.</p>
-      </div>
-    </div>
-  </div>
-</section>
-
-<!-- CODE EXAMPLE -->
-<section class="code-section">
-  <div class="container">
-    <div class="section-header">
-      <div class="overline">Try It Now</div>
-      <h2>One curl command, one chart</h2>
-      <p>No SDK required. Just your API key and a birth time.</p>
-    </div>
-
-    <div class="code-block">
-      <div class="code-header">
-        <span class="dot-terminal"></span>
-        <span class="dot-terminal"></span>
-        <span class="dot-terminal"></span>
-        <span class="file-label">Terminal — bash</span>
-      </div>
-      <div class="code-body">
-        <pre><span class="comment"># Compute a natal chart in one request</span>
-curl -X POST https://api.designengine.ai/v1/chart/natal \
-  -H <span class="json-string">"Authorization: Bearer YOUR_API_KEY"</span> \
-  -H <span class="json-string">"Content-Type: application/json"</span> \
-  -d <span class="json-string">'{
-    "birth_date": "1988-06-15",
-    "birth_time": "14:30:00",
-    "latitude": 40.7128,
-    "longitude": -74.0060,
-    "timezone": "America/New_York"
-  }'</span>
-
-<span class="comment"># Response (abbreviated):</span>
-{
-  <span class="json-key">"type"</span>: <span class="json-string">"Generator"</span>,
-  <span class="json-key">"strategy"</span>: <span class="json-string">"To Respond"</span>,
-  <span class="json-key">"authority"</span>: <span class="json-string">"Sacral"</span>,
-  <span class="json-key">"profile"</span>: <span class="json-string">"4/6"</span>,
-  <span class="json-key">"incarnation_cross"</span>: <span class="json-string">"Right Angle Cross of the Sphinx"</span>,
-  <span class="json-key">"defined_centers"</span>: [<span class="json-string">"Sacral"</span>, <span class="json-string">"Root"</span>, <span class="json-string">"Spleen"</span>],
-  <span class="json-key">"gates"</span>: { <span class="json-key">"1"</span>: { <span class="json-key">"line"</span>: <span class="json-number">3</span>, <span class="json-key">"color"</span>: <span class="json-number">5</span> }, ... },
-  <span class="json-key">"computed_at"</span>: <span class="json-string">"2026-05-29T01:11:00Z"</span>
-}</pre>
-      </div>
-    </div>
-  </div>
-</section>
-
-<!-- PRICING -->
-<section class="pricing" id="pricing">
-  <div class="container">
-    <div class="section-header">
-      <div class="overline">API Pricing</div>
-      <h2>Start free, scale as you grow</h2>
-      <p>From hobbyists to high-volume platforms — choose the plan that fits your needs.</p>
-    </div>
-
-    <div class="pricing-grid">
-      <div class="pricing-card">
-        <h4>Hobbyist</h4>
-        <div class="price">$19<span>/month</span></div>
-        <p class="desc">Perfect for learning and side projects.</p>
-        <ul>
-          <li>1,000 API calls / month</li>
-          <li>All chart endpoints</li>
-          <li>Community support</li>
-          <li>API documentation access</li>
-        </ul>
-        <a href="#" class="btn btn-outline">Get Started</a>
-      </div>
-
-      <div class="pricing-card featured">
-        <h4>Builder</h4>
-        <div class="price">$99<span>/month</span></div>
-        <p class="desc">For growing apps and startups.</p>
-        <ul>
-          <li>10,000 API calls / month</li>
-          <li>All endpoints + transits</li>
-          <li>Email support</li>
-          <li>99.5% uptime SLA</li>
-          <li>Webhook notifications</li>
-        </ul>
-        <a href="#" class="btn btn-primary">Start Free Trial</a>
-      </div>
-
-      <div class="pricing-card">
-        <h4>Growth</h4>
-        <div class="price">$299<span>/month</span></div>
-        <p class="desc">For scaling platforms and products.</p>
-        <ul>
-          <li>50,000 API calls / month</li>
-          <li>All endpoints + synastry</li>
-          <li>Priority email support</li>
-          <li>99.9% uptime SLA</li>
-          <li>Usage analytics dashboard</li>
-        </ul>
-        <a href="#" class="btn btn-outline">Get Started</a>
-      </div>
-
-      <div class="pricing-card">
-        <h4>Enterprise</h4>
-        <div class="price">$999<span>/month</span></div>
-        <p class="desc">High-volume, custom integrations.</p>
-        <ul>
-          <li>200,000 API calls / month</li>
-          <li>All endpoints, no limits</li>
-          <li>Slack priority support</li>
-          <li>99.99% uptime SLA</li>
-          <li>Custom contract & billing</li>
-          <li>Dedicated infrastructure</li>
-        </ul>
-        <a href="#" class="btn btn-outline">Contact Sales</a>
-      </div>
-    </div>
-  </div>
-</section>
-
-<!-- TRY IT FREE -->
-<section class="free-tier" id="try-free">
-  <div class="free-tier-card">
-    <h2>Try It <span class="gold">Free</span></h2>
-    <p>
-      <strong>100 free API calls every month</strong> — no credit card required.<br>
-      Explore every endpoint, build your integration, and verify our accuracy before you commit.
-    </p>
-    <a href="#" class="btn btn-primary">Get Your Free API Key →</a>
-  </div>
-</section>
-
-<!-- BADGES -->
-<div class="badge-row">
-  <div class="oss-badge">
-    <span class="star">★</span> Built on OpenHumanDesignMCP
-  </div>
-  <div class="trust-badge">
-    <span class="shield">🛡</span> Verified accuracy — peer-reviewed algorithms
-  </div>
-</div>
-
-<!-- CTA -->
-<section class="cta-section">
-  <div class="container">
-    <h2>Ready to build with Human Design?</h2>
-    <p>Get your free API key in under 30 seconds. First 100 calls on us — every month.</p>
-    <a href="#" class="btn btn-primary">Get Your API Key →</a>
-  </div>
-</section>
-
-<!-- FOOTER -->
-<footer>
-  <div class="footer-inner">
-    <div class="left">
-      <span class="brand">DesignEngine</span>
-      <span class="license">Licensed under AGPLv3. Core calculation engine is open source.</span>
-    </div>
-    <div class="footer-links">
-      <a href="landing-index.html">Home</a>
-      <a href="landing-api.html">API</a>
-      <a href="landing-reports.html">Reports</a>
-      <a href="https://github.com/nousresearch/OpenHumanDesignMCP">GitHub</a>
-      <a href="#">Docs</a>
-      <a href="#">Privacy</a>
-    </div>
-  </div>
-</footer>
-
-</body>
-</html>
+     1|<!DOCTYPE html>
+     2|<html lang="en">
+     3|<head>
+     4|<meta charset="UTF-8">
+     5|<meta name="viewport" content="width=device-width, initial-scale=1.0">
+     6|<title>Human Design Engine API — The First Human Design REST API</title>
+     7|<style>
+     8|  :root {
+     9|    --navy-deep: #060d1a;
+    10|    --navy: #0a1628;
+    11|    --navy-mid: #0f1d36;
+    12|    --navy-light: #162744;
+    13|    --navy-lighter: #1e3458;
+    14|    --gold: #c9a84c;
+    15|    --gold-light: #e0c468;
+    16|    --gold-bright: #d4af37;
+    17|    --gold-soft: rgba(201, 168, 76, 0.15);
+    18|    --gold-glow: rgba(201, 168, 76, 0.08);
+    19|    --text-primary: #e8e6e3;
+    20|    --text-secondary: #8899aa;
+    21|    --text-muted: #5a6a7a;
+    22|    --white: #ffffff;
+    23|    --card-bg: rgba(15, 29, 54, 0.7);
+    24|    --card-border: rgba(201, 168, 76, 0.12);
+    25|    --radius: 12px;
+    26|    --radius-lg: 20px;
+    27|    --shadow: 0 4px 24px rgba(0,0,0,0.3);
+    28|    --transition: 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+    29|  }
+    30|
+    31|  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    32|
+    33|  html { scroll-behavior: smooth; }
+    34|
+    35|  body {
+    36|    font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
+    37|    background: var(--navy-deep);
+    38|    color: var(--text-primary);
+    39|    line-height: 1.6;
+    40|    overflow-x: hidden;
+    41|  }
+    42|
+    43|  body::before {
+    44|    content: '';
+    45|    position: fixed;
+    46|    inset: 0;
+    47|    background:
+    48|      radial-gradient(ellipse at 20% 10%, rgba(201,168,76,0.04) 0%, transparent 60%),
+    49|      radial-gradient(ellipse at 80% 90%, rgba(201,168,76,0.03) 0%, transparent 60%),
+    50|      radial-gradient(ellipse at 50% 50%, rgba(15,29,54,0.8) 0%, var(--navy-deep) 100%);
+    51|    pointer-events: none;
+    52|    z-index: 0;
+    53|  }
+    54|
+    55|  /* ---- NAV ---- */
+    56|  nav {
+    57|    position: sticky;
+    58|    top: 0;
+    59|    z-index: 100;
+    60|    background: rgba(6, 13, 26, 0.85);
+    61|    backdrop-filter: blur(16px);
+    62|    -webkit-backdrop-filter: blur(16px);
+    63|    border-bottom: 1px solid rgba(201,168,76,0.1);
+    64|    padding: 0 20px;
+    65|  }
+    66|  .nav-inner {
+    67|    max-width: 1200px;
+    68|    margin: 0 auto;
+    69|    display: flex;
+    70|    align-items: center;
+    71|    justify-content: space-between;
+    72|    height: 64px;
+    73|    position: relative;
+    74|    z-index: 1;
+    75|  }
+    76|  .nav-logo {
+    77|    display: flex;
+    78|    align-items: center;
+    79|    gap: 10px;
+    80|    font-size: 1.4rem;
+    81|    font-weight: 700;
+    82|    color: var(--white);
+    83|    text-decoration: none;
+    84|    letter-spacing: -0.02em;
+    85|  }
+    86|  .nav-logo .icon {
+    87|    width: 32px; height: 32px;
+    88|    background: linear-gradient(135deg, var(--gold-bright), var(--gold));
+    89|    border-radius: 8px;
+    90|    display: flex; align-items: center; justify-content: center;
+    91|    font-size: 0.9rem;
+    92|    color: var(--navy-deep);
+    93|    font-weight: 900;
+    94|  }
+    95|  .nav-links { display: flex; gap: 28px; align-items: center; }
+    96|  .nav-links a {
+    97|    color: var(--text-secondary);
+    98|    text-decoration: none;
+    99|    font-size: 0.9rem;
+   100|    font-weight: 500;
+   101|    transition: var(--transition);
+   102|  }
+   103|  .nav-links a:hover { color: var(--gold-light); }
+   104|  .nav-links a.active { color: var(--gold-light); }
+   105|  .nav-cta {
+   106|    background: var(--gold);
+   107|    color: var(--navy-deep) !important;
+   108|    padding: 8px 20px;
+   109|    border-radius: 8px;
+   110|    font-weight: 600 !important;
+   111|    transition: var(--transition);
+   112|  }
+   113|  .nav-cta:hover {
+   114|    background: var(--gold-light);
+   115|    transform: translateY(-1px);
+   116|  }
+   117|
+   118|  /* ---- CONTAINER ---- */
+   119|  .container {
+   120|    max-width: 1200px;
+   121|    margin: 0 auto;
+   122|    padding: 0 24px;
+   123|    position: relative;
+   124|    z-index: 1;
+   125|  }
+   126|
+   127|  /* ---- HERO ---- */
+   128|  .hero {
+   129|    text-align: center;
+   130|    padding: 100px 24px 80px;
+   131|    position: relative;
+   132|    z-index: 1;
+   133|  }
+   134|  .hero-badge {
+   135|    display: inline-flex;
+   136|    align-items: center;
+   137|    gap: 8px;
+   138|    background: var(--gold-soft);
+   139|    border: 1px solid rgba(201,168,76,0.25);
+   140|    border-radius: 50px;
+   141|    padding: 6px 18px;
+   142|    font-size: 0.85rem;
+   143|    color: var(--gold-light);
+   144|    font-weight: 500;
+   145|    margin-bottom: 28px;
+   146|  }
+   147|  .hero-badge .dot {
+   148|    width: 8px; height: 8px;
+   149|    background: var(--gold-bright);
+   150|    border-radius: 50%;
+   151|    animation: pulse-dot 2s infinite;
+   152|  }
+   153|  @keyframes pulse-dot {
+   154|    0%, 100% { opacity: 1; transform: scale(1); }
+   155|    50% { opacity: 0.5; transform: scale(1.4); }
+   156|  }
+   157|  .hero h1 {
+   158|    font-size: clamp(2.2rem, 5vw, 3.6rem);
+   159|    font-weight: 800;
+   160|    letter-spacing: -0.03em;
+   161|    line-height: 1.15;
+   162|    margin-bottom: 20px;
+   163|    background: linear-gradient(180deg, #ffffff 0%, #c0c8d4 100%);
+   164|    -webkit-background-clip: text;
+   165|    -webkit-text-fill-color: transparent;
+   166|    background-clip: text;
+   167|  }
+   168|  .hero h1 .gold { -webkit-text-fill-color: var(--gold-light); }
+   169|  .hero p.subtitle {
+   170|    font-size: 1.15rem;
+   171|    color: var(--text-secondary);
+   172|    max-width: 640px;
+   173|    margin: 0 auto 36px;
+   174|    line-height: 1.7;
+   175|  }
+   176|  .hero-buttons {
+   177|    display: flex;
+   178|    gap: 16px;
+   179|    flex-wrap: wrap;
+   180|    justify-content: center;
+   181|  }
+   182|  .btn {
+   183|    display: inline-flex;
+   184|    align-items: center;
+   185|    gap: 8px;
+   186|    padding: 14px 32px;
+   187|    border-radius: 10px;
+   188|    font-size: 0.95rem;
+   189|    font-weight: 600;
+   190|    text-decoration: none;
+   191|    cursor: pointer;
+   192|    border: none;
+   193|    transition: var(--transition);
+   194|    letter-spacing: -0.01em;
+   195|  }
+   196|  .btn-primary {
+   197|    background: linear-gradient(135deg, var(--gold-bright), var(--gold));
+   198|    color: var(--navy-deep);
+   199|    box-shadow: 0 4px 20px rgba(201,168,76,0.3);
+   200|  }
+   201|  .btn-primary:hover {
+   202|    box-shadow: 0 6px 30px rgba(201,168,76,0.45);
+   203|    transform: translateY(-2px);
+   204|  }
+   205|  .btn-outline {
+   206|    background: transparent;
+   207|    color: var(--gold-light);
+   208|    border: 1.5px solid rgba(201,168,76,0.4);
+   209|  }
+   210|  .btn-outline:hover {
+   211|    background: var(--gold-soft);
+   212|    border-color: var(--gold);
+   213|  }
+   214|  .btn-ghost {
+   215|    background: transparent;
+   216|    color: var(--text-secondary);
+   217|    padding: 14px 24px;
+   218|  }
+   219|  .btn-ghost:hover { color: var(--text-primary); }
+   220|
+   221|  /* ---- TRUST BAR ---- */
+   222|  .trust-bar {
+   223|    display: flex;
+   224|    align-items: center;
+   225|    justify-content: center;
+   226|    gap: 32px;
+   227|    flex-wrap: wrap;
+   228|    padding: 36px 24px;
+   229|    border-top: 1px solid rgba(201,168,76,0.08);
+   230|    border-bottom: 1px solid rgba(201,168,76,0.08);
+   231|    margin-bottom: 80px;
+   232|  }
+   233|  .trust-item {
+   234|    display: flex;
+   235|    align-items: center;
+   236|    gap: 10px;
+   237|    font-size: 0.85rem;
+   238|    color: var(--text-muted);
+   239|    font-weight: 500;
+   240|  }
+   241|  .trust-item .check { color: var(--gold); font-size: 1rem; }
+   242|
+   243|  /* ---- SECTION HEADERS ---- */
+   244|  .section-header {
+   245|    text-align: center;
+   246|    margin-bottom: 56px;
+   247|  }
+   248|  .section-header .overline {
+   249|    font-size: 0.8rem;
+   250|    text-transform: uppercase;
+   251|    letter-spacing: 0.12em;
+   252|    color: var(--gold);
+   253|    font-weight: 600;
+   254|    margin-bottom: 12px;
+   255|  }
+   256|  .section-header h2 {
+   257|    font-size: clamp(1.6rem, 3vw, 2.2rem);
+   258|    font-weight: 700;
+   259|    letter-spacing: -0.02em;
+   260|    margin-bottom: 12px;
+   261|  }
+   262|  .section-header p {
+   263|    color: var(--text-secondary);
+   264|    font-size: 1rem;
+   265|    max-width: 540px;
+   266|    margin: 0 auto;
+   267|  }
+   268|
+   269|  /* ---- WHY SECTION ---- */
+   270|  .why-api {
+   271|    padding: 80px 0;
+   272|  }
+   273|  .why-grid {
+   274|    display: grid;
+   275|    grid-template-columns: 1fr 1fr;
+   276|    gap: 60px;
+   277|    align-items: center;
+   278|  }
+   279|  .why-text h2 {
+   280|    font-size: clamp(1.6rem, 3vw, 2.2rem);
+   281|    font-weight: 700;
+   282|    margin-bottom: 20px;
+   283|    letter-spacing: -0.02em;
+   284|  }
+   285|  .why-text p {
+   286|    color: var(--text-secondary);
+   287|    font-size: 1rem;
+   288|    line-height: 1.8;
+   289|    margin-bottom: 16px;
+   290|  }
+   291|  .why-text .highlight {
+   292|    color: var(--gold-light);
+   293|    font-weight: 600;
+   294|  }
+   295|  .why-stats {
+   296|    display: grid;
+   297|    grid-template-columns: 1fr 1fr;
+   298|    gap: 16px;
+   299|  }
+   300|  .stat-card {
+   301|    background: var(--card-bg);
+   302|    border: 1px solid var(--card-border);
+   303|    border-radius: var(--radius);
+   304|    padding: 28px 20px;
+   305|    text-align: center;
+   306|    transition: var(--transition);
+   307|  }
+   308|  .stat-card:hover {
+   309|    border-color: rgba(201,168,76,0.25);
+   310|  }
+   311|  .stat-card .stat-number {
+   312|    font-size: 2rem;
+   313|    font-weight: 800;
+   314|    color: var(--gold-light);
+   315|    letter-spacing: -0.02em;
+   316|    margin-bottom: 6px;
+   317|  }
+   318|  .stat-card .stat-label {
+   319|    font-size: 0.82rem;
+   320|    color: var(--text-muted);
+   321|    font-weight: 500;
+   322|  }
+   323|
+   324|  /* ---- CAPABILITIES ---- */
+   325|  .capabilities {
+   326|    padding: 80px 0;
+   327|    background: rgba(10,22,40,0.5);
+   328|  }
+   329|  .cap-grid {
+   330|    display: grid;
+   331|    grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+   332|    gap: 24px;
+   333|  }
+   334|  .cap-card {
+   335|    background: var(--card-bg);
+   336|    border: 1px solid var(--card-border);
+   337|    border-radius: var(--radius);
+   338|    padding: 28px 24px;
+   339|    transition: var(--transition);
+   340|  }
+   341|  .cap-card:hover {
+   342|    border-color: rgba(201,168,76,0.25);
+   343|    box-shadow: 0 6px 24px rgba(0,0,0,0.25);
+   344|  }
+   345|  .cap-icon {
+   346|    width: 40px; height: 40px;
+   347|    border-radius: 10px;
+   348|    background: var(--gold-soft);
+   349|    display: flex; align-items: center; justify-content: center;
+   350|    font-size: 1.1rem;
+   351|    margin-bottom: 16px;
+   352|  }
+   353|  .cap-card h4 {
+   354|    font-size: 1rem;
+   355|    font-weight: 600;
+   356|    margin-bottom: 6px;
+   357|  }
+   358|  .cap-card p {
+   359|    font-size: 0.85rem;
+   360|    color: var(--text-muted);
+   361|    line-height: 1.6;
+   362|  }
+   363|
+   364|  /* ---- CODE EXAMPLE ---- */
+   365|  .code-section {
+   366|    padding: 80px 0;
+   367|  }
+   368|  .code-block {
+   369|    background: #070e1a;
+   370|    border: 1px solid rgba(201,168,76,0.2);
+   371|    border-radius: var(--radius-lg);
+   372|    overflow: hidden;
+   373|    max-width: 800px;
+   374|    margin: 0 auto;
+   375|  }
+   376|  .code-header {
+   377|    background: rgba(201,168,76,0.08);
+   378|    padding: 12px 20px;
+   379|    display: flex;
+   380|    align-items: center;
+   381|    gap: 10px;
+   382|    border-bottom: 1px solid rgba(201,168,76,0.1);
+   383|  }
+   384|  .code-header .dot-terminal {
+   385|    width: 12px; height: 12px;
+   386|    border-radius: 50%;
+   387|    background: #ff5f56;
+   388|  }
+   389|  .code-header .dot-terminal:nth-child(2) { background: #ffbd2e; }
+   390|  .code-header .dot-terminal:nth-child(3) { background: #27c93f; }
+   391|  .code-header .file-label {
+   392|    font-size: 0.78rem;
+   393|    color: var(--text-muted);
+   394|    margin-left: 8px;
+   395|  }
+   396|  .code-body {
+   397|    padding: 24px;
+   398|    overflow-x: auto;
+   399|  }
+   400|  .code-body pre {
+   401|    font-family: 'JetBrains Mono', 'Fira Code', 'Cascadia Code', 'Consolas', monospace;
+   402|    font-size: 0.85rem;
+   403|    line-height: 1.8;
+   404|    color: #c9d1d9;
+   405|    white-space: pre-wrap;
+   406|    word-break: break-word;
+   407|  }
+   408|  .code-body .comment { color: #6e7681; }
+   409|  .code-body .method { color: #79c0ff; }
+   410|  .code-body .url { color: #a5d6ff; }
+   411|  .code-body .json-key { color: #7ee787; }
+   412|  .code-body .json-string { color: #a5d6ff; }
+   413|  .code-body .json-number { color: #f2cc60; }
+   414|
+   415|  /* ---- PRICING ---- */
+   416|  .pricing {
+   417|    padding: 80px 0;
+   418|    background: rgba(10,22,40,0.5);
+   419|  }
+   420|  .pricing-grid {
+   421|    display: grid;
+   422|    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+   423|    gap: 24px;
+   424|    max-width: 1100px;
+   425|    margin: 0 auto;
+   426|  }
+   427|  .pricing-card {
+   428|    background: var(--card-bg);
+   429|    border: 1px solid var(--card-border);
+   430|    border-radius: var(--radius-lg);
+   431|    padding: 36px 28px;
+   432|    text-align: center;
+   433|    transition: var(--transition);
+   434|    position: relative;
+   435|  }
+   436|  .pricing-card.featured {
+   437|    border-color: rgba(201,168,76,0.35);
+   438|    box-shadow: 0 0 0 1px rgba(201,168,76,0.2), 0 8px 40px rgba(201,168,76,0.08);
+   439|  }
+   440|  .pricing-card.featured::after {
+   441|    content: 'Most Popular';
+   442|    position: absolute;
+   443|    top: -12px;
+   444|    left: 50%;
+   445|    transform: translateX(-50%);
+   446|    background: var(--gold);
+   447|    color: var(--navy-deep);
+   448|    font-size: 0.72rem;
+   449|    font-weight: 700;
+   450|    padding: 4px 16px;
+   451|    border-radius: 50px;
+   452|    letter-spacing: 0.03em;
+   453|  }
+   454|  .pricing-card h4 {
+   455|    font-size: 1.1rem;
+   456|    font-weight: 600;
+   457|    margin-bottom: 12px;
+   458|  }
+   459|  .pricing-card .price {
+   460|    font-size: 2.2rem;
+   461|    font-weight: 800;
+   462|    margin-bottom: 4px;
+   463|    letter-spacing: -0.02em;
+   464|  }
+   465|  .pricing-card .price span {
+   466|    font-size: 0.9rem;
+   467|    font-weight: 500;
+   468|    color: var(--text-muted);
+   469|  }
+   470|  .pricing-card .desc {
+   471|    font-size: 0.85rem;
+   472|    color: var(--text-muted);
+   473|    margin-bottom: 20px;
+   474|  }
+   475|  .pricing-card ul {
+   476|    list-style: none;
+   477|    text-align: left;
+   478|    margin-bottom: 24px;
+   479|  }
+   480|  .pricing-card ul li {
+   481|    padding: 8px 0;
+   482|    font-size: 0.85rem;
+   483|    color: var(--text-secondary);
+   484|    border-bottom: 1px solid rgba(255,255,255,0.04);
+   485|  }
+   486|  .pricing-card ul li::before {
+   487|    content: '✓ ';
+   488|    color: var(--gold);
+   489|    font-weight: 700;
+   490|  }
+   491|  .pricing-card .btn { width: 100%; justify-content: center; }
+   492|
+   493|  /* ---- FREE TIER BANNER ---- */
+   494|  .free-tier {
+   495|    text-align: center;
+   496|    padding: 60px 24px;
+   497|    position: relative;
+   498|    z-index: 1;
+   499|  }
+   500|  .free-tier-card {
+   501|    display: inline-block;
+   502|    background: var(--card-bg);
+   503|    border: 1px solid rgba(201,168,76,0.25);
+   504|    border-radius: var(--radius-lg);
+   505|    padding: 40px 48px;
+   506|    max-width: 600px;
+   507|  }
+   508|  .free-tier-card h2 {
+   509|    font-size: 1.6rem;
+   510|    margin-bottom: 8px;
+   511|  }
+   512|  .free-tier-card .gold { color: var(--gold-light); }
+   513|  .free-tier-card p {
+   514|    color: var(--text-secondary);
+   515|    margin-bottom: 24px;
+   516|    font-size: 1rem;
+   517|  }
+   518|
+   519|  /* ---- BADGE ROW ---- */
+   520|  .badge-row {
+   521|    display: flex;
+   522|    align-items: center;
+   523|    justify-content: center;
+   524|    gap: 20px;
+   525|    flex-wrap: wrap;
+   526|    padding: 48px 24px;
+   527|  }
+   528|  .oss-badge, .trust-badge {
+   529|    display: inline-flex;
+   530|    align-items: center;
+   531|    gap: 8px;
+   532|    background: var(--card-bg);
+   533|    border: 1px solid var(--card-border);
+   534|    border-radius: 50px;
+   535|    padding: 10px 22px;
+   536|    font-size: 0.82rem;
+   537|    color: var(--text-secondary);
+   538|    font-weight: 500;
+   539|  }
+   540|  .oss-badge .star { color: var(--gold); }
+   541|  .trust-badge .shield { color: #63b3ed; }
+   542|
+   543|  /* ---- CTA SECTION ---- */
+   544|  .cta-section {
+   545|    text-align: center;
+   546|    padding: 80px 24px;
+   547|    position: relative;
+   548|    z-index: 1;
+   549|  }
+   550|  .cta-section h2 {
+   551|    font-size: clamp(1.6rem, 3vw, 2rem);
+   552|    font-weight: 700;
+   553|    margin-bottom: 12px;
+   554|  }
+   555|  .cta-section p {
+   556|    color: var(--text-secondary);
+   557|    margin-bottom: 28px;
+   558|    max-width: 500px;
+   559|    margin-left: auto;
+   560|    margin-right: auto;
+   561|  }
+   562|
+   563|  /* ---- FOOTER ---- */
+   564|  footer {
+   565|    border-top: 1px solid rgba(201,168,76,0.08);
+   566|    padding: 40px 24px;
+   567|    position: relative;
+   568|    z-index: 1;
+   569|  }
+   570|  .footer-inner {
+   571|    max-width: 1200px;
+   572|    margin: 0 auto;
+   573|    display: flex;
+   574|    align-items: center;
+   575|    justify-content: space-between;
+   576|    flex-wrap: wrap;
+   577|    gap: 16px;
+   578|  }
+   579|  .footer-inner .left {
+   580|    display: flex;
+   581|    flex-direction: column;
+   582|    gap: 4px;
+   583|  }
+   584|  .footer-inner .brand {
+   585|    font-weight: 600;
+   586|    color: var(--text-primary);
+   587|    font-size: 0.9rem;
+   588|  }
+   589|  .footer-inner .license {
+   590|    font-size: 0.78rem;
+   591|    color: var(--text-muted);
+   592|  }
+   593|  .footer-links { display: flex; gap: 20px; }
+   594|  .footer-links a {
+   595|    font-size: 0.82rem;
+   596|    color: var(--text-muted);
+   597|    text-decoration: none;
+   598|    transition: var(--transition);
+   599|  }
+   600|  .footer-links a:hover { color: var(--gold-light); }
+   601|
+   602|  /* ---- RESPONSIVE ---- */
+   603|  @media (max-width: 768px) {
+   604|    .nav-links { gap: 14px; }
+   605|    .nav-links a { font-size: 0.8rem; }
+   606|    .hero { padding: 60px 16px 50px; }
+   607|    .trust-bar { gap: 16px; }
+   608|    .why-grid { grid-template-columns: 1fr; gap: 36px; }
+   609|    .why-stats { grid-template-columns: 1fr 1fr; }
+   610|    .cap-grid { grid-template-columns: 1fr; }
+   611|    .pricing-grid { grid-template-columns: 1fr; }
+   612|    .footer-inner { flex-direction: column; text-align: center; }
+   613|    .free-tier-card { padding: 28px 24px; }
+   614|  }
+   615|
+   616|  @media (max-width: 480px) {
+   617|    .nav-links a.nav-cta { padding: 6px 14px; font-size: 0.75rem; }
+   618|    .hero-buttons { flex-direction: column; align-items: center; }
+   619|    .btn { width: 100%; max-width: 300px; justify-content: center; }
+   620|    .why-stats { grid-template-columns: 1fr; }
+   621|  }
+   622|</style>
+   623|</head>
+   624|<body>
+   625|
+   626|<!-- NAV -->
+   627|<nav>
+   628|  <div class="nav-inner">
+   629|    <a href="landing-index.html" class="nav-logo">
+   630|      <div class="icon">◆</div>
+   631|      Human Design Engine
+   632|    </a>
+   633|    <div class="nav-links">
+   634|      <a href="landing-api.html" class="active">API</a>
+   635|      <a href="landing-reports.html">Reports</a>
+   636|      <a href="landing-index.html#pricing">Pricing</a>
+   637|      <a href="#pricing" class="nav-cta">Get Started</a>
+   638|    </div>
+   639|  </div>
+   640|</nav>
+   641|
+   642|<!-- HERO -->
+   643|<section class="hero">
+   644|  <div class="container">
+   645|    <div class="hero-badge">
+   646|      <span class="dot"></span> Developer Preview — Now in Public Beta
+   647|    </div>
+   648|    <h1>The First <span class="gold">Human Design REST API</span></h1>
+   649|    <p class="subtitle">
+   650|      Add accurate natal charts, transits, and synastry to your app in minutes. Developer-first. Verified accuracy. No one else offers this — you're first to market.
+   651|    </p>
+   652|    <div class="hero-buttons">
+   653|      <a href="#pricing" class="btn btn-primary">View Plans →</a>
+   654|      <a href="#try-free" class="btn btn-outline">Try Free (No CC) →</a>
+   655|    </div>
+   656|  </div>
+   657|</section>
+   658|
+   659|<!-- TRUST BAR -->
+   660|<div class="trust-bar">
+   661|  <div class="trust-item"><span class="check">✓</span> REST &mdash; all JSON responses</div>
+   662|  <div class="trust-item"><span class="check">✓</span> Sub-300ms chart computation</div>
+   663|  <div class="trust-item"><span class="check">✓</span> 99.9% uptime SLA</div>
+   664|  <div class="trust-item"><span class="check">✓</span> 100 free calls / month</div>
+   665|</div>
+   666|
+   667|<!-- WHY AN HD API -->
+   668|<section class="why-api">
+   669|  <div class="container">
+   670|    <div class="why-grid">
+   671|      <div class="why-text">
+   672|        <div class="section-header" style="text-align:left;margin-bottom:24px;">
+   673|          <div class="overline">Why an HD API?</div>
+   674|          <h2>First to market. Built for developers.</h2>
+   675|        </div>
+   676|        <p>
+   677|          No one else offers a <span class="highlight">production-grade Human Design API</span>. Existing tools are black-box calculators with no developer access. We're changing that.
+   678|        </p>
+   679|        <p>
+   680|          Human Design Engine gives you <span class="highlight">programmatic access</span> to verified Human Design computations — bodygraphs, gates, channels, centers, profiles, authorities, incarnation crosses, planetary transits, and synastry overlays. All through a clean REST interface with predictable JSON responses.
+   681|        </p>
+   682|        <p>
+   683|          Built on the <span class="highlight">OpenHumanDesignMCP</span> open-source calculation engine — the same peer-reviewed algorithms trusted by thousands. Every computation is transparent, auditable, and accurate.
+   684|        </p>
+   685|      </div>
+   686|      <div class="why-stats">
+   687|        <div class="stat-card">
+   688|          <div class="stat-number">&lt;300ms</div>
+   689|          <div class="stat-label">Average Response Time</div>
+   690|        </div>
+   691|        <div class="stat-card">
+   692|          <div class="stat-number">64</div>
+   693|          <div class="stat-label">Gates Computed</div>
+   694|        </div>
+   695|        <div class="stat-card">
+   696|          <div class="stat-number">36</div>
+   697|          <div class="stat-label">Channels Mapped</div>
+   698|        </div>
+   699|        <div class="stat-card">
+   700|          <div class="stat-number">9</div>
+   701|          <div class="stat-label">Center Activations</div>
+   702|        </div>
+   703|      </div>
+   704|    </div>
+   705|  </div>
+   706|</section>
+   707|
+   708|<!-- WHAT YOU GET -->
+   709|<section class="capabilities">
+   710|  <div class="container">
+   711|    <div class="section-header">
+   712|      <div class="overline">What You Get</div>
+   713|      <h2>Every endpoint you need to ship Human Design</h2>
+   714|      <p>RESTful. JSON. Predictable. Built for integration from day one.</p>
+   715|    </div>
+   716|
+   717|    <div class="cap-grid">
+   718|      <div class="cap-card">
+   719|        <div class="cap-icon">🪐</div>
+   720|        <h4>Natal Charts</h4>
+   721|        <p>Compute a full bodygraph from birth date, time, and location. Returns Type, Strategy, Authority, Profile, all nine Centers with activation states, 64 Gates, 36 Channels, and Incarnation Cross.</p>
+   722|      </div>
+   723|      <div class="cap-card">
+   724|        <div class="cap-icon">🌍</div>
+   725|        <h4>Planetary Transits</h4>
+   726|        <p>Get real-time planetary positions mapped to gates and lines. Compute transit overlays against any natal chart. Always current — ephemeris data auto-updates daily.</p>
+   727|      </div>
+   728|      <div class="cap-card">
+   729|        <div class="cap-icon">💞</div>
+   730|        <h4>Synastry & Composite</h4>
+   731|        <p>Compare two charts side by side. Identify electromagnetic channels, dominance, compromise, and companionship dynamics. Generate composite bodygraph overlays.</p>
+   732|      </div>
+   733|      <div class="cap-card">
+   734|        <div class="cap-icon">🔍</div>
+   735|        <h4>Gate & Channel Lookup</h4>
+   736|        <p>Retrieve detailed interpretations for any gate or channel. Includes I Ching hexagram mapping, circuitry (Individual, Tribal, Collective), and line-level descriptions.</p>
+   737|      </div>
+   738|      <div class="cap-card">
+   739|        <div class="cap-icon">📊</div>
+   740|        <h4>Bodygraph Data</h4>
+   741|        <p>Get raw activation data for rendering your own bodygraph visualizations. Defined/undefined centers, activated gates with line and color, and channel connections — all structured for canvas or SVG rendering.</p>
+   742|      </div>
+   743|      <div class="cap-card">
+   744|        <div class="cap-icon">🔑</div>
+   745|        <h4>API Keys & Rate Limits</h4>
+   746|        <p>Simple key-based authentication. Usage dashboards track every call. Rate limits scale with your plan. Webhooks notify you when you approach your monthly quota.</p>
+   747|      </div>
+   748|    </div>
+   749|  </div>
+   750|</section>
+   751|
+   752|<!-- CODE EXAMPLE -->
+   753|<section class="code-section">
+   754|  <div class="container">
+   755|    <div class="section-header">
+   756|      <div class="overline">Try It Now</div>
+   757|      <h2>One curl command, one chart</h2>
+   758|      <p>No SDK required. Just your API key and a birth time.</p>
+   759|    </div>
+   760|
+   761|    <div class="code-block">
+   762|      <div class="code-header">
+   763|        <span class="dot-terminal"></span>
+   764|        <span class="dot-terminal"></span>
+   765|        <span class="dot-terminal"></span>
+   766|        <span class="file-label">Terminal — bash</span>
+   767|      </div>
+   768|      <div class="code-body">
+   769|        <pre><span class="comment"># Compute a natal chart in one request</span>
+   770|curl -X POST https://api.humandesignengine.com/v1/chart/natal \
+   771|  -H <span class="json-string">"Authorization: Bearer YOUR_A...pan> \
+   772|  -H <span class="json-string">"Content-Type: application/json"</span> \
+   773|  -d <span class="json-string">'{
+   774|    "birth_date": "1988-06-15",
+   775|    "birth_time": "14:30:00",
+   776|    "latitude": 40.7128,
+   777|    "longitude": -74.0060,
+   778|    "timezone": "America/New_York"
+   779|  }'</span>
+   780|
+   781|<span class="comment"># Response (abbreviated):</span>
+   782|{
+   783|  <span class="json-key">"type"</span>: <span class="json-string">"Generator"</span>,
+   784|  <span class="json-key">"strategy"</span>: <span class="json-string">"To Respond"</span>,
+   785|  <span class="json-key">"authority"</span>: <span class="json-string">"Sacral"</span>,
+   786|  <span class="json-key">"profile"</span>: <span class="json-string">"4/6"</span>,
+   787|  <span class="json-key">"incarnation_cross"</span>: <span class="json-string">"Right Angle Cross of the Sphinx"</span>,
+   788|  <span class="json-key">"defined_centers"</span>: [<span class="json-string">"Sacral"</span>, <span class="json-string">"Root"</span>, <span class="json-string">"Spleen"</span>],
+   789|  <span class="json-key">"gates"</span>: { <span class="json-key">"1"</span>: { <span class="json-key">"line"</span>: <span class="json-number">3</span>, <span class="json-key">"color"</span>: <span class="json-number">5</span> }, ... },
+   790|  <span class="json-key">"computed_at"</span>: <span class="json-string">"2026-05-29T01:11:00Z"</span>
+   791|}</pre>
+   792|      </div>
+   793|    </div>
+   794|  </div>
+   795|</section>
+   796|
+   797|<!-- PRICING -->
+   798|<section class="pricing" id="pricing">
+   799|  <div class="container">
+   800|    <div class="section-header">
+   801|      <div class="overline">API Pricing</div>
+   802|      <h2>Start free, scale as you grow</h2>
+   803|      <p>From hobbyists to high-volume platforms — choose the plan that fits your needs.</p>
+   804|    </div>
+   805|
+   806|    <div class="pricing-grid">
+   807|      <div class="pricing-card">
+   808|        <h4>Hobbyist</h4>
+   809|        <div class="price">$19<span>/month</span></div>
+   810|        <p class="desc">Perfect for learning and side projects.</p>
+   811|        <ul>
+   812|          <li>1,000 API calls / month</li>
+   813|          <li>All chart endpoints</li>
+   814|          <li>Community support</li>
+   815|          <li>API documentation access</li>
+   816|        </ul>
+   817|        <a href="#" class="btn btn-outline">Get Started</a>
+   818|      </div>
+   819|
+   820|      <div class="pricing-card featured">
+   821|        <h4>Builder</h4>
+   822|        <div class="price">$99<span>/month</span></div>
+   823|        <p class="desc">For growing apps and startups.</p>
+   824|        <ul>
+   825|          <li>10,000 API calls / month</li>
+   826|          <li>All endpoints + transits</li>
+   827|          <li>Email support</li>
+   828|          <li>99.5% uptime SLA</li>
+   829|          <li>Webhook notifications</li>
+   830|        </ul>
+   831|        <a href="#" class="btn btn-primary">Start Free Trial</a>
+   832|      </div>
+   833|
+   834|      <div class="pricing-card">
+   835|        <h4>Growth</h4>
+   836|        <div class="price">$299<span>/month</span></div>
+   837|        <p class="desc">For scaling platforms and products.</p>
+   838|        <ul>
+   839|          <li>50,000 API calls / month</li>
+   840|          <li>All endpoints + synastry</li>
+   841|          <li>Priority email support</li>
+   842|          <li>99.9% uptime SLA</li>
+   843|          <li>Usage analytics dashboard</li>
+   844|        </ul>
+   845|        <a href="#" class="btn btn-outline">Get Started</a>
+   846|      </div>
+   847|
+   848|      <div class="pricing-card">
+   849|        <h4>Enterprise</h4>
+   850|        <div class="price">$999<span>/month</span></div>
+   851|        <p class="desc">High-volume, custom integrations.</p>
+   852|        <ul>
+   853|          <li>200,000 API calls / month</li>
+   854|          <li>All endpoints, no limits</li>
+   855|          <li>Slack priority support</li>
+   856|          <li>99.99% uptime SLA</li>
+   857|          <li>Custom contract & billing</li>
+   858|          <li>Dedicated infrastructure</li>
+   859|        </ul>
+   860|        <a href="#" class="btn btn-outline">Contact Sales</a>
+   861|      </div>
+   862|    </div>
+   863|  </div>
+   864|</section>
+   865|
+   866|<!-- TRY IT FREE -->
+   867|<section class="free-tier" id="try-free">
+   868|  <div class="free-tier-card">
+   869|    <h2>Try It <span class="gold">Free</span></h2>
+   870|    <p>
+   871|      <strong>100 free API calls every month</strong> — no credit card required.<br>
+   872|      Explore every endpoint, build your integration, and verify our accuracy before you commit.
+   873|    </p>
+   874|    <a href="#" class="btn btn-primary">Get Your Free API Key →</a>
+   875|  </div>
+   876|</section>
+   877|
+   878|<!-- BADGES -->
+   879|<div class="badge-row">
+   880|  <div class="oss-badge">
+   881|    <span class="star">★</span> Built on OpenHumanDesignMCP
+   882|  </div>
+   883|  <div class="trust-badge">
+   884|    <span class="shield">🛡</span> Verified accuracy — peer-reviewed algorithms
+   885|  </div>
+   886|</div>
+   887|
+   888|<!-- CTA -->
+   889|<section class="cta-section">
+   890|  <div class="container">
+   891|    <h2>Ready to build with Human Design?</h2>
+   892|    <p>Get your free API key in under 30 seconds. First 100 calls on us — every month.</p>
+   893|    <a href="#" class="btn btn-primary">Get Your API Key →</a>
+   894|  </div>
+   895|</section>
+   896|
+   897|<!-- FOOTER -->
+   898|<footer>
+   899|  <div class="footer-inner">
+   900|    <div class="left">
+   901|      <span class="brand">Human Design Engine</span>
+   902|      <span class="license">Licensed under AGPLv3. Core calculation engine is open source.</span>
+   903|    </div>
+   904|    <div class="footer-links">
+   905|      <a href="landing-index.html">Home</a>
+   906|      <a href="landing-api.html">API</a>
+   907|      <a href="landing-reports.html">Reports</a>
+   908|      <a href="https://github.com/nousresearch/OpenHumanDesignMCP">GitHub</a>
+   909|      <a href="#">Docs</a>
+   910|      <a href="#">Privacy</a>
+   911|    </div>
+   912|  </div>
+   913|</footer>
+   914|
+   915|</body>
+   916|</html>
+   917|

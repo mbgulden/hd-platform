@@ -1,0 +1,1096 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>The 64 Gates of Human Design — Complete Guide | Human Design Engine</title>
+<meta name="description" content="Explore all 64 Human Design gates. Each gate explained with I-Ching hexagram, circuit group, center location, meaning, gift, and shadow. Comprehensive gate reference from Human Design Engine.">
+<meta name="keywords" content="Human Design gates, 64 gates, gate meanings, I-Ching, bodygraph, gate reference, Human Design Engine">
+<link rel="canonical" href="https://humandesignengine.com/seo/gates/">
+<meta property="og:title" content="The 64 Gates of Human Design — Complete Guide | Human Design Engine">
+<meta property="og:description" content="Explore every Human Design gate with detailed explanations. Learn the I-Ching hexagram, circuit, center, gift, and shadow for all 64 gates.">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://humandesignengine.com/seo/gates/">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="The 64 Gates of Human Design — Complete Guide">
+<meta name="twitter:description" content="Complete reference for all 64 Human Design gates with I-Ching hexagrams, circuits, and meanings.">
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "CollectionPage",
+  "name": "The 64 Gates of Human Design",
+  "description": "A complete guide to all 64 gates in the Human Design bodygraph, including I-Ching hexagrams, circuit groups, centers, and detailed meanings.",
+  "url": "https://humandesignengine.com/seo/gates/",
+  "publisher": { "@type": "Organization", "name": "Human Design Engine", "url": "https://humandesignengine.com" }
+}
+</script>
+<style>
+  :root {
+    --navy-deep: #060d1a;
+    --navy: #0a1628;
+    --navy-mid: #0f1d36;
+    --navy-light: #162744;
+    --navy-lighter: #1e3458;
+    --gold: #c9a84c;
+    --gold-light: #e0c468;
+    --gold-bright: #d4af37;
+    --gold-soft: rgba(201, 168, 76, 0.15);
+    --gold-glow: rgba(201, 168, 76, 0.08);
+    --text-primary: #e8e6e3;
+    --text-secondary: #8899aa;
+    --text-muted: #5a6a7a;
+    --white: #ffffff;
+    --card-bg: rgba(15, 29, 54, 0.7);
+    --card-border: rgba(201, 168, 76, 0.12);
+    --radius: 12px;
+    --radius-lg: 20px;
+    --shadow: 0 4px 24px rgba(0,0,0,0.3);
+    --transition: 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
+    background: var(--navy-deep);
+    color: var(--text-primary);
+    line-height: 1.7;
+    overflow-x: hidden;
+  }
+
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background:
+      radial-gradient(ellipse at 20% 10%, rgba(201,168,76,0.04) 0%, transparent 60%),
+      radial-gradient(ellipse at 80% 90%, rgba(201,168,76,0.03) 0%, transparent 60%),
+      radial-gradient(ellipse at 50% 50%, rgba(15,29,54,0.8) 0%, var(--navy-deep) 100%);
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  nav {
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    background: rgba(6, 13, 26, 0.85);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+    border-bottom: 1px solid rgba(201,168,76,0.1);
+    padding: 0 20px;
+  }
+  .nav-inner {
+    max-width: 1200px;
+    margin: 0 auto;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    height: 64px;
+    position: relative;
+    z-index: 1;
+  }
+  .nav-logo {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 1.25rem;
+    font-weight: 700;
+    color: var(--white);
+    text-decoration: none;
+    letter-spacing: -0.02em;
+  }
+  .nav-logo .icon {
+    width: 32px; height: 32px;
+    background: linear-gradient(135deg, var(--gold-bright), var(--gold));
+    border-radius: 8px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 0.85rem;
+    color: var(--navy-deep);
+    font-weight: 900;
+  }
+  .nav-links { display: flex; gap: 24px; align-items: center; }
+  .nav-links a {
+    color: var(--text-secondary);
+    text-decoration: none;
+    font-size: 0.88rem;
+    font-weight: 500;
+    transition: var(--transition);
+  }
+  .nav-links a:hover { color: var(--gold-light); }
+
+  .container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 24px;
+    position: relative;
+    z-index: 1;
+  }
+
+  .breadcrumb {
+    padding: 18px 0;
+    font-size: 0.82rem;
+    color: var(--text-muted);
+  }
+  .breadcrumb a {
+    color: var(--gold);
+    text-decoration: none;
+    transition: var(--transition);
+  }
+  .breadcrumb a:hover { color: var(--gold-light); }
+  .breadcrumb span { margin: 0 6px; }
+
+  /* Hero */
+  .gate-index-hero {
+    text-align: center;
+    padding: 64px 24px 48px;
+    position: relative;
+    z-index: 1;
+  }
+  .gate-index-hero h1 {
+    font-size: clamp(2rem, 5vw, 3rem);
+    font-weight: 800;
+    letter-spacing: -0.03em;
+    line-height: 1.15;
+    margin-bottom: 16px;
+    background: linear-gradient(180deg, #ffffff 0%, #c0c8d4 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+  .gate-index-hero p {
+    font-size: 1.1rem;
+    color: var(--text-secondary);
+    max-width: 620px;
+    margin: 0 auto;
+    line-height: 1.7;
+  }
+
+  /* Stats */
+  .stats-row {
+    display: flex;
+    justify-content: center;
+    gap: 32px;
+    flex-wrap: wrap;
+    padding: 24px 0 48px;
+  }
+  .stat-item {
+    text-align: center;
+  }
+  .stat-number {
+    font-size: 2rem;
+    font-weight: 800;
+    color: var(--gold-light);
+    letter-spacing: -0.02em;
+  }
+  .stat-label {
+    font-size: 0.8rem;
+    color: var(--text-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+  }
+
+  /* Circuit Tabs */
+  .circuit-nav {
+    display: flex;
+    justify-content: center;
+    gap: 8px;
+    flex-wrap: wrap;
+    margin-bottom: 40px;
+  }
+  .circuit-nav a {
+    background: var(--card-bg);
+    border: 1px solid var(--card-border);
+    border-radius: 50px;
+    padding: 8px 18px;
+    font-size: 0.82rem;
+    color: var(--text-secondary);
+    text-decoration: none;
+    font-weight: 500;
+    transition: var(--transition);
+  }
+  .circuit-nav a:hover {
+    border-color: rgba(201,168,76,0.4);
+    color: var(--gold-light);
+    background: var(--gold-soft);
+  }
+
+  /* Gate Cards Grid */
+  .gate-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
+    gap: 20px;
+    padding-bottom: 64px;
+  }
+  .gate-card {
+    display: flex;
+    align-items: flex-start;
+    gap: 16px;
+    background: var(--card-bg);
+    border: 1px solid var(--card-border);
+    border-radius: var(--radius);
+    padding: 22px 20px;
+    text-decoration: none;
+    color: inherit;
+    transition: var(--transition);
+    position: relative;
+  }
+  .gate-card:hover {
+    border-color: rgba(201,168,76,0.35);
+    transform: translateY(-2px);
+    box-shadow: 0 6px 24px rgba(0,0,0,0.3);
+  }
+  .gate-card-number {
+    flex-shrink: 0;
+    width: 48px;
+    height: 48px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, rgba(201,168,76,0.2), rgba(201,168,76,0.06));
+    border: 1.5px solid rgba(201,168,76,0.3);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.15rem;
+    font-weight: 800;
+    color: var(--gold-light);
+  }
+  .gate-card-body h3 {
+    font-size: 1.05rem;
+    font-weight: 700;
+    margin-bottom: 4px;
+    color: var(--white);
+    letter-spacing: -0.01em;
+  }
+  .gate-card-body .gate-card-hex {
+    font-size: 0.78rem;
+    color: var(--gold-light);
+    margin-bottom: 2px;
+  }
+  .gate-card-body .gate-card-circuit {
+    font-size: 0.75rem;
+    color: var(--text-muted);
+    margin-bottom: 6px;
+  }
+  .gate-card-body .gate-card-snippet {
+    font-size: 0.82rem;
+    color: var(--text-secondary);
+    line-height: 1.5;
+  }
+  .gate-card .arrow {
+    position: absolute;
+    bottom: 18px;
+    right: 18px;
+    font-size: 1rem;
+    color: var(--gold);
+    opacity: 0;
+    transition: var(--transition);
+  }
+  .gate-card:hover .arrow { opacity: 1; }
+
+  /* CTA */
+  .cta-section {
+    text-align: center;
+    padding: 48px 24px 72px;
+    position: relative;
+    z-index: 1;
+  }
+  .cta-section h2 {
+    font-size: clamp(1.4rem, 3vw, 1.8rem);
+    font-weight: 700;
+    margin-bottom: 12px;
+    letter-spacing: -0.02em;
+  }
+  .cta-section p {
+    color: var(--text-secondary);
+    font-size: 1rem;
+    max-width: 500px;
+    margin: 0 auto 24px;
+    line-height: 1.7;
+  }
+  .btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 13px 28px;
+    border-radius: 10px;
+    font-size: 0.92rem;
+    font-weight: 600;
+    text-decoration: none;
+    cursor: pointer;
+    border: none;
+    transition: var(--transition);
+    letter-spacing: -0.01em;
+  }
+  .btn-primary {
+    background: linear-gradient(135deg, var(--gold-bright), var(--gold));
+    color: var(--navy-deep);
+    box-shadow: 0 4px 20px rgba(201,168,76,0.3);
+  }
+  .btn-primary:hover {
+    box-shadow: 0 6px 30px rgba(201,168,76,0.45);
+    transform: translateY(-2px);
+  }
+
+  footer {
+    background: rgba(6, 13, 26, 0.6);
+    border-top: 1px solid rgba(201,168,76,0.08);
+    padding: 28px 20px;
+    text-align: center;
+    position: relative;
+    z-index: 1;
+  }
+  .footer-inner {
+    max-width: 1200px;
+    margin: 0 auto;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 16px;
+  }
+  .footer-inner .left { display: flex; flex-direction: column; gap: 4px; text-align: left; }
+  .footer-inner .brand { font-weight: 600; color: var(--text-primary); font-size: 0.88rem; }
+  .footer-inner .license { font-size: 0.76rem; color: var(--text-muted); }
+  .footer-links { display: flex; gap: 18px; }
+  .footer-links a {
+    font-size: 0.8rem;
+    color: var(--text-muted);
+    text-decoration: none;
+    transition: var(--transition);
+  }
+  .footer-links a:hover { color: var(--gold-light); }
+
+  @media (max-width: 768px) {
+    .nav-links { gap: 12px; }
+    .nav-links a { font-size: 0.78rem; }
+    .gate-grid { grid-template-columns: 1fr; }
+    .footer-inner { flex-direction: column; text-align: center; }
+  }
+</style>
+</head>
+<body>
+
+<nav>
+  <div class="nav-inner">
+    <a href="/" class="nav-logo">
+      <div class="icon">◆</div>
+      Human Design Engine
+    </a>
+    <div class="nav-links">
+      <a href="/seo/gates/" style="color:var(--gold-light);">All Gates</a>
+      <a href="/api">API</a>
+      <a href="/reports">Reports</a>
+    </div>
+  </div>
+</nav>
+
+<div class="container">
+
+  <div class="breadcrumb">
+    <a href="/">Home</a> <span>›</span>
+    Human Design Gates
+  </div>
+
+  <section class="gate-index-hero">
+    <h1>The 64 Gates of Human Design</h1>
+    <p>A complete guide to every gate in the Human Design bodygraph. Each gate maps to an I-Ching hexagram and carries specific energy, a gift frequency, and a shadow pattern. Click any gate for a detailed explanation.</p>
+  </section>
+
+  <div class="stats-row">
+    <div class="stat-item">
+      <div class="stat-number">64</div>
+      <div class="stat-label">Gates</div>
+    </div>
+    <div class="stat-item">
+      <div class="stat-number">9</div>
+      <div class="stat-label">Centers</div>
+    </div>
+    <div class="stat-item">
+      <div class="stat-number">36</div>
+      <div class="stat-label">Channels</div>
+    </div>
+    <div class="stat-item">
+      <div class="stat-number">6</div>
+      <div class="stat-label">Circuit Groups</div>
+    </div>
+  </div>
+
+  <div class="circuit-nav">
+    <a href="#individual">Individual Circuit</a>
+    <a href="#tribal">Tribal Circuit</a>
+    <a href="#collective">Collective Circuit</a>
+  </div>
+
+  <h2 id="individual" style="font-size:1.4rem;font-weight:700;margin-bottom:20px;letter-spacing:-0.02em;">Individual Circuit Gates</h2>
+  <p style="color:var(--text-muted);font-size:0.9rem;margin-bottom:28px;">The Individual Circuit empowers, mutates, and brings new energy into the world. These gates drive authenticity, creativity, and personal transformation.</p>
+  <div class="gate-grid">
+      <a href="gate-1.html" class="gate-card">
+        <div class="gate-card-number">1</div>
+        <div class="gate-card-body">
+          <h3>Self-Expression</h3>
+          <p class="gate-card-hex">Hexagram 1: The Creative</p>
+          <p class="gate-card-circuit">Individual Knowing · G Center</p>
+          <p class="gate-card-snippet">Gate 1 is the energy of creative self-expression. It carries the frequency of the artist, the innovator, and the individ...</p>
+        </div>
+        <span class="arrow">→</span>
+      </a>
+      <a href="gate-2.html" class="gate-card">
+        <div class="gate-card-number">2</div>
+        <div class="gate-card-body">
+          <h3>Direction of Self</h3>
+          <p class="gate-card-hex">Hexagram 2: The Receptive</p>
+          <p class="gate-card-circuit">Individual Centering · G Center</p>
+          <p class="gate-card-snippet">Gate 2 is the energy of receptivity and direction. It is the grounding point for higher knowing — the ability to simply ...</p>
+        </div>
+        <span class="arrow">→</span>
+      </a>
+      <a href="gate-3.html" class="gate-card">
+        <div class="gate-card-number">3</div>
+        <div class="gate-card-body">
+          <h3>Ordering</h3>
+          <p class="gate-card-hex">Hexagram 3: Difficulty at the Beginning</p>
+          <p class="gate-card-circuit">Individual Knowing · Sacral Center</p>
+          <p class="gate-card-snippet">Gate 3 is the energy of innovation through difficulty. It is the gate of mutation — where new things enter the world thr...</p>
+        </div>
+        <span class="arrow">→</span>
+      </a>
+      <a href="gate-4.html" class="gate-card">
+        <div class="gate-card-number">4</div>
+        <div class="gate-card-body">
+          <h3>Formulization</h3>
+          <p class="gate-card-hex">Hexagram 4: Youthful Folly</p>
+          <p class="gate-card-circuit">Collective Logic · Ajna Center</p>
+          <p class="gate-card-snippet">Gate 4 is the energy of answering and mental formulation. It represents the logical mind's drive to find answers, solve ...</p>
+        </div>
+        <span class="arrow">→</span>
+      </a>
+      <a href="gate-5.html" class="gate-card">
+        <div class="gate-card-number">5</div>
+        <div class="gate-card-body">
+          <h3>Fixed Patterns</h3>
+          <p class="gate-card-hex">Hexagram 5: Waiting</p>
+          <p class="gate-card-circuit">Collective Logic · Sacral Center</p>
+          <p class="gate-card-snippet">Gate 5 is the energy of waiting for the right timing. It carries the rhythm of natural cycles and the wisdom to know tha...</p>
+        </div>
+        <span class="arrow">→</span>
+      </a>
+      <a href="gate-6.html" class="gate-card">
+        <div class="gate-card-number">6</div>
+        <div class="gate-card-body">
+          <h3>Friction</h3>
+          <p class="gate-card-hex">Hexagram 6: Conflict</p>
+          <p class="gate-card-circuit">Tribal Defense · Solar Plexus Center</p>
+          <p class="gate-card-snippet">Gate 6 is the energy of friction and emotional boundary-setting. It governs the creation and regulation of intimacy thro...</p>
+        </div>
+        <span class="arrow">→</span>
+      </a>
+      <a href="gate-7.html" class="gate-card">
+        <div class="gate-card-number">7</div>
+        <div class="gate-card-body">
+          <h3>The Role of the Self in Interaction</h3>
+          <p class="gate-card-hex">Hexagram 7: The Army</p>
+          <p class="gate-card-circuit">Collective Logic · G Center</p>
+          <p class="gate-card-snippet">Gate 7 is the energy of leadership through service. It represents the self in its relationship with the collective — the...</p>
+        </div>
+        <span class="arrow">→</span>
+      </a>
+      <a href="gate-8.html" class="gate-card">
+        <div class="gate-card-number">8</div>
+        <div class="gate-card-body">
+          <h3>Contribution</h3>
+          <p class="gate-card-hex">Hexagram 8: Holding Together</p>
+          <p class="gate-card-circuit">Individual Knowing · Throat Center</p>
+          <p class="gate-card-snippet">Gate 8 is the energy of contribution through authentic example. It is the gate of the role model — one who contributes n...</p>
+        </div>
+        <span class="arrow">→</span>
+      </a>
+      <a href="gate-9.html" class="gate-card">
+        <div class="gate-card-number">9</div>
+        <div class="gate-card-body">
+          <h3>Focus</h3>
+          <p class="gate-card-hex">Hexagram 9: The Taming Power of the Small</p>
+          <p class="gate-card-circuit">Collective Logic · Sacral Center</p>
+          <p class="gate-card-snippet">Gate 9 is the energy of sustained focus and detailed attention. It is the capacity to commit to a single task or inquiry...</p>
+        </div>
+        <span class="arrow">→</span>
+      </a>
+      <a href="gate-10.html" class="gate-card">
+        <div class="gate-card-number">10</div>
+        <div class="gate-card-body">
+          <h3>Behavior of the Self</h3>
+          <p class="gate-card-hex">Hexagram 10: Treading</p>
+          <p class="gate-card-circuit">Individual Centering · G Center</p>
+          <p class="gate-card-snippet">Gate 10 is the energy of self-love and authentic behavior. It is the gate through which the self expresses its unique wa...</p>
+        </div>
+        <span class="arrow">→</span>
+      </a>
+      <a href="gate-11.html" class="gate-card">
+        <div class="gate-card-number">11</div>
+        <div class="gate-card-body">
+          <h3>Ideas</h3>
+          <p class="gate-card-hex">Hexagram 11: Peace</p>
+          <p class="gate-card-circuit">Collective Sensing · Ajna Center</p>
+          <p class="gate-card-snippet">Gate 11 is the energy of ideas, imagination, and mental stimulation. It is the gate of the storyteller and the visionary...</p>
+        </div>
+        <span class="arrow">→</span>
+      </a>
+      <a href="gate-12.html" class="gate-card">
+        <div class="gate-card-number">12</div>
+        <div class="gate-card-body">
+          <h3>Caution</h3>
+          <p class="gate-card-hex">Hexagram 12: Standstill</p>
+          <p class="gate-card-circuit">Individual Centering · Throat Center</p>
+          <p class="gate-card-snippet">Gate 12 is the energy of caution and emotional articulation. It is the gate of the poet and the artist who transmutes de...</p>
+        </div>
+        <span class="arrow">→</span>
+      </a>
+      <a href="gate-13.html" class="gate-card">
+        <div class="gate-card-number">13</div>
+        <div class="gate-card-body">
+          <h3>The Listener</h3>
+          <p class="gate-card-hex">Hexagram 13: Fellowship with Men</p>
+          <p class="gate-card-circuit">Collective Sensing · G Center</p>
+          <p class="gate-card-snippet">Gate 13 is the energy of the listener — the one who holds space for others' stories, secrets, and confessions. This gate...</p>
+        </div>
+        <span class="arrow">→</span>
+      </a>
+      <a href="gate-14.html" class="gate-card">
+        <div class="gate-card-number">14</div>
+        <div class="gate-card-body">
+          <h3>Power Skills</h3>
+          <p class="gate-card-hex">Hexagram 14: Possession in Great Measure</p>
+          <p class="gate-card-circuit">Individual Centering · Sacral Center</p>
+          <p class="gate-card-snippet">Gate 14 is the energy of empowered skill and resource abundance. It represents the fuel that drives the individual's uni...</p>
+        </div>
+        <span class="arrow">→</span>
+      </a>
+      <a href="gate-15.html" class="gate-card">
+        <div class="gate-card-number">15</div>
+        <div class="gate-card-body">
+          <h3>Extremes</h3>
+          <p class="gate-card-hex">Hexagram 15: Modesty</p>
+          <p class="gate-card-circuit">Collective Logic · G Center</p>
+          <p class="gate-card-snippet">Gate 15 is the energy of extremes in rhythm and behavior. It carries the full spectrum of human experience — the capacit...</p>
+        </div>
+        <span class="arrow">→</span>
+      </a>
+      <a href="gate-16.html" class="gate-card">
+        <div class="gate-card-number">16</div>
+        <div class="gate-card-body">
+          <h3>Skills</h3>
+          <p class="gate-card-hex">Hexagram 16: Enthusiasm</p>
+          <p class="gate-card-circuit">Collective Logic · Throat Center</p>
+          <p class="gate-card-snippet">Gate 16 is the energy of enthusiasm for skills and mastery. It is the gate of the performer, the craftsman, and anyone w...</p>
+        </div>
+        <span class="arrow">→</span>
+      </a>
+      <a href="gate-17.html" class="gate-card">
+        <div class="gate-card-number">17</div>
+        <div class="gate-card-body">
+          <h3>Opinions</h3>
+          <p class="gate-card-hex">Hexagram 17: Following</p>
+          <p class="gate-card-circuit">Collective Logic · Ajna Center</p>
+          <p class="gate-card-snippet">Gate 17 is the energy of opinion formation and intellectual structuring. It represents the logical mind's need to build ...</p>
+        </div>
+        <span class="arrow">→</span>
+      </a>
+      <a href="gate-18.html" class="gate-card">
+        <div class="gate-card-number">18</div>
+        <div class="gate-card-body">
+          <h3>Correction</h3>
+          <p class="gate-card-hex">Hexagram 18: Work on What Has Been Spoiled</p>
+          <p class="gate-card-circuit">Collective Logic · Spleen Center</p>
+          <p class="gate-card-snippet">Gate 18 is the energy of correction and improvement. It carries the instinct to identify what is not working and the dri...</p>
+        </div>
+        <span class="arrow">→</span>
+      </a>
+      <a href="gate-19.html" class="gate-card">
+        <div class="gate-card-number">19</div>
+        <div class="gate-card-body">
+          <h3>Wanting</h3>
+          <p class="gate-card-hex">Hexagram 19: Approach</p>
+          <p class="gate-card-circuit">Tribal Ego · Root Center</p>
+          <p class="gate-card-snippet">Gate 19 is the energy of wanting and need. It is the gate that feels the fundamental needs of the tribe — for food, shel...</p>
+        </div>
+        <span class="arrow">→</span>
+      </a>
+      <a href="gate-20.html" class="gate-card">
+        <div class="gate-card-number">20</div>
+        <div class="gate-card-body">
+          <h3>Contemplation</h3>
+          <p class="gate-card-hex">Hexagram 20: Contemplation</p>
+          <p class="gate-card-circuit">Individual Centering · Throat Center</p>
+          <p class="gate-card-snippet">Gate 20 is the energy of contemplation and presence in the now. It represents pure awareness — the capacity to be fully ...</p>
+        </div>
+        <span class="arrow">→</span>
+      </a>
+      <a href="gate-21.html" class="gate-card">
+        <div class="gate-card-number">21</div>
+        <div class="gate-card-body">
+          <h3>The Hunter/Huntress</h3>
+          <p class="gate-card-hex">Hexagram 21: Biting Through</p>
+          <p class="gate-card-circuit">Tribal Ego · Ego Center</p>
+          <p class="gate-card-snippet">Gate 21 is the energy of the hunter or huntress — the one who controls resources and territory for the tribe. This gate ...</p>
+        </div>
+        <span class="arrow">→</span>
+      </a>
+      <a href="gate-22.html" class="gate-card">
+        <div class="gate-card-number">22</div>
+        <div class="gate-card-body">
+          <h3>Grace</h3>
+          <p class="gate-card-hex">Hexagram 22: Grace</p>
+          <p class="gate-card-circuit">Individual Centering · Solar Plexus Center</p>
+          <p class="gate-card-snippet">Gate 22 is the energy of grace and emotional beauty. It is the gate that transmutes emotional experience into something ...</p>
+        </div>
+        <span class="arrow">→</span>
+      </a>
+      <a href="gate-23.html" class="gate-card">
+        <div class="gate-card-number">23</div>
+        <div class="gate-card-body">
+          <h3>Assimilation</h3>
+          <p class="gate-card-hex">Hexagram 23: Splitting Apart</p>
+          <p class="gate-card-circuit">Individual Knowing · Throat Center</p>
+          <p class="gate-card-snippet">Gate 23 is the energy of assimilation and articulation of new understanding. It is the gate of the teacher who can trans...</p>
+        </div>
+        <span class="arrow">→</span>
+      </a>
+      <a href="gate-24.html" class="gate-card">
+        <div class="gate-card-number">24</div>
+        <div class="gate-card-body">
+          <h3>Rationalization</h3>
+          <p class="gate-card-hex">Hexagram 24: Return</p>
+          <p class="gate-card-circuit">Individual Knowing · Ajna Center</p>
+          <p class="gate-card-snippet">Gate 24 is the energy of rationalization and the return to source. It represents the mental process of making sense of e...</p>
+        </div>
+        <span class="arrow">→</span>
+      </a>
+      <a href="gate-25.html" class="gate-card">
+        <div class="gate-card-number">25</div>
+        <div class="gate-card-body">
+          <h3>Innocence</h3>
+          <p class="gate-card-hex">Hexagram 25: Innocence</p>
+          <p class="gate-card-circuit">Individual Centering · G Center</p>
+          <p class="gate-card-snippet">Gate 25 is the energy of innocence and universal love. It is the gate of the spirit — the capacity to love unconditional...</p>
+        </div>
+        <span class="arrow">→</span>
+      </a>
+      <a href="gate-26.html" class="gate-card">
+        <div class="gate-card-number">26</div>
+        <div class="gate-card-body">
+          <h3>The Egoist</h3>
+          <p class="gate-card-hex">Hexagram 26: The Taming Power of the Great</p>
+          <p class="gate-card-circuit">Tribal Ego · Ego Center</p>
+          <p class="gate-card-snippet">Gate 26 is the energy of the egoist — the capacity to sell, persuade, and influence through the power of personal will. ...</p>
+        </div>
+        <span class="arrow">→</span>
+      </a>
+      <a href="gate-27.html" class="gate-card">
+        <div class="gate-card-number">27</div>
+        <div class="gate-card-body">
+          <h3>Caring</h3>
+          <p class="gate-card-hex">Hexagram 27: Nourishment</p>
+          <p class="gate-card-circuit">Tribal Defense · Sacral Center</p>
+          <p class="gate-card-snippet">Gate 27 is the energy of caring and nourishment. It is the gate of the mother, the caregiver, and anyone who derives ful...</p>
+        </div>
+        <span class="arrow">→</span>
+      </a>
+      <a href="gate-28.html" class="gate-card">
+        <div class="gate-card-number">28</div>
+        <div class="gate-card-body">
+          <h3>The Game Player</h3>
+          <p class="gate-card-hex">Hexagram 28: Preponderance of the Great</p>
+          <p class="gate-card-circuit">Individual Knowing · Spleen Center</p>
+          <p class="gate-card-snippet">Gate 28 is the energy of the game player — the one who finds meaning through struggle and risk. This gate understands th...</p>
+        </div>
+        <span class="arrow">→</span>
+      </a>
+      <a href="gate-29.html" class="gate-card">
+        <div class="gate-card-number">29</div>
+        <div class="gate-card-body">
+          <h3>Perseverance</h3>
+          <p class="gate-card-hex">Hexagram 29: The Abysmal</p>
+          <p class="gate-card-circuit">Collective Sensing · Sacral Center</p>
+          <p class="gate-card-snippet">Gate 29 is the energy of perseverance and commitment. It is the gate that says 'yes' to experience — the capacity to com...</p>
+        </div>
+        <span class="arrow">→</span>
+      </a>
+      <a href="gate-30.html" class="gate-card">
+        <div class="gate-card-number">30</div>
+        <div class="gate-card-body">
+          <h3>Feelings</h3>
+          <p class="gate-card-hex">Hexagram 30: The Clinging Fire</p>
+          <p class="gate-card-circuit">Collective Sensing · Solar Plexus Center</p>
+          <p class="gate-card-snippet">Gate 30 is the energy of intense feelings and emotional desire. It is the gate of the burning heart — the capacity to fe...</p>
+        </div>
+        <span class="arrow">→</span>
+      </a>
+      <a href="gate-31.html" class="gate-card">
+        <div class="gate-card-number">31</div>
+        <div class="gate-card-body">
+          <h3>Leading</h3>
+          <p class="gate-card-hex">Hexagram 31: Influence</p>
+          <p class="gate-card-circuit">Collective Logic · Throat Center</p>
+          <p class="gate-card-snippet">Gate 31 is the energy of democratic leadership and influence through voice. It represents the capacity to speak for the ...</p>
+        </div>
+        <span class="arrow">→</span>
+      </a>
+      <a href="gate-32.html" class="gate-card">
+        <div class="gate-card-number">32</div>
+        <div class="gate-card-body">
+          <h3>Continuity</h3>
+          <p class="gate-card-hex">Hexagram 32: Duration</p>
+          <p class="gate-card-circuit">Collective Logic · Spleen Center</p>
+          <p class="gate-card-snippet">Gate 32 is the energy of continuity and the instinct for what endures. It evaluates what has lasting value and what will...</p>
+        </div>
+        <span class="arrow">→</span>
+      </a>
+      <a href="gate-33.html" class="gate-card">
+        <div class="gate-card-number">33</div>
+        <div class="gate-card-body">
+          <h3>Privacy</h3>
+          <p class="gate-card-hex">Hexagram 33: Retreat</p>
+          <p class="gate-card-circuit">Collective Sensing · Throat Center</p>
+          <p class="gate-card-snippet">Gate 33 is the energy of privacy, retreat, and the distillation of experience into wisdom. It represents the need to wit...</p>
+        </div>
+        <span class="arrow">→</span>
+      </a>
+      <a href="gate-34.html" class="gate-card">
+        <div class="gate-card-number">34</div>
+        <div class="gate-card-body">
+          <h3>Power</h3>
+          <p class="gate-card-hex">Hexagram 34: The Power of the Great</p>
+          <p class="gate-card-circuit">Individual Centering · Sacral Center</p>
+          <p class="gate-card-snippet">Gate 34 is the energy of pure generative power — the life force itself expressed through the Sacral center. This is the ...</p>
+        </div>
+        <span class="arrow">→</span>
+      </a>
+      <a href="gate-35.html" class="gate-card">
+        <div class="gate-card-number">35</div>
+        <div class="gate-card-body">
+          <h3>Change</h3>
+          <p class="gate-card-hex">Hexagram 35: Progress</p>
+          <p class="gate-card-circuit">Collective Sensing · Throat Center</p>
+          <p class="gate-card-snippet">Gate 35 is the energy of change and progress through experience. It carries the hunger for new experiences, new places, ...</p>
+        </div>
+        <span class="arrow">→</span>
+      </a>
+      <a href="gate-36.html" class="gate-card">
+        <div class="gate-card-number">36</div>
+        <div class="gate-card-body">
+          <h3>Crisis</h3>
+          <p class="gate-card-hex">Hexagram 36: Darkening of the Light</p>
+          <p class="gate-card-circuit">Collective Sensing · Solar Plexus Center</p>
+          <p class="gate-card-snippet">Gate 36 is the energy of crisis and emotional depth. It carries the capacity to experience and navigate intense emotiona...</p>
+        </div>
+        <span class="arrow">→</span>
+      </a>
+      <a href="gate-37.html" class="gate-card">
+        <div class="gate-card-number">37</div>
+        <div class="gate-card-body">
+          <h3>Friendship</h3>
+          <p class="gate-card-hex">Hexagram 37: The Family</p>
+          <p class="gate-card-circuit">Tribal Defense · Solar Plexus Center</p>
+          <p class="gate-card-snippet">Gate 37 is the energy of friendship and community bonds. It is the gate of the extended family — the capacity to create ...</p>
+        </div>
+        <span class="arrow">→</span>
+      </a>
+      <a href="gate-38.html" class="gate-card">
+        <div class="gate-card-number">38</div>
+        <div class="gate-card-body">
+          <h3>The Fighter</h3>
+          <p class="gate-card-hex">Hexagram 38: Opposition</p>
+          <p class="gate-card-circuit">Individual Knowing · Root Center</p>
+          <p class="gate-card-snippet">Gate 38 is the energy of the fighter — the one who stands for something and will not back down. This gate carries the in...</p>
+        </div>
+        <span class="arrow">→</span>
+      </a>
+      <a href="gate-39.html" class="gate-card">
+        <div class="gate-card-number">39</div>
+        <div class="gate-card-body">
+          <h3>Provocation</h3>
+          <p class="gate-card-hex">Hexagram 39: Obstruction</p>
+          <p class="gate-card-circuit">Individual Knowing · Solar Plexus Center</p>
+          <p class="gate-card-snippet">Gate 39 is the energy of provocation and the spirit of the trickster. It tests others to see if they are authentic, grou...</p>
+        </div>
+        <span class="arrow">→</span>
+      </a>
+      <a href="gate-40.html" class="gate-card">
+        <div class="gate-card-number">40</div>
+        <div class="gate-card-body">
+          <h3>Aloneness</h3>
+          <p class="gate-card-hex">Hexagram 40: Deliverance</p>
+          <p class="gate-card-circuit">Tribal Ego · Ego Center</p>
+          <p class="gate-card-snippet">Gate 40 is the energy of aloneness and the right to rest. It represents the ego's need to deliver, work, and provide for...</p>
+        </div>
+        <span class="arrow">→</span>
+      </a>
+      <a href="gate-41.html" class="gate-card">
+        <div class="gate-card-number">41</div>
+        <div class="gate-card-body">
+          <h3>Contraction</h3>
+          <p class="gate-card-hex">Hexagram 41: Decrease</p>
+          <p class="gate-card-circuit">Collective Sensing · Root Center</p>
+          <p class="gate-card-snippet">Gate 41 is the energy of contraction and the initiation of new cycles. It is the gate of fantasy and the imagination of ...</p>
+        </div>
+        <span class="arrow">→</span>
+      </a>
+      <a href="gate-42.html" class="gate-card">
+        <div class="gate-card-number">42</div>
+        <div class="gate-card-body">
+          <h3>Growth</h3>
+          <p class="gate-card-hex">Hexagram 42: Increase</p>
+          <p class="gate-card-circuit">Collective Sensing · Sacral Center</p>
+          <p class="gate-card-snippet">Gate 42 is the energy of growth and completion. It is the gate that brings things to fruition — the capacity to nurture ...</p>
+        </div>
+        <span class="arrow">→</span>
+      </a>
+      <a href="gate-43.html" class="gate-card">
+        <div class="gate-card-number">43</div>
+        <div class="gate-card-body">
+          <h3>Insight</h3>
+          <p class="gate-card-hex">Hexagram 43: Breakthrough</p>
+          <p class="gate-card-circuit">Individual Knowing · Ajna Center</p>
+          <p class="gate-card-snippet">Gate 43 is the energy of insight and breakthrough. It represents the moment when individual knowing crystallizes into a ...</p>
+        </div>
+        <span class="arrow">→</span>
+      </a>
+      <a href="gate-44.html" class="gate-card">
+        <div class="gate-card-number">44</div>
+        <div class="gate-card-body">
+          <h3>Alertness</h3>
+          <p class="gate-card-hex">Hexagram 44: Coming to Meet</p>
+          <p class="gate-card-circuit">Tribal Ego · Spleen Center</p>
+          <p class="gate-card-snippet">Gate 44 is the energy of alertness and instinctive pattern recognition. It carries the survival instinct of the tribe — ...</p>
+        </div>
+        <span class="arrow">→</span>
+      </a>
+      <a href="gate-45.html" class="gate-card">
+        <div class="gate-card-number">45</div>
+        <div class="gate-card-body">
+          <h3>Gathering</h3>
+          <p class="gate-card-hex">Hexagram 45: Gathering Together</p>
+          <p class="gate-card-circuit">Tribal Ego · Throat Center</p>
+          <p class="gate-card-snippet">Gate 45 is the energy of gathering and the role of the king or queen. It represents the capacity to gather resources, pe...</p>
+        </div>
+        <span class="arrow">→</span>
+      </a>
+      <a href="gate-46.html" class="gate-card">
+        <div class="gate-card-number">46</div>
+        <div class="gate-card-body">
+          <h3>Determination of the Self</h3>
+          <p class="gate-card-hex">Hexagram 46: Pushing Upward</p>
+          <p class="gate-card-circuit">Collective Sensing · G Center</p>
+          <p class="gate-card-snippet">Gate 46 is the energy of embodied determination and love of the physical form. It represents the capacity to be fully pr...</p>
+        </div>
+        <span class="arrow">→</span>
+      </a>
+      <a href="gate-47.html" class="gate-card">
+        <div class="gate-card-number">47</div>
+        <div class="gate-card-body">
+          <h3>Realization</h3>
+          <p class="gate-card-hex">Hexagram 47: Oppression</p>
+          <p class="gate-card-circuit">Collective Logic · Ajna Center</p>
+          <p class="gate-card-snippet">Gate 47 is the energy of realization and mental oppression. It represents the mind's experience of being stuck — the fru...</p>
+        </div>
+        <span class="arrow">→</span>
+      </a>
+      <a href="gate-48.html" class="gate-card">
+        <div class="gate-card-number">48</div>
+        <div class="gate-card-body">
+          <h3>Depth</h3>
+          <p class="gate-card-hex">Hexagram 48: The Well</p>
+          <p class="gate-card-circuit">Collective Logic · Spleen Center</p>
+          <p class="gate-card-snippet">Gate 48 is the energy of depth and the well of natural talent. It represents deep, innate knowing that may not always be...</p>
+        </div>
+        <span class="arrow">→</span>
+      </a>
+      <a href="gate-49.html" class="gate-card">
+        <div class="gate-card-number">49</div>
+        <div class="gate-card-body">
+          <h3>Principles</h3>
+          <p class="gate-card-hex">Hexagram 49: Revolution</p>
+          <p class="gate-card-circuit">Tribal Ego · Solar Plexus Center</p>
+          <p class="gate-card-snippet">Gate 49 is the energy of principles and revolution. It carries the drive to restructure tribal relationships based on hi...</p>
+        </div>
+        <span class="arrow">→</span>
+      </a>
+      <a href="gate-50.html" class="gate-card">
+        <div class="gate-card-number">50</div>
+        <div class="gate-card-body">
+          <h3>Values</h3>
+          <p class="gate-card-hex">Hexagram 50: The Cauldron</p>
+          <p class="gate-card-circuit">Tribal Defense · Spleen Center</p>
+          <p class="gate-card-snippet">Gate 50 is the energy of values and the preservation of what matters. It represents the transmission of tribal values fr...</p>
+        </div>
+        <span class="arrow">→</span>
+      </a>
+      <a href="gate-51.html" class="gate-card">
+        <div class="gate-card-number">51</div>
+        <div class="gate-card-body">
+          <h3>Shock</h3>
+          <p class="gate-card-hex">Hexagram 51: The Arousing</p>
+          <p class="gate-card-circuit">Individual Centering · Ego Center</p>
+          <p class="gate-card-snippet">Gate 51 is the energy of shock and awakening. It represents the capacity to be shaken into higher consciousness — the li...</p>
+        </div>
+        <span class="arrow">→</span>
+      </a>
+      <a href="gate-52.html" class="gate-card">
+        <div class="gate-card-number">52</div>
+        <div class="gate-card-body">
+          <h3>Stillness</h3>
+          <p class="gate-card-hex">Hexagram 52: Keeping Still</p>
+          <p class="gate-card-circuit">Collective Logic · Root Center</p>
+          <p class="gate-card-snippet">Gate 52 is the energy of stillness and the mountain. It represents the capacity to be completely still, to wait without ...</p>
+        </div>
+        <span class="arrow">→</span>
+      </a>
+      <a href="gate-53.html" class="gate-card">
+        <div class="gate-card-number">53</div>
+        <div class="gate-card-body">
+          <h3>Beginnings</h3>
+          <p class="gate-card-hex">Hexagram 53: Development</p>
+          <p class="gate-card-circuit">Collective Sensing · Root Center</p>
+          <p class="gate-card-snippet">Gate 53 is the energy of beginnings. It carries the impulse to start new things — new projects, new relationships, new p...</p>
+        </div>
+        <span class="arrow">→</span>
+      </a>
+      <a href="gate-54.html" class="gate-card">
+        <div class="gate-card-number">54</div>
+        <div class="gate-card-body">
+          <h3>Ambition</h3>
+          <p class="gate-card-hex">Hexagram 54: The Marrying Maiden</p>
+          <p class="gate-card-circuit">Tribal Ego · Root Center</p>
+          <p class="gate-card-snippet">Gate 54 is the energy of ambition and the drive to rise. It carries the instinct to improve one's station, to transform ...</p>
+        </div>
+        <span class="arrow">→</span>
+      </a>
+      <a href="gate-55.html" class="gate-card">
+        <div class="gate-card-number">55</div>
+        <div class="gate-card-body">
+          <h3>Spirit</h3>
+          <p class="gate-card-hex">Hexagram 55: Abundance</p>
+          <p class="gate-card-circuit">Individual Knowing · Solar Plexus Center</p>
+          <p class="gate-card-snippet">Gate 55 is the energy of spirit and emotional abundance. It represents the capacity to experience the full spectrum of e...</p>
+        </div>
+        <span class="arrow">→</span>
+      </a>
+      <a href="gate-56.html" class="gate-card">
+        <div class="gate-card-number">56</div>
+        <div class="gate-card-body">
+          <h3>Stimulation</h3>
+          <p class="gate-card-hex">Hexagram 56: The Wanderer</p>
+          <p class="gate-card-circuit">Collective Sensing · Throat Center</p>
+          <p class="gate-card-snippet">Gate 56 is the energy of stimulation and the storyteller's gift. It carries the drive to wander, explore, and gather exp...</p>
+        </div>
+        <span class="arrow">→</span>
+      </a>
+      <a href="gate-57.html" class="gate-card">
+        <div class="gate-card-number">57</div>
+        <div class="gate-card-body">
+          <h3>Intuition</h3>
+          <p class="gate-card-hex">Hexagram 57: The Gentle</p>
+          <p class="gate-card-circuit">Individual Knowing · Spleen Center</p>
+          <p class="gate-card-snippet">Gate 57 is the energy of intuitive clarity in the present moment. It represents the ability to know, instantly and witho...</p>
+        </div>
+        <span class="arrow">→</span>
+      </a>
+      <a href="gate-58.html" class="gate-card">
+        <div class="gate-card-number">58</div>
+        <div class="gate-card-body">
+          <h3>Aliveness</h3>
+          <p class="gate-card-hex">Hexagram 58: The Joyous</p>
+          <p class="gate-card-circuit">Collective Logic · Root Center</p>
+          <p class="gate-card-snippet">Gate 58 is the energy of aliveness and the drive to improve life for everyone. It carries an innate dissatisfaction with...</p>
+        </div>
+        <span class="arrow">→</span>
+      </a>
+      <a href="gate-59.html" class="gate-card">
+        <div class="gate-card-number">59</div>
+        <div class="gate-card-body">
+          <h3>Sexuality</h3>
+          <p class="gate-card-hex">Hexagram 59: Dispersion</p>
+          <p class="gate-card-circuit">Tribal Defense · Sacral Center</p>
+          <p class="gate-card-snippet">Gate 59 is the energy of sexuality, intimacy, and the breaking down of barriers between people. It carries the drive to ...</p>
+        </div>
+        <span class="arrow">→</span>
+      </a>
+      <a href="gate-60.html" class="gate-card">
+        <div class="gate-card-number">60</div>
+        <div class="gate-card-body">
+          <h3>Acceptance</h3>
+          <p class="gate-card-hex">Hexagram 60: Limitation</p>
+          <p class="gate-card-circuit">Individual Knowing · Root Center</p>
+          <p class="gate-card-snippet">Gate 60 is the energy of acceptance and limitation. It represents the capacity to accept what is — to work within real c...</p>
+        </div>
+        <span class="arrow">→</span>
+      </a>
+      <a href="gate-61.html" class="gate-card">
+        <div class="gate-card-number">61</div>
+        <div class="gate-card-body">
+          <h3>Mystery</h3>
+          <p class="gate-card-hex">Hexagram 61: Inner Truth</p>
+          <p class="gate-card-circuit">Individual Knowing · Head Center</p>
+          <p class="gate-card-snippet">Gate 61 is the energy of mystery and the drive to know what cannot be known. It represents the mind's confrontation with...</p>
+        </div>
+        <span class="arrow">→</span>
+      </a>
+      <a href="gate-62.html" class="gate-card">
+        <div class="gate-card-number">62</div>
+        <div class="gate-card-body">
+          <h3>Detail</h3>
+          <p class="gate-card-hex">Hexagram 62: Preponderance of the Small</p>
+          <p class="gate-card-circuit">Collective Logic · Throat Center</p>
+          <p class="gate-card-snippet">Gate 62 is the energy of detail and the articulation of facts. It carries the capacity to observe, name, and organize sp...</p>
+        </div>
+        <span class="arrow">→</span>
+      </a>
+      <a href="gate-63.html" class="gate-card">
+        <div class="gate-card-number">63</div>
+        <div class="gate-card-body">
+          <h3>Doubt</h3>
+          <p class="gate-card-hex">Hexagram 63: After Completion</p>
+          <p class="gate-card-circuit">Collective Logic · Head Center</p>
+          <p class="gate-card-snippet">Gate 63 is the energy of doubt and the logical mind's drive to question. It represents healthy skepticism — the refusal ...</p>
+        </div>
+        <span class="arrow">→</span>
+      </a>
+      <a href="gate-64.html" class="gate-card">
+        <div class="gate-card-number">64</div>
+        <div class="gate-card-body">
+          <h3>Confusion</h3>
+          <p class="gate-card-hex">Hexagram 64: Before Completion</p>
+          <p class="gate-card-circuit">Collective Logic · Head Center</p>
+          <p class="gate-card-snippet">Gate 64 is the energy of confusion and the mental process that precedes clarity. It represents the fertile chaos of the ...</p>
+        </div>
+        <span class="arrow">→</span>
+      </a>
+
+  </div>
+
+  <section class="cta-section">
+    <h2>Want to Know Which Gates Are Defined in Your Chart?</h2>
+    <p>Your bodygraph reveals which of the 64 gates are consistently active in your design. Get your free Human Design chart today.</p>
+    <a href="/reports" class="btn btn-primary">Get Your Free Chart →</a>
+  </section>
+
+</div>
+
+<footer>
+  <div class="footer-inner">
+    <div class="left">
+      <span class="brand">Human Design Engine</span>
+      <span class="license">Verified chart data — open-source computation engine.</span>
+    </div>
+    <div class="footer-links">
+      <a href="/seo/gates/">All Gates</a>
+      <a href="/api">API</a>
+      <a href="/reports">Reports</a>
+      <a href="/privacy">Privacy</a>
+    </div>
+  </div>
+</footer>
+
+</body>
+</html>

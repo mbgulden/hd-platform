@@ -1,0 +1,664 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Light Filled Human Design — Coaching &amp; Consulting | She Planted a Tree</title>
+<style>
+  :root {
+    --cream: #f9f6f2;
+    --sage: #afb193;
+    --sage-dark: #8a8d6f;
+    --rose: #c8bab6;
+    --rose-dark: #b09e99;
+    --forest: #3d4f41;
+    --forest-deep: #2a372d;
+    --text-primary: #2a372d;
+    --text-secondary: #5a6a5a;
+    --text-muted: #8a9a8a;
+    --white: #ffffff;
+    --card-bg: rgba(255,255,255,0.7);
+    --card-border: rgba(175,177,147,0.3);
+    --radius: 12px;
+    --radius-lg: 20px;
+    --shadow: 0 4px 24px rgba(0,0,0,0.06);
+    --transition: 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    font-family: 'Montserrat', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+    background: var(--cream);
+    color: var(--text-primary);
+    line-height: 1.7;
+    overflow-x: hidden;
+  }
+
+  h1, h2, h3, h4 { font-family: 'Playfair Display', Georgia, 'Times New Roman', serif; }
+
+  /* Background texture */
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background:
+      radial-gradient(ellipse at 20% 10%, rgba(175,177,147,0.12) 0%, transparent 60%),
+      radial-gradient(ellipse at 80% 90%, rgba(200,186,182,0.1) 0%, transparent 60%);
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  /* ---- NAV ---- */
+  nav {
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    background: rgba(249,246,242,0.92);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border-bottom: 1px solid rgba(175,177,147,0.2);
+    padding: 0 20px;
+  }
+  .nav-inner {
+    max-width: 1200px;
+    margin: 0 auto;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    height: 72px;
+    position: relative;
+    z-index: 1;
+  }
+  .nav-logo {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    text-decoration: none;
+  }
+  .nav-logo svg { height: 40px; width: auto; }
+  .nav-links { display: flex; gap: 28px; align-items: center; }
+  .nav-links a {
+    color: var(--text-secondary);
+    text-decoration: none;
+    font-size: 0.9rem;
+    font-weight: 500;
+    transition: var(--transition);
+    font-family: 'Montserrat', sans-serif;
+  }
+  .nav-links a:hover { color: var(--forest); }
+  .nav-cta {
+    background: var(--forest);
+    color: var(--white) !important;
+    padding: 10px 24px;
+    border-radius: 8px;
+    font-weight: 600 !important;
+    transition: var(--transition);
+  }
+  .nav-cta:hover {
+    background: var(--forest-deep);
+    transform: translateY(-1px);
+  }
+
+  /* ---- CONTAINER ---- */
+  .container {
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 0 24px;
+    position: relative;
+    z-index: 1;
+  }
+
+  /* ---- HERO ---- */
+  .hero {
+    text-align: center;
+    padding: 90px 24px 70px;
+    position: relative;
+    z-index: 1;
+  }
+  .hero-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    background: rgba(175,177,147,0.2);
+    border: 1px solid rgba(175,177,147,0.4);
+    border-radius: 50px;
+    padding: 6px 20px;
+    font-size: 0.85rem;
+    color: var(--forest);
+    font-weight: 500;
+    margin-bottom: 28px;
+  }
+  .hero-badge .dot {
+    width: 8px; height: 8px;
+    background: var(--sage-dark);
+    border-radius: 50%;
+    animation: pulse-dot 2s infinite;
+  }
+  @keyframes pulse-dot {
+    0%, 100% { opacity: 1; transform: scale(1); }
+    50% { opacity: 0.5; transform: scale(1.4); }
+  }
+  .hero h1 {
+    font-size: clamp(2.2rem, 5vw, 3.4rem);
+    font-weight: 700;
+    letter-spacing: -0.02em;
+    line-height: 1.2;
+    margin-bottom: 20px;
+    color: var(--forest-deep);
+  }
+  .hero h1 .accent { color: var(--sage-dark); }
+  .hero p.subtitle {
+    font-size: 1.15rem;
+    color: var(--text-secondary);
+    max-width: 600px;
+    margin: 0 auto 36px;
+    line-height: 1.8;
+    font-family: 'Montserrat', sans-serif;
+  }
+  .hero-buttons {
+    display: flex;
+    gap: 16px;
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+  .btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 14px 32px;
+    border-radius: 10px;
+    font-size: 0.95rem;
+    font-weight: 600;
+    text-decoration: none;
+    cursor: pointer;
+    border: none;
+    transition: var(--transition);
+    font-family: 'Montserrat', sans-serif;
+    letter-spacing: -0.01em;
+  }
+  .btn-primary {
+    background: var(--forest);
+    color: var(--white);
+    box-shadow: 0 4px 20px rgba(61,79,65,0.25);
+  }
+  .btn-primary:hover {
+    box-shadow: 0 6px 30px rgba(61,79,65,0.35);
+    transform: translateY(-2px);
+  }
+  .btn-outline {
+    background: transparent;
+    color: var(--forest);
+    border: 1.5px solid var(--sage);
+  }
+  .btn-outline:hover {
+    background: rgba(175,177,147,0.15);
+    border-color: var(--forest);
+  }
+
+  /* ---- TRUST BAR ---- */
+  .trust-bar {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 32px;
+    flex-wrap: wrap;
+    padding: 36px 24px;
+    border-top: 1px solid rgba(175,177,147,0.25);
+    border-bottom: 1px solid rgba(175,177,147,0.25);
+    margin-bottom: 80px;
+  }
+  .trust-item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 0.85rem;
+    color: var(--text-muted);
+    font-weight: 500;
+  }
+  .trust-item .check { color: var(--sage-dark); font-size: 1rem; }
+
+  /* ---- SECTION HEADERS ---- */
+  .section-header {
+    text-align: center;
+    margin-bottom: 56px;
+  }
+  .section-header .overline {
+    font-size: 0.8rem;
+    text-transform: uppercase;
+    letter-spacing: 0.14em;
+    color: var(--sage-dark);
+    font-weight: 600;
+    margin-bottom: 12px;
+  }
+  .section-header h2 {
+    font-size: clamp(1.6rem, 3vw, 2.2rem);
+    font-weight: 700;
+    letter-spacing: -0.02em;
+    color: var(--forest-deep);
+    margin-bottom: 12px;
+  }
+  .section-header p {
+    color: var(--text-secondary);
+    font-size: 1rem;
+    max-width: 540px;
+    margin: 0 auto;
+    font-family: 'Montserrat', sans-serif;
+  }
+
+  /* ---- ABOUT ---- */
+  .about {
+    padding: 80px 0;
+  }
+  .about-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 60px;
+    align-items: center;
+  }
+  .about-image {
+    background: linear-gradient(160deg, rgba(175,177,147,0.2), rgba(200,186,182,0.2));
+    border-radius: var(--radius-lg);
+    aspect-ratio: 4/5;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 5rem;
+    color: var(--sage);
+  }
+  .about-text h2 {
+    font-size: clamp(1.6rem, 3vw, 2rem);
+    font-weight: 700;
+    color: var(--forest-deep);
+    margin-bottom: 20px;
+  }
+  .about-text p {
+    color: var(--text-secondary);
+    font-size: 1rem;
+    line-height: 1.8;
+    margin-bottom: 16px;
+  }
+  .cert-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    background: rgba(175,177,147,0.2);
+    border: 1px solid rgba(175,177,147,0.4);
+    border-radius: 8px;
+    padding: 12px 20px;
+    margin-top: 12px;
+    font-size: 0.9rem;
+    color: var(--forest);
+    font-weight: 600;
+  }
+
+  /* ---- SERVICES ---- */
+  .services {
+    padding: 80px 0;
+    background: rgba(175,177,147,0.08);
+  }
+  .service-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 28px;
+  }
+  .service-card {
+    background: var(--card-bg);
+    border: 1px solid var(--card-border);
+    border-radius: var(--radius-lg);
+    padding: 36px 28px;
+    transition: var(--transition);
+    position: relative;
+    overflow: hidden;
+  }
+  .service-card:hover {
+    border-color: rgba(175,177,147,0.5);
+    transform: translateY(-4px);
+    box-shadow: var(--shadow);
+  }
+  .service-icon {
+    width: 52px; height: 52px;
+    border-radius: 14px;
+    background: rgba(175,177,147,0.2);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 1.4rem;
+    margin-bottom: 20px;
+  }
+  .service-card h3 {
+    font-size: 1.2rem;
+    font-weight: 700;
+    color: var(--forest-deep);
+    margin-bottom: 8px;
+  }
+  .service-card p {
+    font-size: 0.9rem;
+    color: var(--text-secondary);
+    line-height: 1.7;
+    margin-bottom: 12px;
+  }
+  .service-card .price {
+    font-size: 1.1rem;
+    font-weight: 700;
+    color: var(--sage-dark);
+  }
+
+  /* ---- HOW IT WORKS ---- */
+  .process {
+    padding: 80px 0;
+  }
+  .steps {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 36px;
+    max-width: 900px;
+    margin: 0 auto;
+  }
+  .step {
+    text-align: center;
+    position: relative;
+  }
+  .step-number {
+    width: 56px; height: 56px;
+    border-radius: 50%;
+    background: var(--forest);
+    color: var(--white);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 1.3rem;
+    font-weight: 700;
+    font-family: 'Playfair Display', serif;
+    margin: 0 auto 20px;
+    box-shadow: 0 4px 16px rgba(61,79,65,0.2);
+  }
+  .step h4 {
+    font-size: 1rem;
+    font-weight: 700;
+    color: var(--forest-deep);
+    margin-bottom: 8px;
+  }
+  .step p {
+    font-size: 0.85rem;
+    color: var(--text-muted);
+    line-height: 1.6;
+    font-family: 'Montserrat', sans-serif;
+  }
+
+  /* ---- TESTIMONIAL ---- */
+  .testimonials {
+    padding: 80px 0;
+    background: rgba(200,186,182,0.1);
+  }
+  .testimonial-card {
+    max-width: 700px;
+    margin: 0 auto;
+    text-align: center;
+    background: var(--card-bg);
+    border: 1px solid var(--card-border);
+    border-radius: var(--radius-lg);
+    padding: 48px 40px;
+  }
+  .testimonial-card .quote {
+    font-size: 1.2rem;
+    font-style: italic;
+    color: var(--forest-deep);
+    line-height: 1.8;
+    margin-bottom: 20px;
+    font-family: 'Playfair Display', serif;
+  }
+  .testimonial-card .author {
+    font-size: 0.9rem;
+    color: var(--text-muted);
+    font-weight: 600;
+  }
+
+  /* ---- CTA ---- */
+  .cta-section {
+    text-align: center;
+    padding: 90px 24px;
+    position: relative;
+    z-index: 1;
+  }
+  .cta-section h2 {
+    font-size: clamp(1.6rem, 4vw, 2.4rem);
+    font-weight: 700;
+    color: var(--forest-deep);
+    margin-bottom: 16px;
+  }
+  .cta-section p {
+    color: var(--text-secondary);
+    font-size: 1.05rem;
+    max-width: 520px;
+    margin: 0 auto 32px;
+    font-family: 'Montserrat', sans-serif;
+  }
+
+  /* ---- ENGINE CROSS-LINK ---- */
+  .engine-credit {
+    text-align: center;
+    padding: 32px 24px 48px;
+    border-top: 1px solid rgba(175,177,147,0.2);
+  }
+  .engine-credit p {
+    font-size: 0.8rem;
+    color: var(--text-muted);
+  }
+  .engine-credit a {
+    color: var(--sage-dark);
+    text-decoration: none;
+    font-weight: 600;
+  }
+  .engine-credit a:hover { text-decoration: underline; }
+
+  /* ---- FOOTER ---- */
+  footer {
+    background: var(--forest);
+    color: rgba(255,255,255,0.7);
+    text-align: center;
+    padding: 32px 24px;
+    font-size: 0.85rem;
+  }
+  footer a { color: var(--sage); text-decoration: none; }
+  footer a:hover { text-decoration: underline; }
+
+  /* ---- RESPONSIVE ---- */
+  @media (max-width: 768px) {
+    .about-grid { grid-template-columns: 1fr; gap: 32px; }
+    .about-image { aspect-ratio: 3/2; }
+    .nav-links { display: none; }
+  }
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <div class="nav-inner">
+    <a href="#" class="nav-logo">
+      <!-- Inline SVG logo -->
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 832.88 232.13" height="40">
+        <defs><style>.a{fill:#afb193;}.b{fill:#c8bab6;}.c{fill:#3d4f41;}</style></defs>
+        <path d="M201.75,137.25A27.19,27.19,0,0,1,194,133l2.05-2.82a31.29,31.29,0,0,0,7.12,3.81,20.48,20.48,0,0,0,7.12,1.37,12.4,12.4,0,0,0,7.19-2,5.86,5.86,0,0,0,2.94-4.91,6.2,6.2,0,0,0-2.63-5.18,26.8,26.8,0,0,0-8.26-3.65c-4.72-1.48-8.1-3.07-10.13-4.8a8.23,8.23,0,0,1-3-6.55,8.85,8.85,0,0,1,1.79-5.4A11.82,11.82,0,0,1,203,99a16.18,16.18,0,0,1,6.7-1.37,23.18,23.18,0,0,1,7.16,1.18,30.91,30.91,0,0,1,6.92,3.23l-2,2.9a25.72,25.72,0,0,0-6-2.82,19.83,19.83,0,0,0-6-1,11.9,11.9,0,0,0-6.78,1.9,5.47,5.47,0,0,0-.26,9.41q2.55,1.86,8.71,3.77,6.56,2.05,9.67,4.68a8.74,8.74,0,0,1,3.13,7,9,9,0,0,1-1.87,5.52,12.71,12.71,0,0,1-5.06,3.92,16.52,16.52,0,0,1-6.93,1.45A25,25,0,0,1,201.75,137.25Z"/>
+        <path d="M259.39,99.48a13.18,13.18,0,0,1,5.25,5.22,15.41,15.41,0,0,1,1.87,7.61v25.58h-3.73v-25a11.55,11.55,0,0,0-3.24-8.42,11.08,11.08,0,0,0-8.26-3.31,13.37,13.37,0,0,0-6.36,1.52,11.62,11.62,0,0,0-4.49,4.19,11.15,11.15,0,0,0-1.64,5.94v25.12h-3.73V84.68h3.73v20.55a12.14,12.14,0,0,1,5-5.52,15.16,15.16,0,0,1,7.92-2.09A15.64,15.64,0,0,1,259.39,99.48Z"/>
+        <path d="M303.47,133.94a15.39,15.39,0,0,0,6-3.81l2.44,2.59a17.71,17.71,0,0,1-7.08,4.41,26.55,26.55,0,0,1-9.21,1.68A18,18,0,0,1,286,136a20.43,20.43,0,0,1-7.16-7.54,20.85,20.85,0,0,1-2.66-10.39,21.15,21.15,0,0,1,2.58-10.39,19.62,19.62,0,0,1,7-7.39,18.3,18.3,0,0,1,9.74-2.7A17.17,17.17,0,0,1,312,108.13a27.92,27.92,0,0,1,2.28,11.64H280a18.2,18.2,0,0,0,2.55,7.85,16.25,16.25,0,0,0,5.64,5.63,14.45,14.45,0,0,0,7.5,2.06A22.72,22.72,0,0,0,303.47,133.94Zm-15.38-30.88a15.81,15.81,0,0,0-5.56,5.41,17.48,17.48,0,0,0-2.55,7.8h30.46a16.78,16.78,0,0,0-4.34-11,13.79,13.79,0,0,0-10.51-4.19A14.87,14.87,0,0,0,288.09,103.06Z"/>
+        <path d="M373.67,100.36a19.39,19.39,0,0,1,6.47,7.46,23.63,23.63,0,0,1,0,20.75,19.37,19.37,0,0,1-6.47,7.5,15.76,15.76,0,0,1-8.95,2.74,17.1,17.1,0,0,1-8.91-2.36,16.82,16.82,0,0,1-6.24-6.55V151h-3.73V98.53h3.73v7.92a16.58,16.58,0,0,1,6.24-6.51,17.26,17.26,0,0,1,8.91-2.32A15.69,15.69,0,0,1,373.67,100.36ZM371.42,133a16,16,0,0,0,5.33-6.24,19,19,0,0,0,2-8.6,18.75,18.75,0,0,0-2-8.57,16.08,16.08,0,0,0-5.33-6.2,12.76,12.76,0,0,0-7.38-2.29,13.16,13.16,0,0,0-7.46,2.17,14.7,14.7,0,0,0-5.14,6,20.1,20.1,0,0,0-1.87,8.84,20.32,20.32,0,0,0,1.87,8.87,14.63,14.63,0,0,0,5.14,6.09,13.24,13.24,0,0,0,7.46,2.17A12.83,12.83,0,0,0,371.42,133Z"/>
+        <path d="M393.5,84.68h3.73v53.21H393.5Z"/>
+        <path d="M436.56,102.11q4.06,4.5,4.07,11.8v24H436.9v-6.31a14,14,0,0,1-6.36,5.33,21,21,0,0,1-8.64,1.9,15,15,0,0,1-10.24-3.5,11.57,11.57,0,0,1-4-9.14,11.75,11.75,0,0,1,2-6.78,13.17,13.17,0,0,1,5.6-4.6,19.17,19.17,0,0,1,8.07-1.64,41.19,41.19,0,0,1,13.55,2.59v-1.83a14.52,14.52,0,0,0-2.9-9.1q-2.88-3.77-9.13-3.77A24.31,24.31,0,0,0,413,104.55l-1.52-3.12a32.14,32.14,0,0,1,7.08-2.86,26.3,26.3,0,0,1,6.7-.95Q432.48,97.62,436.56,102.11Zm-8.08,32.09a15.11,15.11,0,0,0,5.41-3.31,10.23,10.23,0,0,0,3-5.33v-6.62a41.25,41.25,0,0,0-13-2.36,14.61,14.61,0,0,0-9,2.66,8.44,8.44,0,0,0-.35,13.48,12.23,12.23,0,0,0,7.92,2.59A17.76,17.76,0,0,0,428.48,134.2Z"/>
+        <path d="M478.39,99.48a13.37,13.37,0,0,1,5.22,5.22,15.4,15.4,0,0,1,1.86,7.61v25.58h-3.73v-25a11.57,11.57,0,0,0-3.2-8.46,11.07,11.07,0,0,0-8.29-3.27,13.34,13.34,0,0,0-6.36,1.52,11.23,11.23,0,0,0-6.06,10.13v25.12H454.1V98.53h3.73v6.63a12,12,0,0,1,5-5.49,16.49,16.49,0,0,1,15.57-.19Z"/>
+        <path d="M515.85,136.3a11.53,11.53,0,0,1-7.31,2.51,7.69,7.69,0,0,1-6.13-2.82,10.77,10.77,0,0,1-2.4-7.23V102h-6.7v-3.5H500V87.72h3.73V98.53h10.13V102H503.74v26.73a7.53,7.53,0,0,0,1.41,4.68,4.34,4.34,0,0,0,3.62,1.87,8,8,0,0,0,2.74-.5A7.79,7.79,0,0,0,514,133.4Z"/>
+        <path d="M547.56,133.94a15.39,15.39,0,0,0,6.05-3.81l2.44,2.59a17.71,17.71,0,0,1-7.08,4.41,26.55,26.55,0,0,1-9.21,1.68,18,18,0,0,1-9.67-2.78,20.43,20.43,0,0,1-7.16-7.54,20.85,20.85,0,0,1-2.66-10.39,21.15,21.15,0,0,1,2.58-10.39,19.62,19.62,0,0,1,7-7.39,18.3,18.3,0,0,1,9.74-2.7,17.17,17.17,0,0,1,16.45,10.51,27.92,27.92,0,0,1,2.28,11.64H524.07a18.2,18.2,0,0,0,2.55,7.85,16.25,16.25,0,0,0,5.64,5.63,14.42,14.42,0,0,0,7.5,2.06A22.72,22.72,0,0,0,547.56,133.94Zm-15.38-30.88a15.81,15.81,0,0,0-5.56,5.41,17.48,17.48,0,0,0-2.55,7.8h30.46a16.78,16.78,0,0,0-4.34-11,13.81,13.81,0,0,0-10.51-4.19A14.87,14.87,0,0,0,532.18,103.06Z"/>
+        <path d="M601.73,84.68v53.21H598v-8a16.67,16.67,0,0,1-15.07,8.91,15.74,15.74,0,0,1-8.95-2.74,19.29,19.29,0,0,1-6.47-7.5,23.63,23.63,0,0,1,0-20.75,19.31,19.31,0,0,1,6.47-7.46,15.66,15.66,0,0,1,8.95-2.74,17.09,17.09,0,0,1,8.87,2.32,16.69,16.69,0,0,1,6.2,6.51V84.68Zm-10.66,48.46a14.4,14.4,0,0,0,5.1-6.09,20.75,20.75,0,0,0,1.83-8.87,20.52,20.52,0,0,0-1.83-8.84,14.47,14.47,0,0,0-5.1-6,13.16,13.16,0,0,0-7.46-2.17,12.76,12.76,0,0,0-7.38,2.29,16.08,16.08,0,0,0-5.33,6.2,18.75,18.75,0,0,0-2,8.57,19,19,0,0,0,2,8.6,16,16,0,0,0,5.33,6.24,12.83,12.83,0,0,0,7.38,2.29A13.24,13.24,0,0,0,591.07,133.14Z"/>
+        <path d="M662.22,102.11q4.08,4.5,4.07,11.8v24h-3.73v-6.31a14,14,0,0,1-6.35,5.33,21,21,0,0,1-8.65,1.9,15,15,0,0,1-10.24-3.5,11.59,11.59,0,0,1-4-9.14,11.81,11.81,0,0,1,2-6.78,13.23,13.23,0,0,1,5.6-4.6,19.23,19.23,0,0,1,8.07-1.64,41.14,41.14,0,0,1,13.55,2.59v-1.83a14.52,14.52,0,0,0-2.89-9.1q-2.89-3.77-9.14-3.77a24.31,24.31,0,0,0-11.87,3.51l-1.53-3.12a32.54,32.54,0,0,1,7.08-2.86,26.37,26.37,0,0,1,6.7-.95C655.74,97.62,659.5,99.12,662.22,102.11Zm-8.07,32.09a15.11,15.11,0,0,0,5.41-3.31,10.22,10.22,0,0,0,3-5.33v-6.62a41.25,41.25,0,0,0-13-2.36,14.63,14.63,0,0,0-9,2.66,8.43,8.43,0,0,0-.34,13.48,12.21,12.21,0,0,0,7.92,2.59A17.8,17.8,0,0,0,654.15,134.2Z"/>
+        <path d="M717.76,136.3a11.53,11.53,0,0,1-7.31,2.51,7.7,7.7,0,0,1-6.13-2.82,10.76,10.76,0,0,1-2.39-7.23V102h-6.7v-3.5h6.7V87.72h3.73V98.53h10.12V102H705.66v26.73a7.52,7.52,0,0,0,1.4,4.68,4.34,4.34,0,0,0,3.62,1.87,8,8,0,0,0,2.74-.5,7.68,7.68,0,0,0,2.44-1.41Z"/>
+        <path d="M735.54,100.21A17.47,17.47,0,0,1,745,97.62v3.5a16.17,16.17,0,0,0-7.88,1.9,13.82,13.82,0,0,0-5.41,5.26,14.93,14.93,0,0,0-1.94,7.61v22h-3.73V98.53h3.73v8.38A13.65,13.65,0,0,1,735.54,100.21Z"/>
+        <path d="M777.49,133.94a15.39,15.39,0,0,0,6-3.81l2.44,2.59a17.71,17.71,0,0,1-7.08,4.41,26.55,26.55,0,0,1-9.21,1.68A18,18,0,0,1,760,136a20.43,20.43,0,0,1-7.16-7.54,20.85,20.85,0,0,1-2.67-10.39,21.16,21.16,0,0,1,2.59-10.39,19.62,19.62,0,0,1,7-7.39,18.3,18.3,0,0,1,9.74-2.7A17.17,17.17,0,0,1,786,108.13a27.92,27.92,0,0,1,2.28,11.64H754a18.06,18.06,0,0,0,2.55,7.85,16.25,16.25,0,0,0,5.64,5.63,14.42,14.42,0,0,0,7.5,2.06A22.72,22.72,0,0,0,777.49,133.94Zm-15.38-30.88a15.81,15.81,0,0,0-5.56,5.41,17.36,17.36,0,0,0-2.55,7.8h30.46a16.83,16.83,0,0,0-4.34-11,13.81,13.81,0,0,0-10.51-4.19A14.87,14.87,0,0,0,762.11,103.06Z"/>
+        <path d="M822.11,133.94a15.39,15.39,0,0,0,6-3.81l2.43,2.59a17.57,17.57,0,0,1-7.08,4.41,26.46,26.46,0,0,1-9.21,1.68,18.1,18.1,0,0,1-9.67-2.78,20.4,20.4,0,0,1-7.15-7.54,21.84,21.84,0,0,1-.08-20.78,19.59,19.59,0,0,1,7-7.39,18.36,18.36,0,0,1,9.75-2.7,17.17,17.17,0,0,1,16.44,10.51,27.76,27.76,0,0,1,2.29,11.64H798.62a17.93,17.93,0,0,0,2.55,7.85,16.14,16.14,0,0,0,5.63,5.63,14.45,14.45,0,0,0,7.5,2.06A22.81,22.81,0,0,0,822.11,133.94Zm-15.38-30.88a15.72,15.72,0,0,0-5.56,5.41,17.24,17.24,0,0,0-2.55,7.8h30.45a16.73,16.73,0,0,0-4.34-11,13.78,13.78,0,0,0-10.5-4.19A14.81,14.81,0,0,0,806.73,103.06Z"/>
+        <path class="a" d="M0,35.39H0a71,71,0,0,1,71,71v78a0,0,0,0,1,0,0h0a71,71,0,0,1-71-71v-78A0,0,0,0,1,0,35.39Z" transform="translate(71 219.77) rotate(-180)"/>
+        <path class="b" d="M149.89,0V76.4a79.42,79.42,0,0,0-69.54,41.17v-48A69.55,69.55,0,0,1,149.89,0Z"/>
+        <path class="c" d="M149.89,86.19v76.4a69.54,69.54,0,0,1-69.54,69.54v-76.4a68.82,68.82,0,0,1,.7-9.8A69.54,69.54,0,0,1,149.2,86.2Z"/>
+      </svg>
+    </a>
+    <div class="nav-links">
+      <a href="#services">Services</a>
+      <a href="#about">About</a>
+      <a href="#process">Process</a>
+      <a href="#contact" class="nav-cta">Book a Session</a>
+    </div>
+  </div>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-badge">
+    <span class="dot"></span> Light Filled Human Design — Certified Coaching
+  </div>
+  <h1>Discover the <span class="accent">real you</span><br>through Human Design</h1>
+  <p class="subtitle">
+    Your chart isn't just a diagram — it's a blueprint for how you're wired to thrive. As a certified Human Design coach, I'll help you stop fighting your design and start living it.
+  </p>
+  <div class="hero-buttons">
+    <a href="#contact" class="btn btn-primary">Book a Reading →</a>
+    <a href="#services" class="btn btn-outline">Explore Services</a>
+  </div>
+</section>
+
+<!-- TRUST BAR -->
+<div class="trust-bar">
+  <div class="trust-item"><span class="check">✓</span> Certified HD Coach</div>
+  <div class="trust-item"><span class="check">✓</span> Verified Engine Accuracy</div>
+  <div class="trust-item"><span class="check">✓</span> 1-on-1 Deep Dives</div>
+  <div class="trust-item"><span class="check">✓</span> Practical, No Fluff</div>
+</div>
+
+<!-- SERVICES -->
+<section class="services" id="services">
+  <div class="container">
+    <div class="section-header">
+      <div class="overline">Work With Me</div>
+      <h2>Human Design Coaching &amp; Readings</h2>
+      <p>Every session is rooted in your unique chart — no generic advice, no one-size-fits-all.</p>
+    </div>
+    <div class="service-grid">
+      <div class="service-card">
+        <div class="service-icon">🌱</div>
+        <h3>Foundation Reading</h3>
+        <p>A 90-minute deep dive into your Type, Strategy, Authority, Profile, and defined centers. You'll walk away knowing how you're designed to make decisions, interact with others, and navigate life.</p>
+        <div class="price">$175</div>
+      </div>
+      <div class="service-card">
+        <div class="service-icon">💫</div>
+        <h3>Relationship Synastry</h3>
+        <p>See how two charts interact — electromagnetic attractions, compromise channels, dominance dynamics. Perfect for couples, business partners, or parent-child relationships.</p>
+        <div class="price">$225</div>
+      </div>
+      <div class="service-card">
+        <div class="service-icon">🌙</div>
+        <h3>Transit &amp; Cycle Coaching</h3>
+        <p>Understand what the planets are activating in your chart right now. Monthly sessions to navigate current transits, conditioning fields, and life cycles with clarity.</p>
+        <div class="price">$125/session</div>
+      </div>
+      <div class="service-card">
+        <div class="service-icon">✨</div>
+        <h3>Family Blueprint Package</h3>
+        <p>Full chart readings for the entire family. Understand each member's design, how you interact as a unit, and how to parent to each child's unique wiring.</p>
+        <div class="price">$450 (up to 5)</div>
+      </div>
+      <div class="service-card">
+        <div class="service-icon">🔮</div>
+        <h3>3-Month Deep Immersion</h3>
+        <p>Weekly coaching sessions over 12 weeks. We'll work through every aspect of your chart — gates, channels, variables, incarnation cross — and integrate it into your daily life.</p>
+        <div class="price">$1,200</div>
+      </div>
+      <div class="service-card">
+        <div class="service-icon">📋</div>
+        <h3>HD Career &amp; Purpose Reading</h3>
+        <p>Using your Incarnation Cross and defined channels, we'll map your natural strengths to career paths, business ideas, and life purpose direction that actually fits your design.</p>
+        <div class="price">$195</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ABOUT -->
+<section class="about" id="about">
+  <div class="container">
+    <div class="about-grid">
+      <div class="about-image">🌿</div>
+      <div class="about-text">
+        <h2>Meet Becca — Your Human Design Guide</h2>
+        <p>
+          I'm a certified Human Design coach, a mom of three, and the founder of She Planted a Tree. My journey with Human Design started when I realized that all the self-help advice I'd been following was for <em>someone else's design</em> — not mine.
+        </p>
+        <p>
+          Human Design gave me permission to be exactly who I am. Now I help others find that same freedom. My approach is practical, grounded, and rooted in the real math — not vague spirituality.
+        </p>
+        <p>
+          Every reading uses verified chart data computed by the <strong>Human Design Engine</strong> — the same open-source calculation engine trusted by developers and practitioners worldwide. Accuracy matters, and I don't cut corners.
+        </p>
+        <div class="cert-badge">
+          🌟 Light Filled Human Design — Certified Practitioner
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- PROCESS -->
+<section class="process" id="process">
+  <div class="container">
+    <div class="section-header">
+      <div class="overline">How It Works</div>
+      <h2>From Chart to Clarity</h2>
+      <p>Three simple steps to understanding your design.</p>
+    </div>
+    <div class="steps">
+      <div class="step">
+        <div class="step-number">1</div>
+        <h4>Share Your Birth Data</h4>
+        <p>Date, time, and place of birth. That's it. I'll compute your exact chart using verified astronomical data.</p>
+      </div>
+      <div class="step">
+        <div class="step-number">2</div>
+        <h4>We Dive In Together</h4>
+        <p>A live 1-on-1 video session where we explore every aspect of your chart — at your pace, focused on what matters to you.</p>
+      </div>
+      <div class="step">
+        <div class="step-number">3</div>
+        <h4>You Get Your Blueprint</h4>
+        <p>A detailed PDF report of your chart, our session notes, and actionable insights to reference anytime.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- TESTIMONIAL -->
+<section class="testimonials">
+  <div class="container">
+    <div class="testimonial-card">
+      <p class="quote">"I spent years trying to be a Manifestor. Turns out I'm a Projector — and everything finally makes sense. Becca didn't just read my chart, she helped me <em>live</em> it."</p>
+      <p class="author">— A Real Client (testimonial placeholder)</p>
+    </div>
+  </div>
+</section>
+
+<!-- CTA -->
+<section class="cta-section" id="contact">
+  <div class="container">
+    <h2>Ready to meet your design?</h2>
+    <p>Book a free 15-minute discovery call. We'll look at your Type and Strategy — no commitment, no pressure.</p>
+    <a href="#" class="btn btn-primary">Book Your Free Call →</a>
+  </div>
+</section>
+
+<!-- ENGINE CREDIT -->
+<div class="engine-credit">
+  <p>Charts computed by <a href="https://humandesignengine.com">Human Design Engine</a> — verified open-source calculation. <a href="https://github.com/mbgulden/OpenHumanDesignMCP">View the engine on GitHub →</a></p>
+</div>
+
+<footer>
+  <p>&copy; 2026 She Planted a Tree — Light Filled Human Design. All rights reserved.</p>
+  <p style="margin-top:6px;"><a href="#">Privacy</a> &middot; <a href="#">Terms</a> &middot; <a href="mailto:becca@sheplantedatree.com">Contact</a></p>
+</footer>
+
+</body>
+</html>

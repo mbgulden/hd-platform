@@ -1,0 +1,358 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Human Design Engine — Free Chart Playground</title>
+<style>
+  :root {
+    --navy-deep: #060d1a;
+    --navy: #0a1628;
+    --navy-mid: #0f1d36;
+    --navy-light: #162744;
+    --navy-lighter: #1e3458;
+    --gold: #c9a84c;
+    --gold-light: #e0c468;
+    --gold-bright: #d4af37;
+    --gold-soft: rgba(201, 168, 76, 0.15);
+    --text-primary: #e8e6e3;
+    --text-secondary: #8899aa;
+    --text-muted: #5a6a7a;
+    --radius: 12px;
+    --radius-lg: 20px;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+    background: var(--navy-deep);
+    color: var(--text-primary);
+    min-height: 100vh;
+    display: flex;
+    line-height: 1.6;
+  }
+  .sidebar {
+    width: 340px;
+    background: var(--navy);
+    padding: 24px;
+    overflow-y: auto;
+    border-right: 1px solid rgba(201,168,76,0.12);
+    flex-shrink: 0;
+  }
+  .sidebar .logo {
+    font-size: 1.1em;
+    font-weight: 700;
+    color: var(--gold-light);
+    margin-bottom: 4px;
+    letter-spacing: -0.02em;
+  }
+  .sidebar .tagline { font-size: 0.75em; color: var(--text-muted); margin-bottom: 20px; }
+  .sidebar label { display: block; font-size: 0.78em; color: var(--text-secondary); margin-top: 14px; margin-bottom: 4px; font-weight: 500; }
+  .sidebar input, .sidebar select {
+    width: 100%; padding: 10px 12px; border: 1px solid rgba(201,168,76,0.2);
+    border-radius: 8px; background: var(--navy-deep); color: var(--text-primary);
+    font-size: 0.9em; font-family: inherit;
+    transition: border-color 0.2s;
+  }
+  .sidebar input:focus { border-color: var(--gold); outline: none; }
+  .sidebar button {
+    width: 100%; margin-top: 16px; padding: 12px;
+    border-radius: 10px; font-size: 0.95em; font-weight: 600;
+    cursor: pointer; border: none; font-family: inherit;
+    transition: all 0.2s;
+  }
+  .btn-compute {
+    background: linear-gradient(135deg, var(--gold-bright), var(--gold));
+    color: var(--navy-deep);
+  }
+  .btn-compute:hover { box-shadow: 0 4px 20px rgba(201,168,76,0.3); transform: translateY(-1px); }
+  .btn-compute:disabled { background: var(--navy-lighter); color: var(--text-muted); cursor: not-allowed; transform: none; }
+  
+  .btn-interpret {
+    background: transparent; color: var(--gold-light);
+    border: 1.5px solid rgba(201,168,76,0.4); margin-top: 8px;
+  }
+  .btn-interpret:hover { background: var(--gold-soft); }
+  .btn-interpret:disabled { opacity: 0.5; cursor: not-allowed; }
+
+  .section-label { font-size: 0.7em; text-transform: uppercase; letter-spacing: 0.1em; color: var(--gold); margin-top: 24px; margin-bottom: 8px; font-weight: 600; }
+
+  .test-prompt {
+    background: var(--navy-mid); border: 1px solid rgba(201,168,76,0.1);
+    border-radius: 8px; padding: 10px 12px; margin-bottom: 8px;
+    font-size: 0.78em; color: var(--text-secondary); cursor: pointer;
+    transition: all 0.2s;
+  }
+  .test-prompt:hover { border-color: var(--gold); background: var(--gold-soft); color: var(--text-primary); }
+  .test-prompt .emoji { margin-right: 6px; }
+
+  .endpoint-row { margin-top: 16px; display: flex; gap: 6px; align-items: center; }
+  .endpoint-row span { font-size: 0.7em; color: var(--text-muted); white-space: nowrap; }
+  .endpoint-row input { flex: 1; font-size: 0.7em; padding: 6px 8px; }
+
+  .worker-row { margin-top: 8px; display: flex; gap: 6px; align-items: center; }
+  .worker-row span { font-size: 0.7em; color: var(--text-muted); white-space: nowrap; }
+  .worker-row input { flex: 1; font-size: 0.7em; padding: 6px 8px; }
+
+  .main { flex: 1; padding: 24px; overflow-y: auto; }
+  .result { max-width: 800px; margin: 0 auto; }
+  .card {
+    background: rgba(15,29,54,0.7); border-radius: var(--radius-lg);
+    padding: 24px; margin-bottom: 16px;
+    border: 1px solid rgba(201,168,76,0.12);
+  }
+  .card h2 { font-size: 1em; color: var(--gold-light); margin-bottom: 14px; letter-spacing: -0.01em; }
+  .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(170px, 1fr)); gap: 12px; }
+  .field { background: var(--navy-deep); padding: 10px 14px; border-radius: 10px; }
+  .field .label { font-size: 0.68em; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.5px; }
+  .field .value { font-size: 1.05em; margin-top: 2px; font-weight: 500; }
+  .tag { display: inline-block; padding: 3px 10px; border-radius: 20px; font-size: 0.75em; margin: 2px; }
+  .tag.center { background: rgba(74,222,128,0.12); color: #4ade80; }
+  .tag.channel { background: rgba(192,132,252,0.12); color: #c084fc; }
+  .tag.gate { background: rgba(96,165,250,0.12); color: #60a5fa; }
+
+  .interpretation {
+    background: linear-gradient(135deg, rgba(201,168,76,0.08), rgba(201,168,76,0.02));
+    border: 1px solid rgba(201,168,76,0.2);
+    border-radius: var(--radius-lg); padding: 24px; margin-bottom: 16px;
+    line-height: 1.8;
+  }
+  .interpretation .provider-badge {
+    font-size: 0.68em; color: var(--text-muted); margin-bottom: 12px;
+    display: flex; align-items: center; gap: 6px;
+  }
+  .interpretation .provider-badge .dot { width: 6px; height: 6px; border-radius: 50%; background: #4ade80; }
+
+  .loading { text-align: center; padding: 40px; }
+  .spinner { width: 40px; height: 40px; border: 3px solid var(--navy-lighter); border-top-color: var(--gold); border-radius: 50%; animation: spin 0.8s linear infinite; margin: 0 auto 12px; }
+  @keyframes spin { to { transform: rotate(360deg); } }
+  .empty { text-align: center; padding: 80px 20px; }
+  .empty h3 { font-size: 1.4em; margin-bottom: 8px; color: var(--text-secondary); }
+  .empty p { font-size: 0.9em; color: var(--text-muted); }
+  .error-box { margin-top: 12px; padding: 10px 14px; background: rgba(233,69,96,0.1); border: 1px solid rgba(233,69,96,0.3); border-radius: 8px; font-size: 0.85em; color: #e94560; display: none; }
+
+  .footer-row { margin-top: 20px; font-size: 0.7em; color: var(--text-muted); text-align: center; }
+  .footer-row a { color: var(--gold); text-decoration: none; }
+
+  @media (max-width: 768px) { body { flex-direction: column; } .sidebar { width: 100%; border-right: none; border-bottom: 1px solid rgba(201,168,76,0.12); } }
+</style>
+</head>
+<body>
+
+<div class="sidebar">
+  <div class="logo">🧬 Human Design Engine</div>
+  <div class="tagline">Free chart playground · No signup · Open source</div>
+
+  <label>Name (optional)</label>
+  <input type="text" id="name" placeholder="Your name">
+
+  <label>Birth Date</label>
+  <input type="date" id="birthdate" value="2000-01-01">
+
+  <label>Birth Time</label>
+  <input type="time" id="birthtime" value="12:00">
+
+  <label>Location</label>
+  <input type="text" id="location" placeholder="e.g. London, New York NY, 51.5,-0.13" value="London">
+
+  <button class="btn-compute" id="computeBtn" onclick="computeChart()">⚡ Compute My Chart</button>
+  <button class="btn-interpret" id="interpretBtn" onclick="interpretChart()" disabled>✨ Get AI Interpretation</button>
+
+  <div class="error-box" id="error"></div>
+
+  <div class="section-label">🔬 Test Prompts</div>
+  <div class="test-prompt" onclick="fillTest('michael')"><span class="emoji">🎯</span> Projector 3/5 — Michael</div>
+  <div class="test-prompt" onclick="fillTest('becca')"><span class="emoji">🌿</span> Projector 6/2 — Becca</div>
+  <div class="test-prompt" onclick="fillTest('generator')"><span class="emoji">⚡</span> Generator 3/6 — William</div>
+  <div class="test-prompt" onclick="fillTest('mg')"><span class="emoji">🚀</span> Manifesting Generator 5/1</div>
+  <div class="test-prompt" onclick="fillTest('reflector')"><span class="emoji">🌙</span> Reflector 1/3 — Rare type</div>
+  <div class="test-prompt" onclick="fillTest('london')"><span class="emoji">🇬🇧</span> London — Test geo-resolution</div>
+
+  <div class="endpoint-row">
+    <span>Engine:</span>
+    <input type="text" id="engineEndpoint" value="https://api.humandesignengine.com" placeholder="Your MCP server URL">
+  </div>
+  <div class="worker-row">
+    <span>AI:</span>
+    <input type="text" id="workerEndpoint" value="https://hde-playground.YOUR-SUBDOMAIN.workers.dev" placeholder="Worker URL (after deploy)">
+  </div>
+
+  <div class="footer-row">
+    <a href="https://github.com/mbgulden/OpenHumanDesignMCP" target="_blank">GitHub</a> · AGPLv3 · Local computation
+  </div>
+</div>
+
+<div class="main" id="main">
+  <div class="empty">
+    <h3>Discover Your Design</h3>
+    <p>Enter birth details and click <strong>Compute My Chart</strong>.<br>Then click <strong>Get AI Interpretation</strong> for plain-English insights.</p>
+  </div>
+</div>
+
+<script>
+// Store last computed chart
+let lastChart = null;
+
+// Test prompts
+const testData = {
+  michael: { name: 'Michael', birthdate: '1989-12-10', birthtime: '17:07', location: 'Simi Valley CA' },
+  becca: { name: 'Becca', birthdate: '1991-07-04', birthtime: '14:30', location: 'Honolulu HI' },
+  generator: { name: 'William', birthdate: '2017-03-15', birthtime: '08:45', location: 'Meridian ID' },
+  mg: { name: 'Alex', birthdate: '1995-08-22', birthtime: '11:00', location: 'Austin TX' },
+  reflector: { name: 'Jordan', birthdate: '2002-02-02', birthtime: '02:22', location: 'Sedona AZ' },
+  london: { name: 'Test', birthdate: '2000-06-15', birthtime: '12:00', location: 'London' }
+};
+
+function fillTest(key) {
+  const d = testData[key];
+  document.getElementById('name').value = d.name;
+  document.getElementById('birthdate').value = d.birthdate;
+  document.getElementById('birthtime').value = d.birthtime;
+  document.getElementById('location').value = d.location;
+  computeChart();
+}
+
+async function computeChart() {
+  const btn = document.getElementById('computeBtn');
+  const interpretBtn = document.getElementById('interpretBtn');
+  const error = document.getElementById('error');
+  const main = document.getElementById('main');
+  const endpoint = document.getElementById('engineEndpoint').value.replace(/\/$/, '');
+
+  btn.disabled = true;
+  interpretBtn.disabled = true;
+  btn.textContent = 'Computing...';
+  error.style.display = 'none';
+  main.innerHTML = '<div class="loading"><div class="spinner"></div><p>Computing your chart...</p></div>';
+
+  try {
+    const name = document.getElementById('name').value || 'Anonymous';
+    const birthdate = document.getElementById('birthdate').value;
+    const birthtime = document.getElementById('birthtime').value;
+    const location = document.getElementById('location').value;
+    if (!birthdate || !birthtime || !location) throw new Error('Please fill in birth date, time, and location.');
+
+    const [year, month, day] = birthdate.split('-').map(Number);
+    const [hour, minute] = birthtime.split(':').map(Number);
+    const decimalHour = hour + minute / 60;
+
+    const params = new URLSearchParams({ name, year, month, day, hour: decimalHour, location });
+    const resp = await fetch(`${endpoint}/tools/calculate_chart?${params}`);
+    if (!resp.ok) throw new Error(`Server error: ${resp.status}`);
+    const data = await resp.json();
+    lastChart = data.result || data;
+    renderChart(lastChart);
+    interpretBtn.disabled = false;
+  } catch (e) {
+    error.textContent = e.message === 'Failed to fetch'
+      ? 'Cannot reach engine. Make sure the MCP server is running.'
+      : e.message;
+    error.style.display = 'block';
+    main.innerHTML = '<div class="empty"><h3>Chart Not Available</h3><p>Check your engine connection or try again.</p></div>';
+  } finally {
+    btn.disabled = false;
+    btn.textContent = '⚡ Compute My Chart';
+  }
+}
+
+async function interpretChart() {
+  if (!lastChart) return;
+  const btn = document.getElementById('interpretBtn');
+  const error = document.getElementById('error');
+  const workerUrl = document.getElementById('workerEndpoint').value.replace(/\/$/, '');
+
+  btn.disabled = true;
+  btn.textContent = 'Interpreting...';
+  error.style.display = 'none';
+
+  try {
+    const resp = await fetch(`${workerUrl}/api/interpret`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(lastChart)
+    });
+    if (!resp.ok) throw new Error(`Worker error: ${resp.status}`);
+    const data = await resp.json();
+
+    if (data.error) throw new Error(data.error);
+
+    // Prepend interpretation to results
+    const main = document.getElementById('main');
+    const provider = data.provider || 'ai';
+    const providerNames = { 'cloudflare-workers-ai': 'Cloudflare Workers AI', 'gemini-flash': 'Google Gemini Flash', 'template-fallback': 'Template Engine' };
+    
+    const interpHTML = `<div class="interpretation">
+      <div class="provider-badge"><span class="dot"></span> AI Interpretation by ${providerNames[provider] || provider}</div>
+      ${data.interpretation.split('\n').filter(l => l.trim()).map(l => `<p style="margin-bottom:8px">${l}</p>`).join('')}
+    </div>`;
+
+    main.innerHTML = interpHTML + main.innerHTML;
+  } catch (e) {
+    error.textContent = 'AI interpretation unavailable: ' + e.message;
+    error.style.display = 'block';
+  } finally {
+    btn.disabled = false;
+    btn.textContent = '✨ Get AI Interpretation';
+  }
+}
+
+function renderChart(chart) {
+  const main = document.getElementById('main');
+  const c = chart;
+  const centers = (c.defined_centers || []).map(x => `<span class="tag center">✓ ${x}</span>`).join(' ');
+  const channels = (c.defined_channels || []).map(x => `<span class="tag channel">${x}</span>`).join(' ');
+  const vars = c.variables || {};
+  const cross = c.incarnation_cross || {};
+
+  main.innerHTML = `<div class="result">
+    <div class="card">
+      <h2>🎯 Core Identity</h2>
+      <div class="grid">
+        <div class="field"><div class="label">Type</div><div class="value">${c.hd_type || c.type || '—'}</div></div>
+        <div class="field"><div class="label">Profile</div><div class="value">${c.profile || '—'}</div></div>
+        <div class="field"><div class="label">Authority</div><div class="value">${c.authority || '—'}</div></div>
+        <div class="field"><div class="label">Strategy</div><div class="value">${c.strategy || '—'}</div></div>
+        <div class="field"><div class="label">Definition</div><div class="value">${c.definition || '—'}</div></div>
+        <div class="field"><div class="label">Signature</div><div class="value">${c.signature || '—'}</div></div>
+        <div class="field"><div class="label">Warning Signal</div><div class="value">${c.not_self_theme || '—'}</div></div>
+        <div class="field"><div class="label">Life Theme</div><div class="value">${cross.name || '—'}</div></div>
+      </div>
+    </div>
+
+    <div class="card">
+      <h2>🔮 Defined Centers (${(c.defined_centers||[]).length}/9)</h2>
+      <div>${centers || '<span style="color:var(--text-muted)">None — all centers undefined (Reflector)</span>'}</div>
+      ${c.undefined_centers && c.undefined_centers.length ? `<div style="margin-top:8px;font-size:0.8em;color:var(--text-muted)">Open to influence: ${c.undefined_centers.join(', ')}</div>` : ''}
+    </div>
+
+    <div class="card">
+      <h2>🔗 Defined Channels (${(c.defined_channels||[]).length})</h2>
+      <div>${channels || '<span style="color:var(--text-muted)">No channels defined</span>'}</div>
+    </div>
+
+    <div class="card">
+      <h2>🧬 Variables</h2>
+      <div class="grid">
+        <div class="field"><div class="label">Orientation</div><div class="value">${vars.orientation || c.variables || '—'}</div></div>
+        <div class="field"><div class="label">Digestion</div><div class="value">${vars.digestion || c.digestion || '—'}</div></div>
+        <div class="field"><div class="label">Environment</div><div class="value">${vars.environment || c.environment || '—'}</div></div>
+        <div class="field"><div class="label">Perspective</div><div class="value">${vars.perspective || c.perspective || '—'}</div></div>
+        <div class="field"><div class="label">Motivation</div><div class="value">${vars.motivation || c.motivation || '—'}</div></div>
+        <div class="field"><div class="label">Cognition</div><div class="value">${vars.cognition || c.cognition || '—'}</div></div>
+      </div>
+    </div>
+
+    <div class="card" style="font-size:0.75em;color:var(--text-muted)">
+      <strong>Active Gates:</strong> ${(c.all_active_gates||[]).join(', ') || 'none'}<br>
+      <strong>Sun Gate:</strong> ${c.sun_gate || '—'} · <strong>Earth Gate:</strong> ${c.earth_gate || '—'}<br>
+      <strong>Personality Sun Line:</strong> ${c.sun_line || '—'}<br>
+      <strong>Computed:</strong> ${c.birth_date || '—'}
+    </div>
+  </div>`;
+}
+
+document.getElementById('location').addEventListener('keydown', function(e) {
+  if (e.key === 'Enter') computeChart();
+});
+</script>
+</body>
+</html>
