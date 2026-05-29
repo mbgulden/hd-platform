@@ -1,0 +1,576 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>The Manifestor Type — Human Design | Strategy, Aura & Signature</title>
+<meta name="description" content="Complete guide to the Manifestor Type in Human Design. Learn the Manifestor strategy (To Inform), signature of peace, not-self theme of anger, closed & repelling aura, mechanics, famous Manifestors, and tips for living your design.">
+<meta name="keywords" content="Human Design Manifestor, Manifestor type, Manifestor strategy, Manifestor aura, closed aura, repelling aura, inform before acting, Human Design types, Manifestor signature peace, not-self anger, Human Design Engine">
+<meta name="robots" content="index, follow">
+<link rel="canonical" href="https://humandesignengine.com/human-design/types/manifestor/">
+<meta property="og:title" content="The Manifestor Type — Human Design | Strategy, Aura & Signature">
+<meta property="og:description" content="Complete guide to the Manifestor Type in Human Design. Learn strategy, aura mechanics, signature of peace, not-self theme, and tips for living your design.">
+<meta property="og:type" content="article">
+<meta property="og:url" content="https://humandesignengine.com/human-design/types/manifestor/">
+<meta property="og:site_name" content="Human Design Engine">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="The Manifestor Type — Human Design | Strategy, Aura & Signature">
+<meta name="twitter:description" content="Complete guide to the Manifestor Type. Strategy (To Inform), closed aura, signature of peace, and how to live your Manifestor design.">
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "Article",
+  "headline": "The Manifestor Type in Human Design — Complete Guide",
+  "description": "Complete guide to the Manifestor Type in Human Design. Learn the Manifestor strategy (To Inform), signature of peace, not-self theme of anger, closed and repelling aura, mechanics, famous Manifestors, and practical tips for living your design.",
+  "author": { "@type": "Organization", "name": "Human Design Engine" },
+  "publisher": { "@type": "Organization", "name": "Human Design Engine", "url": "https://humandesignengine.com" },
+  "mainEntityOfPage": { "@type": "WebPage", "@id": "https://humandesignengine.com/human-design/types/manifestor/" }
+}
+</script>
+<style>
+  :root {
+    --navy-deep: #060d1a;
+    --navy: #0a1628;
+    --navy-mid: #0f1d36;
+    --navy-light: #162744;
+    --navy-lighter: #1e3458;
+    --gold: #c9a84c;
+    --gold-light: #e0c468;
+    --gold-bright: #d4af37;
+    --gold-soft: rgba(201, 168, 76, 0.15);
+    --gold-glow: rgba(201, 168, 76, 0.08);
+    --text-primary: #e8e6e3;
+    --text-secondary: #8899aa;
+    --text-muted: #5a6a7a;
+    --white: #ffffff;
+    --card-bg: rgba(15, 29, 54, 0.7);
+    --card-border: rgba(201, 168, 76, 0.12);
+    --radius: 12px;
+    --radius-lg: 20px;
+    --shadow: 0 4px 24px rgba(0,0,0,0.3);
+    --transition: 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
+    background: var(--navy-deep);
+    color: var(--text-primary);
+    line-height: 1.7;
+    overflow-x: hidden;
+  }
+
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background:
+      radial-gradient(ellipse at 20% 10%, rgba(201,168,76,0.04) 0%, transparent 60%),
+      radial-gradient(ellipse at 80% 90%, rgba(201,168,76,0.03) 0%, transparent 60%),
+      radial-gradient(ellipse at 50% 50%, rgba(15,29,54,0.8) 0%, var(--navy-deep) 100%);
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  nav {
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    background: rgba(6, 13, 26, 0.85);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+    border-bottom: 1px solid rgba(201,168,76,0.1);
+    padding: 0 20px;
+  }
+  .nav-inner {
+    max-width: 1200px;
+    margin: 0 auto;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    height: 64px;
+    position: relative;
+    z-index: 1;
+  }
+  .nav-logo {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 1.25rem;
+    font-weight: 700;
+    color: var(--white);
+    text-decoration: none;
+    letter-spacing: -0.02em;
+  }
+  .nav-logo .icon {
+    width: 32px; height: 32px;
+    background: linear-gradient(135deg, var(--gold-bright), var(--gold));
+    border-radius: 8px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 0.85rem;
+    color: var(--navy-deep);
+    font-weight: 900;
+  }
+  .nav-links { display: flex; gap: 24px; align-items: center; }
+  .nav-links a {
+    color: var(--text-secondary);
+    text-decoration: none;
+    font-size: 0.88rem;
+    font-weight: 500;
+    transition: var(--transition);
+  }
+  .nav-links a:hover { color: var(--gold-light); }
+
+  .container {
+    max-width: 900px;
+    margin: 0 auto;
+    padding: 0 24px;
+    position: relative;
+    z-index: 1;
+  }
+
+  .breadcrumb {
+    padding: 18px 0;
+    font-size: 0.82rem;
+    color: var(--text-muted);
+  }
+  .breadcrumb a {
+    color: var(--gold);
+    text-decoration: none;
+    transition: var(--transition);
+  }
+  .breadcrumb a:hover { color: var(--gold-light); }
+  .breadcrumb span { margin: 0 6px; }
+
+  .type-hero {
+    text-align: center;
+    padding: 48px 24px 40px;
+    position: relative;
+    z-index: 1;
+  }
+  .type-icon {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 88px;
+    height: 88px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, rgba(201,168,76,0.2), rgba(201,168,76,0.08));
+    border: 2px solid rgba(201,168,76,0.35);
+    font-size: 2rem;
+    color: var(--gold-light);
+    margin-bottom: 20px;
+  }
+  .type-hero h1 {
+    font-size: clamp(1.8rem, 4vw, 2.6rem);
+    font-weight: 800;
+    letter-spacing: -0.03em;
+    line-height: 1.2;
+    margin-bottom: 12px;
+    background: linear-gradient(180deg, #ffffff 0%, #c0c8d4 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+  .type-hero .type-subtitle {
+    font-size: 1.05rem;
+    color: var(--text-secondary);
+    max-width: 560px;
+    margin: 0 auto;
+  }
+  .type-tag {
+    display: inline-block;
+    margin-top: 16px;
+    padding: 6px 18px;
+    background: var(--gold-soft);
+    color: var(--gold-light);
+    border-radius: 20px;
+    font-size: 0.88rem;
+    font-weight: 600;
+  }
+
+  .info-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 16px;
+    margin-bottom: 48px;
+  }
+  .info-card {
+    background: var(--card-bg);
+    border: 1px solid var(--card-border);
+    border-radius: var(--radius);
+    padding: 20px 18px;
+    text-align: center;
+  }
+  .info-card .label {
+    font-size: 0.72rem;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: var(--gold);
+    font-weight: 600;
+    margin-bottom: 6px;
+  }
+  .info-card .value {
+    font-size: 1rem;
+    font-weight: 600;
+    color: var(--text-primary);
+  }
+
+  .content {
+    background: var(--card-bg);
+    border: 1px solid var(--card-border);
+    border-radius: var(--radius-lg);
+    padding: 40px 36px;
+    margin-bottom: 48px;
+  }
+  .content h2 {
+    font-size: 1.5rem;
+    font-weight: 700;
+    margin-bottom: 20px;
+    color: var(--white);
+    letter-spacing: -0.02em;
+  }
+  .content h3 {
+    font-size: 1.15rem;
+    font-weight: 600;
+    color: var(--gold-light);
+    margin: 32px 0 14px;
+    letter-spacing: -0.01em;
+  }
+  .content p {
+    font-size: 1rem;
+    color: var(--text-secondary);
+    line-height: 1.75;
+    margin-bottom: 16px;
+  }
+  .content .highlight {
+    color: var(--gold-light);
+    font-weight: 500;
+  }
+  .content ul {
+    list-style: none;
+    padding: 0;
+    margin: 12px 0;
+  }
+  .content ul li {
+    padding: 8px 0;
+    font-size: 0.92rem;
+    color: var(--text-secondary);
+    border-bottom: 1px solid rgba(255,255,255,0.04);
+  }
+  .content ul li::before {
+    content: "▸ ";
+    color: var(--gold);
+  }
+  .content ul li a {
+    color: var(--gold-light);
+    text-decoration: none;
+    transition: var(--transition);
+  }
+  .content ul li a:hover { text-decoration: underline; }
+
+  .type-relationships {
+    background: var(--card-bg);
+    border: 1px solid var(--card-border);
+    border-radius: var(--radius-lg);
+    padding: 40px 36px;
+    margin-bottom: 48px;
+  }
+  .type-relationships h2 {
+    font-size: 1.5rem;
+    font-weight: 700;
+    margin-bottom: 20px;
+    color: var(--white);
+    letter-spacing: -0.02em;
+  }
+  .relationship-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+    gap: 12px;
+  }
+  .relationship-chip {
+    display: block;
+    padding: 12px 16px;
+    background: rgba(201,168,76,0.06);
+    border: 1px solid var(--card-border);
+    border-radius: var(--radius);
+    text-decoration: none;
+    color: var(--text-secondary);
+    font-size: 0.88rem;
+    transition: var(--transition);
+    text-align: center;
+  }
+  .relationship-chip:hover {
+    border-color: var(--gold);
+    color: var(--gold-light);
+  }
+
+  .cta-section {
+    text-align: center;
+    padding: 48px 24px 64px;
+    position: relative;
+    z-index: 1;
+  }
+  .cta-section h2 {
+    font-size: clamp(1.3rem, 2.5vw, 1.7rem);
+    font-weight: 700;
+    margin-bottom: 12px;
+    letter-spacing: -0.02em;
+  }
+  .cta-section p {
+    color: var(--text-secondary);
+    font-size: 0.95rem;
+    max-width: 480px;
+    margin: 0 auto 24px;
+  }
+  .btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 13px 28px;
+    border-radius: 10px;
+    font-size: 0.92rem;
+    font-weight: 600;
+    text-decoration: none;
+    cursor: pointer;
+    border: none;
+    transition: var(--transition);
+    letter-spacing: -0.01em;
+  }
+  .btn-primary {
+    background: linear-gradient(135deg, var(--gold-bright), var(--gold));
+    color: var(--navy-deep);
+    box-shadow: 0 4px 20px rgba(201,168,76,0.3);
+  }
+  .btn-primary:hover {
+    box-shadow: 0 6px 30px rgba(201,168,76,0.45);
+    transform: translateY(-2px);
+  }
+
+  .faq {
+    padding: 0 0 64px;
+  }
+  .faq h2 {
+    text-align: center;
+    font-size: 1.6rem;
+    font-weight: 700;
+    margin-bottom: 32px;
+    letter-spacing: -0.02em;
+  }
+  .faq-item {
+    background: var(--card-bg);
+    border: 1px solid var(--card-border);
+    border-radius: var(--radius);
+    padding: 24px 28px;
+    margin-bottom: 12px;
+  }
+  .faq-item h3 {
+    font-size: 1rem;
+    font-weight: 600;
+    color: var(--gold-light);
+    margin-bottom: 8px;
+  }
+  .faq-item p {
+    font-size: 0.9rem;
+    color: var(--text-secondary);
+    line-height: 1.65;
+  }
+
+  footer {
+    background: rgba(6, 13, 26, 0.6);
+    border-top: 1px solid rgba(201,168,76,0.08);
+    padding: 28px 20px;
+    text-align: center;
+    position: relative;
+    z-index: 1;
+  }
+  .footer-inner {
+    max-width: 1200px;
+    margin: 0 auto;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 16px;
+  }
+  .footer-inner .left { display: flex; flex-direction: column; gap: 4px; text-align: left; }
+  .footer-inner .brand { font-weight: 600; color: var(--text-primary); font-size: 0.88rem; }
+  .footer-inner .license { font-size: 0.76rem; color: var(--text-muted); }
+  .footer-links { display: flex; gap: 18px; }
+  .footer-links a {
+    font-size: 0.8rem;
+    color: var(--text-muted);
+    text-decoration: none;
+    transition: var(--transition);
+  }
+  .footer-links a:hover { color: var(--gold-light); }
+
+  .experiment-list li {
+    padding: 12px 0 !important;
+  }
+  .experiment-list li strong {
+    color: var(--gold-light);
+  }
+
+  @media (max-width: 768px) {
+    .nav-links { gap: 12px; }
+    .nav-links a { font-size: 0.78rem; }
+    .content, .type-relationships { padding: 28px 20px; }
+    .footer-inner { flex-direction: column; text-align: center; }
+  }
+</style>
+</head>
+<body>
+
+<nav>
+  <div class="nav-inner">
+    <a href="/" class="nav-logo">
+      <div class="icon">◆</div>
+      Human Design Engine
+    </a>
+    <div class="nav-links">
+      <a href="/human-design/types/">Types</a>
+      <a href="/human-design/centers/">Centers</a>
+      <a href="/human-design/channels/">Channels</a>
+      <a href="/human-design/gates/">Gates</a>
+    </div>
+  </div>
+</nav>
+
+<div class="container">
+
+  <div class="breadcrumb">
+    <a href="/">Home</a> <span>›</span>
+    <a href="/human-design/types/">Human Design Types</a> <span>›</span>
+    The Manifestor
+  </div>
+
+  <section class="type-hero">
+    <div class="type-icon">⚡</div>
+    <h1>The Manifestor</h1>
+    <p class="type-subtitle">The Initiator. The Fire Starter. Here to make things happen without waiting for anyone's permission.</p>
+    <div class="type-tag">~9% of the population</div>
+  </section>
+
+  <div class="info-grid">
+    <div class="info-card">
+      <div class="label">Strategy</div>
+      <div class="value">To Inform</div>
+    </div>
+    <div class="info-card">
+      <div class="label">Signature</div>
+      <div class="value">Peace</div>
+    </div>
+    <div class="info-card">
+      <div class="label">Not-Self Theme</div>
+      <div class="value">Anger</div>
+    </div>
+    <div class="info-card">
+      <div class="label">Aura Type</div>
+      <div class="value">Closed & Repelling</div>
+    </div>
+  </div>
+
+  <article class="content">
+    <h2>What It Means to Be a Manifestor</h2>
+    <p>Manifestors are the only Human Design type that can <span class="highlight">initiate action independently</span>. Unlike Generators and Manifesting Generators who respond, or Projectors and Reflectors who wait for invitation or the lunar cycle, Manifestors are designed to act first. You are here to initiate, to start things, to set events in motion — and you don't need anyone's approval to do it.</p>
+    <p>Your aura is <span class="highlight">closed and repelling</span>. This isn't a defect — it's a protective mechanism. Because you can initiate freely, your aura creates a boundary that prevents others from inadvertently controlling or diluting your impulse. The closed aura keeps you sovereign. But it also means people often don't feel "invited in" unless you consciously open the door.</p>
+    <p>Manifestors represent approximately <span class="highlight">9% of the population</span>. You are rare. Historically, Manifestors were the builders of civilizations, the pioneers, and the leaders who carved new paths. In the modern world, you are the entrepreneurs, the artists who start movements, the people who see what doesn't exist yet and bring it into being.</p>
+
+    <h3>The Manifestor Strategy: Inform Before You Act</h3>
+    <p>Your strategy is <span class="highlight">To Inform</span>. This doesn't mean asking for permission. It means telling the people who will be impacted by your actions <em>what you're about to do</em> before you do it. When you inform, you disarm the resistance that your closed aura naturally creates in others. Information removes fear. When people know what's coming, they relax — and you can move freely without pushback.</p>
+    <p>Think of informing as <span class="highlight">clearing the runway</span>. You're not asking for a vote; you're giving a heads-up. "I'm going to start this project." "I'm leaving the room for a moment." "I've decided to make a change." Simple, direct, declarative. When you inform, the path clears. When you don't, people feel blindsided by your closed aura and react with resistance — which triggers your anger.</p>
+
+    <h3>Signature: Peace vs. Not-Self: Anger</h3>
+    <p>When you're living correctly as a Manifestor — initiating and informing — your emotional signature is <span class="highlight">peace</span>. A deep, quiet satisfaction that comes from moving freely in the world, unblocked. This isn't the peace of passivity; it's the peace of a river flowing unobstructed.</p>
+    <p>When you're <em>not</em> living your design — when you're being controlled, blocked, or failing to inform — the not-self theme is <span class="highlight">anger</span>. Anger is your internal compass pointing to misalignment. If you feel angry, ask: "Did I fail to inform? Is someone trying to control my initiative? Am I waiting for permission instead of acting?"</p>
+
+    <h3>The Manifestor Aura: Closed & Repelling</h3>
+    <p>Your aura works differently from every other type. While Generators have an open, enveloping aura that draws people in, your closed aura <span class="highlight">pushes outward</span>. This is why people sometimes find Manifestors intense or intimidating before they know you. Your aura literally says: "I am my own authority."</p>
+    <p>The gift of the closed aura is autonomy. You can think your own thoughts, feel your own feelings, and move from your own impulse without being swamped by others' energy. The challenge is that your closed aura can create isolation if you don't consciously connect — which is why <em>informing</em> is so crucial. It's your bridge to others.</p>
+
+    <h3>The Motor Connection to the Throat</h3>
+    <p>Mechanically, a Manifestor is defined by having <span class="highlight">at least one motor center (Sacral, Heart/Ego, Solar Plexus, or Root) connected directly or indirectly to the Throat Center</span>, but <em>without</em> a defined Sacral Center. This motor-to-Throat connection is what gives you the power to initiate. The energy rises from a motor, travels through defined channels, and reaches the Throat for expression or action — without needing to respond to anything external.</p>
+    <p>If your motor connects directly to the Throat, your manifesting impulse is immediate and powerful. If the connection passes through other centers first, the impulse is filtered — perhaps through emotional clarity (Solar Plexus) or intuition (Spleen). Your Authority determines the timing.</p>
+
+    <h3>Manifestor Authority Types</h3>
+    <p>Manifestors can have <span class="highlight">Emotional Authority</span> (most common, via a defined Solar Plexus connected to the Throat) or <span class="highlight">Splenic Authority</span> (via a defined Spleen connected to the Throat). If Emotional, you must ride your emotional wave to clarity before acting — never initiate from the high or low of the wave. If Splenic, you receive instantaneous intuitive hits in the moment, and must act on them immediately.</p>
+
+    <h3>Practical Experiments for Manifestors</h3>
+    <ul class="experiment-list">
+      <li><strong>Practice informing daily.</strong> Start small: tell your partner you're going to the store. Tell your team you're starting a new initiative on Monday. Notice how informing changes the energy in the room.</li>
+      <li><strong>Track your anger.</strong> Every time you feel angry, write down what happened just before. Did you fail to inform? Did someone try to control you? Patterns will emerge.</li>
+      <li><strong>Honor your need for autonomy.</strong> You need alone time to connect with your own impulse. Protect it. Don't let anyone make you feel guilty for needing space.</li>
+      <li><strong>Follow your creative urges.</strong> Manifestors are here to start things. If you feel an impulse to create, start, build — follow it (after informing anyone it impacts).</li>
+      <li><strong>Rest when depleted.</strong> Manifestors don't have consistent sacral energy. You work in bursts. Honor the rest cycle after a creative push.</li>
+    </ul>
+
+    <h3>Famous Manifestors</h3>
+    <p>Examples of famous Manifestors include <span class="highlight">Maya Angelou, Al Gore, Gloria Steinem, Jack Nicholson, and Adele</span>. Notice the pattern: each of these individuals initiated something — a body of work, a movement, a transformation — without waiting for external validation. They informed the world through their actions and words, and their impact was undeniable.</p>
+
+    <h3>Manifestors in Relationships</h3>
+    <p>In relationships, Manifestors thrive when their partner understands the need for autonomy and doesn't take the closed aura personally. The single most important relationship practice for a Manifestor is <span class="highlight">informing your partner</span> about what you're doing and feeling. This simple act transforms the dynamic. Without informing, partners often feel shut out and confused by the Manifestor's independent energy.</p>
+  </article>
+
+  <section class="type-relationships">
+    <h2>Related Centers & Channels</h2>
+    <p style="color:var(--text-secondary);margin-bottom:20px;">These centers and channels are especially relevant to Manifestor mechanics. Any motor-to-Throat connection defines your manifesting capacity.</p>
+    <div class="relationship-grid">
+      <a href="/human-design/centers/throat/" class="relationship-chip">Throat Center</a>
+      <a href="/human-design/centers/heart-ego/" class="relationship-chip">Heart/Ego Center</a>
+      <a href="/human-design/centers/solar-plexus/" class="relationship-chip">Solar Plexus</a>
+      <a href="/human-design/centers/root/" class="relationship-chip">Root Center</a>
+      <a href="/human-design/centers/spleen/" class="relationship-chip">Spleen Center</a>
+      <a href="/human-design/channels/" class="relationship-chip">All 36 Channels →</a>
+    </div>
+  </section>
+
+  <section class="faq">
+    <h2>Frequently Asked Questions</h2>
+    <div class="faq-item">
+      <h3>Why do Manifestors need to inform? Isn't that asking permission?</h3>
+      <p>No — informing is not asking. It's declaring. When you inform, you are stating what you will do, not requesting approval. The difference is profound: informing clears resistance from your closed aura so you can move freely, while asking for permission disempowers your natural initiating design. You are the initiator, not the supplicant.</p>
+    </div>
+    <div class="faq-item">
+      <h3>What's the difference between a Manifestor and a Manifesting Generator?</h3>
+      <p>Manifestors have no defined Sacral Center and can initiate at will. Manifesting Generators <em>do</em> have a defined Sacral and must follow the Generator strategy of responding before they can manifest efficiently. A Manifestor initiates; a Manifesting Generator responds and then moves fast. They are fundamentally different types with different auras, strategies, and mechanics.</p>
+    </div>
+    <div class="faq-item">
+      <h3>Why do I feel angry so often as a Manifestor?</h3>
+      <p>Anger is the Manifestor's not-self theme — it means you are not living according to your design. The most common causes: (1) you're not informing, (2) you're being controlled or blocked by others, (3) you're waiting for permission instead of initiating, or (4) you're ignoring your Authority (e.g., acting from an emotional high instead of waiting for clarity). Track your anger and you'll find the pattern.</p>
+    </div>
+    <div class="faq-item">
+      <h3>Can Manifestors have a defined Sacral?</h3>
+      <p>No — by definition, a Manifestor <em>does not</em> have a defined Sacral Center. If your Sacral is defined, you are either a Generator, Manifesting Generator, or Reflector (which can't have a defined Sacral either, as all centers are undefined in Reflectors). A Manifestor has an undefined (white) Sacral and at least one motor connected to the Throat.</p>
+    </div>
+  </section>
+
+  <section class="cta-section">
+    <h2>Discover Your Full Manifestor Blueprint</h2>
+    <p>Your Human Design chart reveals exactly which motors connect to your Throat, what your Authority is, and how to inform in a way that feels authentic to you. Get your personalized 70+ page report with practical guidance for living your Manifestor design.</p>
+    <a href="/buy-report.html" class="btn btn-primary">Get Your Full Personalized Report →</a>
+  </section>
+
+</div>
+
+<footer>
+  <div class="footer-inner">
+    <div class="left">
+      <span class="brand">Human Design Engine</span>
+      <span class="license">Verified chart data — open-source computation engine.</span>
+    </div>
+    <div class="footer-links">
+      <a href="/human-design/types/">All Types</a>
+      <a href="/human-design/centers/">Centers</a>
+      <a href="/human-design/channels/">Channels</a>
+      <a href="/human-design/gates/">Gates</a>
+      <a href="/privacy">Privacy</a>
+    </div>
+  </div>
+</footer>
+
+</body>
+</html>
