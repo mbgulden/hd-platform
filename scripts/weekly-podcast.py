@@ -1,8 +1,10 @@
 import os
+import sys
 import json
 import requests
 import argparse
 from datetime import datetime, timedelta
+from pathlib import Path
 
 # Configuration
 REPORTS_ENGINE_URL = os.environ.get("REPORTS_ENGINE_URL", "http://localhost:8081")
@@ -124,6 +126,7 @@ Ready to dive deeper? Visit [humandesignengine.com](https://humandesignengine.co
 def main():
     parser = argparse.ArgumentParser(description="Generate weekly HD podcast script")
     parser.add_argument("--date", help="Start date (YYYY-MM-DD), defaults to today", default=None)
+    parser.add_argument("--rss", action="store_true", help="Also regenerate RSS feed after creating episode")
     args = parser.parse_args()
 
     if args.date:
@@ -148,6 +151,23 @@ def main():
         f.write(script_content)
 
     print(f"✅ Success! Podcast script generated: {filepath}")
+
+    # Auto-regenerate RSS feed
+    if args.rss:
+        import subprocess
+        script_dir = Path(__file__).resolve().parent
+        rss_script = script_dir / "generate_rss_feed.py"
+        if rss_script.is_file():
+            print("\n📡 Regenerating RSS feed...")
+            result = subprocess.run(
+                [sys.executable, str(rss_script), "--write"],
+                capture_output=True, text=True
+            )
+            print(result.stdout.strip())
+            if result.returncode != 0:
+                print(f"[warn] RSS regeneration failed:\n{result.stderr}")
+        else:
+            print(f"\n[warn] RSS generator not found at {rss_script}")
 
 if __name__ == "__main__":
     main()
