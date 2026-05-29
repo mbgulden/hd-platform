@@ -295,10 +295,9 @@ humandesignengine.com"""
     def _stripe(self, method, path, data=None):
         req = urllib.request.Request(f"https://api.stripe.com{path}", method=method)
         req.add_header("Authorization", f"Bearer {STRIPE_KEY}")
-        req.add_header("Content-Type", "application/x-www-form-urlencoded")
+        req.add_header("Content-Type", "application/json")
         if data:
-            encoded = urllib.parse.urlencode(data).encode()
-            req.data = encoded
+            req.data = json.dumps(data).encode()
         resp = urllib.request.urlopen(req)
         return json.loads(resp.read())
 
