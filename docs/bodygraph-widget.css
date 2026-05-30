@@ -179,6 +179,60 @@
   margin-bottom: 4px;
 }
 
+/* ── Lead Capture ──────────────────────────────────────────────────── */
+.bdg-lead-capture {
+  padding: 24px;
+  border-top: 1px solid rgba(201, 168, 76, 0.12);
+  background: linear-gradient(180deg, rgba(201, 168, 76, 0.06), transparent);
+}
+
+.bdg-lead-header {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 12px;
+}
+
+.bdg-lead-header h3 {
+  color: var(--gold, #c9a84c);
+  font-size: 18px;
+  font-weight: 700;
+  margin: 0;
+}
+
+.bdg-lead-icon {
+  font-size: 22px;
+}
+
+.bdg-lead-text {
+  color: var(--text-secondary, #8899aa);
+  font-size: 14px;
+  line-height: 1.6;
+  margin-bottom: 20px;
+}
+
+.bdg-lead-form {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.bdg-email-input {
+  text-align: center;
+  font-size: 16px !important;
+}
+
+.bdg-lead-success {
+  text-align: center;
+  padding: 20px 0;
+}
+
+.bdg-lead-success-text {
+  color: #4ade80;
+  font-size: 16px;
+  font-weight: 600;
+}
+
 /* ── Error ─────────────────────────────────────────────────────────── */
 .bdg-error {
   padding: 24px;

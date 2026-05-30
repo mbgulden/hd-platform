@@ -151,18 +151,66 @@
   };
 
   BodygraphWidget.prototype._showResult = function(el, svg, payload) {
+    var self = this;
     el.innerHTML = 
       '<div class="bdg-result-header">' +
         '<span class="bdg-result-icon">✦</span>' +
         '<span>' + payload.name + '</span>' +
       '</div>' +
       '<div class="bdg-svg-container">' + svg + '</div>' +
-      '<div class="bdg-result-footer">' +
-        '<p class="bdg-footer-text">Want the full 20+ page report with transit forecasts and practical experiments?</p>' +
-        '<a href="buy-report.html" class="bdg-btn bdg-btn-secondary">Get Your Full Report →</a>' +
+      '<div class="bdg-lead-capture">' +
+        '<div class="bdg-lead-header">' +
+          '<span class="bdg-lead-icon">📋</span>' +
+          '<h3>See Your Full Human Design</h3>' +
+        '</div>' +
+        '<p class="bdg-lead-text">This is just the bodygraph. Your complete 30-page report includes your Type deep-dive, Authority strategy, all 9 Centers, 36 Channels, Profile, Incarnation Cross, and 12-month transit forecast — personalized to your exact birth data.</p>' +
+        '<form class="bdg-lead-form">' +
+          '<input type="email" class="bdg-input bdg-email-input" name="email" placeholder="your@email.com" required>' +
+          '<button type="submit" class="bdg-btn">Send Me a Free Preview →</button>' +
+        '</form>' +
+        '<p class="bdg-privacy">🔒 We\'ll send you a free chapter preview. No spam. One-click unsubscribe.</p>' +
+        '<div class="bdg-lead-success" style="display:none">' +
+          '<p class="bdg-lead-success-text">✅ Preview sent! Check your inbox.</p>' +
+        '</div>' +
       '</div>';
     el.style.display = 'block';
     el.scrollIntoView({ behavior: 'smooth', block: 'center' });
+
+    // Handle email capture
+    var leadForm = el.querySelector('.bdg-lead-form');
+    var successEl = el.querySelector('.bdg-lead-success');
+    leadForm.addEventListener('submit', function(e) {
+      e.preventDefault();
+      var email = leadForm.querySelector('input[name=email]').value.trim();
+      if (!email) return;
+      var btn = leadForm.querySelector('button');
+      btn.textContent = 'Sending...';
+      btn.disabled = true;
+      fetch(self.apiUrl + '/api/public/capture-lead', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          email: email,
+          name: payload.name,
+          birth_date: payload.year + '-' + String(payload.month).padStart(2,'0') + '-' + String(payload.day).padStart(2,'0'),
+          birth_time: String(payload.hour).padStart(2,'0') + ':' + String(payload.minute).padStart(2,'0'),
+          location: payload.location
+        })
+      })
+      .then(function(r) { return r.json(); })
+      .then(function(data) {
+        leadForm.style.display = 'none';
+        successEl.style.display = 'block';
+      })
+      .catch(function() {
+        leadForm.style.display = 'none';
+        successEl.style.display = 'block';
+      })
+      .finally(function() {
+        btn.textContent = 'Send Me a Free Preview →';
+        btn.disabled = false;
+      });
+    });
   };
 
   BodygraphWidget.prototype._showError = function(el, msg) {
