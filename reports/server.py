@@ -1279,7 +1279,7 @@ class Handler(BaseHTTPRequestHandler):
                 self._json({"success": False, "error": str(e)}, 500)
         
         elif path == '/api/public/capture-lead':
-            # Public endpoint — capture lead email from free chart widget
+            # Public endpoint — capture lead email + birth data from free chart widget
             length = int(self.headers.get('Content-Length', 0))
             body = json.loads(self.rfile.read(length)) if length else {}
             
@@ -1290,9 +1290,13 @@ class Handler(BaseHTTPRequestHandler):
             
             lead = {
                 "email": email,
+                "name": body.get("name", ""),
+                "birth_date": body.get("birth_date", ""),
+                "birth_time": body.get("birth_time", ""),
+                "location": body.get("location", ""),
                 "source": body.get("source", "free-chart-widget"),
                 "page": body.get("page", ""),
-                "timestamp": body.get("timestamp", datetime.now().isoformat()),
+                "timestamp": datetime.now().isoformat(),
                 "ip": self.client_address[0],
             }
             
