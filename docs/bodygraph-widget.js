@@ -13,7 +13,7 @@
   'use strict';
 
   // ── Configuration ──────────────────────────────────────────────────
-  const DEFAULT_API = 'https://usual-managers-lace-hundreds.trycloudflare.com';
+  const DEFAULT_API = 'https://reports.humandesignengine.com';
   const BODYGRAPH_PATH = '/api/public/bodygraph';
   const THEME = 'canonical';
 
