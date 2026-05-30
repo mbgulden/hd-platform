@@ -945,7 +945,7 @@
   <div class="container">
     <h2>Your Bodygraph — Free &amp; Instant</h2>
     <p class="widget-subtitle">See your complete Human Design chart with all nine centers, channels, and gates. Computed live — no email required.</p>
-    <div class="hde-bodygraph-widget" data-api="https://usual-managers-lace-hundreds.trycloudflare.com"></div>
+    <div class="hde-bodygraph-widget"></div>
     <p style="text-align:center;margin-top:12px;">
       <a href="bodygraph.html" style="color:var(--gold);text-decoration:none;font-size:14px;">Open full-page bodygraph tool →</a>
     </p>
@@ -957,7 +957,7 @@
   <div class="container">
     <h2>Try Your Chart — Free</h2>
     <p class="widget-subtitle">Enter your birth details below and see your Human Design type, profile, and strategy instantly. No email required.</p>
-    <div class="hde-chart-widget" data-api="http://localhost:8081"></div>
+    <div class="hde-chart-widget" data-api="https://reports.humandesignengine.com"></div>
     <p class="widget-note">👆 Your chart is computed on the fly using verified open-source algorithms.</p>
 
     <!-- Email Capture (hidden until chart loads) -->
@@ -1138,7 +1138,7 @@
       btn.disabled = true;
 
       // Capture lead: post to leads endpoint or fallback to localStorage
-      var apiBase = (widgetEl && widgetEl.getAttribute('data-api')) || 'http://localhost:8081';
+      var apiBase = (widgetEl && widgetEl.getAttribute('data-api')) || 'https://reports.humandesignengine.com';
       var payload = {
         email: email,
         source: 'free-chart-widget',
