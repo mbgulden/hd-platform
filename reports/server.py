@@ -1185,6 +1185,99 @@ class Handler(BaseHTTPRequestHandler):
                 log.exception("Public compute chart failed")
                 self._json({"success": False, "error": str(e)}, 500)
         
+        elif path == '/api/public/bodygraph':
+            # Public endpoint — compute chart and return SVG bodygraph
+            length = int(self.headers.get('Content-Length', 0))
+            body = json.loads(self.rfile.read(length)) if length else {}
+            
+            try:
+                import subprocess, tempfile
+                
+                birth_dt = datetime(
+                    body.get("year", 2000), body.get("month", 1), body.get("day", 1),
+                    body.get("hour", 12), body.get("minute", 0)
+                )
+                chart = calculate_natal_chart(
+                    name=body.get("name", "Unknown"),
+                    birth_dt=birth_dt,
+                    lat=body.get("lat", 0), lon=body.get("lon", 0),
+                    timezone=body.get("timezone", "UTC"),
+                )
+                
+                # Map to Gonzih ChartData
+                pers_gates = set()
+                des_gates = set()
+                for p, d in chart.get("personality_planets", {}).items():
+                    if isinstance(d, dict) and d.get("gate"):
+                        pers_gates.add(d["gate"])
+                for p, d in chart.get("design_planets", {}).items():
+                    if isinstance(d, dict) and d.get("gate"):
+                        des_gates.add(d["gate"])
+                
+                both_gates = sorted(pers_gates & des_gates)
+                pers_only = sorted(pers_gates - des_gates)
+                des_only = sorted(des_gates - pers_gates)
+                
+                def _act(planets_dict):
+                    result = {}
+                    for planet, data in planets_dict.items():
+                        if isinstance(data, dict):
+                            g = data.get("gate", "")
+                            l = data.get("line", "")
+                            if g:
+                                result[planet.lower().replace(" ", "")] = f"{g}.{l}" if l else str(g)
+                    return result
+                
+                center_map = {"Heart": "Ego", "Heart/Ego": "Ego"}
+                gonzih_data = {
+                    "definedCenters": [center_map.get(c, c) for c in chart.get("defined_centers", [])],
+                    "personalityGates": pers_only,
+                    "designGates": des_only,
+                    "bothGates": both_gates,
+                    "channels": [
+                        ch["gates"] for ch in chart.get("defined_channels", [])
+                        if len(ch.get("gates", ())) == 2
+                    ],
+                    "type": chart.get("hd_type", ""),
+                    "profile": str(chart.get("profile", "")),
+                    "definition": chart.get("definition", ""),
+                    "authority": chart.get("authority", ""),
+                    "strategy": chart.get("strategy", ""),
+                    "activations": {
+                        "design": _act(chart.get("design_planets", {})),
+                        "personality": _act(chart.get("personality_planets", {})),
+                    },
+                }
+                
+                # Call Node.js renderer
+                with tempfile.NamedTemporaryFile(mode="w", suffix=".json", delete=False) as f:
+                    json.dump(gonzih_data, f)
+                    tmp = f.name
+                
+                try:
+                    result = subprocess.run(
+                        ["node", "/home/ubuntu/work/hd-bodygraph/render-cli.mjs", tmp, "canonical"],
+                        capture_output=True, text=True, timeout=15,
+                        cwd="/home/ubuntu/work/hd-bodygraph",
+                    )
+                    if result.returncode != 0:
+                        raise RuntimeError(f"Renderer failed: {result.stderr}")
+                    svg = result.stdout
+                finally:
+                    os.unlink(tmp)
+                
+                self.send_response(200)
+                self.send_header("Content-Type", "image/svg+xml")
+                self.send_header("Access-Control-Allow-Origin", "*")
+                self.send_header("Cache-Control", "public, max-age=3600")
+                self.end_headers()
+                self.wfile.write(svg.encode())
+                return
+                
+            except Exception as e:
+                log.exception("Bodygraph generation failed")
+                self._json({"success": False, "error": str(e)}, 500)
+        
         elif path == '/api/public/capture-lead':
             # Public endpoint — capture lead email from free chart widget
             length = int(self.headers.get('Content-Length', 0))

@@ -13,7 +13,8 @@
   'use strict';
 
   // ── Configuration ──────────────────────────────────────────────────
-  const DEFAULT_API = 'http://localhost:8091';
+  const DEFAULT_API = 'http://localhost:8081';
+  const BODYGRAPH_PATH = '/api/public/bodygraph';
   const THEME = 'canonical';
 
   // ── Type descriptions ───────────────────────────────────────────────
@@ -128,7 +129,7 @@
       theme: THEME
     };
 
-    fetch(self.apiUrl + '/bodygraph', {
+    fetch(self.apiUrl + BODYGRAPH_PATH, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(payload)
