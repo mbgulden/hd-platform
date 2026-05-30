@@ -21,7 +21,7 @@ from pathlib import Path
 from io import BytesIO
 from functools import wraps
 from http.server import HTTPServer, BaseHTTPRequestHandler
-from urllib.parse import urlparse, parse_qs, unquote
+from urllib.parse import urlparse, parse_qsl, parse_qs, unquote
 
 # ── Logging ──────────────────────────────────────────────────────────
 logging.basicConfig(level=logging.INFO, format="%(asctime)s [%(levelname)s] %(message)s")
@@ -1078,6 +1078,7 @@ class Handler(BaseHTTPRequestHandler):
     
     def do_GET(self):
         path = urlparse(self.path).path
+        params = dict(parse_qsl(urlparse(self.path).query))
         
         if path == '/ping':
             self._json({
@@ -1089,6 +1090,97 @@ class Handler(BaseHTTPRequestHandler):
             })
         elif path == '/api/reports':
             self._json({"reports": _load_orders()[-20:]})
+        elif path == '/api/public/bodygraph':
+            # GET version — read from query params
+            try:
+                import subprocess, tempfile
+                
+                birth_dt = datetime(
+                    int(params.get("year", 2000)), int(params.get("month", 1)), int(params.get("day", 1)),
+                    int(params.get("hour", 12)), int(params.get("minute", 0))
+                )
+                chart = calculate_natal_chart(
+                    name=params.get("name", "Unknown"),
+                    birth_dt=birth_dt,
+                    lat=float(params.get("lat", 0)), lon=float(params.get("lon", 0)),
+                    timezone=params.get("timezone", "UTC"),
+                )
+                
+                # Map to Gonzih ChartData for the bodygraph renderer
+                pers_gates = set()
+                des_gates = set()
+                both_gates = set()
+                all_activations = {'design': {}, 'personality': {}}
+                
+                # Planet name mapping: chart keys → renderer keys
+                planet_map = {
+                    'Sun': 'sun', 'Earth': 'earth', 'True Node': 'northnode', 'South Node': 'southnode',
+                    'Moon': 'moon', 'Mercury': 'mercury', 'Venus': 'venus', 'Mars': 'mars',
+                    'Jupiter': 'jupiter', 'Saturn': 'saturn', 'Uranus': 'uranus', 'Neptune': 'neptune', 'Pluto': 'pluto',
+                }
+                
+                for side_key, planets in [('design', chart.get('design_planets', {})),
+                                           ('personality', chart.get('personality_planets', {}))]:
+                    for planet_name, data in planets.items():
+                        g = data.get('gate')
+                        if g is not None:
+                            if side_key == 'design':
+                                des_gates.add(g)
+                            else:
+                                pers_gates.add(g)
+                            rkey = planet_map.get(planet_name)
+                            if rkey:
+                                all_activations[side_key][rkey] = {
+                                    'gate': g, 'line': data.get('line'),
+                                    'color': data.get('color'), 'tone': data.get('tone'),
+                                    'base': data.get('base'),
+                                }
+                
+                for g in des_gates & pers_gates:
+                    both_gates.add(g)
+                    des_gates.discard(g)
+                    pers_gates.discard(g)
+                
+                gonzih_data = {
+                    'name': chart.get('name', 'Unknown'),
+                    'type': chart.get('hd_type', ''),
+                    'profile': chart.get('profile', ''),
+                    'authority': chart.get('authority', ''),
+                    'strategy': chart.get('strategy', ''),
+                    'incarnationCross': chart.get('incarnation_cross', ''),
+                    'definition': chart.get('definition', ''),
+                    'definedCenters': [c.replace('Heart/Ego', 'Ego') for c in chart.get('defined_centers', [])],
+                    'channels': [list(ch['gates']) for ch in chart.get('defined_channels', []) if 'gates' in ch],
+                    'designGates': list(des_gates),
+                    'personalityGates': list(pers_gates),
+                    'bothGates': list(both_gates),
+                    'activations': all_activations,
+                    'variables': chart.get('variables', ''),
+                }
+                
+                with tempfile.NamedTemporaryFile(mode='w', suffix='.json', delete=False) as tmp:
+                    json.dump(gonzih_data, tmp)
+                    tmp.flush()
+                    result = subprocess.run(
+                        ["node", "/home/ubuntu/work/hd-bodygraph/render-pro.mjs", tmp.name],
+                        capture_output=True, text=True, timeout=30,
+                        cwd="/home/ubuntu/work/hd-bodygraph",
+                    )
+                    os.unlink(tmp.name)
+                
+                if result.returncode == 0:
+                    self.send_response(200)
+                    self.send_header('Content-Type', 'image/svg+xml')
+                    self.send_header('Access-Control-Allow-Origin', '*')
+                    self.send_header('Cache-Control', 'public, max-age=3600')
+                    self.end_headers()
+                    self.wfile.write(result.stdout.encode())
+                else:
+                    log.error("Bodygraph render failed: %s", result.stderr)
+                    self._json({"success": False, "error": "Render failed", "details": result.stderr[:500]}, 500)
+            except Exception as e:
+                log.exception("Bodygraph GET failed")
+                self._json({"success": False, "error": str(e)}, 500)
         else:
             self._json({"error": "Not found"}, 404)
     
