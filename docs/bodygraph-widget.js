@@ -13,7 +13,7 @@
   'use strict';
 
   // ── Configuration ──────────────────────────────────────────────────
-  const DEFAULT_API = 'http://localhost:8081';
+  const DEFAULT_API = 'https://usual-managers-lace-hundreds.trycloudflare.com';
   const BODYGRAPH_PATH = '/api/public/bodygraph';
   const THEME = 'canonical';
 
