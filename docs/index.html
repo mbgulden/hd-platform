@@ -4,6 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Human Design Engine — The Engine Behind Every Chart</title>
+<link rel="stylesheet" href="bodygraph-widget.css">
 <style>
   :root {
     --navy-deep: #060d1a;
@@ -707,9 +708,10 @@
       <div class="icon">◆</div>
       Human Design Engine
     </a>
-    <div class="nav-links">
-      <a href="landing-api.html">API</a>
-      <a href="landing-reports.html">Reports</a>
+<div class="nav-links">
+              <a href="bodygraph.html">Bodygraph</a>
+              <a href="landing-api.html">API</a>
+              <a href="landing-reports.html">Reports</a>
       <a href="#pricing">Pricing</a>
       <a href="landing-api.html" class="nav-cta">Get Started</a>
     </div>
@@ -938,6 +940,18 @@
   </p>
 </div>
 
+<!-- BODYGRAPH WIDGET -->
+<section class="widget-section" id="bodygraph">
+  <div class="container">
+    <h2>Your Bodygraph — Free &amp; Instant</h2>
+    <p class="widget-subtitle">See your complete Human Design chart with all nine centers, channels, and gates. Computed live — no email required.</p>
+    <div class="hde-bodygraph-widget" data-api="https://api.humandesignengine.com"></div>
+    <p style="text-align:center;margin-top:12px;">
+      <a href="bodygraph.html" style="color:var(--gold);text-decoration:none;font-size:14px;">Open full-page bodygraph tool →</a>
+    </p>
+  </div>
+</section>
+
 <!-- FREE CHART WIDGET -->
 <section class="widget-section" id="try-free">
   <div class="container">
@@ -1043,6 +1057,7 @@
   }
 </style>
 
+<script src="bodygraph-widget.js"></script>
 <script src="widget.js"></script>
 <script>
 (function() {

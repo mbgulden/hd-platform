@@ -1,0 +1,207 @@
+/* ── HD Bodygraph Widget Styles ────────────────────────────────────── */
+
+.hde-bodygraph-widget {
+  max-width: 520px;
+  width: 100%;
+  margin: 0 auto;
+}
+
+.bdg-card {
+  background: rgba(15, 29, 54, 0.85);
+  border: 1px solid rgba(201, 168, 76, 0.15);
+  border-radius: 20px;
+  overflow: hidden;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+}
+
+.bdg-header {
+  background: linear-gradient(135deg, rgba(201, 168, 76, 0.15), rgba(201, 168, 76, 0.05));
+  padding: 20px 24px;
+  text-align: center;
+  color: var(--gold, #c9a84c);
+  font-size: 18px;
+  font-weight: 700;
+  letter-spacing: 0.5px;
+  border-bottom: 1px solid rgba(201, 168, 76, 0.1);
+}
+
+.bdg-header-icon {
+  margin-right: 6px;
+}
+
+/* ── Form ─────────────────────────────────────────────────────────── */
+.bdg-form {
+  padding: 24px;
+}
+
+.bdg-form-row {
+  margin-bottom: 12px;
+}
+
+.bdg-date-row,
+.bdg-time-row {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+}
+
+.bdg-input {
+  width: 100%;
+  padding: 12px 16px;
+  background: rgba(10, 22, 40, 0.8);
+  border: 1px solid rgba(201, 168, 76, 0.2);
+  border-radius: 10px;
+  color: var(--text-primary, #e8e6e3);
+  font-size: 15px;
+  font-family: inherit;
+  transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+.bdg-input:focus {
+  outline: none;
+  border-color: var(--gold, #c9a84c);
+  box-shadow: 0 0 0 3px rgba(201, 168, 76, 0.1);
+}
+
+.bdg-input-sm { flex: 1; }
+.bdg-input-md { flex: 2; }
+
+.bdg-time-sep {
+  color: var(--text-secondary, #8899aa);
+  font-size: 18px;
+  font-weight: 600;
+}
+
+.bdg-select {
+  padding: 12px 10px;
+  background: rgba(10, 22, 40, 0.8);
+  border: 1px solid rgba(201, 168, 76, 0.2);
+  border-radius: 10px;
+  color: var(--text-primary, #e8e6e3);
+  font-size: 14px;
+  font-family: inherit;
+  cursor: pointer;
+}
+
+/* ── Button ───────────────────────────────────────────────────────── */
+.bdg-btn {
+  display: block;
+  width: 100%;
+  padding: 14px 24px;
+  margin-top: 8px;
+  background: linear-gradient(135deg, var(--gold, #c9a84c), var(--gold-light, #e0c468));
+  border: none;
+  border-radius: 12px;
+  color: #0a1628;
+  font-size: 16px;
+  font-weight: 700;
+  font-family: inherit;
+  cursor: pointer;
+  transition: transform 0.15s, box-shadow 0.15s;
+}
+
+.bdg-btn:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 4px 20px rgba(201, 168, 76, 0.3);
+}
+
+.bdg-btn:disabled {
+  opacity: 0.6;
+  transform: none;
+  cursor: not-allowed;
+}
+
+.bdg-btn-secondary {
+  background: transparent;
+  border: 2px solid var(--gold, #c9a84c);
+  color: var(--gold, #c9a84c);
+  margin-top: 12px;
+}
+
+.bdg-btn-secondary:hover {
+  background: rgba(201, 168, 76, 0.1);
+  transform: translateY(-1px);
+}
+
+.bdg-privacy {
+  text-align: center;
+  color: var(--text-muted, #5a6a7a);
+  font-size: 12px;
+  margin-top: 12px;
+}
+
+/* ── Result ────────────────────────────────────────────────────────── */
+.bdg-result {
+  padding: 24px;
+  border-top: 1px solid rgba(201, 168, 76, 0.1);
+  animation: bdgFadeIn 0.4s ease;
+}
+
+@keyframes bdgFadeIn {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.bdg-result-header {
+  text-align: center;
+  color: var(--gold, #c9a84c);
+  font-size: 16px;
+  font-weight: 600;
+  margin-bottom: 16px;
+}
+
+.bdg-result-icon {
+  margin-right: 4px;
+}
+
+.bdg-svg-container {
+  background: rgba(10, 22, 40, 0.4);
+  border-radius: 16px;
+  padding: 12px;
+  overflow-x: auto;
+}
+
+.bdg-svg-container svg {
+  display: block;
+  width: 100%;
+  height: auto;
+  max-width: 100%;
+}
+
+.bdg-result-footer {
+  text-align: center;
+  margin-top: 20px;
+}
+
+.bdg-footer-text {
+  color: var(--text-secondary, #8899aa);
+  font-size: 14px;
+  margin-bottom: 4px;
+}
+
+/* ── Error ─────────────────────────────────────────────────────────── */
+.bdg-error {
+  padding: 24px;
+  border-top: 1px solid rgba(248, 113, 113, 0.2);
+  text-align: center;
+}
+
+.bdg-error-title {
+  color: #f87171;
+  font-size: 16px;
+  font-weight: 600;
+  margin-bottom: 8px;
+}
+
+.bdg-error-msg {
+  color: var(--text-muted, #5a6a7a);
+  font-size: 13px;
+  font-family: monospace;
+}
+
+.bdg-error-help {
+  color: var(--text-secondary, #8899aa);
+  font-size: 14px;
+  margin-top: 16px;
+  line-height: 1.5;
+}
