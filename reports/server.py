@@ -1218,18 +1218,35 @@ class Handler(BaseHTTPRequestHandler):
                 pers_only = sorted(pers_gates - des_gates)
                 des_only = sorted(des_gates - pers_gates)
                 
-                def _act(planets_dict):
+                # Planet key mapping: MCP engine ⟶ render-pro.mjs
+                _PLANET_MAP = {
+                    "Sun": "sun", "Moon": "moon", "Mercury": "mercury", "Venus": "venus",
+                    "Mars": "mars", "Jupiter": "jupiter", "Saturn": "saturn",
+                    "Uranus": "uranus", "Neptune": "neptune", "Pluto": "pluto",
+                    "True Node": "northnode", "Earth": "earth", "South Node": "southnode",
+                }
+                
+                def _act_pro(planets_dict):
+                    """Return full planet objects: {gate, line, color, tone, base}"""
                     result = {}
                     for planet, data in planets_dict.items():
-                        if isinstance(data, dict):
-                            g = data.get("gate", "")
-                            l = data.get("line", "")
-                            if g:
-                                result[planet.lower().replace(" ", "")] = f"{g}.{l}" if l else str(g)
+                        key = _PLANET_MAP.get(planet)
+                        if key and isinstance(data, dict) and data.get("gate"):
+                            result[key] = {
+                                "gate": data.get("gate", ""),
+                                "line": data.get("line", ""),
+                                "color": data.get("color", ""),
+                                "tone": data.get("tone", ""),
+                                "base": data.get("base", ""),
+                            }
                     return result
                 
+                # Extract incarnation cross
+                cross = chart.get("incarnation_cross", {})
+                cross_name = cross.get("name", "") if isinstance(cross, dict) else str(cross)
+                
                 center_map = {"Heart": "Ego", "Heart/Ego": "Ego"}
-                gonzih_data = {
+                render_data = {
                     "definedCenters": [center_map.get(c, c) for c in chart.get("defined_centers", [])],
                     "personalityGates": pers_only,
                     "designGates": des_only,
@@ -1243,20 +1260,23 @@ class Handler(BaseHTTPRequestHandler):
                     "definition": chart.get("definition", ""),
                     "authority": chart.get("authority", ""),
                     "strategy": chart.get("strategy", ""),
+                    "incarnationCross": cross_name,
+                    "variables": chart.get("variables", ""),
+                    "variablesAdvanced": chart.get("variables_advanced", {}),
                     "activations": {
-                        "design": _act(chart.get("design_planets", {})),
-                        "personality": _act(chart.get("personality_planets", {})),
+                        "design": _act_pro(chart.get("design_planets", {})),
+                        "personality": _act_pro(chart.get("personality_planets", {})),
                     },
                 }
                 
-                # Call Node.js renderer
+                # Call Node.js production renderer
                 with tempfile.NamedTemporaryFile(mode="w", suffix=".json", delete=False) as f:
-                    json.dump(gonzih_data, f)
+                    json.dump(render_data, f)
                     tmp = f.name
                 
                 try:
                     result = subprocess.run(
-                        ["node", "/home/ubuntu/work/hd-bodygraph/render-cli.mjs", tmp, "canonical"],
+                        ["node", "/home/ubuntu/work/hd-bodygraph/render-pro.mjs", tmp],
                         capture_output=True, text=True, timeout=15,
                         cwd="/home/ubuntu/work/hd-bodygraph",
                     )
