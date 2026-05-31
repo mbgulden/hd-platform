@@ -1169,12 +1169,28 @@ class Handler(BaseHTTPRequestHandler):
                     os.unlink(tmp.name)
                 
                 if result.returncode == 0:
+                    svg_data = result.stdout.encode()
+                    # Default to PDF (vector, crisp); ?format=svg for SVG
+                    want_svg = params.get('format', 'pdf') == 'svg'
+                    if want_svg:
+                        content_type = 'image/svg+xml'
+                        body = svg_data
+                    else:
+                        import subprocess as sp
+                        pdf = sp.run(['rsvg-convert', '-f', 'pdf', '/dev/stdin'],
+                                     input=svg_data, capture_output=True, timeout=10)
+                        if pdf.returncode == 0:
+                            content_type = 'application/pdf'
+                            body = pdf.stdout
+                        else:
+                            content_type = 'image/svg+xml'
+                            body = svg_data
                     self.send_response(200)
-                    self.send_header('Content-Type', 'image/svg+xml')
+                    self.send_header('Content-Type', content_type)
                     self.send_header('Access-Control-Allow-Origin', '*')
                     self.send_header('Cache-Control', 'public, max-age=3600')
                     self.end_headers()
-                    self.wfile.write(result.stdout.encode())
+                    self.wfile.write(body)
                 else:
                     log.error("Bodygraph render failed: %s", result.stderr)
                     self._json({"success": False, "error": "Render failed", "details": result.stderr[:500]}, 500)
