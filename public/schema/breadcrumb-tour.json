@@ -1,0 +1,23 @@
+{
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  "itemListElement": [
+    {
+      "@type": "ListItem",
+      "position": 1,
+      "name": "Home",
+      "item": "https://activeoahutours.com"
+    },
+    {
+      "@type": "ListItem",
+      "position": 2,
+      "name": "Activities",
+      "item": "https://activeoahutours.com/activities/"
+    },
+    {
+      "@type": "ListItem",
+      "position": 3,
+      "name": "Mokulua Islands Guided Kayak Tour"
+    }
+  ]
+}

@@ -1,0 +1,719 @@
+{
+  "title": "Active Oahu Media Library Inventory",
+  "ticket": "GRO-126",
+  "source_mount": "/home/ubuntu/mounts/synology-photo/Dropbox Team Space",
+  "indexed_at": "2026-05-29T19:37:48",
+  "summary": {
+    "total_folders_indexed": 6,
+    "total_files": 9592,
+    "total_photos": 8425,
+    "total_videos": 1167,
+    "total_size_bytes": 750012478170,
+    "total_size_human": "698.50 GB"
+  },
+  "folders": {
+    "Photos and Videos": {
+      "path": "/home/ubuntu/mounts/synology-photo/Dropbox Team Space/Photos and Videos",
+      "photo_count": 7321,
+      "video_count": 910,
+      "total_count": 8231,
+      "total_size_bytes": 658665280595,
+      "total_size_human": "613.43 GB",
+      "subfolders": {
+        "4.20.19 Gopro - KBay Underwater Raw Photos (Adobe Bridge Edit)": {
+          "photo_count": 102,
+          "video_count": 0,
+          "total_count": 102,
+          "size_bytes": 1029515546
+        },
+        "4.20.22 Sony - KBay Kayaking (Adobe Bridge Editing)": {
+          "photo_count": 158,
+          "video_count": 1,
+          "total_count": 159,
+          "size_bytes": 4389483672
+        },
+        "6.14.22 Drone - Kaneohe Bay/100MEDIA": {
+          "photo_count": 124,
+          "video_count": 6,
+          "total_count": 130,
+          "size_bytes": 3920285288
+        },
+        "6.14.22 Drone - Kaneohe Bay/PANORAMA/100_0051": {
+          "photo_count": 49,
+          "video_count": 0,
+          "total_count": 49,
+          "size_bytes": 1606887798
+        },
+        "6.14.22 Drone - Kaneohe Bay/Edited Stills": {
+          "photo_count": 36,
+          "video_count": 0,
+          "total_count": 36,
+          "size_bytes": 424324481
+        },
+        "6.14.22 Drone - Kaneohe Bay/Video Files": {
+          "photo_count": 6,
+          "video_count": 28,
+          "total_count": 34,
+          "size_bytes": 4094762664
+        },
+        "6.15.22 Gopro - Mokolii Hike Video, KBay Snorkel, Kahana Paddlethrough": {
+          "photo_count": 0,
+          "video_count": 24,
+          "total_count": 24,
+          "size_bytes": 22872307644
+        },
+        "Oct 2020 - Chinaman's Hat/2015-01-02": {
+          "photo_count": 0,
+          "video_count": 19,
+          "total_count": 19,
+          "size_bytes": 3700986753
+        },
+        "Oct 2020 - Chinaman's Hat/2016-01-05": {
+          "photo_count": 0,
+          "video_count": 13,
+          "total_count": 13,
+          "size_bytes": 10931483165
+        },
+        "Oct 2020 - Chinaman's Hat/2016-01-07": {
+          "photo_count": 53,
+          "video_count": 14,
+          "total_count": 67,
+          "size_bytes": 4937385958
+        },
+        "Oct 2020 - Chinaman's Hat/2020-10-02": {
+          "photo_count": 474,
+          "video_count": 10,
+          "total_count": 484,
+          "size_bytes": 19884477523
+        },
+        "Oct 2020 - Chinaman's Hat/2020-10-02/Edited Stills": {
+          "photo_count": 67,
+          "video_count": 0,
+          "total_count": 67,
+          "size_bytes": 667023579
+        },
+        "Oct 2020 - Chinaman's Hat/2020-10-02/Edited Stills/Tinified": {
+          "photo_count": 16,
+          "video_count": 0,
+          "total_count": 16,
+          "size_bytes": 4322880
+        },
+        "Oct 2020 - Chinaman's Hat/2020-10-03": {
+          "photo_count": 18,
+          "video_count": 3,
+          "total_count": 21,
+          "size_bytes": 4135148639
+        },
+        "Oct 2020 - Chinaman's Hat/Chinamans Kayaking - Sony": {
+          "photo_count": 92,
+          "video_count": 0,
+          "total_count": 92,
+          "size_bytes": 4532252488
+        },
+        "Oct 2020 - Chinaman's Hat/Edited Stills": {
+          "photo_count": 1,
+          "video_count": 0,
+          "total_count": 1,
+          "size_bytes": 20969016
+        },
+        "Oct 2020 - Kahana/100MEDIA": {
+          "photo_count": 27,
+          "video_count": 8,
+          "total_count": 35,
+          "size_bytes": 5251979382
+        },
+        "Oct 2020 - Kahana/100MEDIA/Edited Stills": {
+          "photo_count": 3,
+          "video_count": 0,
+          "total_count": 3,
+          "size_bytes": 58767374
+        },
+        "Oct 2020 - Kahana/2016-01-11": {
+          "photo_count": 24,
+          "video_count": 19,
+          "total_count": 43,
+          "size_bytes": 3098352305
+        },
+        "Oct 2020 - Kahana/2016-01-11/Edited Stills": {
+          "photo_count": 15,
+          "video_count": 0,
+          "total_count": 15,
+          "size_bytes": 116935603
+        },
+        "Oct 2020 - Kahana/2020-10-06": {
+          "photo_count": 578,
+          "video_count": 13,
+          "total_count": 591,
+          "size_bytes": 23926264918
+        },
+        "Oct 2020 - Kaneohe Bay/Gopro 6": {
+          "photo_count": 15,
+          "video_count": 33,
+          "total_count": 48,
+          "size_bytes": 6794030804
+        },
+        "Oct 2020 - Kaneohe Bay/Kaneohe Bay Drone & Sony": {
+          "photo_count": 343,
+          "video_count": 14,
+          "total_count": 357,
+          "size_bytes": 19048927053
+        },
+        "Oct 2020 - Kaneohe Bay/Oct Gopro 5": {
+          "photo_count": 0,
+          "video_count": 18,
+          "total_count": 18,
+          "size_bytes": 4901939712
+        },
+        "Oct 2020 10.1.20 Mokes/10.1.20 - Drone - Mokes, Kayaking": {
+          "photo_count": 96,
+          "video_count": 20,
+          "total_count": 116,
+          "size_bytes": 35734670452
+        },
+        "Oct 2020 10.1.20 Mokes/10.1.20 - GoPro - Mokes, Kayaking": {
+          "photo_count": 0,
+          "video_count": 23,
+          "total_count": 23,
+          "size_bytes": 2266015981
+        },
+        "Oct 2020 10.1.20 Mokes/10.1.20 - GoPro - Mokes, Kayaking/2016-01-05": {
+          "photo_count": 0,
+          "video_count": 13,
+          "total_count": 13,
+          "size_bytes": 10931483165
+        },
+        "Oct 2020 10.1.20 Mokes/10.1.20 - Rebel - Mokes, Kayaking, Tide Pools (sorted)": {
+          "photo_count": 32,
+          "video_count": 0,
+          "total_count": 32,
+          "size_bytes": 223958388
+        },
+        "Oct 2020 10.1.20 Mokes/10.1.20 - Sony - Mokes, Kayaking": {
+          "photo_count": 13,
+          "video_count": 0,
+          "total_count": 13,
+          "size_bytes": 641532902
+        },
+        "Oct 2020 10.1.20 Mokes/2020-10-01 - Raw (already looked through)": {
+          "photo_count": 107,
+          "video_count": 0,
+          "total_count": 107,
+          "size_bytes": 738372435
+        },
+        "Oct 2020 10.1.20 Mokes/Edited": {
+          "photo_count": 38,
+          "video_count": 0,
+          "total_count": 38,
+          "size_bytes": 76253174
+        },
+        "Oct 2020 10.1.20 Mokes/Edited/Web": {
+          "photo_count": 27,
+          "video_count": 0,
+          "total_count": 27,
+          "size_bytes": 9744257
+        },
+        "Oct 2022 - DSLR - Kayak on Jeep Demo at Kenekes": {
+          "photo_count": 32,
+          "video_count": 0,
+          "total_count": 32,
+          "size_bytes": 949237162
+        },
+        "Oct 2022 - Kaneohe Sandbar/Oct 2022 - DSLR - Kaneohe Bay, Waiahole": {
+          "photo_count": 95,
+          "video_count": 0,
+          "total_count": 95,
+          "size_bytes": 2173034554
+        },
+        "Oct 2022 - Kaneohe Sandbar/Oct 2022 - DSLR - Kaneohe Sandbar, Harbor Launch": {
+          "photo_count": 26,
+          "video_count": 0,
+          "total_count": 26,
+          "size_bytes": 540848811
+        },
+        "Oct 2022 - Kaneohe Sandbar/Oct 2022 - Drone - Sandbar": {
+          "photo_count": 18,
+          "video_count": 0,
+          "total_count": 18,
+          "size_bytes": 69463310
+        },
+        "Oct 2022 - Mokolii/Oct 2022 - DSLR - Mokolii Kayaking": {
+          "photo_count": 38,
+          "video_count": 0,
+          "total_count": 38,
+          "size_bytes": 854113341
+        },
+        "Oct 2022 - Waimea, Sunset, Kawela Beach Gear and SUP/Oct 2022 - DSLR - Waimea, Beach Gear and SUP": {
+          "photo_count": 172,
+          "video_count": 0,
+          "total_count": 172,
+          "size_bytes": 4932434369
+        },
+        "Edited Oct 2022 DSLR Photos": {
+          "photo_count": 365,
+          "video_count": 0,
+          "total_count": 365,
+          "size_bytes": 9456294805
+        },
+        "Export 6.17.23 - Gopro": {
+          "photo_count": 17,
+          "video_count": 81,
+          "total_count": 98,
+          "size_bytes": 58992060557
+        },
+        "6.17.23 Drone - Chinaman's Hat": {
+          "photo_count": 125,
+          "video_count": 41,
+          "total_count": 166,
+          "size_bytes": 36929459207
+        },
+        "6.17.23 Drone - Chinaman's Hat/Eric Chinaman's Hat": {
+          "photo_count": 18,
+          "video_count": 3,
+          "total_count": 21,
+          "size_bytes": 3720526977
+        },
+        "6.17.23 Drone - Chinaman's Hat/Chinaman's Hat Guys": {
+          "photo_count": 14,
+          "video_count": 5,
+          "total_count": 19,
+          "size_bytes": 7331857488
+        },
+        "6.18.23 Drone - Kailua Marsh and Three Peaks Olomana": {
+          "photo_count": 34,
+          "video_count": 23,
+          "total_count": 57,
+          "size_bytes": 14902863177
+        },
+        "6.17.23 Gopro - Chinaman's Hat Over-underwater shots": {
+          "photo_count": 126,
+          "video_count": 4,
+          "total_count": 130,
+          "size_bytes": 1263349469
+        },
+        "7.2.23 Drone - Olomana": {
+          "photo_count": 77,
+          "video_count": 21,
+          "total_count": 98,
+          "size_bytes": 16307966939
+        },
+        "9.18.23 Drone - Ebike Kailua Bike Path": {
+          "photo_count": 4,
+          "video_count": 11,
+          "total_count": 15,
+          "size_bytes": 8437843810
+        },
+        "9.25.23 Gopro - Electric Beach, Sharks Cove": {
+          "photo_count": 124,
+          "video_count": 45,
+          "total_count": 169,
+          "size_bytes": 7003139530
+        },
+        "9.28.23 Gopro - Kaneohe Bay, Waimea Bay": {
+          "photo_count": 149,
+          "video_count": 36,
+          "total_count": 185,
+          "size_bytes": 7724355019
+        },
+        "11.8.23 Gopro - Kalama Cole & Kody, Waimanalo": {
+          "photo_count": 23,
+          "video_count": 26,
+          "total_count": 49,
+          "size_bytes": 2718772860
+        },
+        "11.8.23 Drone - Kahana Pan b-roll, Lanikai B-roll": {
+          "photo_count": 64,
+          "video_count": 28,
+          "total_count": 92,
+          "size_bytes": 20526340967
+        },
+        "11.8.23 Drone - Kalama Cole & Kody, Waimanalo": {
+          "photo_count": 40,
+          "video_count": 29,
+          "total_count": 69,
+          "size_bytes": 25082621428
+        },
+        "Oct 2023 - DSLR Ebike": {
+          "photo_count": 149,
+          "video_count": 0,
+          "total_count": 149,
+          "size_bytes": 5046512143
+        },
+        "Oct 2023 - DSLR Ebike/Web Size": {
+          "photo_count": 149,
+          "video_count": 0,
+          "total_count": 149,
+          "size_bytes": 44864976
+        },
+        "1.16.24 Drone - Chinamans hat": {
+          "photo_count": 26,
+          "video_count": 16,
+          "total_count": 42,
+          "size_bytes": 6437205122
+        },
+        "11.21.23 Drone - Makapuu": {
+          "photo_count": 16,
+          "video_count": 12,
+          "total_count": 28,
+          "size_bytes": 10007896145
+        },
+        "11.21.23 Drone - Makapuu/PANORAMA/100_0696": {
+          "photo_count": 21,
+          "video_count": 0,
+          "total_count": 21,
+          "size_bytes": 169903191
+        },
+        "Oct 2023 - Kayak and Kailua Beach Park": {
+          "photo_count": 374,
+          "video_count": 0,
+          "total_count": 374,
+          "size_bytes": 10483531776
+        },
+        "2.4.24 Drone - Popoia Island": {
+          "photo_count": 36,
+          "video_count": 17,
+          "total_count": 53,
+          "size_bytes": 12375695798
+        },
+        "2.4.24 Drone - Popoia Island/Web-sized": {
+          "photo_count": 7,
+          "video_count": 0,
+          "total_count": 7,
+          "size_bytes": 1469930
+        },
+        "2.4.24 Sony - Popoia Island": {
+          "photo_count": 138,
+          "video_count": 0,
+          "total_count": 138,
+          "size_bytes": 3822649344
+        },
+        "2.4.24 Sony - Popoia Island/Web-sized": {
+          "photo_count": 13,
+          "video_count": 0,
+          "total_count": 13,
+          "size_bytes": 2913118
+        },
+        "Laie Point": {
+          "photo_count": 18,
+          "video_count": 0,
+          "total_count": 18,
+          "size_bytes": 22333535
+        },
+        "Pat's at Punalu'u Property Photos": {
+          "photo_count": 6,
+          "video_count": 0,
+          "total_count": 6,
+          "size_bytes": 28767968
+        },
+        "Pat's at Punalu'u Property Photos/Photos for Artistic Rendering": {
+          "photo_count": 26,
+          "video_count": 0,
+          "total_count": 26,
+          "size_bytes": 156842474
+        },
+        "Electric Bikes - At the shop": {
+          "photo_count": 25,
+          "video_count": 0,
+          "total_count": 25,
+          "size_bytes": 39601707
+        },
+        "All Kaneohe Bay Edited Photos": {
+          "photo_count": 53,
+          "video_count": 0,
+          "total_count": 53,
+          "size_bytes": 677743126
+        },
+        "2.16.24 IPhone - Pics of Bikes locked up": {
+          "photo_count": 85,
+          "video_count": 0,
+          "total_count": 85,
+          "size_bytes": 444015709
+        },
+        "9.30.22 Sony - 2022-09-30": {
+          "photo_count": 1026,
+          "video_count": 0,
+          "total_count": 1026,
+          "size_bytes": 39051365710
+        },
+        "10.4.22 Sony - 2022-10-04": {
+          "photo_count": 597,
+          "video_count": 0,
+          "total_count": 597,
+          "size_bytes": 23321192426
+        },
+        "9.30.22 Drone - 2022-09-30/OCt 2022 - Drone - Mokolii Kayak and Hike": {
+          "photo_count": 26,
+          "video_count": 10,
+          "total_count": 36,
+          "size_bytes": 10188312980
+        },
+        "9.30.22 Drone - 2022-09-30/Oct 2022 - Drone - Kahana Kayaking": {
+          "photo_count": 109,
+          "video_count": 35,
+          "total_count": 144,
+          "size_bytes": 25320400500
+        },
+        "9.30.22 Drone - 2022-09-30/Oct 2022 - Drone - Kahana Kayaking/100_0346": {
+          "photo_count": 21,
+          "video_count": 0,
+          "total_count": 21,
+          "size_bytes": 865906541
+        },
+        "9.30.22 Drone - 2022-09-30/Oct 2022 - Drone - Kahana Kayaking/100_0411": {
+          "photo_count": 9,
+          "video_count": 0,
+          "total_count": 9,
+          "size_bytes": 370947322
+        },
+        "9.30.22 Drone - 2022-09-30/Oct 2022 - Drone - Kahana Kayaking/100_0412": {
+          "photo_count": 21,
+          "video_count": 0,
+          "total_count": 21,
+          "size_bytes": 866246063
+        },
+        "9.30.22 Drone - 2022-09-30/Oct 2022 - Drone - Kawela Bay SUP": {
+          "photo_count": 44,
+          "video_count": 10,
+          "total_count": 54,
+          "size_bytes": 7572738057
+        },
+        "9.30.22 Drone - 2022-09-30/Oct 2022 - Drone - Sunset Beach Surfing": {
+          "photo_count": 36,
+          "video_count": 21,
+          "total_count": 57,
+          "size_bytes": 10267925725
+        },
+        "9.30.22 Drone - 2022-09-30/Oct 2022 - Drone - Waimea Bay": {
+          "photo_count": 62,
+          "video_count": 19,
+          "total_count": 81,
+          "size_bytes": 9311480306
+        },
+        "9.30.22 Drone - 2022-09-30/Oct 2022 - Drone Kaneohe Bay Sandbar": {
+          "photo_count": 102,
+          "video_count": 34,
+          "total_count": 136,
+          "size_bytes": 19295578359
+        },
+        "9.30.22 Gopro - Getting kayak on jeep": {
+          "photo_count": 8,
+          "video_count": 88,
+          "total_count": 96,
+          "size_bytes": 26580587006
+        },
+        "9.30.22 Gopro - Getting kayak on jeep/Oct 2022 - GoPro - Kaneohe Bay Snorkel and Kayak": {
+          "photo_count": 0,
+          "video_count": 16,
+          "total_count": 16,
+          "size_bytes": 4721165197
+        },
+        "9.30.22 Gopro - Getting kayak on jeep/Oct 2022 - Gopro - Waimea SUP": {
+          "photo_count": 43,
+          "video_count": 0,
+          "total_count": 43,
+          "size_bytes": 282059562
+        }
+      }
+    },
+    "Edited Photos": {
+      "path": "/home/ubuntu/mounts/synology-photo/Dropbox Team Space/Edited Photos",
+      "photo_count": 1031,
+      "video_count": 158,
+      "total_count": 1189,
+      "total_size_bytes": 79237239046,
+      "total_size_human": "73.80 GB",
+      "subfolders": {
+        "(root)": {
+          "photo_count": 2,
+          "video_count": 0,
+          "total_count": 2,
+          "size_bytes": 13149445
+        },
+        "Kahana Bay 2022": {
+          "photo_count": 22,
+          "video_count": 0,
+          "total_count": 22,
+          "size_bytes": 459653358
+        },
+        "Frietz": {
+          "photo_count": 16,
+          "video_count": 0,
+          "total_count": 16,
+          "size_bytes": 376559138
+        },
+        "Frietz Drone": {
+          "photo_count": 48,
+          "video_count": 66,
+          "total_count": 114,
+          "size_bytes": 32529334286
+        },
+        "Frietz Drone and Stills/Drone B-roll": {
+          "photo_count": 2,
+          "video_count": 92,
+          "total_count": 94,
+          "size_bytes": 36391983892
+        },
+        "Frietz Drone and Stills/Stills": {
+          "photo_count": 39,
+          "video_count": 0,
+          "total_count": 39,
+          "size_bytes": 967658752
+        },
+        "Mokulua, Popoia & Ebikes/DNG": {
+          "photo_count": 504,
+          "video_count": 0,
+          "total_count": 504,
+          "size_bytes": 8130336414
+        },
+        "Mokulua, Popoia & Ebikes/JPG": {
+          "photo_count": 199,
+          "video_count": 0,
+          "total_count": 199,
+          "size_bytes": 320820948
+        },
+        "Mokulua, Popoia & Ebikes/Web-Sized": {
+          "photo_count": 199,
+          "video_count": 0,
+          "total_count": 199,
+          "size_bytes": 47742813
+        }
+      }
+    },
+    "Drone Movie": {
+      "path": "/home/ubuntu/mounts/synology-photo/Dropbox Team Space/Drone Movie",
+      "photo_count": 0,
+      "video_count": 4,
+      "total_count": 4,
+      "total_size_bytes": 1040626275,
+      "total_size_human": "992.42 MB",
+      "subfolders": {
+        "(root)": {
+          "photo_count": 0,
+          "video_count": 4,
+          "total_count": 4,
+          "size_bytes": 1040626275
+        }
+      }
+    },
+    "Kailua Photos and Videos": {
+      "path": "/home/ubuntu/mounts/synology-photo/Dropbox Team Space/Kailua Photos and Videos",
+      "photo_count": 70,
+      "video_count": 0,
+      "total_count": 70,
+      "total_size_bytes": 190228369,
+      "total_size_human": "181.42 MB",
+      "subfolders": {
+        "Ebike for Web Edited Photos": {
+          "photo_count": 70,
+          "video_count": 0,
+          "total_count": 70,
+          "size_bytes": 190228369
+        }
+      }
+    },
+    "Waikiki Advertisement": {
+      "path": "/home/ubuntu/mounts/synology-photo/Dropbox Team Space/Waikiki Advertisement",
+      "photo_count": 1,
+      "video_count": 0,
+      "total_count": 1,
+      "total_size_bytes": 18596,
+      "total_size_human": "0.02 MB",
+      "subfolders": {
+        "(root)": {
+          "photo_count": 1,
+          "video_count": 0,
+          "total_count": 1,
+          "size_bytes": 18596
+        }
+      }
+    },
+    "Instructional Videos": {
+      "path": "/home/ubuntu/mounts/synology-photo/Dropbox Team Space/Instructional Videos",
+      "photo_count": 2,
+      "video_count": 95,
+      "total_count": 97,
+      "total_size_bytes": 10879085289,
+      "total_size_human": "10.13 GB",
+      "subfolders": {
+        "(root)": {
+          "photo_count": 0,
+          "video_count": 8,
+          "total_count": 8,
+          "size_bytes": 4330434318
+        },
+        "Raw Footage": {
+          "photo_count": 2,
+          "video_count": 87,
+          "total_count": 89,
+          "size_bytes": 6548650971
+        }
+      }
+    }
+  },
+  "category_breakdown": {
+    "chinamans_hat": {
+      "file_count": 1256,
+      "size_bytes": 138411182229,
+      "size_human": "128.91 GB"
+    },
+    "drone": {
+      "file_count": 2238,
+      "size_bytes": 382120110283,
+      "size_human": "355.88 GB"
+    },
+    "ebikes": {
+      "file_count": 1564,
+      "size_bytes": 29705106419,
+      "size_human": "27.67 GB"
+    },
+    "edited": {
+      "file_count": 693,
+      "size_bytes": 11715756109,
+      "size_human": "10.91 GB"
+    },
+    "gopro": {
+      "file_count": 1014,
+      "size_bytes": 158080782052,
+      "size_human": "147.22 GB"
+    },
+    "instructional": {
+      "file_count": 8,
+      "size_bytes": 4330434318,
+      "size_human": "4.03 GB"
+    },
+    "kahana": {
+      "file_count": 1020,
+      "size_bytes": 103734101977,
+      "size_human": "96.61 GB"
+    },
+    "kailua": {
+      "file_count": 446,
+      "size_bytes": 33824238763,
+      "size_human": "31.50 GB"
+    },
+    "kaneohe_bay": {
+      "file_count": 1486,
+      "size_bytes": 104284653038,
+      "size_human": "97.12 GB"
+    },
+    "mokulua": {
+      "file_count": 1271,
+      "size_bytes": 59120930929,
+      "size_human": "55.06 GB"
+    },
+    "other": {
+      "file_count": 155,
+      "size_bytes": 7133154086,
+      "size_human": "6.64 GB"
+    },
+    "sony": {
+      "file_count": 3453,
+      "size_bytes": 119031615262,
+      "size_human": "110.86 GB"
+    },
+    "waikiki": {
+      "file_count": 1,
+      "size_bytes": 18596,
+      "size_human": "0.02 MB"
+    }
+  }
+}

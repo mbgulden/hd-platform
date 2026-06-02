@@ -1,0 +1,350 @@
+{
+  "pipeline": "Active Oahu Social Content Pipeline (GRO-129)",
+  "generated_at": "2026-05-29T21:50:51.631310",
+  "tag": "kayaking",
+  "tag_labels": [
+    "activity",
+    "location",
+    "facts",
+    "tips"
+  ],
+  "date_range": {
+    "start": "2026-05-29",
+    "end": "2026-06-04"
+  },
+  "days": 7,
+  "total_posts": 17,
+  "media_stats": {
+    "photos_available": 21,
+    "videos_available": 9
+  },
+  "calendar": [
+    {
+      "platform": "Instagram / Facebook",
+      "format": "square (1:1)",
+      "media_path": "Edited Photos/Mokulua, Popoia & Ebikes/JPG/Popoia_Island_Side_Far2_Kayak_drone.jpg",
+      "media_type": "photo",
+      "caption": "Weekend plans: sorted. \u2705 kayaking at Kaneohe Bay \u2014 the ultimate island experience. \ud83c\udf3a",
+      "hashtags": [
+        "#ActiveOahu",
+        "#OahuAdventures",
+        "#HawaiiLife",
+        "#BookNow",
+        "#drone",
+        "#ebike",
+        "#kayaking",
+        "#mokuluaislands"
+      ],
+      "content_pillar": "tour_promotion",
+      "template_used": "Weekend plans: sorted. \u2705 {activity} at {location} \u2014 the ultimate island experience. \ud83c\udf3a",
+      "media_score": 185,
+      "date": "2026-05-29",
+      "day": "Friday"
+    },
+    {
+      "platform": "TikTok / YouTube Shorts / Reels",
+      "format": "vertical (9:16)",
+      "media_path": "Photos and Videos/4.20.22 Sony - KBay Kayaking (Adobe Bridge Editing)/O26A9449.MOV",
+      "media_type": "video",
+      "caption": "This is your sign to go kayaking in Kaneohe Bay \ud83e\udd19\u2728",
+      "hashtags": [
+        "#ActiveOahu",
+        "#OahuHawaii",
+        "#TravelTok",
+        "#AdventureTime"
+      ],
+      "content_pillar": "short_video",
+      "media_score": 95,
+      "note": "Original video may need vertical crop/reframe for 9:16",
+      "date": "2026-05-29",
+      "day": "Friday"
+    },
+    {
+      "platform": "Instagram / Facebook Story",
+      "format": "portrait (9:16) \u2014 crop suggestion",
+      "media_path": "Edited Photos/Mokulua, Popoia & Ebikes/JPG/Popoia_Island_Side_Far4_Kayak_drone.jpg",
+      "media_type": "photo",
+      "overlay_text": "Quick peek at today's kayaking conditions \ud83d\udc40",
+      "sticker_suggestions": [
+        "\ud83d\udccd Location tag",
+        "\u23f0 Time sticker",
+        "\ud83c\udfb5 Music"
+      ],
+      "content_pillar": "story",
+      "media_score": 185,
+      "note": "Crop center 9:16 \u2014 center the subject vertically, leave sky + water for text overlay",
+      "date": "2026-05-29",
+      "day": "Friday"
+    },
+    {
+      "platform": "Instagram / Facebook",
+      "format": "square (1:1)",
+      "media_path": "Edited Photos/Mokulua, Popoia & Ebikes/Web-Sized/Popoia_Island_Side_Far2_Kayak_drone.jpg",
+      "media_type": "photo",
+      "caption": "POV: you know about the Mokolua Islands are a protected seabird sanctuary \u2014 landing requires a permit. \ud83c\udfdd\ufe0f Your Oahu trip just leveled up. Save for later! \ud83d\udccc",
+      "hashtags": [
+        "#OahuLocal",
+        "#HawaiiTips",
+        "#TravelHacks",
+        "#HiddenHawaii",
+        "#drone",
+        "#ebike",
+        "#kayaking",
+        "#mokuluaislands"
+      ],
+      "content_pillar": "local_tips",
+      "template_used": "POV: you know about {fact}. \ud83c\udfdd\ufe0f Your Oahu trip just leveled up. Save for later! \ud83d\udccc",
+      "media_score": 185,
+      "date": "2026-05-30",
+      "day": "Saturday"
+    },
+    {
+      "platform": "Instagram / Facebook Story",
+      "format": "portrait (9:16) \u2014 crop suggestion",
+      "media_path": "Edited Photos/Mokulua, Popoia & Ebikes/Web-Sized/Popoia_Island_Side_Far4_Kayak_drone.jpg",
+      "media_type": "photo",
+      "overlay_text": "Quick peek at today's kayaking conditions \ud83d\udc40",
+      "sticker_suggestions": [
+        "\ud83d\udccd Location tag",
+        "\u23f0 Time sticker",
+        "\ud83c\udfb5 Music"
+      ],
+      "content_pillar": "story",
+      "media_score": 185,
+      "note": "Crop center 9:16 \u2014 center the subject vertically, leave sky + water for text overlay",
+      "date": "2026-05-30",
+      "day": "Saturday"
+    },
+    {
+      "platform": "Instagram / Facebook",
+      "format": "square (1:1)",
+      "media_path": "Edited Photos/Mokulua, Popoia & Ebikes/DNG/Kailua_Bay_Kayaking_Cloudy_background_drone.dng",
+      "media_type": "photo",
+      "caption": "No filter needed. \u2728 Kaneohe Bay showing off again. #ParadiseFound",
+      "hashtags": [
+        "#OahuViews",
+        "#ParadiseFound",
+        "#IslandVibes",
+        "#HawaiiPhotography",
+        "#drone",
+        "#ebike",
+        "#kailua",
+        "#kayaking"
+      ],
+      "content_pillar": "scenic",
+      "template_used": "No filter needed. \u2728 {location} showing off again. #ParadiseFound",
+      "media_score": 175,
+      "date": "2026-05-31",
+      "day": "Sunday"
+    },
+    {
+      "platform": "Instagram / Facebook Story",
+      "format": "portrait (9:16) \u2014 crop suggestion",
+      "media_path": "Edited Photos/Mokulua, Popoia & Ebikes/DNG/Kailua_Beach_In_backround_Kayak_drone.dng",
+      "media_type": "photo",
+      "overlay_text": "Out here living the dream \ud83c\udf05 Kaneohe Bay",
+      "sticker_suggestions": [
+        "\ud83d\udccd Location tag",
+        "\u23f0 Time sticker",
+        "\ud83c\udfb5 Music"
+      ],
+      "content_pillar": "story",
+      "media_score": 175,
+      "note": "Crop center 9:16 \u2014 center the subject vertically, leave sky + water for text overlay",
+      "date": "2026-05-31",
+      "day": "Sunday"
+    },
+    {
+      "platform": "Instagram / Facebook",
+      "format": "square (1:1)",
+      "media_path": "Edited Photos/Mokulua, Popoia & Ebikes/DNG/mokulua_island_kayak_away_drone.dng",
+      "media_type": "photo",
+      "caption": "Before you paddle out, know this: bring a dry bag for your phone and snacks \u2014 things WILL get wet \ud83d\udef6 Safety first, adventure second. \ud83e\udd19",
+      "hashtags": [
+        "#OceanSafety",
+        "#PaddleSmart",
+        "#RespectTheOcean",
+        "#StaySafe",
+        "#drone",
+        "#ebike",
+        "#kayaking",
+        "#mokuluaislands"
+      ],
+      "content_pillar": "safety",
+      "template_used": "Before you paddle out, know this: {tip} \ud83d\udef6 Safety first, adventure second. \ud83e\udd19",
+      "media_score": 175,
+      "date": "2026-06-01",
+      "day": "Monday"
+    },
+    {
+      "platform": "TikTok / YouTube Shorts / Reels",
+      "format": "vertical (9:16)",
+      "media_path": "Photos and Videos/Oct 2020 10.1.20 Mokes/10.1.20 - Drone - Mokes, Kayaking/DJI_0283.MP4",
+      "media_type": "video",
+      "caption": "POV: kayaking in Kaneohe Bay \ud83c\udfac\ud83c\udf0a #Oahu #Hawaii",
+      "hashtags": [
+        "#ActiveOahu",
+        "#OahuHawaii",
+        "#TravelTok",
+        "#AdventureTime"
+      ],
+      "content_pillar": "short_video",
+      "media_score": 80,
+      "note": "Original video may need vertical crop/reframe for 9:16",
+      "date": "2026-06-01",
+      "day": "Monday"
+    },
+    {
+      "platform": "Instagram / Facebook Story",
+      "format": "portrait (9:16) \u2014 crop suggestion",
+      "media_path": "Edited Photos/Mokulua, Popoia & Ebikes/DNG/Popoia_Island_Side_Far2_Kayak_drone.dng",
+      "media_type": "photo",
+      "overlay_text": "Can't get over this view \ud83d\ude0d Kaneohe Bay",
+      "sticker_suggestions": [
+        "\ud83d\udccd Location tag",
+        "\u23f0 Time sticker",
+        "\ud83c\udfb5 Music"
+      ],
+      "content_pillar": "story",
+      "media_score": 175,
+      "note": "Crop center 9:16 \u2014 center the subject vertically, leave sky + water for text overlay",
+      "date": "2026-06-01",
+      "day": "Monday"
+    },
+    {
+      "platform": "Instagram / Facebook",
+      "format": "square (1:1)",
+      "media_path": "Edited Photos/Mokulua, Popoia & Ebikes/DNG/Popoia_Island_Side_Far3_Kayak_drone.dng",
+      "media_type": "photo",
+      "caption": "Weekend plans: sorted. \u2705 kayaking at Kaneohe Bay \u2014 the ultimate island experience. \ud83c\udf3a",
+      "hashtags": [
+        "#ActiveOahu",
+        "#OahuAdventures",
+        "#HawaiiLife",
+        "#BookNow",
+        "#drone",
+        "#ebike",
+        "#kayaking",
+        "#mokuluaislands"
+      ],
+      "content_pillar": "tour_promotion",
+      "template_used": "Weekend plans: sorted. \u2705 {activity} at {location} \u2014 the ultimate island experience. \ud83c\udf3a",
+      "media_score": 175,
+      "date": "2026-06-02",
+      "day": "Tuesday"
+    },
+    {
+      "platform": "Instagram / Facebook Story",
+      "format": "portrait (9:16) \u2014 crop suggestion",
+      "media_path": "Edited Photos/Mokulua, Popoia & Ebikes/DNG/Popoia_Island_Side_Far4_Kayak_drone.dng",
+      "media_type": "photo",
+      "overlay_text": "Out here living the dream \ud83c\udf05 Kaneohe Bay",
+      "sticker_suggestions": [
+        "\ud83d\udccd Location tag",
+        "\u23f0 Time sticker",
+        "\ud83c\udfb5 Music"
+      ],
+      "content_pillar": "story",
+      "media_score": 175,
+      "note": "Crop center 9:16 \u2014 center the subject vertically, leave sky + water for text overlay",
+      "date": "2026-06-02",
+      "day": "Tuesday"
+    },
+    {
+      "platform": "Instagram / Facebook",
+      "format": "square (1:1)",
+      "media_path": "Edited Photos/Mokulua, Popoia & Ebikes/DNG/Popoia_Island_Side_Far_Kayak_drone.dng",
+      "media_type": "photo",
+      "caption": "POV: you know about the Mokolua Islands are a protected seabird sanctuary \u2014 landing requires a permit. \ud83c\udfdd\ufe0f Your Oahu trip just leveled up. Save for later! \ud83d\udccc",
+      "hashtags": [
+        "#OahuLocal",
+        "#HawaiiTips",
+        "#TravelHacks",
+        "#HiddenHawaii",
+        "#drone",
+        "#ebike",
+        "#kayaking",
+        "#mokuluaislands"
+      ],
+      "content_pillar": "local_tips",
+      "template_used": "POV: you know about {fact}. \ud83c\udfdd\ufe0f Your Oahu trip just leveled up. Save for later! \ud83d\udccc",
+      "media_score": 175,
+      "date": "2026-06-03",
+      "day": "Wednesday"
+    },
+    {
+      "platform": "Instagram / Facebook Story",
+      "format": "portrait (9:16) \u2014 crop suggestion",
+      "media_path": "Photos and Videos/Oct 2020 10.1.20 Mokes/10.1.20 - Drone - Mokes, Kayaking/_DSC6542.ARW",
+      "media_type": "photo",
+      "overlay_text": "Behind the scenes: kayaking prep \ud83c\udfac",
+      "sticker_suggestions": [
+        "\ud83d\udccd Location tag",
+        "\u23f0 Time sticker",
+        "\ud83c\udfb5 Music"
+      ],
+      "content_pillar": "story",
+      "media_score": 155,
+      "note": "Crop center 9:16 \u2014 center the subject vertically, leave sky + water for text overlay",
+      "date": "2026-06-03",
+      "day": "Wednesday"
+    },
+    {
+      "platform": "Instagram / Facebook",
+      "format": "square (1:1)",
+      "media_path": "Photos and Videos/Oct 2020 10.1.20 Mokes/10.1.20 - Drone - Mokes, Kayaking/_DSC6544.ARW",
+      "media_type": "photo",
+      "caption": "No filter needed. \u2728 Kaneohe Bay showing off again. #ParadiseFound",
+      "hashtags": [
+        "#OahuViews",
+        "#ParadiseFound",
+        "#IslandVibes",
+        "#HawaiiPhotography",
+        "#drone",
+        "#dslr",
+        "#kayaking",
+        "#mokuluaislands"
+      ],
+      "content_pillar": "scenic",
+      "template_used": "No filter needed. \u2728 {location} showing off again. #ParadiseFound",
+      "media_score": 155,
+      "date": "2026-06-04",
+      "day": "Thursday"
+    },
+    {
+      "platform": "TikTok / YouTube Shorts / Reels",
+      "format": "vertical (9:16)",
+      "media_path": "Photos and Videos/Oct 2020 10.1.20 Mokes/10.1.20 - Drone - Mokes, Kayaking/DJI_0284.MP4",
+      "media_type": "video",
+      "caption": "Day in the life: kayaking edition. Kaneohe Bay showing off! \ud83c\udf3a",
+      "hashtags": [
+        "#ActiveOahu",
+        "#OahuHawaii",
+        "#TravelTok",
+        "#AdventureTime"
+      ],
+      "content_pillar": "short_video",
+      "media_score": 80,
+      "note": "Original video may need vertical crop/reframe for 9:16",
+      "date": "2026-06-04",
+      "day": "Thursday"
+    },
+    {
+      "platform": "Instagram / Facebook Story",
+      "format": "portrait (9:16) \u2014 crop suggestion",
+      "media_path": "Photos and Videos/Oct 2020 10.1.20 Mokes/10.1.20 - Drone - Mokes, Kayaking/_DSC6545.ARW",
+      "media_type": "photo",
+      "overlay_text": "Behind the scenes: kayaking prep \ud83c\udfac",
+      "sticker_suggestions": [
+        "\ud83d\udccd Location tag",
+        "\u23f0 Time sticker",
+        "\ud83c\udfb5 Music"
+      ],
+      "content_pillar": "story",
+      "media_score": 155,
+      "note": "Crop center 9:16 \u2014 center the subject vertically, leave sky + water for text overlay",
+      "date": "2026-06-04",
+      "day": "Thursday"
+    }
+  ]
+}

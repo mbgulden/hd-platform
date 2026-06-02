@@ -1,0 +1,86 @@
+{
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  "mainEntity": [
+    {
+      "@type": "Question",
+      "name": "Do I need kayaking experience to rent a kayak from Active Oahu Tours?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "No experience is necessary! We provide a brief safety orientation and paddling instruction before every rental. Our kayaks are stable sit-on-top models perfect for beginners. Life jackets are provided and required for all rentals."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "How long does it take to kayak to the Mokulua Islands from Kailua Beach?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "The paddle from Kailua Beach to the Mokulua Islands takes approximately 45 minutes to 1 hour each way, depending on wind and current conditions. We recommend allowing 4-5 hours for a round trip with time to explore the island and enjoy the tide pools."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "What is the best time of year for kayaking on Oahu?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Oahu offers year-round kayaking, but the best conditions are typically May through October when the north and east shores are calmer. Winter months (November-March) can have larger swells on the windward side. We monitor conditions daily and provide real-time guidance on the safest launch spots."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Can I kayak to Chinaman’s Hat (Mokoliʻi)?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Yes! Chinaman's Hat (Mokoliʻi) is accessible by kayak from Kualoa Regional Park, about a 15-20 minute paddle each way. Active Oahu Tours offers kayak delivery to Kualoa Beach Park and can set you up with all the gear you need for a self-guided adventure."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Do you offer guided kayak tours, or just rentals?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "We offer both! Choose from our popular guided tours including the Mokulua Islands Guided Kayak Tour, Kaneohe Bay Sandbar tour, and sunset paddles. We also offer self-guided rentals with kayak delivery to Kailua, Kualoa, Laie, and other windward Oahu locations."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Do I need a permit to land on the Mokulua Islands?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Yes, the Mokulua Islands are part of the Hawaii State Seabird Sanctuary managed by the Hawaii DLNR. A landing permit is required. Permits are included with all Active Oahu guided tours to the Mokulua Islands. Independent kayakers must obtain their own permit from the DLNR Forestry & Wildlife division."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "What should I bring on a kayak tour in Kailua?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "We recommend bringing: reef-safe sunscreen, a hat, sunglasses with a strap, water (at least 1 liter per person), snacks, water shoes or sandals, a waterproof phone case, and a change of clothes. We provide the kayak, paddle, life jacket, dry bag, and safety orientation."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Are there sharks or dangerous marine life in Kailua Bay?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Kailua Bay has a healthy marine ecosystem, but encounters with dangerous marine life are extremely rare. You may see green sea turtles (honu), tropical fish, and seasonal humpback whales in the distance. Our guides are trained in marine wildlife safety and will brief you before departure."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "What is your cancellation policy for weather or rough conditions?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Safety is our top priority. If we determine that conditions are unsafe (high winds, large swell, or severe weather), we will reschedule your tour at no charge or provide a full refund. If you need to cancel, please provide at least 48 hours notice for tours and 24 hours for rentals to receive a full refund."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Do you deliver kayaks to locations other than Kailua Beach?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Yes! We deliver kayaks, paddleboards, and beach equipment to Kailua Beach, Kualoa Regional Park (for Chinaman's Hat), Laie Beach Park, Kahana Bay, and other windward Oahu locations. Advanced reservations are required with a minimum rental period. Contact us for delivery to your desired location."
+      }
+    }
+  ]
+}
