@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Free Human Design Chart Calculator — Discover Your Type Instantly</title>
+<meta name="description" content="Calculate your Human Design chart for free. Discover your Type, Strategy, Authority, and Profile in 30 seconds. No email required.">
+<style>
+:root {
+  --bg: #0a0f1a; --card: #111827; --border: #1e293b;
+  --gold: #c9a84c; --gold-glow: rgba(201,168,76,0.12);
+  --text: #e2e8f0; --muted: #94a3b8; --accent: #38bdf8;
+  --red: #f87171; --green: #4ade80; --purple: #c084fc;
+  --orange: #fb923c; --radius: 12px;
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;display:flex;align-items:center;justify-content:center;padding:20px}
+.container{max-width:560px;width:100%}
+h1{font-size:1.75rem;text-align:center;margin-bottom:4px;background:linear-gradient(135deg,var(--gold),#e0c468);-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+.subtitle{text-align:center;color:var(--muted);margin-bottom:24px;font-size:0.9rem}
+.card{background:var(--card);border:1px solid var(--border);border-radius:var(--radius);padding:24px;margin-bottom:16px}
+.card h2{font-size:1rem;color:var(--gold);margin-bottom:16px}
+.form-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.form-grid.full{grid-template-columns:1fr}
+label{display:block;font-size:0.8rem;color:var(--muted);margin-bottom:4px;text-transform:uppercase;letter-spacing:0.5px}
+input,select{width:100%;padding:10px 12px;background:var(--bg);border:1px solid var(--border);border-radius:8px;color:var(--text);font-size:0.95rem;transition:border-color 0.2s}
+input:focus,select:focus{outline:none;border-color:var(--gold)}
+.btn{width:100%;padding:14px;background:linear-gradient(135deg,var(--gold),#b8941f);color:#0a0f1a;border:none;border-radius:8px;font-size:1rem;font-weight:600;cursor:pointer;transition:all 0.2s}
+.btn:hover{box-shadow:0 0 24px var(--gold-glow);transform:translateY(-1px)}
+.btn:disabled{opacity:0.5;cursor:not-allowed;transform:none}
+.result{display:none;animation:fadeIn 0.4s ease}
+.result.show{display:block}
+@keyframes fadeIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
+.result-header{text-align:center;padding:20px 0}
+.type-badge{display:inline-block;padding:6px 16px;border-radius:20px;font-size:0.85rem;font-weight:600;margin-bottom:8px;letter-spacing:0.3px}
+.type-projector{background:rgba(192,132,252,0.15);color:var(--purple);border:1px solid rgba(192,132,252,0.3)}
+.type-generator{background:rgba(248,113,113,0.15);color:var(--red);border:1px solid rgba(248,113,113,0.3)}
+.type-mg{background:rgba(251,146,60,0.15);color:var(--orange);border:1px solid rgba(251,146,60,0.3)}
+.type-manifestor{background:rgba(56,189,248,0.15);color:var(--accent);border:1px solid rgba(56,189,248,0.3)}
+.type-reflector{background:rgba(74,222,128,0.15);color:var(--green);border:1px solid rgba(74,222,128,0.3)}
+.stat-row{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:12px}
+.stat{background:rgba(255,255,255,0.03);border:1px solid var(--border);border-radius:8px;padding:12px;text-align:center}
+.stat-label{font-size:0.7rem;color:var(--muted);text-transform:uppercase;letter-spacing:0.5px;margin-bottom:4px}
+.stat-value{font-size:0.95rem;font-weight:600;color:var(--text)}
+.cta-box{background:var(--gold-glow);border:1px solid rgba(201,168,76,0.2);border-radius:var(--radius);padding:16px;text-align:center;margin-top:8px}
+.cta-box p{color:var(--muted);font-size:0.85rem;margin-bottom:8px}
+.cta-link{color:var(--gold);font-weight:600;text-decoration:none}
+.error{background:rgba(248,113,113,0.1);border:1px solid rgba(248,113,113,0.3);border-radius:8px;padding:12px;color:var(--red);font-size:0.85rem;text-align:center;display:none}
+.error.show{display:block}
+.loading{text-align:center;padding:20px;display:none}
+.loading.show{display:block}
+.spinner{width:32px;height:32px;border:3px solid var(--border);border-top:3px solid var(--gold);border-radius:50%;animation:spin 0.8s linear infinite;margin:0 auto 8px}
+@keyframes spin{to{transform:rotate(360deg)}}
+.footer{text-align:center;color:var(--muted);font-size:0.75rem;margin-top:16px}
+@media(max-width:480px){.form-grid,.stat-row{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+<div class="container">
+  <h1>Discover Your Human Design</h1>
+  <p class="subtitle">Free chart calculation — no email required</p>
+
+  <div class="card">
+    <h2>📅 Enter Your Birth Data</h2>
+    <div class="form-grid">
+      <div><label>Name</label><input type="text" id="name" placeholder="Your name" value=""></div>
+      <div><label>Birth Month</label><select id="month"></select></div>
+      <div><label>Birth Day</label><select id="day"></select></div>
+      <div><label>Birth Year</label><input type="number" id="year" placeholder="1989" min="1900" max="2030" value="1989"></div>
+      <div><label>Birth Time</label><input type="time" id="time" value="17:07"></div>
+      <div><label>Birth Location</label><input type="text" id="location" placeholder="City, State/Country" value="Simi Valley, CA"></div>
+    </div>
+    <button class="btn" id="calculate" style="margin-top:16px">Calculate My Chart →</button>
+  </div>
+
+  <div class="loading" id="loading">
+    <div class="spinner"></div>
+    <p style="color:var(--muted)">Calculating your chart…</p>
+  </div>
+
+  <div class="error" id="error"></div>
+
+  <div class="result" id="result">
+    <div class="card">
+      <div class="result-header">
+        <div class="type-badge" id="typeBadge"></div>
+        <h2 id="typeName" style="font-size:1.5rem;margin:8px 0"></h2>
+        <p id="profile" style="color:var(--gold);font-size:1.1rem"></p>
+      </div>
+      <div class="stat-row">
+        <div class="stat"><div class="stat-label">Strategy</div><div class="stat-value" id="strategy"></div></div>
+        <div class="stat"><div class="stat-label">Authority</div><div class="stat-value" id="authority"></div></div>
+        <div class="stat"><div class="stat-label">Signature</div><div class="stat-value" id="signature"></div></div>
+        <div class="stat"><div class="stat-label">Not-Self Theme</div><div class="stat-value" id="notSelf"></div></div>
+      </div>
+      <div class="stat-row">
+        <div class="stat"><div class="stat-label">Incarnation Cross</div><div class="stat-value" id="cross" style="font-size:0.8rem"></div></div>
+        <div class="stat"><div class="stat-label">Definition</div><div class="stat-value" id="definition"></div></div>
+      </div>
+      <div class="stat-row">
+        <div class="stat"><div class="stat-label">Defined Centers</div><div class="stat-value" id="centers" style="font-size:0.8rem"></div></div>
+        <div class="stat"><div class="stat-label">Channels</div><div class="stat-value" id="channels" style="font-size:0.8rem"></div></div>
+      </div>
+      <div class="cta-box" style="margin-top:16px">
+        <p>Want your complete 40+ page chart breakdown with practical experiments and life strategies?</p>
+        <a class="cta-link" href="https://humandesignengine.com/reports" target="_blank">Get Your Full Report →</a>
+      </div>
+    </div>
+  </div>
+
+  <p class="footer">Powered by <a href="https://humandesignengine.com" style="color:var(--gold);text-decoration:none">Human Design Engine</a> — Free tools for self-discovery</p>
+</div>
+
+<script>
+const API = 'http://localhost:8000';
+
+// Month dropdown
+const months = ['January','February','March','April','May','June','July','August','September','October','November','December'];
+const monthSel = document.getElementById('month');
+months.forEach((m,i) => { const o = document.createElement('option'); o.value = i+1; o.textContent = m; monthSel.appendChild(o); });
+monthSel.value = 12;
+
+// Day dropdown
+const daySel = document.getElementById('day');
+function populateDays() { daySel.innerHTML = ''; for(let i=1;i<=31;i++){const o=document.createElement('option');o.value=i;o.textContent=i;daySel.appendChild(o);} daySel.value=10; }
+populateDays();
+
+// Type badge mapping
+const typeStyles = {
+  'Projector': 'type-projector',
+  'Generator': 'type-generator',
+  'Manifesting Generator': 'type-mg',
+  'Manifestor': 'type-manifestor',
+  'Reflector': 'type-reflector'
+};
+
+document.getElementById('calculate').addEventListener('click', async () => {
+  const btn = document.getElementById('calculate');
+  const loading = document.getElementById('loading');
+  const error = document.getElementById('error');
+  const result = document.getElementById('result');
+
+  btn.disabled = true;
+  loading.classList.add('show');
+  error.classList.remove('show');
+  result.classList.remove('show');
+
+  const name = document.getElementById('name').value || 'Friend';
+  const month = parseInt(monthSel.value);
+  const day = parseInt(daySel.value);
+  const year = parseInt(document.getElementById('year').value);
+  const timeVal = document.getElementById('time').value;
+  const location = document.getElementById('location').value;
+
+  if (!year || !timeVal || !location) {
+    error.textContent = 'Please fill in year, time, and location.';
+    error.classList.add('show');
+    loading.classList.remove('show');
+    btn.disabled = false;
+    return;
+  }
+
+  const [h,m] = timeVal.split(':').map(Number);
+  const hour = h + (m/60);
+
+  try {
+    const res = await fetch(`${API}/v1/natal/noauth`, {
+      method: 'POST',
+      headers: {'Content-Type': 'application/json'},
+      body: JSON.stringify({name, year, month, day, hour: h, minute: m, location})
+    });
+
+    if (!res.ok) throw new Error(`Server returned ${res.status}`);
+
+    const json = await res.json();
+    const chart = json.data || json;
+
+    // Populate results
+    document.getElementById('typeName').textContent = chart.hd_type || 'Unknown';
+    document.getElementById('profile').textContent = chart.profile || '';
+    document.getElementById('strategy').textContent = chart.strategy || '';
+    document.getElementById('authority').textContent = chart.authority || '';
+    document.getElementById('signature').textContent = chart.signature || '';
+    document.getElementById('notSelf').textContent = chart.not_self_theme || '';
+    document.getElementById('cross').textContent = typeof chart.incarnation_cross === 'object' ? chart.incarnation_cross.name : (chart.incarnation_cross || '');
+    document.getElementById('definition').textContent = chart.definition || '';
+    document.getElementById('centers').textContent = (chart.defined_centers || []).join(', ') || 'None';
+    document.getElementById('channels').textContent = (chart.defined_channels || []).join(', ') || 'None';
+
+    // Type badge
+    const badge = document.getElementById('typeBadge');
+    const type = chart.hd_type || chart.type || '';
+    badge.textContent = type;
+    badge.className = 'type-badge ' + (typeStyles[type] || '');
+
+    result.classList.add('show');
+  } catch(e) {
+    error.textContent = 'Could not calculate chart. Please check your birth data and try again. (' + e.message + ')';
+    error.classList.add('show');
+  } finally {
+    loading.classList.remove('show');
+    btn.disabled = false;
+  }
+});
+</script>
+</body>
+</html>
