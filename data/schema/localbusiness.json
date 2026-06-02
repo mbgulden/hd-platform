@@ -1,0 +1,98 @@
+{
+  "@type": "LocalBusiness",
+  "@id": "https://activeoahutours.com/#localbusiness",
+  "name": "Active Oahu Tours",
+  "alternateName": [
+    "Active Oahu Kayak Rentals",
+    "Active Oahu Tours & Activities"
+  ],
+  "description": "Oahu kayak rentals and guided tours based in Kailua. Kayak to the Mokulua Islands, Chinaman's Hat, and Kaneohe Bay. Equipment delivery to Kualoa, Laie, Kahana, and windward Oahu beaches.",
+  "url": "https://activeoahutours.com",
+  "telephone": "+1-808-555-0187",
+  "email": "info@activeoahutours.com",
+  "image": "https://activeoahutours.com/wp-content/uploads/2021/06/DSC5297_2000-e1642616607887.jpg",
+  "logo": "https://activeoahutours.com/wp-content/uploads/logo.png",
+  "address": {
+    "streetAddress": "134B Hamakua Dr",
+    "addressLocality": "Kailua",
+    "addressRegion": "HI",
+    "postalCode": "96734",
+    "addressCountry": "US"
+  },
+  "geo": {
+    "latitude": 21.3936,
+    "longitude": -157.7425
+  },
+  "openingHoursSpecification": [
+    {
+      "@type": "OpeningHoursSpecification",
+      "dayOfWeek": [
+        "Monday",
+        "Tuesday",
+        "Wednesday",
+        "Thursday",
+        "Friday",
+        "Saturday",
+        "Sunday"
+      ],
+      "opens": "08:00",
+      "closes": "17:00"
+    }
+  ],
+  "priceRange": "$$",
+  "currenciesAccepted": "USD",
+  "paymentAccepted": "Cash, Credit Card",
+  "areaServed": [
+    {
+      "@type": "City",
+      "name": "Kailua"
+    },
+    {
+      "@type": "City",
+      "name": "Kaneohe"
+    },
+    {
+      "@type": "City",
+      "name": "Laie"
+    },
+    {
+      "@type": "State",
+      "name": "Oahu"
+    }
+  ],
+  "sameAs": [
+    "https://www.facebook.com/activeoahutours",
+    "https://www.instagram.com/activeoahutours",
+    "https://twitter.com/activeoahu",
+    "https://www.tripadvisor.com/Attraction_Review-g60652-dXXXXXXX-Reviews-Active_Oahu_Tours-Kailua_Oahu_Hawaii.html",
+    "https://www.yelp.com/biz/active-oahu-tours-kailua"
+  ],
+  "hasOfferCatalog": {
+    "@type": "OfferCatalog",
+    "name": "Oahu Kayak Tours & Rentals",
+    "itemListElement": [
+      {
+        "@type": "Offer",
+        "itemOffered": {
+          "@type": "Service",
+          "name": "Kayak Rental",
+          "description": "Half-day and full-day kayak rentals for Kailua Beach and windward Oahu"
+        }
+      },
+      {
+        "@type": "Offer",
+        "itemOffered": {
+          "@type": "Service",
+          "name": "Guided Kayak Tour",
+          "description": "Guided kayak tours to Mokulua Islands, Kaneohe Bay, and Chinaman's Hat"
+        }
+      }
+    ]
+  },
+  "aggregateRating": {
+    "ratingValue": "5.0",
+    "reviewCount": "247",
+    "bestRating": "5",
+    "worstRating": "1"
+  }
+}

@@ -1,0 +1,398 @@
+{
+  "meta": {
+    "store": "Active Oahu Gallery",
+    "description": "Self-service media shop for Active Oahu Tours — prints, digital downloads, and licenses",
+    "ticket": "GRO-131",
+    "created": "2026-05-29",
+    "currency": "USD",
+    "tax": { "rate": 4.712, "name": "Hawaii GET", "applies_to": "all" }
+  },
+  "print_sizes": {
+    "poster": [
+      { "id": "12x18", "label": "12×18\"", "inches": [12, 18], "aspect": "2:3" },
+      { "id": "18x24", "label": "18×24\"", "inches": [18, 24], "aspect": "3:4" },
+      { "id": "24x36", "label": "24×36\"", "inches": [24, 36], "aspect": "2:3" }
+    ],
+    "canvas": [
+      { "id": "16x20", "label": "16×20\"", "inches": [16, 20], "aspect": "4:5" },
+      { "id": "20x24", "label": "20×24\"", "inches": [20, 24], "aspect": "5:6" },
+      { "id": "24x36", "label": "24×36\"", "inches": [24, 36], "aspect": "2:3" },
+      { "id": "30x40", "label": "30×40\"", "inches": [30, 40], "aspect": "3:4" }
+    ],
+    "framed": [
+      { "id": "8x10", "label": "8×10\"", "inches": [8, 10], "aspect": "4:5" },
+      { "id": "11x14", "label": "11×14\"", "inches": [11, 14], "aspect": "11:14" },
+      { "id": "16x20", "label": "16×20\"", "inches": [16, 20], "aspect": "4:5" },
+      { "id": "20x30", "label": "20×30\"", "inches": [20, 30], "aspect": "2:3" }
+    ]
+  },
+  "framing_options": [
+    { "id": "black", "label": "Matte Black", "hex": "#1a1a1a", "material": "wood" },
+    { "id": "white", "label": "Classic White", "hex": "#f5f5f5", "material": "wood" },
+    { "id": "natural", "label": "Natural Oak", "hex": "#c4a882", "material": "wood" }
+  ],
+  "license_tiers": [
+    {
+      "id": "personal",
+      "name": "Personal Use",
+      "description": "Wall art in your home or office. No reproduction or commercial use.",
+      "resolution": "Full resolution (up to 6000×4000 px)",
+      "usage": ["Personal display", "Home/office wall art", "Digital wallpaper on personal devices"],
+      "restrictions": ["No reproduction", "No redistribution", "No commercial use", "No merchandise"],
+      "base_price_usd": 29
+    },
+    {
+      "id": "commercial",
+      "name": "Commercial License",
+      "description": "Use in your business — website, marketing, brochures, social media, or editorial.",
+      "resolution": "Full resolution (up to 6000×4000 px)",
+      "usage": [
+        "Website and blog use",
+        "Social media marketing",
+        "Print and digital advertising",
+        "Brochures, flyers, menus",
+        "Editorial use (magazines, news)",
+        "Up to 100,000 impressions/prints"
+      ],
+      "restrictions": ["No resale as standalone art", "No merchandise", "No sublicensing"],
+      "base_price_usd": 149
+    },
+    {
+      "id": "exclusive",
+      "name": "Exclusive Rights",
+      "description": "One-time buyout. The image is removed from the gallery and you own exclusive usage rights.",
+      "resolution": "Full resolution + raw file (DNG/RAW if available)",
+      "usage": ["All commercial uses", "Unlimited impressions/prints", "Merchandise allowed", "Sublicensing allowed", "Exclusive ownership — we remove from shop"],
+      "restrictions": ["We retain portfolio/self-promotion rights only"],
+      "base_price_usd": 1499
+    }
+  ],
+  "product_categories": [
+    {
+      "id": "mokulua-islands",
+      "name": "Mokulua Islands",
+      "slug": "mokulua-islands",
+      "description": "The iconic twin islands off Kailua Bay — drone aerials, kayak approach shots, and golden-hour panoramas",
+      "image": "/shop/categories/mokulua-hero.jpg",
+      "sort_order": 1
+    },
+    {
+      "id": "drone-aerials",
+      "name": "Drone Aerials",
+      "slug": "drone-aerials",
+      "description": "Breathtaking aerial perspectives of Oahu's windward coast — Kaneohe Bay, sandbars, and coastal panoramas",
+      "image": "/shop/categories/drone-hero.jpg",
+      "sort_order": 2
+    },
+    {
+      "id": "kayak-action",
+      "name": "Kayak Action",
+      "slug": "kayak-action",
+      "description": "Action shots of kayakers paddling through turquoise waters, landing on islands, and exploring hidden coves",
+      "image": "/shop/categories/kayak-hero.jpg",
+      "sort_order": 3
+    },
+    {
+      "id": "chinamans-hat",
+      "name": "Chinaman's Hat",
+      "slug": "chinamans-hat",
+      "description": "The distinctive Mokoliʻi island — paddling approaches, summit views, and rugged coastal landscapes",
+      "image": "/shop/categories/chinamans-hat-hero.jpg",
+      "sort_order": 4
+    },
+    {
+      "id": "kahana-bay",
+      "name": "Kahana Bay",
+      "slug": "kahana-bay",
+      "description": "Lush rainforest river meets ocean — kayaking through jungle waterways and serene bay views",
+      "image": "/shop/categories/kahana-hero.jpg",
+      "sort_order": 5
+    },
+    {
+      "id": "underwater",
+      "name": "Underwater & Snorkeling",
+      "slug": "underwater",
+      "description": "Underwater shots from Kaneohe Bay — sea turtles, tropical fish, coral, and crystal-clear snorkeling scenes",
+      "image": "/shop/categories/underwater-hero.jpg",
+      "sort_order": 6
+    }
+  ],
+  "products": [
+    {
+      "id": "prod-moku-golden-hour",
+      "name": "Mokulua Islands — Golden Hour Panorama",
+      "slug": "mokulua-islands-golden-hour-panorama",
+      "category": "mokulua-islands",
+      "tags": ["drone", "mokulua-islands", "kailua", "sunset", "panorama", "aerial"],
+      "description": "Stunning drone panorama of the Mokulua Islands bathed in golden-hour light. The twin islands rise from turquoise water with Kailua Beach in the foreground and the Koʻolau mountains on the horizon. One of our most popular shots — captures the essence of windward Oahu.",
+      "photographer": "Michael",
+      "camera": "DJI Drone",
+      "date_captured": "2022-06-14",
+      "location": "Kailua Bay, Oahu, Hawaii",
+      "resolution": "5464×3640",
+      "aspect_ratio": "3:2",
+      "file_format": "JPEG",
+      "color_profile": "sRGB",
+      "featured": true,
+      "sort_order": 1,
+      "thumbnails": {
+        "sm": "/shop/thumbs/mokulua-golden-hour-400w.jpg",
+        "md": "/shop/thumbs/mokulua-golden-hour-800w.jpg",
+        "lg": "/shop/thumbs/mokulua-golden-hour-1600w.jpg",
+        "watermark": "/shop/thumbs/mokulua-golden-hour-wm.jpg"
+      },
+      "pricing": {
+        "prints": {
+          "poster": {
+            "12x18": 39,
+            "18x24": 59,
+            "24x36": 89
+          },
+          "canvas": {
+            "16x20": 149,
+            "20x24": 189,
+            "24x36": 249,
+            "30x40": 349
+          },
+          "framed": {
+            "8x10": 89,
+            "11x14": 129,
+            "16x20": 199,
+            "20x30": 279
+          }
+        },
+        "digital": {
+          "personal": 29,
+          "commercial": 149,
+          "exclusive": null
+        }
+      }
+    },
+    {
+      "id": "prod-kayak-landing-moku",
+      "name": "Kayakers Landing on Mokulua Island",
+      "slug": "kayakers-landing-mokulua",
+      "category": "kayak-action",
+      "tags": ["kayaking", "mokulua-islands", "kailua", "action", "dslr", "ocean"],
+      "description": "Action shot of two kayakers approaching the sandy landing on Moku Nui, the larger of the Mokulua Islands. Crystal-clear turquoise water, white sand beach, and the iconic volcanic rock formations. Captures the adventure and achievement of the paddle across Kailua Bay.",
+      "photographer": "Michael",
+      "camera": "Sony DSLR",
+      "date_captured": "2022-04-20",
+      "location": "Mokulua Islands, Kailua Bay, Oahu, Hawaii",
+      "resolution": "6000×4000",
+      "aspect_ratio": "3:2",
+      "file_format": "JPEG",
+      "color_profile": "Adobe RGB",
+      "featured": true,
+      "sort_order": 2,
+      "thumbnails": {
+        "sm": "/shop/thumbs/kayak-landing-moku-400w.jpg",
+        "md": "/shop/thumbs/kayak-landing-moku-800w.jpg",
+        "lg": "/shop/thumbs/kayak-landing-moku-1600w.jpg",
+        "watermark": "/shop/thumbs/kayak-landing-moku-wm.jpg"
+      },
+      "pricing": {
+        "prints": {
+          "poster": {
+            "12x18": 39,
+            "18x24": 59,
+            "24x36": 89
+          },
+          "canvas": {
+            "16x20": 149,
+            "20x24": 189,
+            "24x36": 249,
+            "30x40": 349
+          },
+          "framed": {
+            "8x10": 89,
+            "11x14": 129,
+            "16x20": 199,
+            "20x30": 279
+          }
+        },
+        "digital": {
+          "personal": 29,
+          "commercial": 149,
+          "exclusive": 1499
+        }
+      }
+    },
+    {
+      "id": "prod-kbay-sandbar-aerial",
+      "name": "Kaneohe Bay Sandbar — Aerial View",
+      "slug": "kaneohe-bay-sandbar-aerial",
+      "category": "drone-aerials",
+      "tags": ["drone", "kaneohe-bay", "aerial", "sandbar", "ocean", "coastline"],
+      "description": "Breathtaking aerial view of the Kaneohe Bay sandbar (Ahu o Laka) — a crescent of white sand emerging from shallow turquoise water. The Koʻolau mountains provide a dramatic green backdrop. This natural wonder is only accessible by boat or kayak, visible here in its full glory from above.",
+      "photographer": "Michael",
+      "camera": "DJI Drone",
+      "date_captured": "2022-06-14",
+      "location": "Kaneohe Bay Sandbar, Oahu, Hawaii",
+      "resolution": "5464×3640",
+      "aspect_ratio": "3:2",
+      "file_format": "JPEG",
+      "color_profile": "sRGB",
+      "featured": true,
+      "sort_order": 3,
+      "thumbnails": {
+        "sm": "/shop/thumbs/kbay-sandbar-400w.jpg",
+        "md": "/shop/thumbs/kbay-sandbar-800w.jpg",
+        "lg": "/shop/thumbs/kbay-sandbar-1600w.jpg",
+        "watermark": "/shop/thumbs/kbay-sandbar-wm.jpg"
+      },
+      "pricing": {
+        "prints": {
+          "poster": {
+            "12x18": 39,
+            "18x24": 59,
+            "24x36": 89
+          },
+          "canvas": {
+            "16x20": 149,
+            "20x24": 189,
+            "24x36": 249,
+            "30x40": 349
+          },
+          "framed": {
+            "8x10": 89,
+            "11x14": 129,
+            "16x20": 199,
+            "20x30": 279
+          }
+        },
+        "digital": {
+          "personal": 29,
+          "commercial": 149,
+          "exclusive": null
+        }
+      }
+    },
+    {
+      "id": "prod-chinamans-hat-sunrise",
+      "name": "Chinaman's Hat (Mokoliʻi) — Sunrise Paddle",
+      "slug": "chinamans-hat-sunrise-paddle",
+      "category": "chinamans-hat",
+      "tags": ["chinamans-hat", "kayaking", "sunrise", "dslr", "ocean", "hiking"],
+      "description": "A silhouetted kayaker paddles toward Mokoliʻi (Chinaman's Hat) at sunrise. The iconic basalt islet is backlit by the rising sun, with calm water reflecting the orange and pink sky. One of our most evocative images — captures the serene early-morning paddles we run to the island.",
+      "photographer": "Michael",
+      "camera": "Sony DSLR",
+      "date_captured": "2020-10-02",
+      "location": "Kualoa Regional Park, Oahu, Hawaii",
+      "resolution": "6000×4000",
+      "aspect_ratio": "3:2",
+      "file_format": "JPEG",
+      "color_profile": "Adobe RGB",
+      "featured": true,
+      "sort_order": 4,
+      "thumbnails": {
+        "sm": "/shop/thumbs/chinamans-sunrise-400w.jpg",
+        "md": "/shop/thumbs/chinamans-sunrise-800w.jpg",
+        "lg": "/shop/thumbs/chinamans-sunrise-1600w.jpg",
+        "watermark": "/shop/thumbs/chinamans-sunrise-wm.jpg"
+      },
+      "pricing": {
+        "prints": {
+          "poster": {
+            "12x18": 39,
+            "18x24": 59,
+            "24x36": 89
+          },
+          "canvas": {
+            "16x20": 149,
+            "20x24": 189,
+            "24x36": 249,
+            "30x40": 349
+          },
+          "framed": {
+            "8x10": 89,
+            "11x14": 129,
+            "16x20": 199,
+            "20x30": 279
+          }
+        },
+        "digital": {
+          "personal": 29,
+          "commercial": 149,
+          "exclusive": 1499
+        }
+      }
+    },
+    {
+      "id": "prod-kahana-river-kayak",
+      "name": "Kahana River — Jungle Paddle Through",
+      "slug": "kahana-river-jungle-paddle",
+      "category": "kahana-bay",
+      "tags": ["kahana", "kayaking", "river", "jungle", "dslr", "rainforest"],
+      "description": "A kayaker navigates through the lush Kahana River, surrounded by tropical rainforest on both banks. Sunlight filters through the canopy, dappling the calm water. The river winds through one of Oahu's most pristine valleys before opening into the bay. Captures the adventure of our rainforest kayak tours.",
+      "photographer": "Michael",
+      "camera": "Sony DSLR",
+      "date_captured": "2020-10-06",
+      "location": "Kahana Valley, Oahu, Hawaii",
+      "resolution": "6000×4000",
+      "aspect_ratio": "3:2",
+      "file_format": "JPEG",
+      "color_profile": "Adobe RGB",
+      "featured": false,
+      "sort_order": 5,
+      "thumbnails": {
+        "sm": "/shop/thumbs/kahana-river-400w.jpg",
+        "md": "/shop/thumbs/kahana-river-800w.jpg",
+        "lg": "/shop/thumbs/kahana-river-1600w.jpg",
+        "watermark": "/shop/thumbs/kahana-river-wm.jpg"
+      },
+      "pricing": {
+        "prints": {
+          "poster": {
+            "12x18": 39,
+            "18x24": 59,
+            "24x36": 89
+          },
+          "canvas": {
+            "16x20": 149,
+            "20x24": 189,
+            "24x36": 249,
+            "30x40": 349
+          },
+          "framed": {
+            "8x10": 89,
+            "11x14": 129,
+            "16x20": 199,
+            "20x30": 279
+          }
+        },
+        "digital": {
+          "personal": 29,
+          "commercial": 149,
+          "exclusive": null
+        }
+      }
+    }
+  ],
+  "faq": [
+    {
+      "q": "How long does shipping take for prints?",
+      "a": "Prints are fulfilled through Printful. Production takes 2–5 business days, plus shipping time (3–7 days US, 5–20 days international). You'll receive tracking info once it ships."
+    },
+    {
+      "q": "How do I get my digital download?",
+      "a": "After purchase, you'll receive an email with a secure download link. The link is valid for 24 hours and allows up to 3 downloads. You can also access your downloads from your account page."
+    },
+    {
+      "q": "What resolution are the digital downloads?",
+      "a": "Personal and commercial licenses include full-resolution JPEG files (up to 6000×4000 px). Exclusive rights include the original raw file (DNG/RAW) where available."
+    },
+    {
+      "q": "Can I use these images on my website?",
+      "a": "Yes, with a Commercial License. Personal Use licenses are for wall art and personal devices only. See our license tiers for full details."
+    },
+    {
+      "q": "Do you offer refunds?",
+      "a": "Digital downloads: refunds within 14 days if you haven't downloaded the file. Prints: refund/replacement for any manufacturing defects or shipping damage. Contact us within 7 days of delivery."
+    },
+    {
+      "q": "Will the watermark be on my purchase?",
+      "a": "No! Watermarks are only on the preview images in the shop. Your purchased digital file or print will be clean and watermark-free."
+    }
+  ]
+}
