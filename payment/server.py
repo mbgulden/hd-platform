@@ -11,6 +11,7 @@ from email.mime.application import MIMEApplication
 from http.server import HTTPServer, BaseHTTPRequestHandler
 from urllib.parse import urlparse, parse_qs
 import urllib.request
+import urllib.error
 
 STRIPE_KEY = os.environ.get("STRIPE_SECRET_KEY", "")
 STRIPE_WEBHOOK_SECRET = os.environ.get("STRIPE_WEBHOOK_SECRET", "")
@@ -293,13 +294,23 @@ humandesignengine.com"""
     # ── Helpers ──────────────────────────────────────────────────
 
     def _stripe(self, method, path, data=None):
-        req = urllib.request.Request(f"https://api.stripe.com{path}", method=method)
-        req.add_header("Authorization", f"Bearer {STRIPE_KEY}")
-        req.add_header("Content-Type", "application/json")
-        if data:
-            req.data = json.dumps(data).encode()
-        resp = urllib.request.urlopen(req)
-        return json.loads(resp.read())
+        encoded = json.dumps(data).encode() if data else None
+        req = urllib.request.Request(
+            f"https://api.stripe.com{path}",
+            data=encoded,
+            method=method,
+            headers={
+                "Authorization": f"Bearer {STRIPE_KEY}",
+                "Content-Type": "application/json"
+            }
+        )
+        try:
+            resp = urllib.request.urlopen(req)
+            return json.loads(resp.read())
+        except urllib.error.HTTPError as e:
+            body = e.read().decode()
+            print(f"[stripe] HTTP {e.code}: {body[:300]}")
+            raise
 
     def _json(self, data, status=200):
         self.send_response(status); self._cors()
