@@ -21,6 +21,7 @@ sys.path.insert(0, ENGINE_PATH)
 
 from cosmic_calculator import calculate_natal_chart
 from ephemeris_engine import init_ephemeris
+from geo_resolver import local_to_utc
 from transit_engine import compute_transit_overlay, datetime_to_jd
 
 # Initialise once at module load (idempotent)
@@ -53,7 +54,20 @@ async def compute_natal_chart(
     "detail": "..."}`` on failure.
     """
     try:
-        birth_dt = datetime(year, month, day, hour, minute)
+        # Convert local birth time to UTC — critical for correct chart
+        decimal_hour = hour + minute / 60.0
+        if location or timezone:
+            utc_year, utc_month, utc_day, utc_decimal_hour = local_to_utc(
+                year, month, day, decimal_hour,
+                location=location or timezone, lat=lat, lon=lon
+            )
+        else:
+            # No location/timezone info — assume the caller already sent UTC
+            utc_year, utc_month, utc_day, utc_decimal_hour = year, month, day, decimal_hour
+
+        utc_hour = int(utc_decimal_hour)
+        utc_minute = int((utc_decimal_hour % 1) * 60)
+        birth_dt = datetime(utc_year, utc_month, utc_day, utc_hour, utc_minute)
         chart = calculate_natal_chart(
             name=name,
             birth_dt=birth_dt,
@@ -91,7 +105,19 @@ async def compute_transits(
         Defaults to today when omitted.
     """
     try:
-        birth_dt = datetime(year, month, day, hour, minute)
+        # Convert local birth time to UTC — critical for correct chart
+        decimal_hour = hour + minute / 60.0
+        if location or timezone:
+            utc_year, utc_month, utc_day, utc_decimal_hour = local_to_utc(
+                year, month, day, decimal_hour,
+                location=location or timezone, lat=lat, lon=lon
+            )
+        else:
+            utc_year, utc_month, utc_day, utc_decimal_hour = year, month, day, decimal_hour
+
+        utc_hour = int(utc_decimal_hour)
+        utc_minute = int((utc_decimal_hour % 1) * 60)
+        birth_dt = datetime(utc_year, utc_month, utc_day, utc_hour, utc_minute)
         natal = calculate_natal_chart(
             name=name,
             birth_dt=birth_dt,
@@ -134,20 +160,27 @@ async def compute_synastry(
         and optionally minute, location, timezone.
     """
     try:
-        birth_dt_a = datetime(
-            birth_a["year"],
-            birth_a["month"],
-            birth_a["day"],
-            birth_a.get("hour", 12),
-            birth_a.get("minute", 0),
-        )
-        birth_dt_b = datetime(
-            birth_b["year"],
-            birth_b["month"],
-            birth_b["day"],
-            birth_b.get("hour", 12),
-            birth_b.get("minute", 0),
-        )
+        # Convert local birth times to UTC — critical for correct charts
+        def _birth_dt_from_dict(birth: Dict[str, Any]) -> datetime:
+            hour = birth.get("hour", 12)
+            minute = birth.get("minute", 0)
+            decimal_hour = hour + minute / 60.0
+            loc = birth.get("location") or birth.get("timezone")
+            if loc:
+                utc_year, utc_month, utc_day, utc_decimal_hour = local_to_utc(
+                    birth["year"], birth["month"], birth["day"], decimal_hour,
+                    location=loc, lat=birth.get("lat", 0), lon=birth.get("lon", 0)
+                )
+            else:
+                utc_year, utc_month, utc_day, utc_decimal_hour = (
+                    birth["year"], birth["month"], birth["day"], decimal_hour
+                )
+            utc_hour = int(utc_decimal_hour)
+            utc_minute = int((utc_decimal_hour % 1) * 60)
+            return datetime(utc_year, utc_month, utc_day, utc_hour, utc_minute)
+
+        birth_dt_a = _birth_dt_from_dict(birth_a)
+        birth_dt_b = _birth_dt_from_dict(birth_b)
 
         chart_a = calculate_natal_chart(
             name=name_a,

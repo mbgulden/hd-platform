@@ -38,6 +38,7 @@ from cosmic_calculator import calculate_natal_chart
 from synastry_engine import calculate_composite, calculate_penta
 from matrix_mapper import GATE_NAMES, GATE_CENTER, CHANNELS
 from ephemeris_engine import init_ephemeris, get_planet_position, SUN
+from geo_resolver import local_to_utc
 from transit_engine import (
     compute_transit_overlay,
     calculate_transit_positions,
@@ -935,7 +936,15 @@ def compute_and_render(metadata: dict) -> dict:
     # Parse birth data
     y, m, d = map(int, birthdate.split("-"))
     h, mi = map(int, birthtime.split(":"))
-    birth_dt = datetime(y, m, d, h, mi)
+    # Convert local to UTC
+    decimal_hour = h + mi / 60.0
+    if location != "UTC" or timezone != "UTC":
+        utc_year, utc_month, utc_day, utc_hour = local_to_utc(
+            y, m, d, decimal_hour, location=location or timezone, lat=lat, lon=lon
+        )
+    else:
+        utc_year, utc_month, utc_day, utc_hour = y, m, d, decimal_hour
+    birth_dt = datetime(utc_year, utc_month, utc_day, int(utc_hour), int((utc_hour % 1) * 60))
     
     # Compute
     chart = calculate_natal_chart(
@@ -1095,10 +1104,20 @@ class Handler(BaseHTTPRequestHandler):
             try:
                 import subprocess, tempfile
                 
-                birth_dt = datetime(
-                    int(params.get("year", 2000)), int(params.get("month", 1)), int(params.get("day", 1)),
-                    int(params.get("hour", 12)), int(params.get("minute", 0))
-                )
+                # Convert local to UTC
+                year, month, day = int(params.get("year", 2000)), int(params.get("month", 1)), int(params.get("day", 1))
+                hour, minute = int(params.get("hour", 12)), int(params.get("minute", 0))
+                tz = params.get("timezone", "UTC")
+                if tz != "UTC":
+                    decimal_hour = hour + minute / 60.0
+                    utc_year, utc_month, utc_day, utc_hour = local_to_utc(
+                        year, month, day, decimal_hour,
+                        location=tz,
+                        lat=float(params.get("lat", 0)), lon=float(params.get("lon", 0))
+                    )
+                    year, month, day = utc_year, utc_month, utc_day
+                    hour, minute = int(utc_hour), int((utc_hour % 1) * 60)
+                birth_dt = datetime(year, month, day, hour, minute)
                 chart = calculate_natal_chart(
                     name=params.get("name", "Unknown"),
                     birth_dt=birth_dt,
@@ -1432,10 +1451,19 @@ class Handler(BaseHTTPRequestHandler):
             body = json.loads(self.rfile.read(length)) if length else {}
             
             try:
-                birth_dt = datetime(
-                    body.get("year", 2000), body.get("month", 1), body.get("day", 1),
-                    body.get("hour", 12), body.get("minute", 0)
-                )
+                # Convert local to UTC
+                year, month, day = body.get("year", 2000), body.get("month", 1), body.get("day", 1)
+                hour, minute = body.get("hour", 12), body.get("minute", 0)
+                tz = body.get("timezone", "UTC")
+                if tz != "UTC":
+                    decimal_hour = hour + minute / 60.0
+                    utc_year, utc_month, utc_day, utc_hour = local_to_utc(
+                        year, month, day, decimal_hour, location=tz,
+                        lat=body.get("lat", 0), lon=body.get("lon", 0)
+                    )
+                    year, month, day = utc_year, utc_month, utc_day
+                    hour, minute = int(utc_hour), int((utc_hour % 1) * 60)
+                birth_dt = datetime(year, month, day, hour, minute)
                 chart = calculate_natal_chart(
                     name=body.get("name", "Unknown"),
                     birth_dt=birth_dt,
@@ -1460,10 +1488,19 @@ class Handler(BaseHTTPRequestHandler):
             body = json.loads(self.rfile.read(length)) if length else {}
             
             try:
-                birth_dt = datetime(
-                    body.get("year", 2000), body.get("month", 1), body.get("day", 1),
-                    body.get("hour", 12), body.get("minute", 0)
-                )
+                # Convert local to UTC
+                year, month, day = body.get("year", 2000), body.get("month", 1), body.get("day", 1)
+                hour, minute = body.get("hour", 12), body.get("minute", 0)
+                tz = body.get("timezone", "UTC")
+                if tz != "UTC":
+                    decimal_hour = hour + minute / 60.0
+                    utc_year, utc_month, utc_day, utc_hour = local_to_utc(
+                        year, month, day, decimal_hour, location=tz,
+                        lat=body.get("lat", 0), lon=body.get("lon", 0)
+                    )
+                    year, month, day = utc_year, utc_month, utc_day
+                    hour, minute = int(utc_hour), int((utc_hour % 1) * 60)
+                birth_dt = datetime(year, month, day, hour, minute)
                 chart = calculate_natal_chart(
                     name=body.get("name", "Unknown"),
                     birth_dt=birth_dt,
@@ -1490,10 +1527,19 @@ class Handler(BaseHTTPRequestHandler):
             try:
                 import subprocess, tempfile
                 
-                birth_dt = datetime(
-                    body.get("year", 2000), body.get("month", 1), body.get("day", 1),
-                    body.get("hour", 12), body.get("minute", 0)
-                )
+                # Convert local to UTC
+                year, month, day = body.get("year", 2000), body.get("month", 1), body.get("day", 1)
+                hour, minute = body.get("hour", 12), body.get("minute", 0)
+                tz = body.get("timezone", "UTC")
+                if tz != "UTC":
+                    decimal_hour = hour + minute / 60.0
+                    utc_year, utc_month, utc_day, utc_hour = local_to_utc(
+                        year, month, day, decimal_hour, location=tz,
+                        lat=body.get("lat", 0), lon=body.get("lon", 0)
+                    )
+                    year, month, day = utc_year, utc_month, utc_day
+                    hour, minute = int(utc_hour), int((utc_hour % 1) * 60)
+                birth_dt = datetime(year, month, day, hour, minute)
                 chart = calculate_natal_chart(
                     name=body.get("name", "Unknown"),
                     birth_dt=birth_dt,
