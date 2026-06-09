@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Free Human Design Chart Calculator — Discover Your Type Instantly</title>
-<meta name="description" content="Calculate your Human Design chart for free. Discover your Type, Strategy, Authority, and Profile in 30 seconds. No email required.">
+<meta name="description" content="Calculate your Human Design chart for free. Discover your Type, Strategy, Authority, and Profile in 30 seconds.">
 <style>
 :root {
   --bg: #0a0f1a; --card: #111827; --border: #1e293b;
@@ -28,6 +28,8 @@ input:focus,select:focus{outline:none;border-color:var(--gold)}
 .btn{width:100%;padding:14px;background:linear-gradient(135deg,var(--gold),#b8941f);color:#0a0f1a;border:none;border-radius:8px;font-size:1rem;font-weight:600;cursor:pointer;transition:all 0.2s}
 .btn:hover{box-shadow:0 0 24px var(--gold-glow);transform:translateY(-1px)}
 .btn:disabled{opacity:0.5;cursor:not-allowed;transform:none}
+.btn-secondary{background:transparent;border:1px solid var(--gold);color:var(--gold)}
+.btn-secondary:hover{background:var(--gold-glow)}
 .result{display:none;animation:fadeIn 0.4s ease}
 .result.show{display:block}
 @keyframes fadeIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
@@ -42,9 +44,16 @@ input:focus,select:focus{outline:none;border-color:var(--gold)}
 .stat{background:rgba(255,255,255,0.03);border:1px solid var(--border);border-radius:8px;padding:12px;text-align:center}
 .stat-label{font-size:0.7rem;color:var(--muted);text-transform:uppercase;letter-spacing:0.5px;margin-bottom:4px}
 .stat-value{font-size:0.95rem;font-weight:600;color:var(--text)}
-.cta-box{background:var(--gold-glow);border:1px solid rgba(201,168,76,0.2);border-radius:var(--radius);padding:16px;text-align:center;margin-top:8px}
+.email-gate{background:var(--gold-glow);border:1px solid rgba(201,168,76,0.3);border-radius:var(--radius);padding:20px;text-align:center;margin-top:16px}
+.email-gate p{color:var(--muted);font-size:0.85rem;margin-bottom:12px}
+.email-gate input{max-width:300px;margin-bottom:12px;text-align:center}
+.email-gate .btn{max-width:300px;margin:0 auto}
+.cta-box{background:linear-gradient(135deg,rgba(201,168,76,0.08),rgba(56,189,248,0.05));border:1px solid rgba(201,168,76,0.2);border-radius:var(--radius);padding:16px;text-align:center;margin-top:8px}
 .cta-box p{color:var(--muted);font-size:0.85rem;margin-bottom:8px}
-.cta-link{color:var(--gold);font-weight:600;text-decoration:none}
+.cta-link{color:var(--gold);font-weight:600;text-decoration:none;font-size:0.95rem}
+.cta-link:hover{text-decoration:underline}
+.free-preview{border-left:3px solid var(--green);padding-left:12px;margin-bottom:16px}
+.free-preview .tag{display:inline-block;font-size:0.7rem;background:rgba(74,222,128,0.15);color:var(--green);padding:2px 8px;border-radius:4px;margin-bottom:8px}
 .error{background:rgba(248,113,113,0.1);border:1px solid rgba(248,113,113,0.3);border-radius:8px;padding:12px;color:var(--red);font-size:0.85rem;text-align:center;display:none}
 .error.show{display:block}
 .loading{text-align:center;padding:20px;display:none}
@@ -52,23 +61,25 @@ input:focus,select:focus{outline:none;border-color:var(--gold)}
 .spinner{width:32px;height:32px;border:3px solid var(--border);border-top:3px solid var(--gold);border-radius:50%;animation:spin 0.8s linear infinite;margin:0 auto 8px}
 @keyframes spin{to{transform:rotate(360deg)}}
 .footer{text-align:center;color:var(--muted);font-size:0.75rem;margin-top:16px}
+.hidden{display:none!important}
 @media(max-width:480px){.form-grid,.stat-row{grid-template-columns:1fr}}
 </style>
 </head>
 <body>
 <div class="container">
   <h1>Discover Your Human Design</h1>
-  <p class="subtitle">Free chart calculation — no email required</p>
+  <p class="subtitle">Free chart calculation — preview your Type & Strategy instantly</p>
 
   <div class="card">
     <h2>📅 Enter Your Birth Data</h2>
     <div class="form-grid">
-      <div><label>Name</label><input type="text" id="name" placeholder="Your name" value=""></div>
+      <div><label>Name (optional)</label><input type="text" id="name" placeholder="Your name" value=""></div>
+      <div><label>Email (for full report)</label><input type="email" id="email" placeholder="you@example.com" value=""></div>
       <div><label>Birth Month</label><select id="month"></select></div>
       <div><label>Birth Day</label><select id="day"></select></div>
       <div><label>Birth Year</label><input type="number" id="year" placeholder="1989" min="1900" max="2030" value="1989"></div>
       <div><label>Birth Time</label><input type="time" id="time" value="17:07"></div>
-      <div><label>Birth Location</label><input type="text" id="location" placeholder="City, State/Country" value="Simi Valley, CA"></div>
+      <div class="form-grid full"><label>Birth Location</label><input type="text" id="location" placeholder="City, State/Country" value="Simi Valley, CA"></div>
     </div>
     <button class="btn" id="calculate" style="margin-top:16px">Calculate My Chart →</button>
   </div>
@@ -85,25 +96,42 @@ input:focus,select:focus{outline:none;border-color:var(--gold)}
       <div class="result-header">
         <div class="type-badge" id="typeBadge"></div>
         <h2 id="typeName" style="font-size:1.5rem;margin:8px 0"></h2>
-        <p id="profile" style="color:var(--gold);font-size:1.1rem"></p>
+        <p id="profile-preview" style="color:var(--gold);font-size:1.1rem"></p>
       </div>
-      <div class="stat-row">
-        <div class="stat"><div class="stat-label">Strategy</div><div class="stat-value" id="strategy"></div></div>
-        <div class="stat"><div class="stat-label">Authority</div><div class="stat-value" id="authority"></div></div>
-        <div class="stat"><div class="stat-label">Signature</div><div class="stat-value" id="signature"></div></div>
-        <div class="stat"><div class="stat-label">Not-Self Theme</div><div class="stat-value" id="notSelf"></div></div>
+
+      <!-- Free preview: Type + Strategy (always visible) -->
+      <div class="free-preview">
+        <div class="tag">FREE PREVIEW</div>
+        <div class="stat-row">
+          <div class="stat"><div class="stat-label">Type</div><div class="stat-value" id="strategy"></div></div>
+          <div class="stat"><div class="stat-label">Profile</div><div class="stat-value" id="profile"></div></div>
+        </div>
       </div>
-      <div class="stat-row">
-        <div class="stat"><div class="stat-label">Incarnation Cross</div><div class="stat-value" id="cross" style="font-size:0.8rem"></div></div>
-        <div class="stat"><div class="stat-label">Definition</div><div class="stat-value" id="definition"></div></div>
+
+      <!-- Email gate for full results -->
+      <div class="email-gate" id="emailGate">
+        <p>🔒 Enter your email to unlock your full chart — Authority, Signature, Incarnation Cross, defined Centers, and Channels.</p>
+        <input type="email" id="unlockEmail" placeholder="you@example.com">
+        <button class="btn" id="unlockBtn">Unlock Full Results →</button>
+        <p style="font-size:0.7rem;color:var(--muted);margin-top:8px">We'll send your complete report + a 40-page breakdown. Unsubscribe anytime.</p>
       </div>
-      <div class="stat-row">
-        <div class="stat"><div class="stat-label">Defined Centers</div><div class="stat-value" id="centers" style="font-size:0.8rem"></div></div>
-        <div class="stat"><div class="stat-label">Channels</div><div class="stat-value" id="channels" style="font-size:0.8rem"></div></div>
-      </div>
-      <div class="cta-box" style="margin-top:16px">
-        <p>Want your complete 40+ page chart breakdown with practical experiments and life strategies?</p>
-        <a class="cta-link" href="https://humandesignengine.com/reports" target="_blank">Get Your Full Report →</a>
+
+      <!-- Full results (hidden until email entered) -->
+      <div class="hidden" id="fullResults">
+        <div class="stat-row">
+          <div class="stat"><div class="stat-label">Authority</div><div class="stat-value" id="authority"></div></div>
+          <div class="stat"><div class="stat-label">Signature</div><div class="stat-value" id="signature"></div></div>
+          <div class="stat"><div class="stat-label">Not-Self Theme</div><div class="stat-value" id="notSelf"></div></div>
+          <div class="stat"><div class="stat-label">Incarnation Cross</div><div class="stat-value" id="cross" style="font-size:0.8rem"></div></div>
+          <div class="stat"><div class="stat-label">Definition</div><div class="stat-value" id="definition"></div></div>
+          <div class="stat"><div class="stat-label">Defined Centers</div><div class="stat-value" id="centers" style="font-size:0.8rem"></div></div>
+          <div class="stat"><div class="stat-label">Channels</div><div class="stat-value" id="channels" style="font-size:0.8rem"></div></div>
+        </div>
+
+        <div class="cta-box">
+          <p>Want your complete 40+ page chart breakdown with practical experiments and life strategies?</p>
+          <a class="cta-link" id="ctaLink" href="https://humandesignengine.com/reports" target="_blank">Get Your Full Report →</a>
+        </div>
       </div>
     </div>
   </div>
@@ -112,7 +140,21 @@ input:focus,select:focus{outline:none;border-color:var(--gold)}
 </div>
 
 <script>
-const API = 'http://localhost:8000';
+// Auto-detect API endpoint: try production, fall back to same-origin relative
+const API_HOST = (() => {
+  if (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') {
+    return 'http://localhost:8000';  // Local dev
+  }
+  if (window.location.hostname.endsWith('.pages.dev')) {
+    return 'https://api.humandesignengine.com';  // Preview deploy
+  }
+  return 'https://api.humandesignengine.com';  // Production
+})();
+
+const API = API_HOST;
+
+// Store chart data for CTA
+let chartData = null;
 
 // Month dropdown
 const months = ['January','February','March','April','May','June','July','August','September','October','November','December'];
@@ -134,16 +176,37 @@ const typeStyles = {
   'Reflector': 'type-reflector'
 };
 
+function buildCtaUrl(chart) {
+  const name = encodeURIComponent(document.getElementById('name').value || 'Friend');
+  const type = encodeURIComponent(chart.hd_type || chart.type || '');
+  const profile = encodeURIComponent(chart.profile || '');
+  const email = encodeURIComponent(document.getElementById('email').value || document.getElementById('unlockEmail').value || '');
+  const month = monthSel.value;
+  const day = daySel.value;
+  const year = document.getElementById('year').value;
+  const time = document.getElementById('time').value;
+  const location = encodeURIComponent(document.getElementById('location').value);
+
+  let url = `https://humandesignengine.com/reports?name=${name}&type=${type}&profile=${profile}`;
+  if (email) url += `&email=${email}`;
+  url += `&month=${month}&day=${day}&year=${year}&time=${time}&loc=${location}`;
+  return url;
+}
+
 document.getElementById('calculate').addEventListener('click', async () => {
   const btn = document.getElementById('calculate');
   const loading = document.getElementById('loading');
   const error = document.getElementById('error');
   const result = document.getElementById('result');
+  const emailGate = document.getElementById('emailGate');
+  const fullResults = document.getElementById('fullResults');
 
   btn.disabled = true;
   loading.classList.add('show');
   error.classList.remove('show');
   result.classList.remove('show');
+  emailGate.classList.remove('hidden');
+  fullResults.classList.add('hidden');
 
   const name = document.getElementById('name').value || 'Friend';
   const month = parseInt(monthSel.value);
@@ -161,7 +224,6 @@ document.getElementById('calculate').addEventListener('click', async () => {
   }
 
   const [h,m] = timeVal.split(':').map(Number);
-  const hour = h + (m/60);
 
   try {
     const res = await fetch(`${API}/v1/natal/noauth`, {
@@ -170,38 +232,95 @@ document.getElementById('calculate').addEventListener('click', async () => {
       body: JSON.stringify({name, year, month, day, hour: h, minute: m, location})
     });
 
-    if (!res.ok) throw new Error(`Server returned ${res.status}`);
+    if (!res.ok) {
+      if (res.status === 0 || res.status >= 500) {
+        throw new Error('API server unreachable. Please try again in a moment.');
+      }
+      throw new Error(`Server returned ${res.status}`);
+    }
 
     const json = await res.json();
     const chart = json.data || json;
+    chartData = chart;
 
-    // Populate results
-    document.getElementById('typeName').textContent = chart.hd_type || 'Unknown';
-    document.getElementById('profile').textContent = chart.profile || '';
+    // Free preview: Type + Strategy (always shown)
+    const type = chart.hd_type || chart.type || 'Unknown';
+    document.getElementById('typeName').textContent = type;
+    document.getElementById('profile-preview').textContent = chart.profile || '';
     document.getElementById('strategy').textContent = chart.strategy || '';
+    document.getElementById('profile').textContent = chart.profile || '';
+
+    // Type badge
+    const badge = document.getElementById('typeBadge');
+    badge.textContent = type;
+    badge.className = 'type-badge ' + (typeStyles[type] || '');
+
+    // Hide full results, show email gate
+    fullResults.classList.add('hidden');
+    emailGate.classList.remove('hidden');
+
+    // Pre-fill email gate with form email if provided
+    const formEmail = document.getElementById('email').value;
+    if (formEmail) {
+      document.getElementById('unlockEmail').value = formEmail;
+    }
+
+    // Populate full results (hidden until unlocked)
     document.getElementById('authority').textContent = chart.authority || '';
     document.getElementById('signature').textContent = chart.signature || '';
     document.getElementById('notSelf').textContent = chart.not_self_theme || '';
     document.getElementById('cross').textContent = typeof chart.incarnation_cross === 'object' ? chart.incarnation_cross.name : (chart.incarnation_cross || '');
     document.getElementById('definition').textContent = chart.definition || '';
     document.getElementById('centers').textContent = (chart.defined_centers || []).join(', ') || 'None';
-    document.getElementById('channels').textContent = (chart.defined_channels || []).join(', ') || 'None';
+    document.getElementById('channels').textContent = (chart.defined_channels || []).map(c => c.name || c).join(', ') || 'None';
 
-    // Type badge
-    const badge = document.getElementById('typeBadge');
-    const type = chart.hd_type || chart.type || '';
-    badge.textContent = type;
-    badge.className = 'type-badge ' + (typeStyles[type] || '');
+    // Update CTA link
+    document.getElementById('ctaLink').href = buildCtaUrl(chart);
+
+    // Auto-unlock if email was already provided in form
+    if (formEmail && formEmail.includes('@')) {
+      unlockFullResults();
+    }
 
     result.classList.add('show');
   } catch(e) {
-    error.textContent = 'Could not calculate chart. Please check your birth data and try again. (' + e.message + ')';
+    error.textContent = 'Could not calculate chart. ' + e.message;
     error.classList.add('show');
   } finally {
     loading.classList.remove('show');
     btn.disabled = false;
   }
 });
+
+// Email gate: unlock full results
+document.getElementById('unlockBtn').addEventListener('click', () => {
+  const email = document.getElementById('unlockEmail').value.trim();
+  if (!email || !email.includes('@')) {
+    document.getElementById('unlockEmail').style.borderColor = 'var(--red)';
+    setTimeout(() => { document.getElementById('unlockEmail').style.borderColor = 'var(--border)'; }, 1500);
+    return;
+  }
+  // Update form email field
+  document.getElementById('email').value = email;
+  unlockFullResults();
+});
+
+// Also unlock on Enter key in email field
+document.getElementById('unlockEmail').addEventListener('keydown', (e) => {
+  if (e.key === 'Enter') {
+    document.getElementById('unlockBtn').click();
+  }
+});
+
+function unlockFullResults() {
+  document.getElementById('emailGate').classList.add('hidden');
+  document.getElementById('fullResults').classList.remove('hidden');
+
+  // Update CTA with email now
+  if (chartData) {
+    document.getElementById('ctaLink').href = buildCtaUrl(chartData);
+  }
+}
 </script>
 </body>
 </html>
