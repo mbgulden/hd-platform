@@ -137,6 +137,24 @@ if (refCode) {
   document.getElementById('refNotice').textContent = '🔗 Referred by affiliate partner';
 }
 
+// Auto-fill from chart calculator CTA params
+if (urlParams.get('name')) document.getElementById('name').value = urlParams.get('name');
+if (urlParams.get('email')) document.getElementById('email').value = urlParams.get('email');
+if (urlParams.get('type')) {
+  const typeTag = document.createElement('span');
+  typeTag.style.cssText = 'display:inline-block;margin-left:8px;padding:2px 10px;border-radius:12px;font-size:0.75rem;background:var(--gold-soft);color:var(--gold-light)';
+  typeTag.textContent = 'Your Type: ' + urlParams.get('type');
+  document.querySelector('h1').appendChild(typeTag);
+}
+// Reconstruct birth date from month/day/year params
+const m = urlParams.get('month'), d = urlParams.get('day'), y = urlParams.get('year');
+if (m && d && y) {
+  const mon = m.padStart(2,'0'), day = d.padStart(2,'0');
+  document.getElementById('birthdate').value = `${y}-${mon}-${day}`;
+}
+if (urlParams.get('time')) document.getElementById('birthtime').value = urlParams.get('time');
+if (urlParams.get('loc')) document.getElementById('location').value = decodeURIComponent(urlParams.get('loc'));
+
 function selectReport(report) {
   selectedReport = report;
   document.querySelectorAll('.report-card').forEach(c => c.classList.remove('selected'));
