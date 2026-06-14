@@ -1,10 +1,10 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
 <title>Free Human Design Chart Calculator — Discover Your Type Instantly</title>
-<meta name="description" content="Calculate your Human Design chart for free. Discover your Type, Strategy, Authority, and Profile in 30 seconds.">
+<meta content="Calculate your Human Design chart for free. Discover your Type, Strategy, Authority, and Profile in 30 seconds." name="description"/>
 <style>
 :root {
   --bg: #0a0f1a; --card: #111827; --border: #1e293b;
@@ -65,7 +65,7 @@ input:focus,select:focus{outline:none;border-color:var(--gold)}
 @media(max-width:480px){.form-grid,.stat-row{grid-template-columns:1fr}}
 </style>
 <!-- Google Analytics (GA4) -->
-<script async src="https://www.googletagmanager.com/gtag/js?id=G-Q6TPL08VM7"></script>
+<script async="" src="https://www.googletagmanager.com/gtag/js?id=G-Q6TPL08VM7"></script>
 <script>
   window.dataLayer = window.dataLayer || [];
   function gtag(){dataLayer.push(arguments);}
@@ -74,7 +74,24 @@ input:focus,select:focus{outline:none;border-color:var(--gold)}
 </script>
 
 
+
 <script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "Organization",
+  "name": "Human Design Engine",
+  "url": "https://humandesignengine.com",
+  "logo": "https://humandesignengine.com/logo.png",
+  "description": "Human Design Engine — free and premium Human Design charts, reports, and learning resources.",
+  "sameAs": [
+    "https://www.youtube.com/@humandesignengine",
+    "https://www.facebook.com/humandesignengine",
+    "https://www.instagram.com/humandesignengine",
+    "https://x.com/humandesigneng",
+    "https://en.wikipedia.org/wiki/Human_Design"
+  ]
+}
+</script><script type="application/ld+json">
 {
   "@context": "https://schema.org",
   "@type": "BreadcrumbList",
@@ -100,33 +117,18 @@ input:focus,select:focus{outline:none;border-color:var(--gold)}
     {
       "@type": "ListItem",
       "position": 4,
-      "name": "Free Human Design Chart Calculator \u2014 Discover Your Type Instantly",
+      "name": "Chart Calculator",
       "item": "https://humandesignengine.com/hd-engine/free-tools/chart-calculator/"
     }
   ]
 }
-</script>
-
-<script type="application/ld+json">
-{
-  "@context": "https://schema.org",
-  "@type": "Organization",
-  "name": "Human Design Engine",
-  "url": "https://humandesignengine.com",
-  "logo": "https://humandesignengine.com/logo.png",
-  "description": "Human Design Engine \u2014 free and premium Human Design charts, reports, and learning resources.",
-  "sameAs": [
-    "https://www.youtube.com/@humandesignengine"
-  ]
-}
-</script>
-
-<script type="application/ld+json">
+</script><script type="application/ld+json">
 {
   "@context": "https://schema.org",
   "@type": "Article",
-  "headline": "Free Human Design Chart Calculator \u2014 Discover Your Type Instantly",
+  "headline": "Free Human Design Chart Calculator — Discover Your Type Instantly",
   "description": "Calculate your Human Design chart for free. Discover your Type, Strategy, Authority, and Profile in 30 seconds.",
+  "image": "https://humandesignengine.com/logo.png",
   "author": {
     "@type": "Organization",
     "name": "Human Design Engine"
@@ -140,85 +142,105 @@ input:focus,select:focus{outline:none;border-color:var(--gold)}
   "dateModified": "2026-06-13",
   "mainEntityOfPage": {
     "@type": "WebPage",
-    "@id": "https://humandesignengine.com/"
+    "@id": "https://humandesignengine.com/hd-engine/free-tools/chart-calculator/"
   }
 }
+</script><script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  "mainEntity": [
+    {
+      "@type": "Question",
+      "name": "Is this Human Design chart calculator really free?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Yes! Human Design Engine's chart calculator is completely free — no email required. Just enter your birth date, time, and location to instantly generate your full bodygraph, type, strategy, authority, and profile."
+      }
+    },    {
+      "@type": "Question",
+      "name": "What information do I need to calculate my chart?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "You'll need your birth date, exact birth time (as precise as possible), and birth location (city/country). The more accurate your birth time, the more precise your chart — especially for determining your profile and incarnation cross."
+      }
+    },    {
+      "@type": "Question",
+      "name": "What does the chart calculator show?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "The calculator generates your complete Human Design bodygraph showing your type, strategy, authority, defined/undefined centers, activated gates, channels, profile, and incarnation cross. It's the same professional-grade calculation used by analysts."
+      }
+    }
+  ]
+}
 </script>
+
 </head>
 <body>
 <div class="container">
-  <h1>Discover Your Human Design</h1>
-  <p class="subtitle">Free chart calculation — preview your Type & Strategy instantly</p>
-
-  <div class="card">
-    <h2>📅 Enter Your Birth Data</h2>
-    <div class="form-grid">
-      <div><label>Name (optional)</label><input type="text" id="name" placeholder="Your name" value=""></div>
-      <div><label>Email (for full report)</label><input type="email" id="email" placeholder="you@example.com" value=""></div>
-      <div><label>Birth Month</label><select id="month"></select></div>
-      <div><label>Birth Day</label><select id="day"></select></div>
-      <div><label>Birth Year</label><input type="number" id="year" placeholder="1989" min="1900" max="2030" value="1989"></div>
-      <div><label>Birth Time</label><input type="time" id="time" value="17:07"></div>
-      <div class="form-grid full"><label>Birth Location</label><input type="text" id="location" placeholder="City, State/Country" value="Simi Valley, CA"></div>
-    </div>
-    <button class="btn" id="calculate" style="margin-top:16px">Calculate My Chart →</button>
-  </div>
-
-  <div class="loading" id="loading">
-    <div class="spinner"></div>
-    <p style="color:var(--muted)">Calculating your chart…</p>
-  </div>
-
-  <div class="error" id="error"></div>
-
-  <div class="result" id="result">
-    <div class="card">
-      <div class="result-header">
-        <div class="type-badge" id="typeBadge"></div>
-        <h2 id="typeName" style="font-size:1.5rem;margin:8px 0"></h2>
-        <p id="profile-preview" style="color:var(--gold);font-size:1.1rem"></p>
-      </div>
-
-      <!-- Free preview: Type + Strategy (always visible) -->
-      <div class="free-preview">
-        <div class="tag">FREE PREVIEW</div>
-        <div class="stat-row">
-          <div class="stat"><div class="stat-label">Type</div><div class="stat-value" id="strategy"></div></div>
-          <div class="stat"><div class="stat-label">Profile</div><div class="stat-value" id="profile"></div></div>
-        </div>
-      </div>
-
-      <!-- Email gate for full results -->
-      <div class="email-gate" id="emailGate">
-        <p>🔒 Enter your email to unlock your full chart — Authority, Signature, Incarnation Cross, defined Centers, and Channels.</p>
-        <input type="email" id="unlockEmail" placeholder="you@example.com">
-        <button class="btn" id="unlockBtn">Unlock Full Results →</button>
-        <p style="font-size:0.7rem;color:var(--muted);margin-top:8px">We'll send your complete report + a 40-page breakdown. Unsubscribe anytime.</p>
-      </div>
-
-      <!-- Full results (hidden until email entered) -->
-      <div class="hidden" id="fullResults">
-        <div class="stat-row">
-          <div class="stat"><div class="stat-label">Authority</div><div class="stat-value" id="authority"></div></div>
-          <div class="stat"><div class="stat-label">Signature</div><div class="stat-value" id="signature"></div></div>
-          <div class="stat"><div class="stat-label">Not-Self Theme</div><div class="stat-value" id="notSelf"></div></div>
-          <div class="stat"><div class="stat-label">Incarnation Cross</div><div class="stat-value" id="cross" style="font-size:0.8rem"></div></div>
-          <div class="stat"><div class="stat-label">Definition</div><div class="stat-value" id="definition"></div></div>
-          <div class="stat"><div class="stat-label">Defined Centers</div><div class="stat-value" id="centers" style="font-size:0.8rem"></div></div>
-          <div class="stat"><div class="stat-label">Channels</div><div class="stat-value" id="channels" style="font-size:0.8rem"></div></div>
-        </div>
-
-        <div class="cta-box">
-          <p>Want your complete 40+ page chart breakdown with practical experiments and life strategies?</p>
-          <a class="cta-link" id="ctaLink" href="https://humandesignengine.com/reports" target="_blank">Get Your Full Report →</a>
-        </div>
-      </div>
-    </div>
-  </div>
-
-  <p class="footer">Powered by <a href="https://humandesignengine.com" style="color:var(--gold);text-decoration:none">Human Design Engine</a> — Free tools for self-discovery</p>
+<h1>Discover Your Human Design</h1>
+<p class="subtitle">Free chart calculation — preview your Type &amp; Strategy instantly</p>
+<div class="card">
+<h2>📅 Enter Your Birth Data</h2>
+<div class="form-grid">
+<div><label>Name (optional)</label><input id="name" placeholder="Your name" type="text" value=""/></div>
+<div><label>Email (for full report)</label><input id="email" placeholder="you@example.com" type="email" value=""/></div>
+<div><label>Birth Month</label><select id="month"></select></div>
+<div><label>Birth Day</label><select id="day"></select></div>
+<div><label>Birth Year</label><input id="year" max="2030" min="1900" placeholder="1989" type="number" value="1989"/></div>
+<div><label>Birth Time</label><input id="time" type="time" value="17:07"/></div>
+<div class="form-grid full"><label>Birth Location</label><input id="location" placeholder="City, State/Country" type="text" value="Simi Valley, CA"/></div>
 </div>
-
+<button class="btn" id="calculate" style="margin-top:16px">Calculate My Chart →</button>
+</div>
+<div class="loading" id="loading">
+<div class="spinner"></div>
+<p style="color:var(--muted)">Calculating your chart…</p>
+</div>
+<div class="error" id="error"></div>
+<div class="result" id="result">
+<div class="card">
+<div class="result-header">
+<div class="type-badge" id="typeBadge"></div>
+<h2 id="typeName" style="font-size:1.5rem;margin:8px 0"></h2>
+<p id="profile-preview" style="color:var(--gold);font-size:1.1rem"></p>
+</div>
+<!-- Free preview: Type + Strategy (always visible) -->
+<div class="free-preview">
+<div class="tag">FREE PREVIEW</div>
+<div class="stat-row">
+<div class="stat"><div class="stat-label">Type</div><div class="stat-value" id="strategy"></div></div>
+<div class="stat"><div class="stat-label">Profile</div><div class="stat-value" id="profile"></div></div>
+</div>
+</div>
+<!-- Email gate for full results -->
+<div class="email-gate" id="emailGate">
+<p>🔒 Enter your email to unlock your full chart — Authority, Signature, Incarnation Cross, defined Centers, and Channels.</p>
+<input id="unlockEmail" placeholder="you@example.com" type="email"/>
+<button class="btn" id="unlockBtn">Unlock Full Results →</button>
+<p style="font-size:0.7rem;color:var(--muted);margin-top:8px">We'll send your complete report + a 40-page breakdown. Unsubscribe anytime.</p>
+</div>
+<!-- Full results (hidden until email entered) -->
+<div class="hidden" id="fullResults">
+<div class="stat-row">
+<div class="stat"><div class="stat-label">Authority</div><div class="stat-value" id="authority"></div></div>
+<div class="stat"><div class="stat-label">Signature</div><div class="stat-value" id="signature"></div></div>
+<div class="stat"><div class="stat-label">Not-Self Theme</div><div class="stat-value" id="notSelf"></div></div>
+<div class="stat"><div class="stat-label">Incarnation Cross</div><div class="stat-value" id="cross" style="font-size:0.8rem"></div></div>
+<div class="stat"><div class="stat-label">Definition</div><div class="stat-value" id="definition"></div></div>
+<div class="stat"><div class="stat-label">Defined Centers</div><div class="stat-value" id="centers" style="font-size:0.8rem"></div></div>
+<div class="stat"><div class="stat-label">Channels</div><div class="stat-value" id="channels" style="font-size:0.8rem"></div></div>
+</div>
+<div class="cta-box">
+<p>Want your complete 40+ page chart breakdown with practical experiments and life strategies?</p>
+<a class="cta-link" href="https://humandesignengine.com/reports" id="ctaLink" target="_blank">Get Your Full Report →</a>
+</div>
+</div>
+</div>
+</div>
+<p class="footer">Powered by <a href="https://humandesignengine.com" style="color:var(--gold);text-decoration:none">Human Design Engine</a> — Free tools for self-discovery</p>
+</div>
 <script>
 // Auto-detect API endpoint: try production, fall back to same-origin relative
 const API_HOST = (() => {

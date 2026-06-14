@@ -1,8 +1,8 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
 <title>Affiliate Dashboard | Human Design Engine</title>
 <style>
   :root {
@@ -61,7 +61,7 @@
   footer a{color:var(--gold);text-decoration:none}
 </style>
 <!-- Google Analytics (GA4) -->
-<script async src="https://www.googletagmanager.com/gtag/js?id=G-Q6TPL08VM7"></script>
+<script async="" src="https://www.googletagmanager.com/gtag/js?id=G-Q6TPL08VM7"></script>
 <script>
   window.dataLayer = window.dataLayer || [];
   function gtag(){dataLayer.push(arguments);}
@@ -70,7 +70,24 @@
 </script>
 
 
+
 <script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "Organization",
+  "name": "Human Design Engine",
+  "url": "https://humandesignengine.com",
+  "logo": "https://humandesignengine.com/logo.png",
+  "description": "Human Design Engine — free and premium Human Design charts, reports, and learning resources.",
+  "sameAs": [
+    "https://www.youtube.com/@humandesignengine",
+    "https://www.facebook.com/humandesignengine",
+    "https://www.instagram.com/humandesignengine",
+    "https://x.com/humandesigneng",
+    "https://en.wikipedia.org/wiki/Human_Design"
+  ]
+}
+</script><script type="application/ld+json">
 {
   "@context": "https://schema.org",
   "@type": "BreadcrumbList",
@@ -90,33 +107,18 @@
     {
       "@type": "ListItem",
       "position": 3,
-      "name": "Affiliate Dashboard",
+      "name": "Dashboard",
       "item": "https://humandesignengine.com/affiliates/dashboard/"
     }
   ]
 }
-</script>
-
-<script type="application/ld+json">
-{
-  "@context": "https://schema.org",
-  "@type": "Organization",
-  "name": "Human Design Engine",
-  "url": "https://humandesignengine.com",
-  "logo": "https://humandesignengine.com/logo.png",
-  "description": "Human Design Engine \u2014 free and premium Human Design charts, reports, and learning resources.",
-  "sameAs": [
-    "https://www.youtube.com/@humandesignengine"
-  ]
-}
-</script>
-
-<script type="application/ld+json">
+</script><script type="application/ld+json">
 {
   "@context": "https://schema.org",
   "@type": "Article",
   "headline": "Affiliate Dashboard",
-  "description": "",
+  "description": "Learn about AffiliateDashboard in Human Design.",
+  "image": "https://humandesignengine.com/logo.png",
   "author": {
     "@type": "Organization",
     "name": "Human Design Engine"
@@ -130,82 +132,104 @@
   "dateModified": "2026-06-13",
   "mainEntityOfPage": {
     "@type": "WebPage",
-    "@id": "https://humandesignengine.com/"
+    "@id": "https://humandesignengine.com/affiliates/dashboard/"
   }
 }
+</script><script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  "mainEntity": [
+    {
+      "@type": "Question",
+      "name": "What can I track in the affiliate dashboard?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Your dashboard shows real-time clicks, conversions, earnings, and payout history. Track which of your links and content sources are performing best, see conversion rates by product, and monitor your monthly earnings toward the payout threshold."
+      }
+    },    {
+      "@type": "Question",
+      "name": "When do I get paid?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Payouts are processed monthly for any month where you've earned $50 or more. Payments are sent via PayPal or Stripe on the 15th of the following month. You can track your current balance anytime in the dashboard."
+      }
+    },    {
+      "@type": "Question",
+      "name": "What marketing materials are available?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Your dashboard includes ready-to-use banners, email templates, social media graphics, and swipe copy for each product. We also provide product screenshots, feature lists, and sample testimonials to help you promote effectively."
+      }
+    }
+  ]
+}
 </script>
+
 </head>
 <body>
-
 <nav>
-  <div class="nav-inner">
-    <a href="/" class="nav-logo">🧬 <span>Human Design Engine</span></a>
-    <div class="nav-links">
-      <a href="/">Home</a>
-      <a href="/landing-reports.html">Reports</a>
-      <a href="/affiliates.html">Affiliates</a>
-    </div>
-  </div>
-</nav>
-
-<div class="container">
-  <h1>Affiliate <span>Dashboard</span></h1>
-  <p class="sub">Enter your referral code to see your stats.</p>
-
-  <div class="code-input-card">
-    <label>Your Referral Code</label>
-    <div class="code-input-row">
-      <input type="text" id="codeInput" placeholder="e.g. a1b2c3d4" maxlength="64" onkeydown="if(event.key==='Enter')loadStats()">
-      <button onclick="loadStats()">View Stats →</button>
-    </div>
-    <p style="font-size:0.78rem;color:var(--text-muted);margin-top:12px">Don't have a code? <a href="signup.html" style="color:var(--gold-light)">Sign up here</a>.</p>
-  </div>
-
-  <div class="loading" id="loading">Loading your stats...</div>
-  <div class="error" id="error"></div>
-
-  <div class="stats-grid" id="statsGrid">
-    <div class="stat-card">
-      <div class="stat-value" id="clicks">—</div>
-      <div class="stat-label">Total Clicks</div>
-    </div>
-    <div class="stat-card">
-      <div class="stat-value green" id="conversions">—</div>
-      <div class="stat-label">Conversions</div>
-    </div>
-    <div class="stat-card">
-      <div class="stat-value green" id="earnings">—</div>
-      <div class="stat-label">Total Earnings</div>
-    </div>
-  </div>
-
-  <div class="info-card" id="infoCard">
-    <h3>📋 Account Details</h3>
-    <div class="info-row">
-      <span class="info-label">Name</span>
-      <span class="info-value" id="infoName">—</span>
-    </div>
-    <div class="info-row">
-      <span class="info-label">Email</span>
-      <span class="info-value" id="infoEmail">—</span>
-    </div>
-    <div class="info-row">
-      <span class="info-label">Website</span>
-      <span class="info-value" id="infoWebsite">—</span>
-    </div>
-    <div class="info-row">
-      <span class="info-label">Conversion Rate</span>
-      <span class="info-value" id="infoRate">—</span>
-    </div>
-    <h3 style="margin-top:20px">🔗 Your Referral Link</h3>
-    <div class="ref-link-box" id="infoRefLink">—</div>
-  </div>
+<div class="nav-inner">
+<a class="nav-logo" href="/">🧬 <span>Human Design Engine</span></a>
+<div class="nav-links">
+<a href="/">Home</a>
+<a href="/landing-reports.html">Reports</a>
+<a href="/affiliates.html">Affiliates</a>
 </div>
-
+</div>
+</nav>
+<div class="container">
+<h1>Affiliate <span>Dashboard</span></h1>
+<p class="sub">Enter your referral code to see your stats.</p>
+<div class="code-input-card">
+<label>Your Referral Code</label>
+<div class="code-input-row">
+<input id="codeInput" maxlength="64" onkeydown="if(event.key==='Enter')loadStats()" placeholder="e.g. a1b2c3d4" type="text"/>
+<button onclick="loadStats()">View Stats →</button>
+</div>
+<p style="font-size:0.78rem;color:var(--text-muted);margin-top:12px">Don't have a code? <a href="signup.html" style="color:var(--gold-light)">Sign up here</a>.</p>
+</div>
+<div class="loading" id="loading">Loading your stats...</div>
+<div class="error" id="error"></div>
+<div class="stats-grid" id="statsGrid">
+<div class="stat-card">
+<div class="stat-value" id="clicks">—</div>
+<div class="stat-label">Total Clicks</div>
+</div>
+<div class="stat-card">
+<div class="stat-value green" id="conversions">—</div>
+<div class="stat-label">Conversions</div>
+</div>
+<div class="stat-card">
+<div class="stat-value green" id="earnings">—</div>
+<div class="stat-label">Total Earnings</div>
+</div>
+</div>
+<div class="info-card" id="infoCard">
+<h3>📋 Account Details</h3>
+<div class="info-row">
+<span class="info-label">Name</span>
+<span class="info-value" id="infoName">—</span>
+</div>
+<div class="info-row">
+<span class="info-label">Email</span>
+<span class="info-value" id="infoEmail">—</span>
+</div>
+<div class="info-row">
+<span class="info-label">Website</span>
+<span class="info-value" id="infoWebsite">—</span>
+</div>
+<div class="info-row">
+<span class="info-label">Conversion Rate</span>
+<span class="info-value" id="infoRate">—</span>
+</div>
+<h3 style="margin-top:20px">🔗 Your Referral Link</h3>
+<div class="ref-link-box" id="infoRefLink">—</div>
+</div>
+</div>
 <footer>
-  <p>Powered by <a href="https://github.com/nousresearch/OpenHumanDesignMCP">OpenHumanDesignMCP</a> · AGPLv3</p>
+<p>Powered by <a href="https://github.com/nousresearch/OpenHumanDesignMCP">OpenHumanDesignMCP</a> · AGPLv3</p>
 </footer>
-
 <script>
 async function loadStats() {
   const code = document.getElementById('codeInput').value.trim();
