@@ -368,6 +368,34 @@
     .gate-grid { grid-template-columns: 1fr; }
     .footer-inner { flex-direction: column; text-align: center; }
   }
+
+  /* AEO Quick Answer Block */
+  .aeo-quick-answer {
+    background: linear-gradient(135deg, rgba(201,168,76,0.08) 0%, rgba(201,168,76,0.03) 100%);
+    border-left: 3px solid var(--gold, #c9a84c);
+    border-radius: var(--radius, 8px);
+    padding: 16px 20px;
+    margin: 24px 0 20px 0;
+    font-size: 0.95rem;
+    line-height: 1.6;
+  }
+  .aeo-quick-answer .aeo-label {
+    display: inline-block;
+    font-size: 0.72rem;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: var(--gold, #c9a84c);
+    font-weight: 700;
+    margin-bottom: 6px;
+    background: rgba(201,168,76,0.1);
+    padding: 2px 8px;
+    border-radius: 3px;
+  }
+  .aeo-quick-answer .aeo-text {
+    color: var(--text-primary, #e2e8f0);
+    font-weight: 400;
+    margin: 0;
+  }
 </style>
 <!-- Google Analytics (GA4) -->
 <script async src="https://www.googletagmanager.com/gtag/js?id=G-Q6TPL08VM7"></script>
@@ -458,6 +486,12 @@
     <a href="/">Home</a> <span>›</span>
     Human Design Gates
   </div>
+
+  <div class="aeo-quick-answer" itemscope itemtype="https://schema.org/WebContent">
+    <div class="aeo-label">Quick Answer</div>
+    <p class="aeo-text">Explore all 64 Human Design gates. Each gate explained with I-Ching hexagram, circuit group, center location, meaning, gift, and shadow. Comprehensive gate reference from Human Design Engine.</p>
+  </div>
+
 
   <section class="gate-index-hero">
     <h1>The 64 Gates of Human Design</h1>

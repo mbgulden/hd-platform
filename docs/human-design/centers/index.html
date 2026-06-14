@@ -372,6 +372,34 @@
     color: var(--text-muted);
     line-height: 1.5;
   }
+
+  /* AEO Quick Answer Block */
+  .aeo-quick-answer {
+    background: linear-gradient(135deg, rgba(201,168,76,0.08) 0%, rgba(201,168,76,0.03) 100%);
+    border-left: 3px solid var(--gold, #c9a84c);
+    border-radius: var(--radius, 8px);
+    padding: 16px 20px;
+    margin: 24px 0 20px 0;
+    font-size: 0.95rem;
+    line-height: 1.6;
+  }
+  .aeo-quick-answer .aeo-label {
+    display: inline-block;
+    font-size: 0.72rem;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: var(--gold, #c9a84c);
+    font-weight: 700;
+    margin-bottom: 6px;
+    background: rgba(201,168,76,0.1);
+    padding: 2px 8px;
+    border-radius: 3px;
+  }
+  .aeo-quick-answer .aeo-text {
+    color: var(--text-primary, #e2e8f0);
+    font-weight: 400;
+    margin: 0;
+  }
 </style>
 <!-- Google Analytics (GA4) -->
 <script async="" src="https://www.googletagmanager.com/gtag/js?id=G-Q6TPL08VM7"></script>
@@ -467,6 +495,12 @@
 <a href="/">Home</a> <span>›</span>
     Centers
   </div>
+
+  <div class="aeo-quick-answer" itemscope itemtype="https://schema.org/WebContent">
+    <div class="aeo-label">Quick Answer</div>
+    <p class="aeo-text">Explore all 9 Human Design centers. Each center explained with function, gates, channels, and the difference between defined and undefined. Comprehensive center reference from Human Design Engine.</p>
+  </div>
+
 <div class="page-header">
 <h1>The 9 Centers of Human Design</h1>
 <p>Every Human Design bodygraph contains 9 geometric centers. Some are defined (colored in), others are undefined (white). Defined centers represent consistent, reliable energy — your inherent gifts and fixed way of operating. Undefined centers are where you take in, amplify, and gain wisdom from the world around you.</p>

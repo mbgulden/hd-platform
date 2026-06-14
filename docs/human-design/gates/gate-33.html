@@ -244,6 +244,35 @@
     color: var(--text-primary);
   }
 
+
+  /* AEO Quick Answer Block */
+  .aeo-quick-answer {
+    background: linear-gradient(135deg, rgba(201,168,76,0.08) 0%, rgba(201,168,76,0.03) 100%);
+    border-left: 3px solid var(--gold, #c9a84c);
+    border-radius: var(--radius, 8px);
+    padding: 16px 20px;
+    margin: 24px 0 20px 0;
+    font-size: 0.95rem;
+    line-height: 1.6;
+  }
+  .aeo-quick-answer .aeo-label {
+    display: inline-block;
+    font-size: 0.72rem;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: var(--gold, #c9a84c);
+    font-weight: 700;
+    margin-bottom: 6px;
+    background: rgba(201,168,76,0.1);
+    padding: 2px 8px;
+    border-radius: 3px;
+  }
+  .aeo-quick-answer .aeo-text {
+    color: var(--text-primary, #e2e8f0);
+    font-weight: 400;
+    margin: 0;
+  }
+
   /* Content */
   .gate-content {
     background: var(--card-bg);
@@ -526,6 +555,11 @@
     <h1>Gate 33: Privacy</h1>
     <p class="gate-subtitle">I-Ching Hexagram 33: Retreat — Collective Sensing Circuit</p>
   </section>
+
+  <div class="aeo-quick-answer" itemscope itemtype="https://schema.org/WebContent">
+    <div class="aeo-label">Quick Answer</div>
+    <p class="aeo-text">I-Ching Hexagram 33, Collective Sensing circuit. Gate 33 is the energy of privacy, retreat, and the distillation of experience into wisdom. It represents the need to withdraw periodically to process and i...</p>
+  </div>
 
   <div class="gate-info-grid">
     <div class="gate-info-card">
