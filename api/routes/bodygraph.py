@@ -25,6 +25,13 @@ ENGINE_PATH = os.environ.get(
 )
 sys.path.insert(0, ENGINE_PATH)
 
+BODYGRAPH_PATH = os.environ.get(
+    "BODYGRAPH_PATH", "/home/ubuntu/work/hd-bodygraph"
+)
+if BODYGRAPH_PATH not in sys.path:
+    sys.path.insert(0, BODYGRAPH_PATH)
+
+import bridge
 from matrix_mapper import GATE_NAMES, GATE_CENTER, CHANNELS
 
 CENTER_COLORS = {
@@ -74,6 +81,35 @@ class BodygraphResponse(BaseModel):
     success: bool
     endpoint: str = "/v1/bodygraph"
     data: Optional[Dict[str, Any]] = None
+    error: Optional[str] = None
+
+
+class BodygraphGenerateRequest(BaseModel):
+    name: str = Field(..., min_length=1, max_length=255)
+    year: int = Field(..., ge=1900, le=2100)
+    month: int = Field(..., ge=1, le=12)
+    day: int = Field(..., ge=1, le=31)
+    hour: int = Field(..., ge=0, le=23)
+    minute: int = Field(0, ge=0, le=59)
+    location: Optional[str] = Field(None, max_length=500)
+    lat: Optional[float] = Field(None, ge=-90.0, le=90.0)
+    lon: Optional[float] = Field(None, ge=-180.0, le=180.0)
+    timezone: Optional[str] = Field(None, max_length=100)
+    theme: Optional[str] = Field("canonical", max_length=50)
+
+    @model_validator(mode="after")
+    def _check_coords(self) -> "BodygraphGenerateRequest":
+        if (self.lat is None) != (self.lon is None):
+            raise ValueError("lat and lon must both be provided or both omitted")
+        return self
+
+
+class BodygraphGenerateResponse(BaseModel):
+    success: bool
+    endpoint: str = "/v1/bodygraph/generate"
+    svg: Optional[str] = None
+    metadata: Optional[Dict[str, Any]] = None
+    interpretation: Optional[str] = None
     error: Optional[str] = None
 
 
@@ -164,9 +200,9 @@ def _build_bodygraph_payload(chart: Dict[str, Any]) -> Dict[str, Any]:
         }
 
     # ── Channels ──
-    channels: Dict[str, Dict[str, Any]] = {}
-    for channel_id, ch_data in CHANNELS.items():
-        gate_a, gate_b = ch_data["gates"]
+    channels: Dict[Any, Dict[str, Any]] = {}
+    for channel_id, ch_name in CHANNELS.items():
+        gate_a, gate_b = channel_id
         both_active = gate_a in all_active_gates and gate_b in all_active_gates
         one_active = (gate_a in all_active_gates) != (gate_b in all_active_gates)
         is_defined = (gate_a, gate_b) in defined_channel_pairs
@@ -183,7 +219,7 @@ def _build_bodygraph_payload(chart: Dict[str, Any]) -> Dict[str, Any]:
         ch_entry: Dict[str, Any] = {
             "state": state,
             "gates": [gate_a, gate_b],
-            "name": ch_data.get("name", ""),
+            "name": ch_name,
         }
         if state == "hanging":
             ch_entry["hanging_gate"] = gate_a if gate_a in all_active_gates else gate_b
@@ -231,16 +267,24 @@ async def bodygraph(
     except Exception as exc:
         logger.exception("Bodygraph computation failed")
         raise HTTPException(status_code=status.HTTP_502_BAD_GATEWAY,
-                           detail=f"Engine unavailable: {exc}") from exc
+                            detail=f"Engine unavailable: {exc}") from exc
 
     if result.get("error"):
         return BodygraphResponse(success=False, error=result.get("detail", "Unknown error"))
 
     payload = _build_bodygraph_payload(result)
+
+    # Generate interpretation
+    try:
+        from shared.llm_interpreter import generate_interpretation
+        birth_data = body.model_dump()
+        interpretation, _ = await generate_interpretation(result, birth_data)
+        payload["interpretation"] = interpretation
+    except Exception as exc:
+        logger.exception("LLM interpretation failed")
+        payload["interpretation"] = None
+
     return BodygraphResponse(success=True, data=payload)
-
-
-# ── No-auth test endpoint ─────────────────────────────────────────────
 
 
 @router.post("/noauth", response_model=BodygraphResponse, status_code=status.HTTP_200_OK)
@@ -255,10 +299,114 @@ async def bodygraph_noauth(body: BodygraphRequest) -> BodygraphResponse:
     except Exception as exc:
         logger.exception("Bodygraph (noauth) failed")
         raise HTTPException(status_code=status.HTTP_502_BAD_GATEWAY,
-                           detail=f"Engine unavailable: {exc}") from exc
+                            detail=f"Engine unavailable: {exc}") from exc
 
     if result.get("error"):
         return BodygraphResponse(success=False, error=result.get("detail", "Unknown error"))
 
     payload = _build_bodygraph_payload(result)
+
+    # Generate interpretation
+    try:
+        from shared.llm_interpreter import generate_interpretation
+        birth_data = body.model_dump()
+        interpretation, _ = await generate_interpretation(result, birth_data)
+        payload["interpretation"] = interpretation
+    except Exception as exc:
+        logger.exception("LLM interpretation failed")
+        payload["interpretation"] = None
+
     return BodygraphResponse(success=True, data=payload)
+
+
+@router.post("/generate", response_model=BodygraphGenerateResponse, status_code=status.HTTP_200_OK)
+async def bodygraph_generate(
+    body: BodygraphGenerateRequest,
+    _api_key: str = Depends(require_api_key),
+) -> BodygraphGenerateResponse:
+    try:
+        result = await compute_natal_chart(
+            name=body.name, year=body.year, month=body.month, day=body.day,
+            hour=body.hour, minute=body.minute,
+            lat=body.lat or 0.0, lon=body.lon or 0.0,
+            location=body.location, timezone=body.timezone,
+        )
+    except Exception as exc:
+        logger.exception("Bodygraph generation failed")
+        raise HTTPException(status_code=status.HTTP_502_BAD_GATEWAY,
+                            detail=f"Engine unavailable: {exc}") from exc
+
+    if result.get("error"):
+        return BodygraphGenerateResponse(success=False, error=result.get("detail", "Unknown error"))
+
+    try:
+        gonzih_data = bridge.chart_to_gonzih(result)
+        svg = bridge.render_svg(gonzih_data, theme=body.theme or "canonical")
+        if not svg:
+            return BodygraphGenerateResponse(success=False, error="Failed to render SVG bodygraph")
+    except Exception as exc:
+        logger.exception("Bodygraph rendering failed")
+        return BodygraphGenerateResponse(success=False, error=f"Rendering failed: {exc}")
+
+    # Generate interpretation
+    try:
+        from shared.llm_interpreter import generate_interpretation
+        birth_data = body.model_dump()
+        interpretation, _ = await generate_interpretation(result, birth_data)
+    except Exception as exc:
+        logger.exception("LLM interpretation failed")
+        interpretation = None
+
+    return BodygraphGenerateResponse(
+        success=True,
+        endpoint="/v1/bodygraph/generate",
+        svg=svg,
+        metadata=gonzih_data,
+        interpretation=interpretation,
+    )
+
+
+@router.post("/generate/noauth", response_model=BodygraphGenerateResponse, status_code=status.HTTP_200_OK)
+async def bodygraph_generate_noauth(
+    body: BodygraphGenerateRequest,
+) -> BodygraphGenerateResponse:
+    try:
+        result = await compute_natal_chart(
+            name=body.name, year=body.year, month=body.month, day=body.day,
+            hour=body.hour, minute=body.minute,
+            lat=body.lat or 0.0, lon=body.lon or 0.0,
+            location=body.location, timezone=body.timezone,
+        )
+    except Exception as exc:
+        logger.exception("Bodygraph generation failed")
+        raise HTTPException(status_code=status.HTTP_502_BAD_GATEWAY,
+                            detail=f"Engine unavailable: {exc}") from exc
+
+    if result.get("error"):
+        return BodygraphGenerateResponse(success=False, error=result.get("detail", "Unknown error"))
+
+    try:
+        gonzih_data = bridge.chart_to_gonzih(result)
+        svg = bridge.render_svg(gonzih_data, theme=body.theme or "canonical")
+        if not svg:
+            return BodygraphGenerateResponse(success=False, error="Failed to render SVG bodygraph")
+    except Exception as exc:
+        logger.exception("Bodygraph rendering failed")
+        return BodygraphGenerateResponse(success=False, error=f"Rendering failed: {exc}")
+
+    # Generate interpretation
+    try:
+        from shared.llm_interpreter import generate_interpretation
+        birth_data = body.model_dump()
+        interpretation, _ = await generate_interpretation(result, birth_data)
+    except Exception as exc:
+        logger.exception("LLM interpretation failed")
+        interpretation = None
+
+    return BodygraphGenerateResponse(
+        success=True,
+        endpoint="/v1/bodygraph/generate",
+        svg=svg,
+        metadata=gonzih_data,
+        interpretation=interpretation,
+    )
