@@ -1,0 +1,670 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Human Design Somatic Coaching with Becca | Human Design Engine</title>
+  <meta name="description" content="1:1 Human Design coaching and somatic deconditioning with Becca. Release open center conditioning, balance your nervous system, and align with your design.">
+
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Outfit:wght@400;600;800&display=swap" rel="stylesheet">
+
+  <!-- Google Analytics (GA4) -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-Q6TPL08VM7"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+    gtag('config', 'G-Q6TPL08VM7');
+  </script>
+
+  <style>
+    :root {
+      --navy-deep: #0f0f1a;
+      --navy: #15152a;
+      --navy-mid: #1c1c3a;
+      --navy-light: #24244a;
+      
+      --gold: #c9a84c;
+      --gold-light: #e0c468;
+      --gold-bright: #d4af37;
+      --gold-soft: rgba(201,168,76,0.15);
+      
+      --cyan: #00d4ff;
+      --cyan-light: #33ddff;
+      --cyan-soft: rgba(0,212,255,0.15);
+      
+      --text-primary: #e8e8f0;
+      --text-secondary: #a0a0c0;
+      --text-muted: #6e6e8c;
+      
+      --card-bg: rgba(21,21,42,0.75);
+      --card-border: rgba(201,168,76,0.15);
+      --card-border-cyan: rgba(0,212,255,0.15);
+      
+      --radius: 12px;
+      --radius-lg: 20px;
+      --transition: 0.25s cubic-bezier(0.4,0,0.2,1);
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    html {
+      scroll-behavior: smooth;
+    }
+
+    body {
+      background-color: var(--navy-deep);
+      color: var(--text-primary);
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+      line-height: 1.6;
+      min-height: 100vh;
+      position: relative;
+      overflow-x: hidden;
+    }
+
+    /* Ambient background glow */
+    body::before {
+      content: '';
+      position: fixed;
+      inset: 0;
+      background: 
+        radial-gradient(ellipse at 15% 15%, rgba(201, 168, 76, 0.04) 0%, transparent 60%),
+        radial-gradient(ellipse at 85% 85%, rgba(0, 212, 255, 0.04) 0%, transparent 60%);
+      pointer-events: none;
+      z-index: -1;
+    }
+
+    h1, h2, h3, h4 {
+      font-family: 'Outfit', sans-serif;
+      letter-spacing: -0.02em;
+    }
+
+    /* ── Navigation ── */
+    nav {
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      background: rgba(15, 15, 26, 0.9);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      border-bottom: 1px solid rgba(201, 168, 76, 0.1);
+      padding: 0 20px;
+    }
+
+    .nav-inner {
+      max-width: 1100px;
+      margin: 0 auto;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      height: 64px;
+    }
+
+    .nav-logo {
+      color: var(--text-primary);
+      text-decoration: none;
+      font-weight: 700;
+      font-size: 1.2rem;
+      letter-spacing: -0.02em;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .nav-logo span {
+      color: var(--gold-light);
+    }
+
+    .nav-links a {
+      color: var(--text-secondary);
+      text-decoration: none;
+      font-size: 0.9rem;
+      margin-left: 24px;
+      transition: var(--transition);
+    }
+
+    .nav-links a:hover {
+      color: var(--gold-light);
+    }
+
+    /* ── Hero Section ── */
+    header.hero {
+      padding: 80px 24px 60px 24px;
+      max-width: 1100px;
+      margin: 0 auto;
+    }
+
+    .hero-grid {
+      display: grid;
+      grid-template-columns: 1.2fr 0.8fr;
+      gap: 48px;
+      align-items: center;
+    }
+
+    .hero-content {
+      text-align: left;
+    }
+
+    .coaching-badge {
+      display: inline-block;
+      font-size: 0.75rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      background: var(--gold-soft);
+      color: var(--gold-light);
+      padding: 6px 14px;
+      border-radius: 20px;
+      margin-bottom: 24px;
+    }
+
+    .hero h1 {
+      font-size: clamp(2.4rem, 5.5vw, 3.8rem);
+      font-weight: 800;
+      line-height: 1.15;
+      margin-bottom: 24px;
+    }
+
+    .hero h1 span {
+      background: linear-gradient(135deg, var(--gold-light), var(--cyan));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    .hero-subhead {
+      font-size: clamp(1.05rem, 2vw, 1.25rem);
+      color: var(--text-secondary);
+      margin-bottom: 24px;
+      line-height: 1.6;
+    }
+
+    .bio-text {
+      color: var(--text-secondary);
+      font-size: 0.98rem;
+      line-height: 1.7;
+      margin-bottom: 32px;
+    }
+
+    .hero-visual {
+      position: relative;
+      border-radius: var(--radius-lg);
+      overflow: hidden;
+      border: 1px solid var(--card-border);
+      box-shadow: 0 8px 32px rgba(6, 13, 26, 0.4);
+      aspect-ratio: 1;
+    }
+
+    .hero-visual img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+
+    /* ── Offerings Section ── */
+    .offerings-section {
+      padding: 80px 24px;
+      max-width: 1100px;
+      margin: 0 auto;
+    }
+
+    .section-title {
+      text-align: center;
+      font-size: clamp(2rem, 4.5vw, 2.5rem);
+      margin-bottom: 12px;
+      background: linear-gradient(135deg, var(--text-primary), var(--cyan-light));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      letter-spacing: -0.02em;
+    }
+
+    .section-subtitle {
+      text-align: center;
+      color: var(--text-secondary);
+      max-width: 600px;
+      margin: 0 auto 48px auto;
+      font-size: 0.95rem;
+    }
+
+    .offerings-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+      gap: 32px;
+      align-items: stretch;
+    }
+
+    .offering-card {
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      border-radius: var(--radius-lg);
+      padding: 44px 36px;
+      position: relative;
+      display: flex;
+      flex-direction: column;
+      transition: var(--transition);
+    }
+
+    .offering-card:hover {
+      transform: translateY(-4px);
+      border-color: rgba(201, 168, 76, 0.35);
+      box-shadow: 0 16px 48px rgba(6, 13, 26, 0.6);
+    }
+
+    .offering-card.popular {
+      border-color: var(--gold);
+      box-shadow: 0 4px 24px rgba(201, 168, 76, 0.06);
+    }
+
+    .offering-card.popular::before {
+      content: '';
+      position: absolute;
+      inset: -1px;
+      background: linear-gradient(135deg, var(--gold), var(--cyan));
+      border-radius: var(--radius-lg);
+      z-index: -1;
+      opacity: 0.25;
+      pointer-events: none;
+    }
+
+    .offering-card .badge {
+      align-self: flex-start;
+      font-size: 0.72rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      padding: 6px 12px;
+      border-radius: 20px;
+      background: var(--navy-light);
+      color: var(--text-primary);
+      margin-bottom: 20px;
+    }
+
+    .offering-card.popular .badge {
+      background: var(--gold);
+      color: var(--navy-deep);
+    }
+
+    .offering-card h3 {
+      font-size: 1.5rem;
+      margin-bottom: 8px;
+      color: var(--text-primary);
+    }
+
+    .offering-card .price {
+      font-size: 3rem;
+      font-weight: 800;
+      color: var(--text-primary);
+      margin-bottom: 16px;
+      display: flex;
+      align-items: baseline;
+    }
+
+    .offering-card .price::after {
+      content: ' USD';
+      font-size: 1rem;
+      font-weight: 500;
+      color: var(--text-muted);
+      margin-left: 6px;
+    }
+
+    .offering-card .description {
+      font-size: 0.95rem;
+      color: var(--text-secondary);
+      margin-bottom: 28px;
+      line-height: 1.5;
+    }
+
+    .offering-card .features {
+      list-style: none;
+      margin-bottom: 36px;
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+    }
+
+    .offering-card .features li {
+      font-size: 0.9rem;
+      color: var(--text-secondary);
+      display: flex;
+      align-items: flex-start;
+      gap: 10px;
+    }
+
+    .offering-card .features li::before {
+      content: '✓';
+      color: var(--gold-light);
+      font-weight: 700;
+      flex-shrink: 0;
+    }
+
+    .offering-card.popular .features li::before {
+      color: var(--cyan);
+    }
+
+    .btn {
+      display: inline-block;
+      padding: 14px 28px;
+      border-radius: var(--radius);
+      font-size: 1rem;
+      font-weight: 700;
+      text-decoration: none;
+      cursor: pointer;
+      transition: var(--transition);
+      border: none;
+      text-align: center;
+    }
+
+    .btn-primary {
+      background: linear-gradient(135deg, var(--gold-bright), var(--gold));
+      color: var(--navy-deep);
+    }
+
+    .btn-primary:hover {
+      box-shadow: 0 6px 30px rgba(201, 168, 76, 0.4);
+      transform: translateY(-1px);
+    }
+
+    .btn-secondary {
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      color: var(--text-primary);
+    }
+
+    .btn-secondary:hover {
+      background: rgba(255, 255, 255, 0.1);
+      border-color: rgba(255, 255, 255, 0.2);
+    }
+
+    .offering-card .btn {
+      margin-top: auto;
+      width: 100%;
+    }
+
+    /* ── Discovery Section ── */
+    .discovery-section {
+      padding: 80px 24px;
+      max-width: 1100px;
+      margin: 0 auto;
+    }
+
+    .discovery-box {
+      background: linear-gradient(135deg, rgba(201, 168, 76, 0.08), rgba(0, 212, 255, 0.05));
+      border: 1px solid var(--card-border);
+      border-radius: var(--radius-lg);
+      padding: 48px;
+      text-align: center;
+      position: relative;
+      box-shadow: 0 8px 32px rgba(6, 13, 26, 0.4);
+    }
+
+    .discovery-box h2 {
+      font-size: 1.8rem;
+      margin-bottom: 12px;
+      color: var(--gold-light);
+    }
+
+    .discovery-box p {
+      color: var(--text-secondary);
+      font-size: 1rem;
+      max-width: 650px;
+      margin: 0 auto 32px auto;
+      line-height: 1.6;
+    }
+
+    .discovery-box .btn {
+      min-width: 250px;
+    }
+
+    /* ── Cross Links ── */
+    .cross-link-section {
+      padding: 80px 24px;
+      background: var(--navy-deep);
+      border-top: 1px solid rgba(201, 168, 76, 0.08);
+    }
+
+    .cross-link-container {
+      max-width: 1000px;
+      margin: 0 auto;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 32px;
+    }
+
+    .cross-link-card {
+      background: rgba(21, 21, 42, 0.4);
+      border: 1px solid rgba(201, 168, 76, 0.08);
+      border-radius: var(--radius-lg);
+      padding: 40px;
+      display: flex;
+      flex-direction: column;
+      transition: var(--transition);
+    }
+
+    .cross-link-card:hover {
+      border-color: rgba(201, 168, 76, 0.2);
+    }
+
+    .cross-link-card h3 {
+      font-size: 1.3rem;
+      color: var(--gold-light);
+      margin-bottom: 12px;
+    }
+
+    .cross-link-card p {
+      font-size: 0.95rem;
+      color: var(--text-secondary);
+      line-height: 1.6;
+      margin-bottom: 24px;
+      flex-grow: 1;
+    }
+
+    .cross-link-card .link-btn {
+      align-self: flex-start;
+      color: var(--cyan);
+      text-decoration: none;
+      font-weight: 700;
+      font-size: 0.95rem;
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      transition: var(--transition);
+    }
+
+    .cross-link-card .link-btn:hover {
+      color: var(--cyan-light);
+      transform: translateX(4px);
+    }
+
+    /* ── Footer ── */
+    footer {
+      text-align: center;
+      padding: 48px 24px;
+      color: var(--text-muted);
+      font-size: 0.85rem;
+      border-top: 1px solid rgba(201, 168, 76, 0.08);
+      background: #0b0b14;
+      position: relative;
+      z-index: 1;
+    }
+
+    .footer-inner {
+      max-width: 1000px;
+      margin: 0 auto;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 16px;
+    }
+
+    .footer-links {
+      display: flex;
+      gap: 24px;
+    }
+
+    .footer-links a {
+      color: var(--text-muted);
+      text-decoration: none;
+      transition: var(--transition);
+    }
+
+    .footer-links a:hover {
+      color: var(--gold-light);
+    }
+
+    /* ── Responsive adjustments ── */
+    @media (max-width: 768px) {
+      .hero-grid {
+        grid-template-columns: 1fr;
+        gap: 32px;
+      }
+      .hero-visual {
+        max-width: 400px;
+        margin: 0 auto;
+      }
+      .offerings-grid, .cross-link-container {
+        grid-template-columns: 1fr;
+      }
+      .discovery-box {
+        padding: 32px 20px;
+      }
+      .nav-inner {
+        flex-direction: column;
+        height: auto;
+        padding: 16px 0;
+        gap: 12px;
+      }
+      .nav-links a {
+        margin: 0 12px;
+      }
+      .footer-inner {
+        flex-direction: column;
+        text-align: center;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Navigation -->
+  <nav aria-label="Main Navigation">
+    <div class="nav-inner">
+      <a class="nav-logo" href="/">🧬 <span>Human Design Engine</span></a>
+      <div class="nav-links">
+        <a href="/">Home</a>
+        <a href="/belief-deprogrammer/">Belief Workbook</a>
+        <a href="/buy-report.html">Reports</a>
+      </div>
+    </div>
+  </nav>
+
+  <main>
+    <!-- Hero Section -->
+    <header class="hero">
+      <div class="hero-grid">
+        <div class="hero-content">
+          <div class="coaching-badge">1:1 Somatic Coaching</div>
+          <h1>Transform Your Design.<br><span>Change Your Life.</span></h1>
+          <p class="hero-subhead">
+            Integrate your chart mapping with deep somatic nervous system regulation to step out of mental loops and into your authentic path.
+          </p>
+          <p class="bio-text">
+            Becca is a somatic practitioner, intuitive guide, and nervous system coach. She helps clients bridge the gap between cognitive understanding of their Human Design and the physical, somatic integration required to live it. By combining Traditional Chinese Medicine meridian principles, polyvagal nervous system regulation, and deep, root-level inquiry, Becca guides you to identify and release the conditioning stored within your body’s centers. Her sessions are practical, confrontational, and deeply healing.
+          </p>
+          <a href="#offerings-section" class="btn btn-primary">View Coaching Programs →</a>
+        </div>
+        <div class="hero-visual">
+          <img src="./becca-portrait.jpg" alt="Becca, Somatic Coach and Human Design Practitioner">
+        </div>
+      </div>
+    </header>
+
+    <!-- Offerings Section -->
+    <section id="offerings-section" class="offerings-section" aria-labelledby="offerings-title">
+      <h2 id="offerings-title" class="section-title">Coaching Programs</h2>
+      <p class="section-subtitle">Select the level of support that aligns with your current path to deconditioning.</p>
+      
+      <div class="offerings-grid">
+        <!-- Single Session Card -->
+        <div class="offering-card">
+          <div class="badge">1:1 Coaching</div>
+          <h3>Somatic Deconditioning Session</h3>
+          <div class="price">250</div>
+          <p class="description">Perfect for tackling a specific pattern, center block, or checking in on your current alignment journey.</p>
+          <ul class="features">
+            <li>75–90 Minute Intensive Session</li>
+            <li>Custom Open Center Somatic Assessment</li>
+            <li>autonomic nervous system mapping</li>
+            <li>Actionable daily somatic protocol</li>
+            <li>Full video recording of our session</li>
+          </ul>
+          <a href="https://cal.com/Michael-gulden/coaching" target="_blank" rel="noopener" class="btn btn-primary">Book Now →</a>
+        </div>
+        
+        <!-- Package Card -->
+        <div class="offering-card popular">
+          <div class="badge">Intensive Journey</div>
+          <h3>4-Session Transformation Package</h3>
+          <div class="price">997</div>
+          <p class="description">A deep-dive structure to dismantle chronic survival patterns, reset your nervous system, and cement boundaries.</p>
+          <ul class="features">
+            <li>4 x 75–90 Minute Private Sessions</li>
+            <li>Deep-dive body and meridian analysis</li>
+            <li>Polyvagal recalibration roadmap</li>
+            <li>Daily email/Slack support for integration</li>
+            <li>Coordinating custom somatic practice toolbox</li>
+            <li>Save $103 compared to single sessions</li>
+          </ul>
+          <a href="mailto:michael@growthwebdev.com?subject=Becca%20Coaching%20Package" class="btn btn-secondary">Email us to get started →</a>
+        </div>
+      </div>
+    </section>
+
+    <!-- Discovery Call Section -->
+    <section class="discovery-section" aria-labelledby="discovery-title">
+      <div class="discovery-box">
+        <h2 id="discovery-title">Not Sure Where to Start?</h2>
+        <p>
+          Start with a free 30-minute discovery call. We'll look at your chart's open centers, discuss the blocks you're experiencing, and see if somatic coaching is the right fit for your design.
+        </p>
+        <a href="https://cal.com/Michael-gulden" target="_blank" rel="noopener" class="btn btn-primary">Book Free Discovery Call →</a>
+      </div>
+    </section>
+
+    <!-- Cross-links Section -->
+    <section class="cross-link-section" aria-label="Other Resources">
+      <div class="cross-link-container">
+        <div class="cross-link-card">
+          <h3>Limiting Belief Workbook</h3>
+          <p>Prefer to work at your own pace? Get a personalized workbook that isolates 300 to 1,200+ limiting beliefs based on your open centers.</p>
+          <a href="/belief-deprogrammer/" class="link-btn">Unlock your deconditioning workbook →</a>
+        </div>
+        
+        <div class="cross-link-card">
+          <h3>Full Blueprint Report</h3>
+          <p>Generate a complete personal Human Design blueprint report computed using verified calculations to understand your full chart dynamics.</p>
+          <a href="/buy-report.html" class="link-btn">Buy your chart report →</a>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <!-- Footer -->
+  <footer>
+    <div class="footer-inner">
+      <p>© 2026 Human Design Engine. All rights reserved.</p>
+      <div class="footer-links">
+        <a href="/privacy.html">Privacy</a>
+        <a href="/terms.html">Terms</a>
+      </div>
+    </div>
+  </footer>
+
+</body>
+</html>
