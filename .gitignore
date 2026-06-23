@@ -6,6 +6,9 @@ __pycache__/
 dist/
 build/
 
+# OS files
+.DS_Store
+
 # wrangler files
 .wrangler
 .dev.vars*
