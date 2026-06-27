@@ -164,9 +164,11 @@ def _build_bodygraph_payload(chart: Dict[str, Any]) -> Dict[str, Any]:
         }
 
     # ── Channels ──
+    # CHANNELS in matrix_mapper is a flat { (gate_a, gate_b): "channel_name" } dict.
+    # Iterate as gate_pair → name, then build a string-keyed entry per channel.
     channels: Dict[str, Dict[str, Any]] = {}
-    for channel_id, ch_data in CHANNELS.items():
-        gate_a, gate_b = ch_data["gates"]
+    for gate_pair, channel_name in CHANNELS.items():
+        gate_a, gate_b = gate_pair
         both_active = gate_a in all_active_gates and gate_b in all_active_gates
         one_active = (gate_a in all_active_gates) != (gate_b in all_active_gates)
         is_defined = (gate_a, gate_b) in defined_channel_pairs
@@ -183,11 +185,11 @@ def _build_bodygraph_payload(chart: Dict[str, Any]) -> Dict[str, Any]:
         ch_entry: Dict[str, Any] = {
             "state": state,
             "gates": [gate_a, gate_b],
-            "name": ch_data.get("name", ""),
+            "name": channel_name,
         }
         if state == "hanging":
             ch_entry["hanging_gate"] = gate_a if gate_a in all_active_gates else gate_b
-        channels[channel_id] = ch_entry
+        channels[f"{gate_a}-{gate_b}"] = ch_entry
 
     # ── Variables ──
     variables = {}
