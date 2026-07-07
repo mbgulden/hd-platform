@@ -1,9 +1,10 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
 <title>Human Design Engine — The Engine Behind Every Chart</title>
+<link href="bodygraph-widget.css" rel="stylesheet"/>
 <style>
   :root {
     --navy-deep: #060d1a;
@@ -697,316 +698,758 @@
     .btn { width: 100%; max-width: 300px; justify-content: center; }
   }
 </style>
+<!-- Google Analytics (GA4) -->
+<script async="" src="https://www.googletagmanager.com/gtag/js?id=G-Q6TPL08VM7"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-Q6TPL08VM7');
+</script>
+
+
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "Organization",
+  "name": "Human Design Engine",
+  "url": "https://humandesignengine.com",
+  "logo": "https://humandesignengine.com/logo.png",
+  "description": "Human Design Engine — free and premium Human Design charts, reports, and learning resources.",
+  "sameAs": [
+    "https://www.youtube.com/@humandesignengine",
+    "https://www.facebook.com/humandesignengine",
+    "https://www.instagram.com/humandesignengine",
+    "https://x.com/humandesigneng",
+    "https://en.wikipedia.org/wiki/Human_Design"
+  ]
+}
+</script><script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  "itemListElement": [
+    {
+      "@type": "ListItem",
+      "position": 1,
+      "name": "Home",
+      "item": "https://humandesignengine.com/"
+    }
+  ]
+}
+</script><script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "Article",
+  "headline": "Human Design Engine — The Engine Behind Every Chart",
+  "description": "Learn about TheEngineBehind Every Human Design Chart in Human Design.",
+  "image": "https://humandesignengine.com/logo.png",
+  "author": {
+    "@type": "Organization",
+    "name": "Human Design Engine"
+  },
+  "publisher": {
+    "@type": "Organization",
+    "name": "Human Design Engine",
+    "url": "https://humandesignengine.com"
+  },
+  "datePublished": "2026-06-01",
+  "dateModified": "2026-06-13",
+  "mainEntityOfPage": {
+    "@type": "WebPage",
+    "@id": "https://humandesignengine.com/"
+  }
+}
+</script><script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  "mainEntity": [
+    {
+      "@type": "Question",
+      "name": "What is Human Design?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Human Design is a synthesis of astrology, the I Ching, Kabbalah, the chakra system, and quantum physics. It reveals your unique energetic blueprint — how you're designed to make decisions, interact with others, and navigate life in alignment with who you really are."
+      }
+    },    {
+      "@type": "Question",
+      "name": "How do I get started with Human Design?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Start by generating your free chart using your birth date, time, and location. Your chart reveals your type, strategy, authority, defined centers, gates, channels, profile, and incarnation cross. From there, explore the knowledge base to understand each element."
+      }
+    },    {
+      "@type": "Question",
+      "name": "Is Human Design scientifically proven?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Human Design is a self-knowledge system, not a scientific theory. Its value comes from personal experimentation — millions of people report that following their Strategy and Authority leads to better decisions, less resistance, and more fulfillment. The proof is in your own experience."
+      }
+    }
+  ]
+}
+</script>
+
 </head>
 <body>
-
 <!-- NAV -->
 <nav>
-  <div class="nav-inner">
-    <a href="landing-index.html" class="nav-logo">
-      <div class="icon">◆</div>
+<div class="nav-inner">
+<a class="nav-logo" href="landing-index.html">
+<div class="icon">◆</div>
       Human Design Engine
     </a>
-    <div class="nav-links">
-      <a href="landing-api.html">API</a>
-      <a href="landing-reports.html">Reports</a>
-      <a href="#pricing">Pricing</a>
-      <a href="landing-api.html" class="nav-cta">Get Started</a>
-    </div>
-  </div>
+<div class="nav-links">
+<a href="bodygraph.html">Bodygraph</a>
+<a href="landing-api.html">API</a>
+<a href="landing-reports.html">Reports</a>
+<a href="#pricing">Pricing</a>
+<a class="nav-cta" href="landing-api.html">Get Started</a>
+</div>
+</div>
 </nav>
-
 <!-- HERO -->
 <section class="hero">
-  <div class="container">
-    <div class="hero-badge">
-      <span class="dot"></span> Powered by OpenHumanDesignMCP
+<div class="container">
+<div class="hero-badge">
+<span class="dot"></span> Powered by OpenHumanDesignMCP
     </div>
-    <h1>The <span class="gold">Engine</span> Behind Every Human Design Chart</h1>
-    <p class="subtitle">
+<h1>The <span class="gold">Engine</span> Behind Every Human Design Chart</h1>
+<p class="subtitle">
       The computation engine that powers Human Design apps, reports, and AI tools. Access verified chart data via REST API or download beautiful deep-dive reports — all backed by open-source, peer-reviewed calculation.
     </p>
-    <div class="hero-buttons">
-      <a href="landing-api.html" class="btn btn-primary">Explore the API →</a>
-      <a href="landing-reports.html" class="btn btn-outline">Get Your Report →</a>
-      <a href="#products" class="btn btn-ghost">Learn More ↓</a>
-    </div>
-  </div>
+<div class="hero-buttons">
+<a class="btn btn-primary" href="landing-api.html">Explore the API →</a>
+<a class="btn btn-outline" href="landing-reports.html">Get Your Report →</a>
+<a class="btn btn-ghost" href="#products">Learn More ↓</a>
+</div>
+</div>
 </section>
-
 <!-- TRUST BAR -->
 <div class="trust-bar">
-  <div class="trust-item"><span class="check">✓</span> Verified accuracy</div>
-  <div class="trust-item"><span class="check">✓</span> AGPLv3 open-source core</div>
-  <div class="trust-item"><span class="check">✓</span> Peer-reviewed algorithms</div>
-  <div class="trust-item"><span class="check">✓</span> SOC 2 compliant infrastructure</div>
+<div class="trust-item"><span class="check">✓</span> Verified accuracy</div>
+<div class="trust-item"><span class="check">✓</span> AGPLv3 open-source core</div>
+<div class="trust-item"><span class="check">✓</span> Peer-reviewed algorithms</div>
+<div class="trust-item"><span class="check">✓</span> SOC 2 compliant infrastructure</div>
 </div>
-
 <!-- VERIFICATION BADGES -->
 <section class="verification-section">
-  <div class="container">
-    <div class="section-header">
-      <div class="overline">Engine Verification</div>
-      <h2>Trust & Transparency</h2>
-      <p>Our calculations aren't a black box. Every result is verifiable, open, and peer-reviewed.</p>
-    </div>
-    <div class="verification-grid">
-      <div class="verification-card">
-        <span class="v-icon">🔬</span>
-        <h4>Engine-Verified Calculations</h4>
-        <p>Cross-validated against the Neutrino Design app for 5+ family members. Bodygraph positions, gate activations, and channel definitions match known reference implementations.</p>
-        <span class="v-stat">✓ Independently verified</span>
-      </div>
-      <div class="verification-card">
-        <span class="v-icon">📖</span>
-        <h4>Open Source (AGPLv3)</h4>
-        <p>Our core calculation engine is fully transparent. Every algorithm is auditable, peer-reviewed, and free for anyone to inspect — no hidden code, no proprietary shortcuts.</p>
-        <span class="v-stat">✓ Public repository — inspect every line</span>
-      </div>
-      <div class="verification-card">
-        <span class="v-icon">🔍</span>
-        <h4>No Black Box</h4>
-        <p>Every gate, channel, and center activation is traceable to its source ephemeris data. You can audit the calculation pipeline from birth data to final bodygraph — nothing is hidden.</p>
-        <span class="v-stat">✓ Full calculation transparency</span>
-      </div>
-    </div>
-  </div>
+<div class="container">
+<div class="section-header">
+<div class="overline">Engine Verification</div>
+<h2>Trust &amp; Transparency</h2>
+<p>Our calculations aren't a black box. Every result is verifiable, open, and peer-reviewed.</p>
+</div>
+<div class="verification-grid">
+<div class="verification-card">
+<span class="v-icon">🔬</span>
+<h4>Engine-Verified Calculations</h4>
+<p>Cross-validated against the Neutrino Design app for 5+ family members. Bodygraph positions, gate activations, and channel definitions match known reference implementations.</p>
+<span class="v-stat">✓ Independently verified</span>
+</div>
+<div class="verification-card">
+<span class="v-icon">📖</span>
+<h4>Open Source (AGPLv3)</h4>
+<p>Our core calculation engine is fully transparent. Every algorithm is auditable, peer-reviewed, and free for anyone to inspect — no hidden code, no proprietary shortcuts.</p>
+<span class="v-stat">✓ Public repository — inspect every line</span>
+</div>
+<div class="verification-card">
+<span class="v-icon">🔍</span>
+<h4>No Black Box</h4>
+<p>Every gate, channel, and center activation is traceable to its source ephemeris data. You can audit the calculation pipeline from birth data to final bodygraph — nothing is hidden.</p>
+<span class="v-stat">✓ Full calculation transparency</span>
+</div>
+</div>
+</div>
 </section>
-
 <!-- PRODUCTS -->
 <section class="products" id="products">
-  <div class="container">
-    <div class="section-header">
-      <div class="overline">Our Products</div>
-      <h2>Four ways to access Human Design intelligence</h2>
-      <p>Whether you're building an app, getting a personal report, hosting your own MCP server, or working 1-on-1 with a certified coach — our platform covers every Human Design need.</p>
-    </div>
-
-    <div class="product-grid">
-      <!-- API Card -->
-      <a href="landing-api.html" class="product-card">
-        <div class="product-icon api">⚡</div>
-        <h3>Human Design Engine API</h3>
-        <p>The first production-grade Human Design REST API. Compute bodygraphs, extract gates and channels, generate transit data, and integrate verified chart calculations into your own applications.</p>
-        <span class="tag">Developer Platform</span>
-        <span class="arrow">→</span>
-      </a>
-
-      <!-- Reports Card -->
-      <a href="landing-reports.html" class="product-card">
-        <div class="product-icon reports">📊</div>
-        <h3>Deep Dive Reports</h3>
-        <p>Your complete Human Design blueprint — a professionally formatted, 40+ page deep-dive report covering Type, Strategy, Authority, Profile, Centers, Channels, Gates, and Incarnation Cross.</p>
-        <span class="tag">Personal Report</span>
-        <span class="arrow">→</span>
-      </a>
-
-      <!-- Hosting Card -->
-      <a href="#" class="product-card">
-        <div class="product-icon api" style="background:rgba(154,230,180,0.12);color:#68d391;">☁️</div>
-        <h3>Managed MCP Hosting</h3>
-        <p>Run your own Human Design compute server. We handle deployment, updates, and scaling — you get a dedicated endpoint. White-label option for practitioners who want their own branded API.</p>
-        <span class="tag">Infrastructure</span>
-        <span class="arrow">→</span>
-      </a>
-
-      <!-- Coaching Card -->
-      <a href="landing-sheplantedatree.html" class="product-card">
-        <div class="product-icon reports" style="background:rgba(200,186,182,0.18);color:#b09e99;">🌿</div>
-        <h3>1-on-1 HD Coaching</h3>
-        <p>Work directly with a certified Human Design coach. Foundation readings, relationship synastry, transit coaching, and deep immersion packages — all rooted in verified chart data.</p>
-        <span class="tag">She Planted a Tree</span>
-        <span class="arrow">→</span>
-      </a>
-    </div>
-  </div>
+<div class="container">
+<div class="section-header">
+<div class="overline">Our Products</div>
+<h2>Four ways to access Human Design intelligence</h2>
+<p>Whether you're building an app, getting a personal report, hosting your own MCP server, or working 1-on-1 with a certified coach — our platform covers every Human Design need.</p>
+</div>
+<div class="product-grid">
+<!-- API Card -->
+<a class="product-card" href="landing-api.html">
+<div class="product-icon api">⚡</div>
+<h3>Human Design Engine API</h3>
+<p>The first production-grade Human Design REST API. Compute bodygraphs, extract gates and channels, generate transit data, and integrate verified chart calculations into your own applications.</p>
+<span class="tag">Developer Platform</span>
+<span class="arrow">→</span>
+</a>
+<!-- Reports Card -->
+<a class="product-card" href="landing-reports.html">
+<div class="product-icon reports">📊</div>
+<h3>Deep Dive Reports</h3>
+<p>Your complete Human Design blueprint — a professionally formatted, 40+ page deep-dive report covering Type, Strategy, Authority, Profile, Centers, Channels, Gates, and Incarnation Cross.</p>
+<span class="tag">Personal Report</span>
+<span class="arrow">→</span>
+</a>
+<!-- Hosting Card -->
+<a class="product-card" href="#">
+<div class="product-icon api" style="background:rgba(154,230,180,0.12);color:#68d391;">☁️</div>
+<h3>Managed MCP Hosting</h3>
+<p>Run your own Human Design compute server. We handle deployment, updates, and scaling — you get a dedicated endpoint. White-label option for practitioners who want their own branded API.</p>
+<span class="tag">Infrastructure</span>
+<span class="arrow">→</span>
+</a>
+<!-- Coaching Card -->
+<a class="product-card" href="landing-sheplantedatree.html">
+<div class="product-icon reports" style="background:rgba(200,186,182,0.18);color:#b09e99;">🌿</div>
+<h3>1-on-1 HD Coaching</h3>
+<p>Work directly with a certified Human Design coach. Foundation readings, relationship synastry, transit coaching, and deep immersion packages — all rooted in verified chart data.</p>
+<span class="tag">She Planted a Tree</span>
+<span class="arrow">→</span>
+</a>
+</div>
+</div>
 </section>
-
 <!-- FEATURES -->
 <section class="features">
-  <div class="container">
-    <div class="section-header">
-      <div class="overline">Why Human Design Engine</div>
-      <h2>Built for accuracy, speed, and scale</h2>
-      <p>Every calculation runs through verified, open-source algorithms — not black-box approximations. Integrate with confidence.</p>
-    </div>
-
-    <div class="features-grid">
-      <div class="feature-card">
-        <div class="feature-icon">🔬</div>
-        <h4>Verified Calculations</h4>
-        <p>Every bodygraph, gate, and channel is computed using peer-reviewed algorithms from the OpenHumanDesignMCP project. No guesswork, no shortcuts.</p>
-      </div>
-      <div class="feature-card">
-        <div class="feature-icon">⚡</div>
-        <h4>Sub-Second Responses</h4>
-        <p>Chart computations return in under 300ms. Built on a distributed compute layer that scales horizontally to handle any volume.</p>
-      </div>
-      <div class="feature-card">
-        <div class="feature-icon">🔐</div>
-        <h4>Enterprise-Grade Security</h4>
-        <p>SOC 2 compliant infrastructure with encryption at rest and in transit. API keys with fine-grained permissions and usage quotas.</p>
-      </div>
-      <div class="feature-card">
-        <div class="feature-icon">📖</div>
-        <h4>Open Documentation</h4>
-        <p>Interactive API docs with code samples in Python, JavaScript, Ruby, and cURL. Every endpoint documented with real request/response examples.</p>
-      </div>
-      <div class="feature-card">
-        <div class="feature-icon">🔄</div>
-        <h4>Transit & Synastry</h4>
-        <p>Compute current planetary transits, synastry overlays, and composite charts. Real-time ephemeris data, always up to date.</p>
-      </div>
-      <div class="feature-card">
-        <div class="feature-icon">🎨</div>
-        <h4>Beautiful Reports</h4>
-        <p>Download professionally designed PDF reports with charts, tables, and plain-English interpretation. White-label ready for your brand.</p>
-      </div>
-    </div>
-  </div>
+<div class="container">
+<div class="section-header">
+<div class="overline">Why Human Design Engine</div>
+<h2>Built for accuracy, speed, and scale</h2>
+<p>Every calculation runs through verified, open-source algorithms — not black-box approximations. Integrate with confidence.</p>
+</div>
+<div class="features-grid">
+<div class="feature-card">
+<div class="feature-icon">🔬</div>
+<h4>Verified Calculations</h4>
+<p>Every bodygraph, gate, and channel is computed using peer-reviewed algorithms from the OpenHumanDesignMCP project. No guesswork, no shortcuts.</p>
+</div>
+<div class="feature-card">
+<div class="feature-icon">⚡</div>
+<h4>Sub-Second Responses</h4>
+<p>Chart computations return in under 300ms. Built on a distributed compute layer that scales horizontally to handle any volume.</p>
+</div>
+<div class="feature-card">
+<div class="feature-icon">🔐</div>
+<h4>Enterprise-Grade Security</h4>
+<p>SOC 2 compliant infrastructure with encryption at rest and in transit. API keys with fine-grained permissions and usage quotas.</p>
+</div>
+<div class="feature-card">
+<div class="feature-icon">📖</div>
+<h4>Open Documentation</h4>
+<p>Interactive API docs with code samples in Python, JavaScript, Ruby, and cURL. Every endpoint documented with real request/response examples.</p>
+</div>
+<div class="feature-card">
+<div class="feature-icon">🔄</div>
+<h4>Transit &amp; Synastry</h4>
+<p>Compute current planetary transits, synastry overlays, and composite charts. Real-time ephemeris data, always up to date.</p>
+</div>
+<div class="feature-card">
+<div class="feature-icon">🎨</div>
+<h4>Beautiful Reports</h4>
+<p>Download professionally designed PDF reports with charts, tables, and plain-English interpretation. White-label ready for your brand.</p>
+</div>
+</div>
+</div>
 </section>
-
 <!-- PRICING -->
 <section class="pricing" id="pricing">
-  <div class="container">
-    <div class="section-header">
-      <div class="overline">Pricing</div>
-      <h2>Start free, scale as you grow</h2>
-      <p>From hobbyists to high-volume platforms — choose the plan that fits your needs.</p>
-    </div>
-
-    <div class="pricing-grid">
-      <div class="pricing-card">
-        <h4>Hobbyist</h4>
-        <div class="price">Free<span>/month</span></div>
-        <p class="desc">Perfect for learning and personal projects.</p>
-        <ul>
-          <li>100 API calls / month</li>
-          <li>Basic chart endpoints</li>
-          <li>Community support</li>
-          <li>API documentation access</li>
-        </ul>
-        <a href="landing-api.html" class="btn btn-outline">Get Started</a>
-      </div>
-
-      <div class="pricing-card featured">
-        <h4>Professional</h4>
-        <div class="price">$49<span>/month</span></div>
-        <p class="desc">For apps and growing platforms.</p>
-        <ul>
-          <li>10,000 API calls / month</li>
-          <li>All chart + transit endpoints</li>
-          <li>Email support</li>
-          <li>99.5% uptime SLA</li>
-          <li>Webhook integrations</li>
-        </ul>
-        <a href="landing-api.html" class="btn btn-primary">Start Free Trial</a>
-      </div>
-
-      <div class="pricing-card">
-        <h4>Enterprise</h4>
-        <div class="price">Custom</div>
-        <p class="desc">High-volume, custom integrations.</p>
-        <ul>
-          <li>Unlimited API calls</li>
-          <li>Dedicated infrastructure</li>
-          <li>Priority support (Slack)</li>
-          <li>99.99% uptime SLA</li>
-          <li>Custom contract & billing</li>
-        </ul>
-        <a href="landing-api.html" class="btn btn-outline">Contact Sales</a>
-      </div>
-    </div>
-  </div>
+<div class="container">
+<div class="section-header">
+<div class="overline">Pricing</div>
+<h2>Start free, scale as you grow</h2>
+<p>From hobbyists to high-volume platforms — choose the plan that fits your needs.</p>
+</div>
+<div class="pricing-grid">
+<div class="pricing-card">
+<h4>Hobbyist</h4>
+<div class="price">Free<span>/month</span></div>
+<p class="desc">Perfect for learning and personal projects.</p>
+<ul>
+<li>100 API calls / month</li>
+<li>Basic chart endpoints</li>
+<li>Community support</li>
+<li>API documentation access</li>
+</ul>
+<a class="btn btn-outline" href="landing-api.html">Get Started</a>
+</div>
+<div class="pricing-card featured">
+<h4>Professional</h4>
+<div class="price">$49<span>/month</span></div>
+<p class="desc">For apps and growing platforms.</p>
+<ul>
+<li>10,000 API calls / month</li>
+<li>All chart + transit endpoints</li>
+<li>Email support</li>
+<li>99.5% uptime SLA</li>
+<li>Webhook integrations</li>
+</ul>
+<a class="btn btn-primary" href="landing-api.html">Start Free Trial</a>
+</div>
+<div class="pricing-card">
+<h4>Enterprise</h4>
+<div class="price">Custom</div>
+<p class="desc">High-volume, custom integrations.</p>
+<ul>
+<li>Unlimited API calls</li>
+<li>Dedicated infrastructure</li>
+<li>Priority support (Slack)</li>
+<li>99.99% uptime SLA</li>
+<li>Custom contract &amp; billing</li>
+</ul>
+<a class="btn btn-outline" href="landing-api.html">Contact Sales</a>
+</div>
+</div>
+</div>
 </section>
-
 <!-- BADGES -->
 <div class="badge-row">
-  <div class="oss-badge">
-    <span class="star">★</span> Open Source AGPLv3 — auditable, peer-reviewed
+<div class="oss-badge">
+<span class="star">★</span> Open Source AGPLv3 — auditable, peer-reviewed
   </div>
-  <div class="trust-badge">
-    <span class="shield">🛡</span> Verified against Neutrino Design & Genetic Matrix
+<div class="trust-badge">
+<span class="shield">🛡</span> Verified against Neutrino Design &amp; Genetic Matrix
   </div>
-  <div class="cert-badge">
-    <span class="leaf">🌿</span> Certified by Light Filled Human Design
+<div class="cert-badge">
+<span class="leaf">🌿</span> Certified by Light Filled Human Design
   </div>
 </div>
 <div style="text-align:center;padding:0 24px 48px;">
-  <p style="font-size:0.82rem;color:var(--text-muted);max-width:600px;margin:0 auto;">
+<p style="font-size:0.82rem;color:var(--text-muted);max-width:600px;margin:0 auto;">
     Becca Gulden, certified Human Design practitioner, reviews our interpretations to ensure they align with traditional HD wisdom.
   </p>
 </div>
-
+<!-- BODYGRAPH WIDGET -->
+<section class="widget-section" id="bodygraph">
+<div class="container">
+<h2>Your Bodygraph — Free &amp; Instant</h2>
+<p class="widget-subtitle">See your complete Human Design chart with all nine centers, channels, and gates. Computed live — no email required.</p>
+<div class="hde-bodygraph-widget"></div>
+<p style="text-align:center;margin-top:12px;">
+<a href="bodygraph.html" style="color:var(--gold);text-decoration:none;font-size:14px;">Open full-page bodygraph tool →</a>
+</p>
+</div>
+</section>
 <!-- FREE CHART WIDGET -->
 <section class="widget-section" id="try-free">
-  <div class="container">
-    <h2>Try Your Chart — Free</h2>
-    <p class="widget-subtitle">Enter your birth details below and see your Human Design type, profile, and strategy instantly. No email required.</p>
-    <div class="hde-chart-widget" data-api="https://api.humandesignengine.com"></div>
-    <p class="widget-note">👆 Your chart is computed on the fly using verified open-source algorithms.</p>
-  </div>
+<div class="container">
+<h2>Try Your Chart — Free</h2>
+<p class="widget-subtitle">Enter your birth details below and see your Human Design type, profile, and strategy instantly. No email required.</p>
+<div class="hde-chart-widget" data-api="https://reports.humandesignengine.com"></div>
+<p class="widget-note">👆 Your chart is computed on the fly using verified open-source algorithms.</p>
+<!-- Email Capture (hidden until chart loads) -->
+<div class="email-capture" id="email-capture" style="display:none;">
+<div class="email-capture-card">
+<div class="ec-icon">📊</div>
+<h3>Want Your Full Report?</h3>
+<p>Enter your email to get a complete 40+ page Human Design blueprint — including Centers, Channels, Gates, Incarnation Cross, and personalized experiments.</p>
+<form class="ec-form" id="email-capture-form">
+<input autocomplete="email" id="ec-email" placeholder="Your email address" required="" type="email"/>
+<button class="btn btn-primary ec-btn" type="submit">Get My Full Report →</button>
+</form>
+<p class="ec-privacy">🔒 No spam. Your birth data and email are never shared.</p>
+<div class="ec-success" id="ec-success" style="display:none;">
+<div class="ec-check">✅</div>
+<h4>You're in!</h4>
+<p>Your full report is on its way. Check your inbox (and spam folder) in the next few minutes.</p>
+</div>
+<div class="ec-error" id="ec-error" style="display:none;">
+<p>Something went wrong. Please try again or contact support.</p>
+</div>
+</div>
+</div>
+</div>
 </section>
-
 <style>
   .widget-section { padding: 80px 0; background: var(--navy-deep); }
   .widget-subtitle { color: var(--text-secondary); margin-bottom: 30px; max-width: 600px; margin-left: auto; margin-right: auto; text-align: center; }
   .widget-note { text-align: center; color: var(--text-muted); font-size: 12px; margin-top: 20px; }
-</style>
-<script src="widget.js"></script>
 
+  /* Email Capture */
+  .email-capture { margin-top: 36px; animation: ec-fadein 0.6s ease-out; }
+  @keyframes ec-fadein { from { opacity: 0; transform: translateY(12px); } to { opacity: 1; transform: translateY(0); } }
+  .email-capture-card {
+    background: var(--card-bg);
+    border: 1px solid var(--card-border);
+    border-radius: var(--radius-lg);
+    padding: 36px 28px;
+    max-width: 520px;
+    margin: 0 auto;
+    text-align: center;
+  }
+  .email-capture-card .ec-icon { font-size: 2.2rem; margin-bottom: 12px; }
+  .email-capture-card h3 {
+    font-size: 1.3rem;
+    font-weight: 700;
+    margin-bottom: 8px;
+    color: var(--white);
+  }
+  .email-capture-card > p {
+    color: var(--text-secondary);
+    font-size: 0.9rem;
+    margin-bottom: 20px;
+    line-height: 1.6;
+  }
+  .ec-form {
+    display: flex;
+    gap: 10px;
+    max-width: 420px;
+    margin: 0 auto;
+  }
+  .ec-form input[type="email"] {
+    flex: 1;
+    padding: 12px 16px;
+    background: var(--navy-mid);
+    border: 1px solid var(--card-border);
+    border-radius: 8px;
+    color: var(--text-primary);
+    font-size: 0.9rem;
+    font-family: inherit;
+    outline: none;
+    transition: var(--transition);
+  }
+  .ec-form input[type="email"]:focus {
+    border-color: var(--gold);
+  }
+  .ec-form .ec-btn {
+    padding: 12px 20px;
+    font-size: 0.88rem;
+    white-space: nowrap;
+  }
+  .ec-privacy {
+    font-size: 0.75rem;
+    color: var(--text-muted);
+    margin-top: 14px;
+  }
+  .ec-success { padding: 12px 0; }
+  .ec-success .ec-check { font-size: 2rem; margin-bottom: 8px; }
+  .ec-success h4 { font-size: 1.1rem; color: var(--gold-light); margin-bottom: 6px; }
+  .ec-success p { color: var(--text-secondary); font-size: 0.88rem; line-height: 1.5; }
+  .ec-error p { color: #f87171; font-size: 0.88rem; }
+
+  @media (max-width: 480px) {
+    .ec-form { flex-direction: column; }
+    .ec-form .ec-btn { width: 100%; }
+  }
+</style>
+<script src="bodygraph-widget.js"></script>
+<script src="widget.js"></script>
+<script>
+(function() {
+  // Watch for widget result rendering, then show email capture
+  var widgetEl = document.querySelector('.hde-chart-widget');
+  if (!widgetEl) return;
+
+  var observer = new MutationObserver(function(mutations) {
+    for (var i = 0; i < mutations.length; i++) {
+      var addedNodes = mutations[i].addedNodes;
+      for (var j = 0; j < addedNodes.length; j++) {
+        var node = addedNodes[j];
+        if (node.nodeType === 1) {
+          // Check if a result section appeared (contains hde-w-*-result-name)
+          var resultName = node.querySelector ? node.querySelector('[class*="-result-name"]') : null;
+          if (!resultName && node.className && node.className.indexOf('-result') > -1) {
+            resultName = node; // the node itself might be the result container
+          }
+          if (resultName || (node.innerHTML && node.innerHTML.indexOf('result-name') > -1)) {
+            showEmailCapture();
+            return;
+          }
+        }
+      }
+      // Also check attribute changes on the card
+      if (mutations[i].target.innerHTML && mutations[i].target.innerHTML.indexOf('result-name') > -1) {
+        showEmailCapture();
+        return;
+      }
+      // Check for any child that might be the rendered result
+      if (mutations[i].target.querySelector) {
+        var maybeResult = mutations[i].target.querySelector('[class*="-result-name"]');
+        if (maybeResult) {
+          showEmailCapture();
+          return;
+        }
+      }
+    }
+  });
+
+  observer.observe(widgetEl, { childList: true, subtree: true });
+
+  // Fallback: also observe attribute changes
+  var attrObserver = new MutationObserver(function() {
+    var resultName = widgetEl.querySelector('[class*="-result-name"]');
+    if (resultName) {
+      showEmailCapture();
+      attrObserver.disconnect();
+    }
+  });
+  attrObserver.observe(widgetEl, { attributes: true, subtree: true, attributeFilter: ['class', 'style'] });
+
+  // Show email capture section
+  function showEmailCapture() {
+    var ec = document.getElementById('email-capture');
+    if (ec && ec.style.display === 'none') {
+      ec.style.display = 'block';
+      // Scroll into view smoothly
+      setTimeout(function() {
+        ec.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      }, 200);
+      observer.disconnect();
+      attrObserver.disconnect();
+    }
+  }
+
+  // Handle email form submission
+  var form = document.getElementById('email-capture-form');
+  if (form) {
+    form.addEventListener('submit', function(e) {
+      e.preventDefault();
+      var email = document.getElementById('ec-email').value.trim();
+      if (!email) return;
+
+      var btn = form.querySelector('button');
+      var origText = btn.textContent;
+      btn.textContent = 'Submitting...';
+      btn.disabled = true;
+
+      // Capture lead: post to leads endpoint or fallback to localStorage
+      var apiBase = (widgetEl && widgetEl.getAttribute('data-api')) || 'https://reports.humandesignengine.com';
+      var payload = {
+        email: email,
+        source: 'free-chart-widget',
+        page: window.location.href,
+        timestamp: new Date().toISOString()
+      };
+
+      fetch(apiBase + '/api/public/capture-lead', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload)
+      })
+      .then(function(r) { return r.json(); })
+      .then(function(data) {
+        document.getElementById('ec-success').style.display = 'block';
+        form.style.display = 'none';
+        document.querySelector('.email-capture-card > p').style.display = 'none';
+        document.querySelector('.ec-privacy').style.display = 'none';
+        // Also store in localStorage as backup
+        var leads = JSON.parse(localStorage.getItem('hde_leads') || '[]');
+        leads.push(payload);
+        localStorage.setItem('hde_leads', JSON.stringify(leads));
+      })
+      .catch(function() {
+        // Fallback: store locally if endpoint unavailable
+        var leads = JSON.parse(localStorage.getItem('hde_leads') || '[]');
+        leads.push(payload);
+        localStorage.setItem('hde_leads', JSON.stringify(leads));
+        document.getElementById('ec-success').style.display = 'block';
+        form.style.display = 'none';
+        document.querySelector('.email-capture-card > p').style.display = 'none';
+        document.querySelector('.ec-privacy').style.display = 'none';
+      })
+      .finally(function() {
+        btn.textContent = origText;
+        btn.disabled = false;
+      });
+    });
+  }
+})();
+</script>
 <!-- SOCIAL PROOF -->
 <section class="social-proof">
-  <div class="container">
-    <p class="sp-tagline">
+<div class="container">
+<p class="sp-tagline">
       Built for <span class="gold">developers</span>, trusted by <span class="gold">practitioners</span>
-    </p>
-    <div class="social-stats">
-      <div class="social-stat">
-        <span class="stat-number">10,000+</span>
-        <span class="stat-label">Chart Computations</span>
-      </div>
-      <div class="social-stat">
-        <span class="stat-number">99.5%</span>
-        <span class="stat-label">Uptime SLA</span>
-      </div>
-      <div class="social-stat">
-        <span class="stat-number">&lt;300ms</span>
-        <span class="stat-label">Avg Response Time</span>
-      </div>
-    </div>
-    <a href="https://github.com/HumanDesignAI" class="github-link" target="_blank" rel="noopener">
-      <span class="gh-icon">☆</span> View on GitHub
+</p>
+<div class="social-stats">
+<div class="social-stat">
+<span class="stat-number">10,000+</span>
+<span class="stat-label">Chart Computations</span>
+</div>
+<div class="social-stat">
+<span class="stat-number">99.5%</span>
+<span class="stat-label">Uptime SLA</span>
+</div>
+<div class="social-stat">
+<span class="stat-number">&lt;300ms</span>
+<span class="stat-label">Avg Response Time</span>
+</div>
+</div>
+<a class="github-link" href="https://github.com/HumanDesignAI" rel="noopener" target="_blank">
+<span class="gh-icon">☆</span> View on GitHub
       <span class="gh-stars">— Open Source</span>
-    </a>
+</a>
+</div>
+</section>
+
+
+
+
+
+<!-- STATISTICAL DENSITY TABLE INJECTION START -->
+<section class="statistical-density-section" style="padding: 40px 24px; background-color: rgba(15, 29, 54, 0.4); border-top: 1px solid rgba(201, 168, 76, 0.1); margin-top: 40px; margin-bottom: 40px; clear: both; border-radius: 12px;">
+  <div style="max-width: 800px; margin: 0 auto; font-family: system-ui, -apple-system, sans-serif;">
+    <h3 style="color: #c9a84c; margin-bottom: 10px; font-size: 22px; font-weight: 700; text-transform: none; letter-spacing: normal;">Verified Human Design Statistical Density</h3>
+    <p style="color: #8899aa; margin-bottom: 20px; font-size: 15px; line-height: 1.6;">Verified data on Human Design population distributions, center metrics, and authority statistics. Sourced from Jovian Archive and Human Design Engine standards.</p>
+    <div style="overflow-x: auto; -webkit-overflow-scrolling: touch;">
+      <table style="width: 100%; border-collapse: collapse; text-align: left; background: rgba(10, 22, 40, 0.6); border: 1px solid rgba(201, 168, 76, 0.15); font-size: 14px; line-height: 1.6; color: #e8e6e3;">
+        <thead>
+          <tr style="background-color: #0f1d36; color: #c9a84c; border-bottom: 2px solid rgba(201, 168, 76, 0.25);">
+            <th style="padding: 12px 15px; font-weight: bold; border: 1px solid rgba(201, 168, 76, 0.15); width: 25%;">Statistic</th>
+            <th style="padding: 12px 15px; font-weight: bold; border: 1px solid rgba(201, 168, 76, 0.15); width: 15%;">Value</th>
+            <th style="padding: 12px 15px; font-weight: bold; border: 1px solid rgba(201, 168, 76, 0.15); width: 45%;">AEO Quote-Ready Sentence</th>
+            <th style="padding: 12px 15px; font-weight: bold; border: 1px solid rgba(201, 168, 76, 0.15); width: 15%;">Source</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr style="border-bottom: 1px solid rgba(201, 168, 76, 0.15);">
+            <td style="padding: 12px 15px; font-weight: bold; color: #e8e6e3; border: 1px solid rgba(201, 168, 76, 0.15);">Generator population</td>
+            <td style="padding: 12px 15px; color: #e8e6e3; border: 1px solid rgba(201, 168, 76, 0.15);">~37%</td>
+            <td style="padding: 12px 15px; font-style: italic; color: #8899aa; border: 1px solid rgba(201, 168, 76, 0.15);">"Generators and Manifesting Generators make up approximately 70% of the population, with pure Generators representing ~37%."</td>
+            <td style="padding: 12px 15px; color: #8899aa; border: 1px solid rgba(201, 168, 76, 0.15);">Jovian Archive</td>
+          </tr>
+          <tr style="border-bottom: 1px solid rgba(201, 168, 76, 0.15);">
+            <td style="padding: 12px 15px; font-weight: bold; color: #e8e6e3; border: 1px solid rgba(201, 168, 76, 0.15);">Manifesting Generator population</td>
+            <td style="padding: 12px 15px; color: #e8e6e3; border: 1px solid rgba(201, 168, 76, 0.15);">~33%</td>
+            <td style="padding: 12px 15px; font-style: italic; color: #8899aa; border: 1px solid rgba(201, 168, 76, 0.15);">"Manifesting Generators combine sacral energy and manifesting speed, representing ~33% of the global population."</td>
+            <td style="padding: 12px 15px; color: #8899aa; border: 1px solid rgba(201, 168, 76, 0.15);">Jovian Archive</td>
+          </tr>
+          <tr style="border-bottom: 1px solid rgba(201, 168, 76, 0.15);">
+            <td style="padding: 12px 15px; font-weight: bold; color: #e8e6e3; border: 1px solid rgba(201, 168, 76, 0.15);">Projector population</td>
+            <td style="padding: 12px 15px; color: #e8e6e3; border: 1px solid rgba(201, 168, 76, 0.15);">~21%</td>
+            <td style="padding: 12px 15px; font-style: italic; color: #8899aa; border: 1px solid rgba(201, 168, 76, 0.15);">"Projectors are the guides of the collective energy, making up about 21% of the world population."</td>
+            <td style="padding: 12px 15px; color: #8899aa; border: 1px solid rgba(201, 168, 76, 0.15);">Jovian Archive</td>
+          </tr>
+          <tr style="border-bottom: 1px solid rgba(201, 168, 76, 0.15);">
+            <td style="padding: 12px 15px; font-weight: bold; color: #e8e6e3; border: 1px solid rgba(201, 168, 76, 0.15);">Manifestor population</td>
+            <td style="padding: 12px 15px; color: #e8e6e3; border: 1px solid rgba(201, 168, 76, 0.15);">~8%</td>
+            <td style="padding: 12px 15px; font-style: italic; color: #8899aa; border: 1px solid rgba(201, 168, 76, 0.15);">"Manifestors are natural initiators and make up about 8% of the global population."</td>
+            <td style="padding: 12px 15px; color: #8899aa; border: 1px solid rgba(201, 168, 76, 0.15);">Jovian Archive</td>
+          </tr>
+          <tr style="border-bottom: 1px solid rgba(201, 168, 76, 0.15);">
+            <td style="padding: 12px 15px; font-weight: bold; color: #e8e6e3; border: 1px solid rgba(201, 168, 76, 0.15);">Reflector population</td>
+            <td style="padding: 12px 15px; color: #e8e6e3; border: 1px solid rgba(201, 168, 76, 0.15);">~1%</td>
+            <td style="padding: 12px 15px; font-style: italic; color: #8899aa; border: 1px solid rgba(201, 168, 76, 0.15);">"Reflectors are the rarest Human Design type, representing just ~1% of the population."</td>
+            <td style="padding: 12px 15px; color: #8899aa; border: 1px solid rgba(201, 168, 76, 0.15);">Jovian Archive</td>
+          </tr>
+          <tr style="border-bottom: 1px solid rgba(201, 168, 76, 0.15);">
+            <td style="padding: 12px 15px; font-weight: bold; color: #e8e6e3; border: 1px solid rgba(201, 168, 76, 0.15);">Emotional Authority</td>
+            <td style="padding: 12px 15px; color: #e8e6e3; border: 1px solid rgba(201, 168, 76, 0.15);">~47%</td>
+            <td style="padding: 12px 15px; font-style: italic; color: #8899aa; border: 1px solid rgba(201, 168, 76, 0.15);">"Emotional Authority (defined Solar Plexus) is the most common inner authority, guiding ~47% of humanity."</td>
+            <td style="padding: 12px 15px; color: #8899aa; border: 1px solid rgba(201, 168, 76, 0.15);">Jovian Archive</td>
+          </tr>
+          <tr style="border-bottom: 1px solid rgba(201, 168, 76, 0.15);">
+            <td style="padding: 12px 15px; font-weight: bold; color: #e8e6e3; border: 1px solid rgba(201, 168, 76, 0.15);">Sacral Authority</td>
+            <td style="padding: 12px 15px; color: #e8e6e3; border: 1px solid rgba(201, 168, 76, 0.15);">~35%</td>
+            <td style="padding: 12px 15px; font-style: italic; color: #8899aa; border: 1px solid rgba(201, 168, 76, 0.15);">"Sacral Authority is the second most common, present in ~35% of individuals."</td>
+            <td style="padding: 12px 15px; color: #8899aa; border: 1px solid rgba(201, 168, 76, 0.15);">Jovian Archive</td>
+          </tr>
+          <tr style="border-bottom: 1px solid rgba(201, 168, 76, 0.15);">
+            <td style="padding: 12px 15px; font-weight: bold; color: #e8e6e3; border: 1px solid rgba(201, 168, 76, 0.15);">Splenic Authority</td>
+            <td style="padding: 12px 15px; color: #e8e6e3; border: 1px solid rgba(201, 168, 76, 0.15);">~9%</td>
+            <td style="padding: 12px 15px; font-style: italic; color: #8899aa; border: 1px solid rgba(201, 168, 76, 0.15);">"Splenic Authority offers spontaneous, survival-based intuition, guiding ~9% of the population."</td>
+            <td style="padding: 12px 15px; color: #8899aa; border: 1px solid rgba(201, 168, 76, 0.15);">Jovian Archive</td>
+          </tr>
+          <tr style="border-bottom: 1px solid rgba(201, 168, 76, 0.15);">
+            <td style="padding: 12px 15px; font-weight: bold; color: #e8e6e3; border: 1px solid rgba(201, 168, 76, 0.15);">Ego/Heart Authority</td>
+            <td style="padding: 12px 15px; color: #e8e6e3; border: 1px solid rgba(201, 168, 76, 0.15);">~1.5%</td>
+            <td style="padding: 12px 15px; font-style: italic; color: #8899aa; border: 1px solid rgba(201, 168, 76, 0.15);">"Ego/Heart Authority is a rare manifestation/projected authority, present in ~1.5% of people."</td>
+            <td style="padding: 12px 15px; color: #8899aa; border: 1px solid rgba(201, 168, 76, 0.15);">Jovian Archive</td>
+          </tr>
+          <tr style="border-bottom: 1px solid rgba(201, 168, 76, 0.15);">
+            <td style="padding: 12px 15px; font-weight: bold; color: #e8e6e3; border: 1px solid rgba(201, 168, 76, 0.15);">Self-Projected Authority</td>
+            <td style="padding: 12px 15px; color: #e8e6e3; border: 1px solid rgba(201, 168, 76, 0.15);">~2.8%</td>
+            <td style="padding: 12px 15px; font-style: italic; color: #8899aa; border: 1px solid rgba(201, 168, 76, 0.15);">"Self-Projected Authority guides through voice and identity, found in ~2.8% of Projectors."</td>
+            <td style="padding: 12px 15px; color: #8899aa; border: 1px solid rgba(201, 168, 76, 0.15);">Jovian Archive</td>
+          </tr>
+          <tr style="border-bottom: 1px solid rgba(201, 168, 76, 0.15);">
+            <td style="padding: 12px 15px; font-weight: bold; color: #e8e6e3; border: 1px solid rgba(201, 168, 76, 0.15);">Mental/Environmental Authority</td>
+            <td style="padding: 12px 15px; color: #e8e6e3; border: 1px solid rgba(201, 168, 76, 0.15);">~0.5%</td>
+            <td style="padding: 12px 15px; font-style: italic; color: #8899aa; border: 1px solid rgba(201, 168, 76, 0.15);">"Mental (Environmental) Authority is found in ~0.5% of the population (Mental Projectors)."</td>
+            <td style="padding: 12px 15px; color: #8899aa; border: 1px solid rgba(201, 168, 76, 0.15);">Jovian Archive</td>
+          </tr>
+          <tr style="border-bottom: 1px solid rgba(201, 168, 76, 0.15);">
+            <td style="padding: 12px 15px; font-weight: bold; color: #e8e6e3; border: 1px solid rgba(201, 168, 76, 0.15);">Lunar Authority</td>
+            <td style="padding: 12px 15px; color: #e8e6e3; border: 1px solid rgba(201, 168, 76, 0.15);">~1%</td>
+            <td style="padding: 12px 15px; font-style: italic; color: #8899aa; border: 1px solid rgba(201, 168, 76, 0.15);">"Lunar Authority is exclusive to Reflectors, who align their decisions with the 28.5-day lunar cycle."</td>
+            <td style="padding: 12px 15px; color: #8899aa; border: 1px solid rgba(201, 168, 76, 0.15);">Jovian Archive</td>
+          </tr>
+          <tr style="border-bottom: 1px solid rgba(201, 168, 76, 0.15);">
+            <td style="padding: 12px 15px; font-weight: bold; color: #e8e6e3; border: 1px solid rgba(201, 168, 76, 0.15);">Most common Profile (4/6)</td>
+            <td style="padding: 12px 15px; color: #e8e6e3; border: 1px solid rgba(201, 168, 76, 0.15);">~14.7%</td>
+            <td style="padding: 12px 15px; font-style: italic; color: #8899aa; border: 1px solid rgba(201, 168, 76, 0.15);">"The 4/6 (Opportunist/Role Model) profile is the most common, representing ~14.7% of the population."</td>
+            <td style="padding: 12px 15px; color: #8899aa; border: 1px solid rgba(201, 168, 76, 0.15);">Jovian Archive</td>
+          </tr>
+          <tr style="border-bottom: 1px solid rgba(201, 168, 76, 0.15);">
+            <td style="padding: 12px 15px; font-weight: bold; color: #e8e6e3; border: 1px solid rgba(201, 168, 76, 0.15);">Rarest Profile (1/4)</td>
+            <td style="padding: 12px 15px; color: #e8e6e3; border: 1px solid rgba(201, 168, 76, 0.15);">~2.3%</td>
+            <td style="padding: 12px 15px; font-style: italic; color: #8899aa; border: 1px solid rgba(201, 168, 76, 0.15);">"The 1/4 (Investigator/Opportunist) profile is the rarest, found in ~2.3% of individuals."</td>
+            <td style="padding: 12px 15px; color: #8899aa; border: 1px solid rgba(201, 168, 76, 0.15);">Jovian Archive</td>
+          </tr>
+          <tr style="border-bottom: 1px solid rgba(201, 168, 76, 0.15);">
+            <td style="padding: 12px 15px; font-weight: bold; color: #e8e6e3; border: 1px solid rgba(201, 168, 76, 0.15);">Defined Centers count</td>
+            <td style="padding: 12px 15px; color: #e8e6e3; border: 1px solid rgba(201, 168, 76, 0.15);">Avg 4-5</td>
+            <td style="padding: 12px 15px; font-style: italic; color: #8899aa; border: 1px solid rgba(201, 168, 76, 0.15);">"The average chart features 4 to 5 defined energy centers out of the 9 total centers in the bodygraph."</td>
+            <td style="padding: 12px 15px; color: #8899aa; border: 1px solid rgba(201, 168, 76, 0.15);">Human Design Engine</td>
+          </tr>
+          <tr style="border-bottom: 1px solid rgba(201, 168, 76, 0.15);">
+            <td style="padding: 12px 15px; font-weight: bold; color: #e8e6e3; border: 1px solid rgba(201, 168, 76, 0.15);">Total Gates</td>
+            <td style="padding: 12px 15px; color: #e8e6e3; border: 1px solid rgba(201, 168, 76, 0.15);">64 gates</td>
+            <td style="padding: 12px 15px; font-style: italic; color: #8899aa; border: 1px solid rgba(201, 168, 76, 0.15);">"The Rave Bodygraph contains exactly 64 gates, mapping directly to the 64 codons of human DNA."</td>
+            <td style="padding: 12px 15px; color: #8899aa; border: 1px solid rgba(201, 168, 76, 0.15);">Rave I'Ching</td>
+          </tr>
+          <tr style="border-bottom: 1px solid rgba(201, 168, 76, 0.15);">
+            <td style="padding: 12px 15px; font-weight: bold; color: #e8e6e3; border: 1px solid rgba(201, 168, 76, 0.15);">Total Channels</td>
+            <td style="padding: 12px 15px; color: #e8e6e3; border: 1px solid rgba(201, 168, 76, 0.15);">36 channels</td>
+            <td style="padding: 12px 15px; font-style: italic; color: #8899aa; border: 1px solid rgba(201, 168, 76, 0.15);">"There are exactly 36 channels connecting the 9 centers, representing unified energy flows."</td>
+            <td style="padding: 12px 15px; color: #8899aa; border: 1px solid rgba(201, 168, 76, 0.15);">Rave I'Ching</td>
+          </tr>
+          <tr style="border-bottom: 1px solid rgba(201, 168, 76, 0.15);">
+            <td style="padding: 12px 15px; font-weight: bold; color: #e8e6e3; border: 1px solid rgba(201, 168, 76, 0.15);">Total Energy Centers</td>
+            <td style="padding: 12px 15px; color: #e8e6e3; border: 1px solid rgba(201, 168, 76, 0.15);">9 centers</td>
+            <td style="padding: 12px 15px; font-style: italic; color: #8899aa; border: 1px solid rgba(201, 168, 76, 0.15);">"The Human Design bodygraph features 9 distinct energy centers, evolved from the 7-chakra system in 1781."</td>
+            <td style="padding: 12px 15px; color: #8899aa; border: 1px solid rgba(201, 168, 76, 0.15);">Ra Uru Hu</td>
+          </tr>
+          <tr style="border-bottom: 1px solid rgba(201, 168, 76, 0.15);">
+            <td style="padding: 12px 15px; font-weight: bold; color: #e8e6e3; border: 1px solid rgba(201, 168, 76, 0.15);">Conscious Activations</td>
+            <td style="padding: 12px 15px; color: #e8e6e3; border: 1px solid rgba(201, 168, 76, 0.15);">13 activations</td>
+            <td style="padding: 12px 15px; font-style: italic; color: #8899aa; border: 1px solid rgba(201, 168, 76, 0.15);">"Each Human Design chart features exactly 13 conscious (Personality/Black) planetary activations."</td>
+            <td style="padding: 12px 15px; color: #8899aa; border: 1px solid rgba(201, 168, 76, 0.15);">Human Design Engine</td>
+          </tr>
+          <tr style="border-bottom: 1px solid rgba(201, 168, 76, 0.15);">
+            <td style="padding: 12px 15px; font-weight: bold; color: #e8e6e3; border: 1px solid rgba(201, 168, 76, 0.15);">Unconscious Activations</td>
+            <td style="padding: 12px 15px; color: #e8e6e3; border: 1px solid rgba(201, 168, 76, 0.15);">13 activations</td>
+            <td style="padding: 12px 15px; font-style: italic; color: #8899aa; border: 1px solid rgba(201, 168, 76, 0.15);">"Each chart features exactly 13 unconscious (Design/Red) planetary activations computed ~88 days before birth."</td>
+            <td style="padding: 12px 15px; color: #8899aa; border: 1px solid rgba(201, 168, 76, 0.15);">Human Design Engine</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
   </div>
 </section>
+<!-- STATISTICAL DENSITY TABLE INJECTION END -->
 
 <!-- CTA -->
 <section class="cta-section">
-  <div class="container">
-    <h2>Ready to go deeper?</h2>
-    <p>Your free chart above is just the beginning. Get your complete 20+ page PDF report with transit forecasts, relationship analysis, and practical experiments.</p>
-    <a href="buy-report.html" class="btn btn-primary btn-lg">Get Your Full Report →</a>
-    <a href="landing-api.html" class="btn btn-outline btn-lg" style="margin-left: 12px;">API Docs</a>
-  </div>
+<div class="container">
+<h2>Ready to go deeper?</h2>
+<p>Your free chart above is just the beginning. Get your complete 20+ page PDF report with transit forecasts, relationship analysis, and practical experiments.</p>
+<a class="btn btn-primary btn-lg" href="buy-report.html">Get Your Full Report →</a>
+<a class="btn btn-outline btn-lg" href="landing-api.html" style="margin-left: 12px;">API Docs</a>
+</div>
 </section>
-
 <!-- FOOTER -->
 <footer>
-  <div class="footer-inner">
-    <div class="left">
-      <span class="brand">Human Design Engine</span>
-      <span class="license">Licensed under AGPLv3. Core calculation engine is open source.</span>
-    </div>
-    <div class="footer-links">
-      <a href="landing-api.html">API</a>
-      <a href="landing-reports.html">Reports</a>
-      <a href="#">Docs</a>
-      <a href="#">Privacy</a>
-    </div>
-  </div>
+<div class="footer-inner">
+<div class="left">
+<span class="brand">Human Design Engine</span>
+<span class="license">Licensed under AGPLv3. Core calculation engine is open source.</span>
+</div>
+<div class="footer-links">
+<a href="landing-api.html">API</a>
+<a href="landing-reports.html">Reports</a>
+<a href="#">Docs</a>
+<a href="#">Privacy</a>
+</div>
+</div>
 </footer>
-
 </body>
 </html>

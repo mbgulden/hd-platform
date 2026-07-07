@@ -1,0 +1,849 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>What's Your Human Design Type? — Free Quiz | Human Design Engine</title>
+<meta content="Take this free 7-question quiz to discover which Human Design Type matches your personality. Manifestor, Generator, Manifesting Generator, Projector, or Reflector — find out in 2 minutes." name="description"/>
+<meta content="What's Your Human Design Type? — Free Quiz" property="og:title"/>
+<meta content="Discover your Human Design Type archetype with this fun, insightful quiz. Get your real chart for free afterward." property="og:description"/>
+<meta content="website" property="og:type"/>
+<meta content="summary_large_image" name="twitter:card"/>
+<style>
+  :root {
+    --navy-deep: #060d1a;
+    --navy: #0a1628;
+    --navy-mid: #0f1d36;
+    --navy-light: #162744;
+    --navy-lighter: #1e3458;
+    --gold: #c9a84c;
+    --gold-light: #e0c468;
+    --gold-bright: #d4af37;
+    --gold-soft: rgba(201, 168, 76, 0.15);
+    --gold-glow: rgba(201, 168, 76, 0.08);
+    --text-primary: #e8e6e3;
+    --text-secondary: #8899aa;
+    --text-muted: #5a6a7a;
+    --white: #ffffff;
+    --card-bg: rgba(15, 29, 54, 0.7);
+    --card-border: rgba(201, 168, 76, 0.12);
+    --radius: 12px;
+    --radius-lg: 20px;
+    --shadow: 0 4px 24px rgba(0,0,0,0.3);
+    --transition: 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+    --m-green: #4ade80;
+    --m-blue: #60a5fa;
+    --m-purple: #c084fc;
+    --m-orange: #fb923c;
+    --m-silver: #c0c0d0;
+  }
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
+    background: var(--navy-deep);
+    color: var(--text-primary);
+    line-height: 1.7;
+    overflow-x: hidden;
+    min-height: 100vh;
+  }
+
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background:
+      radial-gradient(ellipse at 20% 10%, rgba(201,168,76,0.05) 0%, transparent 60%),
+      radial-gradient(ellipse at 80% 90%, rgba(201,168,76,0.03) 0%, transparent 60%),
+      radial-gradient(ellipse at 50% 50%, rgba(15,29,54,0.8) 0%, var(--navy-deep) 100%);
+    pointer-events: none;
+    z-index: -1;
+  }
+
+  /* ---- NAV ---- */
+  nav {
+    position: sticky; top: 0; z-index: 100;
+    background: rgba(6,13,26,0.85);
+    backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px);
+    border-bottom: 1px solid rgba(201,168,76,0.1);
+    padding: 0 20px;
+  }
+  .nav-inner {
+    max-width: 800px; margin: 0 auto;
+    display: flex; align-items: center; justify-content: space-between;
+    height: 60px;
+  }
+  .nav-logo {
+    display: flex; align-items: center; gap: 10px;
+    font-size: 1.1rem; font-weight: 700; color: var(--white);
+    text-decoration: none; letter-spacing: -0.02em;
+  }
+  .nav-logo .icon {
+    width: 28px; height: 28px;
+    background: linear-gradient(135deg, var(--gold-bright), var(--gold));
+    border-radius: 7px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 0.75rem; color: var(--navy-deep); font-weight: 900;
+  }
+  .nav-links { display: flex; gap: 20px; align-items: center; }
+  .nav-links a {
+    color: var(--text-secondary); text-decoration: none; font-size: 0.85rem;
+    transition: color var(--transition);
+  }
+  .nav-links a:hover { color: var(--gold-light); }
+
+  /* ---- QUIZ CONTAINER ---- */
+  .quiz-container {
+    max-width: 680px;
+    margin: 0 auto;
+    padding: 40px 24px 80px;
+  }
+
+  .quiz-header {
+    text-align: center;
+    margin-bottom: 48px;
+  }
+  .quiz-badge {
+    display: inline-block;
+    background: var(--gold-soft);
+    color: var(--gold-light);
+    border: 1px solid rgba(201,168,76,0.25);
+    border-radius: 100px;
+    padding: 6px 18px;
+    font-size: 0.8rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    margin-bottom: 20px;
+  }
+  .quiz-header h1 {
+    font-size: 2.4rem;
+    font-weight: 800;
+    line-height: 1.2;
+    color: var(--white);
+    margin-bottom: 12px;
+    letter-spacing: -0.02em;
+  }
+  .quiz-header h1 span { color: var(--gold-light); }
+  .quiz-header p {
+    color: var(--text-secondary);
+    font-size: 1.1rem;
+    max-width: 500px;
+    margin: 0 auto;
+  }
+
+  /* ---- PROGRESS BAR ---- */
+  .progress-wrap {
+    margin-bottom: 36px;
+  }
+  .progress-info {
+    display: flex; justify-content: space-between; align-items: center;
+    margin-bottom: 8px;
+    font-size: 0.85rem; color: var(--text-muted);
+  }
+  .progress-bar {
+    height: 4px;
+    background: var(--navy-lighter);
+    border-radius: 2px;
+    overflow: hidden;
+  }
+  .progress-fill {
+    height: 100%;
+    background: linear-gradient(90deg, var(--gold-bright), var(--gold-light));
+    border-radius: 2px;
+    transition: width 0.5s ease;
+  }
+
+  /* ---- QUESTION CARD ---- */
+  .question-card {
+    background: var(--card-bg);
+    border: 1px solid var(--card-border);
+    border-radius: var(--radius-lg);
+    padding: 36px;
+    transition: all 0.3s ease;
+    animation: fadeSlideIn 0.4s ease;
+  }
+  @keyframes fadeSlideIn {
+    from { opacity: 0; transform: translateY(12px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+  .question-num {
+    font-size: 0.8rem;
+    color: var(--gold);
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    font-weight: 700;
+    margin-bottom: 8px;
+  }
+  .question-text {
+    font-size: 1.25rem;
+    font-weight: 600;
+    color: var(--white);
+    margin-bottom: 28px;
+    line-height: 1.5;
+  }
+
+  /* ---- OPTIONS ---- */
+  .options { display: flex; flex-direction: column; gap: 12px; }
+  .option-btn {
+    display: flex; align-items: center; gap: 16px;
+    width: 100%;
+    padding: 16px 20px;
+    background: rgba(30, 52, 88, 0.4);
+    border: 1px solid rgba(201, 168, 76, 0.1);
+    border-radius: var(--radius);
+    color: var(--text-primary);
+    font-size: 1rem;
+    cursor: pointer;
+    transition: all var(--transition);
+    text-align: left;
+    font-family: inherit;
+  }
+  .option-btn:hover {
+    background: rgba(30, 52, 88, 0.7);
+    border-color: rgba(201, 168, 76, 0.3);
+    transform: translateX(4px);
+  }
+  .option-btn:active { transform: scale(0.985); }
+  .option-btn .opt-icon {
+    width: 40px; height: 40px;
+    border-radius: 10px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 1.2rem;
+    flex-shrink: 0;
+    background: var(--navy-lighter);
+  }
+  .option-btn .opt-label { flex: 1; }
+  .option-btn .opt-arrow {
+    color: var(--gold);
+    opacity: 0;
+    transition: opacity var(--transition);
+  }
+  .option-btn:hover .opt-arrow { opacity: 1; }
+
+  /* ---- RESULT ---- */
+  .result-card {
+    background: var(--card-bg);
+    border: 2px solid var(--card-border);
+    border-radius: var(--radius-lg);
+    padding: 40px 36px;
+    text-align: center;
+    animation: fadeSlideIn 0.5s ease;
+  }
+  .result-type-icon {
+    width: 80px; height: 80px;
+    border-radius: 50%;
+    margin: 0 auto 24px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 2.5rem;
+    border: 3px solid var(--gold-soft);
+  }
+  .result-type-name {
+    font-size: 2rem;
+    font-weight: 800;
+    color: var(--white);
+    margin-bottom: 8px;
+  }
+  .result-subtitle {
+    color: var(--text-secondary);
+    font-size: 1rem;
+    margin-bottom: 20px;
+  }
+  .result-stats {
+    display: flex; justify-content: center; gap: 24px;
+    margin-bottom: 24px;
+    flex-wrap: wrap;
+  }
+  .result-stat {
+    text-align: center;
+  }
+  .result-stat-value {
+    font-size: 1.5rem; font-weight: 700; color: var(--gold-light);
+  }
+  .result-stat-label {
+    font-size: 0.75rem; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.05em;
+  }
+  .result-traits {
+    display: flex; flex-wrap: wrap; gap: 8px;
+    justify-content: center;
+    margin-bottom: 24px;
+  }
+  .result-trait {
+    padding: 6px 14px;
+    border-radius: 100px;
+    font-size: 0.8rem;
+    font-weight: 500;
+  }
+  .result-desc {
+    color: var(--text-secondary);
+    font-size: 0.95rem;
+    line-height: 1.7;
+    margin-bottom: 28px;
+    max-width: 540px;
+    margin-left: auto; margin-right: auto;
+  }
+  .result-disclaimer {
+    padding: 16px;
+    background: rgba(201,168,76,0.06);
+    border-radius: var(--radius);
+    margin-bottom: 24px;
+    font-size: 0.9rem;
+  }
+  .result-disclaimer strong { color: var(--gold-light); }
+
+  /* ---- EMAIL CAPTURE ---- */
+  .email-capture {
+    background: linear-gradient(135deg, rgba(201,168,76,0.08), rgba(201,168,76,0.02));
+    border: 1px solid rgba(201,168,76,0.2);
+    border-radius: var(--radius);
+    padding: 28px 24px;
+    text-align: center;
+  }
+  .email-capture h3 {
+    font-size: 1.15rem; color: var(--gold-light); margin-bottom: 8px;
+  }
+  .email-capture p {
+    color: var(--text-secondary); font-size: 0.9rem; margin-bottom: 20px;
+  }
+  .email-form {
+    display: flex; gap: 10px; max-width: 420px; margin: 0 auto; flex-wrap: wrap; justify-content: center;
+  }
+  .email-form input {
+    flex: 1; min-width: 200px;
+    padding: 12px 16px;
+    background: rgba(6,13,26,0.6);
+    border: 1px solid rgba(201,168,76,0.2);
+    border-radius: 8px;
+    color: var(--white);
+    font-size: 0.95rem;
+    font-family: inherit;
+    outline: none;
+    transition: border-color var(--transition);
+  }
+  .email-form input:focus { border-color: var(--gold); }
+  .email-form button, .btn-primary {
+    padding: 12px 28px;
+    background: linear-gradient(135deg, var(--gold-bright), var(--gold));
+    border: none;
+    border-radius: 8px;
+    color: var(--navy-deep);
+    font-weight: 700;
+    font-size: 0.95rem;
+    cursor: pointer;
+    transition: all var(--transition);
+    font-family: inherit;
+    white-space: nowrap;
+  }
+  .email-form button:hover, .btn-primary:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 4px 20px rgba(201,168,76,0.3);
+  }
+  .email-success {
+    display: none;
+    color: var(--m-green);
+    font-weight: 600;
+    margin-top: 12px;
+  }
+
+  /* ---- BUTTONS ---- */
+  .btn-secondary {
+    display: inline-block;
+    padding: 10px 24px;
+    background: transparent;
+    border: 1px solid rgba(201,168,76,0.3);
+    border-radius: 8px;
+    color: var(--gold-light);
+    font-weight: 600;
+    font-size: 0.9rem;
+    cursor: pointer;
+    text-decoration: none;
+    transition: all var(--transition);
+    font-family: inherit;
+  }
+  .btn-secondary:hover {
+    background: var(--gold-soft);
+    border-color: var(--gold);
+  }
+
+  /* ---- FOOTER ---- */
+  .quiz-footer {
+    text-align: center;
+    padding: 20px;
+    color: var(--text-muted);
+    font-size: 0.8rem;
+  }
+  .quiz-footer a { color: var(--text-secondary); text-decoration: none; }
+  .quiz-footer a:hover { color: var(--gold-light); }
+
+  /* ---- TYPE COLORS ---- */
+  .type-manifestor { border-color: var(--m-orange) !important; }
+  .type-manifestor .result-type-icon { background: rgba(251,146,60,0.12); border-color: var(--m-orange); }
+  .type-manifestor .result-type-name { color: var(--m-orange); }
+  .trait-manifestor { background: rgba(251,146,60,0.12); color: var(--m-orange); }
+
+  .type-generator { border-color: var(--m-green) !important; }
+  .type-generator .result-type-icon { background: rgba(74,222,128,0.12); border-color: var(--m-green); }
+  .type-generator .result-type-name { color: var(--m-green); }
+  .trait-generator { background: rgba(74,222,128,0.12); color: var(--m-green); }
+
+  .type-mg { border-color: #34d399 !important; }
+  .type-mg .result-type-icon { background: rgba(52,211,153,0.12); border-color: #34d399; }
+  .type-mg .result-type-name { color: #34d399; }
+  .trait-mg { background: rgba(52,211,153,0.12); color: #34d399; }
+
+  .type-projector { border-color: var(--m-blue) !important; }
+  .type-projector .result-type-icon { background: rgba(96,165,250,0.12); border-color: var(--m-blue); }
+  .type-projector .result-type-name { color: var(--m-blue); }
+  .trait-projector { background: rgba(96,165,250,0.12); color: var(--m-blue); }
+
+  .type-reflector { border-color: var(--m-silver) !important; }
+  .type-reflector .result-type-icon { background: rgba(192,192,208,0.12); border-color: var(--m-silver); }
+  .type-reflector .result-type-name { color: var(--m-silver); }
+  .trait-reflector { background: rgba(192,192,208,0.12); color: var(--m-silver); }
+
+  /* ---- RESPONSIVE ---- */
+  @media (max-width: 600px) {
+    .quiz-header h1 { font-size: 1.8rem; }
+    .quiz-header p { font-size: 0.95rem; }
+    .question-card { padding: 24px 20px; }
+    .question-text { font-size: 1.1rem; }
+    .option-btn { padding: 14px 16px; font-size: 0.9rem; }
+    .option-btn .opt-icon { width: 34px; height: 34px; font-size: 1rem; }
+    .result-card { padding: 32px 20px; }
+    .result-type-name { font-size: 1.6rem; }
+    .nav-links { gap: 12px; }
+    .nav-links a { font-size: 0.78rem; }
+  }
+</style>
+<!-- Google Analytics (GA4) -->
+<script async="" src="https://www.googletagmanager.com/gtag/js?id=G-Q6TPL08VM7"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-Q6TPL08VM7');
+</script>
+
+
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "Organization",
+  "name": "Human Design Engine",
+  "url": "https://humandesignengine.com",
+  "logo": "https://humandesignengine.com/logo.png",
+  "description": "Human Design Engine — free and premium Human Design charts, reports, and learning resources.",
+  "sameAs": [
+    "https://www.youtube.com/@humandesignengine",
+    "https://www.facebook.com/humandesignengine",
+    "https://www.instagram.com/humandesignengine",
+    "https://x.com/humandesigneng",
+    "https://en.wikipedia.org/wiki/Human_Design"
+  ]
+}
+</script><script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  "itemListElement": [
+    {
+      "@type": "ListItem",
+      "position": 1,
+      "name": "Home",
+      "item": "https://humandesignengine.com/"
+    },
+    {
+      "@type": "ListItem",
+      "position": 2,
+      "name": "HD Engine",
+      "item": "https://humandesignengine.com/hd-engine/"
+    },
+    {
+      "@type": "ListItem",
+      "position": 3,
+      "name": "Free Tools",
+      "item": "https://humandesignengine.com/hd-engine/free-tools/"
+    },
+    {
+      "@type": "ListItem",
+      "position": 4,
+      "name": "Type Quiz",
+      "item": "https://humandesignengine.com/hd-engine/free-tools/type-quiz/"
+    }
+  ]
+}
+</script><script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "Article",
+  "headline": "What's Your Human Design Type? — Free Quiz",
+  "description": "Take this free 7-question quiz to discover which Human Design Type matches your personality. Manifestor, Generator, Manifesting Generator, Projector, or Reflector — find out in 2 minutes.",
+  "image": "https://humandesignengine.com/logo.png",
+  "author": {
+    "@type": "Organization",
+    "name": "Human Design Engine"
+  },
+  "publisher": {
+    "@type": "Organization",
+    "name": "Human Design Engine",
+    "url": "https://humandesignengine.com"
+  },
+  "datePublished": "2026-06-01",
+  "dateModified": "2026-06-13",
+  "mainEntityOfPage": {
+    "@type": "WebPage",
+    "@id": "https://humandesignengine.com/hd-engine/free-tools/type-quiz/"
+  }
+}
+</script><script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  "mainEntity": [
+    {
+      "@type": "Question",
+      "name": "How accurate is the Human Design type quiz?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "The type quiz is a fun self-assessment tool that asks questions about your natural tendencies. For 100% accuracy, use the free chart calculator with your birth data instead — it's the definitive way to determine your type."
+      }
+    },    {
+      "@type": "Question",
+      "name": "What will the quiz tell me?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "The quiz helps you self-identify which of the 5 Human Design types best matches your natural way of operating. It's a great starting point for people new to Human Design who want to understand the types before generating their full chart."
+      }
+    },    {
+      "@type": "Question",
+      "name": "Do I need to know my birth time for the quiz?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "No! The quiz is birth-time independent — it asks about your personality and behavioral tendencies. It's designed for people who don't know their exact birth time. When you do get your birth time, use the chart calculator for a precise result."
+      }
+    }
+  ]
+}
+</script>
+
+</head>
+<body>
+<nav>
+<div class="nav-inner">
+<a class="nav-logo" href="/">
+<span class="icon">HD</span>
+      Human Design Engine
+    </a>
+<div class="nav-links">
+<a href="/human-design/types/">Types</a>
+<a href="/human-design/centers/">Centers</a>
+<a href="/human-design/gates/">Gates</a>
+<a href="/buy-report.html">Get Your Chart</a>
+</div>
+</div>
+</nav>
+<div class="quiz-container">
+<!-- HEADER -->
+<div class="quiz-header">
+<div class="quiz-badge">✦ Free Quiz — 2 Minutes</div>
+<h1>What's Your <span>Human Design Type</span>?</h1>
+<p>Answer 7 simple questions about how you operate in the world. We'll suggest your likely type — then help you get your real chart for free.</p>
+</div>
+<!-- PROGRESS -->
+<div class="progress-wrap">
+<div class="progress-info">
+<span id="progressLabel">Question 1 of 7</span>
+<span id="progressPercent">14%</span>
+</div>
+<div class="progress-bar">
+<div class="progress-fill" id="progressFill" style="width: 14%"></div>
+</div>
+</div>
+<!-- QUIZ CONTENT -->
+<div id="quizContent"></div>
+</div>
+<div class="quiz-footer">
+<p>© 2026 <a href="/">Human Design Engine</a> — This quiz is for entertainment and educational purposes. <a href="/buy-report.html">Get your authentic chart →</a></p>
+</div>
+<script>
+// ========================
+// QUIZ DATA
+// ========================
+const questions = [
+  {
+    q: "How do you typically make big decisions?",
+    options: [
+      { text: "I feel a strong gut response — a 'yes' or 'no' in my body", scores: { generator: 3, mg: 2 } },
+      { text: "I need to talk it through with others to hear myself think", scores: { projector: 2, generator: 1 } },
+      { text: "I decide quickly and act — I don't like waiting around", scores: { manifestor: 3, mg: 2 } },
+      { text: "I gather all the data, research deeply, then decide", scores: { projector: 3, reflector: 1 } },
+      { text: "I wait. My clarity changes day to day — I need time", scores: { reflector: 3, projector: 1 } }
+    ]
+  },
+  {
+    q: "How do you feel after a long social event?",
+    options: [
+      { text: "Energized! I could keep going all night", scores: { generator: 2, mg: 3 } },
+      { text: "Completely drained — I need alone time to recharge", scores: { projector: 3, reflector: 2 } },
+      { text: "It depends entirely on the people and the vibe", scores: { reflector: 3, projector: 2 } },
+      { text: "Fine as long as I'm doing my own thing and not stuck in small talk", scores: { manifestor: 2, mg: 1 } }
+    ]
+  },
+  {
+    q: "How do you start your mornings?",
+    options: [
+      { text: "Hit the ground running — I wake up ready to go", scores: { generator: 2, mg: 3, manifestor: 1 } },
+      { text: "I need time to ease in — slow mornings are sacred", scores: { projector: 3, reflector: 2 } },
+      { text: "I have a specific routine that works, and I stick to it", scores: { generator: 2, manifestor: 1 } },
+      { text: "Every day is different — I don't force a structure", scores: { reflector: 2, mg: 1 } }
+    ]
+  },
+  {
+    q: "When someone tells you what to do...",
+    options: [
+      { text: "I bristle. I need to do things my own way, on my own terms", scores: { manifestor: 3 } },
+      { text: "I'm open to guidance if they see something I don't", scores: { projector: 2, generator: 1 } },
+      { text: "I'll try it if my gut says yes — otherwise, no chance", scores: { generator: 3, mg: 2 } },
+      { text: "I absorb their energy first — then I'll know if it's right for me", scores: { reflector: 3 } }
+    ]
+  },
+  {
+    q: "How would friends describe your energy?",
+    options: [
+      { text: "Calm, observant, deeply wise — you see things others miss", scores: { projector: 3, reflector: 1 } },
+      { text: "Magnetic and ever-changing — you're different every time we meet", scores: { reflector: 3 } },
+      { text: "Powerful and independent — you make things happen", scores: { manifestor: 3, mg: 1 } },
+      { text: "Steady, reliable, and life-of-the-party when engaged", scores: { generator: 3 } },
+      { text: "A whirlwind of ideas and action — you get so much done", scores: { mg: 3, manifestor: 1 } }
+    ]
+  },
+  {
+    q: "What's your biggest work-related frustration?",
+    options: [
+      { text: "Others trying to control or micromanage me", scores: { manifestor: 3 } },
+      { text: "Not being recognized or invited for what I truly offer", scores: { projector: 3 } },
+      { text: "Feeling stuck doing work that doesn't light me up", scores: { generator: 3, mg: 2 } },
+      { text: "Environments that don't match my energy — I absorb everything", scores: { reflector: 3 } },
+      { text: "Starting 10 things but struggling to finish them all", scores: { mg: 2, generator: 1 } }
+    ]
+  },
+  {
+    q: "When life feels aligned, what does that look like for you?",
+    options: [
+      { text: "I'm free to initiate, create, and have my impact without interference", scores: { manifestor: 3 } },
+      { text: "I'm doing satisfying work that energizes me — I sleep well at night", scores: { generator: 3, mg: 2 } },
+      { text: "I'm recognized, invited, and guiding others with my unique perspective", scores: { projector: 3 } },
+      { text: "I'm in the right environment with the right people — I feel like myself", scores: { reflector: 3 } },
+      { text: "I'm buzzing between passions, responding to exciting opportunities, and nailing them fast", scores: { mg: 3 } }
+    ]
+  }
+];
+
+// ========================
+// TYPE DATA
+// ========================
+const typeData = {
+  manifestor: {
+    name: "Manifestor",
+    icon: "⚡",
+    colorClass: "type-manifestor",
+    traitClass: "trait-manifestor",
+    percentage: "~8%",
+    strategy: "To Inform",
+    aura: "Closed & Repelling",
+    traits: ["Initiator", "Independent", "Impactful", "Free-spirited"],
+    desc: "Manifestors are the initiators of the Human Design system. You have a natural ability to make things happen — to start, create, and impact the world around you without waiting for anyone else. Your power lies in your independence and your capacity to act on your own authority. <br><br>The key to your success is <strong>informing</strong> others before you act — this smooths your path and removes resistance. When you honor your need for freedom and autonomy, you find peace."
+  },
+  generator: {
+    name: "Generator",
+    icon: "🔋",
+    colorClass: "type-generator",
+    traitClass: "trait-generator",
+    percentage: "~37%",
+    strategy: "To Respond",
+    aura: "Open & Enveloping",
+    traits: ["Builder", "Sustainable", "Satisfied", "Life-force"],
+    desc: "Generators are the builders and life-force of humanity. You have a powerful Sacral center that generates sustainable energy — but only for what truly lights you up. Your gift is the capacity to master anything through dedication and response. <br><br>Your key is <strong>waiting to respond</strong> rather than initiating. When something comes to you and your gut says 'yes' — that's when you're unstoppable. Satisfaction, not frustration, is your sign of alignment."
+  },
+  mg: {
+    name: "Manifesting Generator",
+    icon: "⚡🔋",
+    colorClass: "type-mg",
+    traitClass: "trait-mg",
+    percentage: "~33%",
+    strategy: "To Respond, Then Inform",
+    aura: "Open & Enveloping",
+    traits: ["Multi-passionate", "Fast", "Efficient", "Dynamic"],
+    desc: "Manifesting Generators are the multi-passionate hybrids — you combine the Generator's life-force with the Manifestor's ability to initiate (once you've responded). You move fast, skip steps, and often accomplish in hours what takes others days. <br><br>Your key is <strong>responding</strong> first, then <strong>informing</strong> others of your next move. When you honor your need to pivot quickly and follow what excites you, satisfaction becomes your natural state."
+  },
+  projector: {
+    name: "Projector",
+    icon: "🔮",
+    colorClass: "type-projector",
+    traitClass: "trait-projector",
+    percentage: "~21%",
+    strategy: "Wait for the Invitation",
+    aura: "Focused & Absorbing",
+    traits: ["Guide", "Observant", "Wise", "System-seer"],
+    desc: "Projectors are the guides and seers of humanity. You don't have consistent energy like Generators — you're designed to see, understand, and guide others' energy with profound insight. Your gift is your ability to perceive systems, people, and patterns with remarkable clarity. <br><br>Your key is <strong>waiting for recognition and invitation</strong> — especially in big life decisions like career, love, and partnership. When invited into the right spaces, you shine. Success, not bitterness, is your signature."
+  },
+  reflector: {
+    name: "Reflector",
+    icon: "🌙",
+    colorClass: "type-reflector",
+    traitClass: "trait-reflector",
+    percentage: "~1%",
+    strategy: "Wait a Lunar Cycle",
+    aura: "Resistant & Sampling",
+    traits: ["Mirror", "Empathic", "Surprising", "Lunar"],
+    desc: "Reflectors are the rarest type — the mirrors of humanity. You have no defined centers, which means you literally reflect and amplify the energy of everyone around you. Your identity shifts with your environment, the people you're with, and even the transit of the moon. <br><br>Your key is <strong>waiting a full lunar cycle (~28 days)</strong> before making major decisions. This gives you the clarity to know what's truly yours versus what you've been reflecting. Surprise, not disappointment, is your signature."
+  }
+};
+
+// ========================
+// QUIZ ENGINE
+// ========================
+let currentQuestion = 0;
+let scores = { manifestor: 0, generator: 0, mg: 0, projector: 0, reflector: 0 };
+let quizComplete = false;
+
+function updateProgress() {
+  const qNum = currentQuestion + 1;
+  const total = questions.length;
+  const pct = Math.round((qNum / total) * 100);
+  document.getElementById('progressLabel').textContent = `Question ${qNum} of ${total}`;
+  document.getElementById('progressPercent').textContent = `${pct}%`;
+  document.getElementById('progressFill').style.width = `${pct}%`;
+}
+
+function renderQuestion() {
+  if (currentQuestion >= questions.length) {
+    showResult();
+    return;
+  }
+  quizComplete = false;
+  updateProgress();
+
+  const q = questions[currentQuestion];
+  const html = `
+    <div class="question-card">
+      <div class="question-num">Question ${currentQuestion + 1}</div>
+      <div class="question-text">${q.q}</div>
+      <div class="options">
+        ${q.options.map((opt, i) => `
+          <button class="option-btn" onclick="selectAnswer(${i})">
+            <span class="opt-icon">${String.fromCharCode(65 + i)}</span>
+            <span class="opt-label">${opt.text}</span>
+            <span class="opt-arrow">→</span>
+          </button>
+        `).join('')}
+      </div>
+    </div>
+  `;
+  document.getElementById('quizContent').innerHTML = html;
+}
+
+function selectAnswer(optionIndex) {
+  const q = questions[currentQuestion];
+  const chosen = q.options[optionIndex];
+
+  // Add scores
+  for (const [type, points] of Object.entries(chosen.scores)) {
+    scores[type] = (scores[type] || 0) + points;
+  }
+
+  currentQuestion++;
+  renderQuestion();
+}
+
+function determineType() {
+  // Find type with highest score
+  let maxScore = 0;
+  let topType = 'generator';
+  for (const [type, score] of Object.entries(scores)) {
+    if (score > maxScore) {
+      maxScore = score;
+      topType = type;
+    }
+  }
+  return topType;
+}
+
+function showResult() {
+  quizComplete = true;
+  updateProgress();
+  const type = determineType();
+  const data = typeData[type];
+
+  document.getElementById('quizContent').innerHTML = `
+    <div class="result-card ${data.colorClass}">
+      <div class="result-type-icon">${data.icon}</div>
+      <div class="result-type-name">${data.name}</div>
+      <div class="result-subtitle">${data.strategy} · ${data.aura}</div>
+
+      <div class="result-stats">
+        <div class="result-stat">
+          <div class="result-stat-value">${data.percentage}</div>
+          <div class="result-stat-label">Population</div>
+        </div>
+        <div class="result-stat">
+          <div class="result-stat-value">${data.strategy}</div>
+          <div class="result-stat-label">Strategy</div>
+        </div>
+      </div>
+
+      <div class="result-traits">
+        ${data.traits.map(t => `<span class="result-trait ${data.traitClass}">${t}</span>`).join('')}
+      </div>
+
+      <div class="result-desc">
+        ${data.desc}
+      </div>
+
+      <div class="result-disclaimer">
+        <strong>✨ This is just for fun!</strong> This quiz uses archetypal questions — it can't compute your <em>actual</em> Human Design chart without your birth data. But it's a great starting point. Get your <strong>real, free chart</strong> below to know for sure.
+      </div>
+
+      <!-- EMAIL CAPTURE -->
+      <div class="email-capture">
+        <h3>Want your real Human Design chart? It's free.</h3>
+        <p>Enter your email and we'll send you a link to generate your authentic HD chart — no cost, no spam.</p>
+        <form class="email-form" onsubmit="submitEmail(event)">
+          <input type="email" id="emailInput" placeholder="you@email.com" required>
+          <button type="submit">Get My Free Chart →</button>
+        </form>
+        <div class="email-success" id="emailSuccess">✓ Got it! Check your inbox for your free chart link.</div>
+      </div>
+
+      <div style="margin-top:20px;">
+        <button class="btn-secondary" onclick="retakeQuiz()">↻ Retake Quiz</button>
+      </div>
+    </div>
+  `;
+}
+
+function submitEmail(e) {
+  e.preventDefault();
+  const email = document.getElementById('emailInput').value;
+  // For now, show success. In production, POST to your endpoint.
+  console.log('Quiz email capture:', email, 'Suggested type:', determineType());
+  document.getElementById('emailSuccess').style.display = 'block';
+  document.getElementById('emailInput').value = '';
+}
+
+function retakeQuiz() {
+  currentQuestion = 0;
+  scores = { manifestor: 0, generator: 0, mg: 0, projector: 0, reflector: 0 };
+  quizComplete = false;
+  renderQuestion();
+}
+
+// Start
+renderQuestion();
+</script>
+</body>
+</html>

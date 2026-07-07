@@ -1,13 +1,15 @@
 import os
+import sys
 import json
 import requests
 import argparse
 from datetime import datetime, timedelta
+from pathlib import Path
 
 # Configuration
 REPORTS_ENGINE_URL = os.environ.get("REPORTS_ENGINE_URL", "http://localhost:8081")
 PODCASTS_DIR = "hd-content/podcasts"
-GATES_DATA_PATH = "scripts/gates_data.json"
+GATES_DATA_PATH = os.path.join(os.environ.get("SCRIPTS_DIR", "scripts"), "gates_data.json")
 
 def load_gates_data():
     if os.path.exists(GATES_DATA_PATH):
@@ -45,14 +47,14 @@ def get_fallback_transit_data(date):
     start_of_hd_year = datetime(date.year, 1, 22)
     if date < start_of_hd_year:
         start_of_hd_year = datetime(date.year - 1, 1, 22)
-
+    
     days_diff = (date - start_of_hd_year).days
     gate_index = int((days_diff / 365.25) * 64) % 64
-
+    
     wheel = [
-        41, 19, 13, 49, 30, 55, 37, 63, 22, 36, 25, 17, 21, 51, 42, 3,
-        27, 24, 2, 23, 8, 20, 16, 35, 45, 12, 15, 52, 39, 53, 62, 56,
-        31, 33, 7, 4, 29, 59, 40, 64, 47, 6, 46, 18, 48, 57, 32, 50,
+        41, 19, 13, 49, 30, 55, 37, 63, 22, 36, 25, 17, 21, 51, 42, 3, 
+        27, 24, 2, 23, 8, 20, 16, 35, 45, 12, 15, 52, 39, 53, 62, 56, 
+        31, 33, 7, 4, 29, 59, 40, 64, 47, 6, 46, 18, 48, 57, 32, 50, 
         28, 44, 1, 43, 14, 34, 9, 5, 26, 11, 10, 58, 38, 54, 61, 60
     ]
     return {"sun_gate": wheel[gate_index]}
@@ -60,13 +62,13 @@ def get_fallback_transit_data(date):
 def generate_script(start_date, gates_data):
     highlights = []
     seen_gates = set()
-
+    
     # Try to find 3 distinct Sun gates in the upcoming week
     for i in range(14): # Look up to 2 weeks to ensure 3 gates if we start at the end of one
         dt = start_date + timedelta(days=i)
         data = get_transit_data(dt)
         sun_gate = str(data.get("sun_gate"))
-
+        
         if sun_gate and sun_gate != "None" and sun_gate not in seen_gates:
             gate_info = gates_data.get(sun_gate, {"name": f"Gate {sun_gate}", "snippet": "A powerful time of transformation."})
             highlights.append({
@@ -78,7 +80,7 @@ def generate_script(start_date, gates_data):
             seen_gates.add(sun_gate)
             if len(highlights) >= 3:
                 break
-
+    
     # Fill in if still missing
     while len(highlights) < 3:
         dummy_gate = str((int(highlights[-1]["gate"]) % 64) + 1) if highlights else "1"
@@ -95,7 +97,7 @@ def generate_script(start_date, gates_data):
     experiment = f"Focus on the theme of {main_name} (Gate {main_gate}). Notice where you are being called to express this energy or where you see it in the world around you."
 
     title = f"Human Design Weekly: {start_date.strftime('%B %d, %Y')}"
-
+    
     script = f"""# {title}
 
 **Episode Date:** {start_date.strftime('%Y-%m-%d')}
@@ -124,6 +126,7 @@ Ready to dive deeper? Visit [humandesignengine.com](https://humandesignengine.co
 def main():
     parser = argparse.ArgumentParser(description="Generate weekly HD podcast script")
     parser.add_argument("--date", help="Start date (YYYY-MM-DD), defaults to today", default=None)
+    parser.add_argument("--rss", action="store_true", help="Also regenerate RSS feed after creating episode")
     args = parser.parse_args()
 
     if args.date:
@@ -148,6 +151,23 @@ def main():
         f.write(script_content)
 
     print(f"✅ Success! Podcast script generated: {filepath}")
+
+    # Auto-regenerate RSS feed
+    if args.rss:
+        import subprocess
+        script_dir = Path(__file__).resolve().parent
+        rss_script = script_dir / "generate_rss_feed.py"
+        if rss_script.is_file():
+            print("\n📡 Regenerating RSS feed...")
+            result = subprocess.run(
+                [sys.executable, str(rss_script), "--write"],
+                capture_output=True, text=True
+            )
+            print(result.stdout.strip())
+            if result.returncode != 0:
+                print(f"[warn] RSS regeneration failed:\n{result.stderr}")
+        else:
+            print(f"\n[warn] RSS generator not found at {rss_script}")
 
 if __name__ == "__main__":
     main()

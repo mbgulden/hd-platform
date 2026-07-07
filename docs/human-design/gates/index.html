@@ -368,7 +368,132 @@
     .gate-grid { grid-template-columns: 1fr; }
     .footer-inner { flex-direction: column; text-align: center; }
   }
+
+  /* AEO Quick Answer Block */
+  .aeo-quick-answer {
+    background: linear-gradient(135deg, rgba(201,168,76,0.08) 0%, rgba(201,168,76,0.03) 100%);
+    border-left: 3px solid var(--gold, #c9a84c);
+    border-radius: var(--radius, 8px);
+    padding: 16px 20px;
+    margin: 24px 0 20px 0;
+    font-size: 0.95rem;
+    line-height: 1.6;
+  }
+  .aeo-quick-answer .aeo-label {
+    display: inline-block;
+    font-size: 0.72rem;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: var(--gold, #c9a84c);
+    font-weight: 700;
+    margin-bottom: 6px;
+    background: rgba(201,168,76,0.1);
+    padding: 2px 8px;
+    border-radius: 3px;
+  }
+  .aeo-quick-answer .aeo-text {
+    color: var(--text-primary, #e2e8f0);
+    font-weight: 400;
+    margin: 0;
+  }
 </style>
+<!-- Google Analytics (GA4) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-Q6TPL08VM7"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-Q6TPL08VM7');
+</script>
+
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  "itemListElement": [
+    {
+      "@type": "ListItem",
+      "position": 1,
+      "name": "Home",
+      "item": "https://humandesignengine.com/"
+    },
+    {
+      "@type": "ListItem",
+      "position": 2,
+      "name": "Human Design",
+      "item": "https://humandesignengine.com/human-design/"
+    },
+    {
+      "@type": "ListItem",
+      "position": 3,
+      "name": "Gates",
+      "item": "https://humandesignengine.com/human-design/gates/"
+    },
+    {
+      "@type": "ListItem",
+      "position": 4,
+      "name": "The 64 Gates of Human Design \u2014 Complete Guide",
+      "item": "https://humandesignengine.com/human-design/gates/index/"
+    }
+  ]
+}
+</script>
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "Article",
+  "headline": "The 64 Gates of Human Design \u2014 Complete Guide",
+  "description": "Explore all 64 Human Design gates. Each gate explained with I-Ching hexagram, circuit group, center location, meaning, gift, and shadow. Comprehensive gate reference from Human Design Engine.",
+  "author": {
+    "@type": "Organization",
+    "name": "Human Design Engine"
+  },
+  "publisher": {
+    "@type": "Organization",
+    "name": "Human Design Engine",
+    "url": "https://humandesignengine.com"
+  },
+  "datePublished": "2026-06-01",
+  "dateModified": "2026-06-13",
+  "mainEntityOfPage": {
+    "@type": "WebPage",
+    "@id": "https://humandesignengine.com/human-design/gates/"
+  }
+}
+</script>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  "mainEntity": [
+    {
+      "@type": "Question",
+      "name": "How many gates are there in Human Design?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "There are 64 gates in Human Design, corresponding to the 64 hexagrams of the I Ching. Each gate represents a specific energetic frequency or life theme, and they are distributed across all 9 centers of the bodygraph."
+      }
+    },    {
+      "@type": "Question",
+      "name": "What does it mean when a gate is activated in my chart?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "An activated (defined) gate in your chart means that specific energetic theme is a consistent part of your personality or design. The gate's expression depends on which center it resides in and whether the connecting channel to a neighboring center is complete."
+      }
+    },    {
+      "@type": "Question",
+      "name": "Where can I look up my specific gates?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "You can use Human Design Engine's free Gate Lookup tool to explore any of the 64 gates by number. Each gate page includes its circuit group, center location, keynoting, and the I Ching hexagram it corresponds to."
+      }
+    }
+  ]
+}
+</script>
+
 </head>
 <body>
 
@@ -392,6 +517,12 @@
     <a href="/">Home</a> <span>›</span>
     Human Design Gates
   </div>
+
+  <div class="aeo-quick-answer" itemscope itemtype="https://schema.org/WebContent">
+    <div class="aeo-label">Quick Answer</div>
+    <p class="aeo-text">Explore all 64 Human Design gates. Each gate explained with I-Ching hexagram, circuit group, center location, meaning, gift, and shadow. Comprehensive gate reference from Human Design Engine.</p>
+  </div>
+
 
   <section class="gate-index-hero">
     <h1>The 64 Gates of Human Design</h1>

@@ -21,7 +21,7 @@ from pathlib import Path
 from io import BytesIO
 from functools import wraps
 from http.server import HTTPServer, BaseHTTPRequestHandler
-from urllib.parse import urlparse, parse_qs, unquote
+from urllib.parse import urlparse, parse_qsl, parse_qs, unquote
 
 # ── Logging ──────────────────────────────────────────────────────────
 logging.basicConfig(level=logging.INFO, format="%(asctime)s [%(levelname)s] %(message)s")
@@ -38,6 +38,7 @@ from cosmic_calculator import calculate_natal_chart
 from synastry_engine import calculate_composite, calculate_penta
 from matrix_mapper import GATE_NAMES, GATE_CENTER, CHANNELS
 from ephemeris_engine import init_ephemeris, get_planet_position, SUN
+from geo_resolver import local_to_utc
 from transit_engine import (
     compute_transit_overlay,
     calculate_transit_positions,
@@ -935,7 +936,15 @@ def compute_and_render(metadata: dict) -> dict:
     # Parse birth data
     y, m, d = map(int, birthdate.split("-"))
     h, mi = map(int, birthtime.split(":"))
-    birth_dt = datetime(y, m, d, h, mi)
+    # Convert local to UTC
+    decimal_hour = h + mi / 60.0
+    if location != "UTC" or timezone != "UTC":
+        utc_year, utc_month, utc_day, utc_hour = local_to_utc(
+            y, m, d, decimal_hour, location=location or timezone, lat=lat, lon=lon
+        )
+    else:
+        utc_year, utc_month, utc_day, utc_hour = y, m, d, decimal_hour
+    birth_dt = datetime(utc_year, utc_month, utc_day, int(utc_hour), int((utc_hour % 1) * 60))
     
     # Compute
     chart = calculate_natal_chart(
@@ -1078,6 +1087,7 @@ class Handler(BaseHTTPRequestHandler):
     
     def do_GET(self):
         path = urlparse(self.path).path
+        params = dict(parse_qsl(urlparse(self.path).query))
         
         if path == '/ping':
             self._json({
@@ -1089,6 +1099,312 @@ class Handler(BaseHTTPRequestHandler):
             })
         elif path == '/api/reports':
             self._json({"reports": _load_orders()[-20:]})
+        elif path == '/api/public/bodygraph':
+            # GET version — read from query params
+            try:
+                import subprocess, tempfile
+                
+                # Convert local to UTC
+                year, month, day = int(params.get("year", 2000)), int(params.get("month", 1)), int(params.get("day", 1))
+                hour, minute = int(params.get("hour", 12)), int(params.get("minute", 0))
+                tz = params.get("timezone", "UTC")
+                if tz != "UTC":
+                    decimal_hour = hour + minute / 60.0
+                    utc_year, utc_month, utc_day, utc_hour = local_to_utc(
+                        year, month, day, decimal_hour,
+                        location=tz,
+                        lat=float(params.get("lat", 0)), lon=float(params.get("lon", 0))
+                    )
+                    year, month, day = utc_year, utc_month, utc_day
+                    hour, minute = int(utc_hour), int((utc_hour % 1) * 60)
+                birth_dt = datetime(year, month, day, hour, minute)
+                chart = calculate_natal_chart(
+                    name=params.get("name", "Unknown"),
+                    birth_dt=birth_dt,
+                    lat=float(params.get("lat", 0)), lon=float(params.get("lon", 0)),
+                    timezone=params.get("timezone", "UTC"),
+                )
+                
+                # Map to Gonzih ChartData for the bodygraph renderer
+                pers_gates = set()
+                des_gates = set()
+                both_gates = set()
+                all_activations = {'design': {}, 'personality': {}}
+                
+                # Planet name mapping: chart keys → renderer keys
+                planet_map = {
+                    'Sun': 'sun', 'Earth': 'earth', 'True Node': 'northnode', 'South Node': 'southnode',
+                    'Moon': 'moon', 'Mercury': 'mercury', 'Venus': 'venus', 'Mars': 'mars',
+                    'Jupiter': 'jupiter', 'Saturn': 'saturn', 'Uranus': 'uranus', 'Neptune': 'neptune', 'Pluto': 'pluto',
+                }
+                
+                for side_key, planets in [('design', chart.get('design_planets', {})),
+                                           ('personality', chart.get('personality_planets', {}))]:
+                    for planet_name, data in planets.items():
+                        g = data.get('gate')
+                        if g is not None:
+                            if side_key == 'design':
+                                des_gates.add(g)
+                            else:
+                                pers_gates.add(g)
+                            rkey = planet_map.get(planet_name)
+                            if rkey:
+                                all_activations[side_key][rkey] = {
+                                    'gate': g, 'line': data.get('line'),
+                                    'color': data.get('color'), 'tone': data.get('tone'),
+                                    'base': data.get('base'),
+                                }
+                
+                for g in des_gates & pers_gates:
+                    both_gates.add(g)
+                    des_gates.discard(g)
+                    pers_gates.discard(g)
+                
+                gonzih_data = {
+                    'name': chart.get('name', 'Unknown'),
+                    'type': chart.get('hd_type', ''),
+                    'profile': chart.get('profile', ''),
+                    'authority': chart.get('authority', ''),
+                    'strategy': chart.get('strategy', ''),
+                    'incarnationCross': chart.get('incarnation_cross', ''),
+                    'definition': chart.get('definition', ''),
+                    'definedCenters': [c.replace('Heart/Ego', 'Ego') for c in chart.get('defined_centers', [])],
+                    'channels': [list(ch['gates']) for ch in chart.get('defined_channels', []) if 'gates' in ch],
+                    'designGates': list(des_gates),
+                    'personalityGates': list(pers_gates),
+                    'bothGates': list(both_gates),
+                    'activations': all_activations,
+                    'variables': chart.get('variables', ''),
+                }
+                
+                with tempfile.NamedTemporaryFile(mode='w', suffix='.json', delete=False) as tmp:
+                    json.dump(gonzih_data, tmp)
+                    tmp.flush()
+                    result = subprocess.run(
+                        ["node", "/home/ubuntu/work/hd-bodygraph/render-pro.mjs", tmp.name],
+                        capture_output=True, text=True, timeout=30,
+                        cwd="/home/ubuntu/work/hd-bodygraph",
+                    )
+                    os.unlink(tmp.name)
+                
+                if result.returncode == 0:
+                    svg_data = result.stdout.encode()
+                    # Default to PDF (vector, crisp); ?format=svg for SVG
+                    want_svg = params.get('format', 'pdf') == 'svg'
+                    if want_svg:
+                        content_type = 'image/svg+xml'
+                        body = svg_data
+                    else:
+                        import subprocess as sp
+                        pdf = sp.run(['rsvg-convert', '-f', 'pdf', '/dev/stdin'],
+                                     input=svg_data, capture_output=True, timeout=10)
+                        if pdf.returncode == 0:
+                            content_type = 'application/pdf'
+                            body = pdf.stdout
+                        else:
+                            content_type = 'image/svg+xml'
+                            body = svg_data
+                    self.send_response(200)
+                    self.send_header('Content-Type', content_type)
+                    self.send_header('Access-Control-Allow-Origin', '*')
+                    self.send_header('Cache-Control', 'public, max-age=3600')
+                    self.end_headers()
+                    self.wfile.write(body)
+                else:
+                    log.error("Bodygraph render failed: %s", result.stderr)
+                    self._json({"success": False, "error": "Render failed", "details": result.stderr[:500]}, 500)
+            except Exception as e:
+                log.exception("Bodygraph GET failed")
+                self._json({"success": False, "error": str(e)}, 500)
+        elif path == '/api/catalog' or path == '/api/public/catalog':
+            # Public product catalog with pricing
+            catalog_data = {
+                "catalog": "Human Design Engine — Verified Deep-Dive Family Reports",
+                "description": "Six comprehensive Human Design natal chart analyses — each generated by the open-source OpenHumanDesignMCP engine, certified by Light Filled Human Design, and delivered as a beautifully formatted PDF.",
+                "products": [
+                    {
+                        "id": "hd-deepdive-michael",
+                        "name": "Michael — Individual Deep Dive",
+                        "description": "Comprehensive Human Design natal chart analysis for Michael. Type: Projector, Profile: 3/5, Authority: Splenic.",
+                        "price_usd": 9.99,
+                        "file": "michael/individual-deep-dive-2026-05-31.pdf",
+                        "download_url": "/api/reports/download/michael",
+                        "stripe_price_id": "price_michael_deepdive",
+                    },
+                    {
+                        "id": "hd-deepdive-becca",
+                        "name": "Becca — Individual Deep Dive",
+                        "description": "Comprehensive Human Design natal chart analysis for Becca. Type: Generator, Profile: 4/6, Authority: Sacral.",
+                        "price_usd": 9.99,
+                        "file": "becca/individual-deep-dive-2026-05-31.pdf",
+                        "download_url": "/api/reports/download/becca",
+                        "stripe_price_id": "price_becca_deepdive",
+                    },
+                    {
+                        "id": "hd-deepdive-william",
+                        "name": "William — Individual Deep Dive",
+                        "description": "Comprehensive Human Design natal chart analysis for William. Type: Manifesting Generator, Profile: 4/6, Authority: Sacral.",
+                        "price_usd": 9.99,
+                        "file": "william/individual-deep-dive-2026-05-31.pdf",
+                        "download_url": "/api/reports/download/william",
+                        "stripe_price_id": "price_william_deepdive",
+                    },
+                    {
+                        "id": "hd-deepdive-benjamin",
+                        "name": "Benjamin — Individual Deep Dive",
+                        "description": "Comprehensive Human Design natal chart analysis for Benjamin. Type: Projector, Profile: 4/6, Authority: Emotional.",
+                        "price_usd": 9.99,
+                        "file": "benjamin/individual-deep-dive-2026-05-31.pdf",
+                        "download_url": "/api/reports/download/benjamin",
+                        "stripe_price_id": "price_benjamin_deepdive",
+                    },
+                    {
+                        "id": "hd-deepdive-victoria",
+                        "name": "Victoria — Individual Deep Dive",
+                        "description": "Comprehensive Human Design natal chart analysis for Victoria. Type: Manifesting Generator, Profile: 3/5, Authority: Sacral.",
+                        "price_usd": 9.99,
+                        "file": "victoria/individual-deep-dive-2026-05-31.pdf",
+                        "download_url": "/api/reports/download/victoria",
+                        "stripe_price_id": "price_victoria_deepdive",
+                    },
+                    {
+                        "id": "hd-deepdive-ella",
+                        "name": "Ella — Individual Deep Dive",
+                        "description": "Comprehensive Human Design natal chart analysis for Ella. Type: Generator, Profile: 5/2, Authority: Sacral.",
+                        "price_usd": 9.99,
+                        "file": "ella/individual-deep-dive-2026-05-31.pdf",
+                        "download_url": "/api/reports/download/ella",
+                        "stripe_price_id": "price_ella_deepdive",
+                    },
+                ],
+                "verified_by": "OpenHumanDesignMCP v0.3.0",
+                "certification": "Light Filled Human Design",
+            }
+            self._json(catalog_data)
+        elif path == '/api/public/relationship':
+            # Public endpoint: compute relationship composite from stored family data
+            try:
+                import json as _json
+                person1 = params.get('person1', '').lower()
+                person2 = params.get('person2', '').lower()
+                if not person1 or not person2:
+                    self._json({"error": "Missing person1 and/or person2 query params"}, 400)
+                    return
+
+                # Load composited JSON from pre-computed files
+                comp_file = Path("/home/ubuntu/work/hd-reports/relationships") / f"{person1}_{person2}_composite.json"
+                alt_file = Path("/home/ubuntu/work/hd-reports/relationships") / f"{person2}_{person1}_composite.json"
+                if comp_file.exists():
+                    data = _json.loads(comp_file.read_text())
+                elif alt_file.exists():
+                    data = _json.loads(alt_file.read_text())
+                else:
+                    # Fallback: compute live from family.json
+                    family_file = Path("/home/ubuntu/work/next-step-bot/family.json")
+                    if not family_file.exists():
+                        self._json({"error": "Family data not found"}, 500)
+                        return
+                    family = _json.loads(family_file.read_text())["family"]
+                    if person1 not in family or person2 not in family:
+                        self._json({"error": f"Person not found. Available: {list(family.keys())}"}, 404)
+                        return
+
+                    p1 = family[person1]
+                    p2 = family[person2]
+
+                    def _compute(profile):
+                        from geo_resolver import local_to_utc
+                        utc = local_to_utc(
+                            profile["year"], profile["month"], profile["day"],
+                            profile["hour"], profile.get("location", "UTC")
+                        )
+                        birth_dt = datetime(utc[0], utc[1], utc[2],
+                                           int(utc[3]), int((utc[3] % 1) * 60))
+                        return calculate_natal_chart(
+                            name=profile.get("name", "Unknown"),
+                            birth_dt=birth_dt,
+                            lat=profile.get("lat", 0),
+                            lon=profile.get("lon", 0),
+                            timezone=profile.get("timezone", "UTC"),
+                        )
+
+                    chart_a = _compute(p1)
+                    chart_b = _compute(p2)
+                    composite = calculate_composite(
+                        set(chart_a["all_active_gates"]),
+                        set(chart_b["all_active_gates"]),
+                        p1.get("name", person1),
+                        p2.get("name", person2),
+                    )
+
+                    shared_gates = sorted(set(chart_a["all_active_gates"]) & set(chart_b["all_active_gates"]))
+                    a_channels = {frozenset(c["gates"]): c["name"] for c in chart_a["defined_channels"]}
+                    b_channels = {frozenset(c["gates"]): c["name"] for c in chart_b["defined_channels"]}
+                    companion = []
+                    for gates, name in a_channels.items():
+                        if gates in b_channels:
+                            companion.append({"gates": list(gates), "name": name})
+
+                    data = {
+                        "profile_a": {
+                            "key": person1, "name": p1.get("name",""),
+                            "type": chart_a["hd_type"], "profile": chart_a["profile"],
+                            "authority": chart_a["authority"],
+                            "defined_centers": chart_a["defined_centers"],
+                            "defined_channels": [f"{c['gates'][0]}-{c['gates'][1]}" for c in chart_a["defined_channels"]],
+                            "gate_count": len(chart_a["all_active_gates"]),
+                        },
+                        "profile_b": {
+                            "key": person2, "name": p2.get("name",""),
+                            "type": chart_b["hd_type"], "profile": chart_b["profile"],
+                            "authority": chart_b["authority"],
+                            "defined_centers": chart_b["defined_centers"],
+                            "defined_channels": [f"{c['gates'][0]}-{c['gates'][1]}" for c in chart_b["defined_channels"]],
+                            "gate_count": len(chart_b["all_active_gates"]),
+                        },
+                        "relationship": {
+                            "electromagnetic_channels": composite["electromagnetic_channels"],
+                            "compromise_gates": composite["compromise_gates"],
+                            "dominance_channels": composite["dominance_channels"],
+                            "companion_channels": companion,
+                            "centers_defined_together": composite["centers_defined_together"],
+                            "new_centers_when_together": composite["new_centers_when_together"],
+                            "shared_gates": shared_gates,
+                            "total_electromagnetic": composite["total_electromagnetic"],
+                            "total_compromise": composite["total_compromise"],
+                            "total_dominance": len(composite["dominance_channels"]),
+                            "total_companion": len(companion),
+                            "total_shared_gates": len(shared_gates),
+                        },
+                    }
+
+                self._json(data)
+            except Exception as e:
+                log.exception("Relationship endpoint error")
+                self._json({"error": str(e)}, 500)
+        elif path.startswith('/api/reports/download/'):
+            # Serve verified PDF reports on demand
+            import re
+            match = re.match(r'^/api/reports/download/([a-z]+)$', path)
+            if match:
+                name = match.group(1)
+                REPORTS_STORE = Path("/home/ubuntu/work/hd-reports")
+                pdf_path = REPORTS_STORE / name / "individual-deep-dive-2026-05-31.pdf"
+                if pdf_path.exists():
+                    self.send_response(200)
+                    self.send_header('Content-Type', 'application/pdf')
+                    self.send_header('Content-Disposition', f'attachment; filename="{name}-deep-dive-2026-05-31.pdf"')
+                    self.send_header('Access-Control-Allow-Origin', '*')
+                    self.send_header('Cache-Control', 'public, max-age=86400')
+                    self.send_header('Content-Length', str(pdf_path.stat().st_size))
+                    self.end_headers()
+                    with open(pdf_path, 'rb') as f:
+                        self.wfile.write(f.read())
+                    return
+                else:
+                    self._json({"error": f"Report not found for '{name}'"}, 404)
+            else:
+                self._json({"error": "Invalid report name"}, 400)
         else:
             self._json({"error": "Not found"}, 404)
     
@@ -1135,10 +1451,19 @@ class Handler(BaseHTTPRequestHandler):
             body = json.loads(self.rfile.read(length)) if length else {}
             
             try:
-                birth_dt = datetime(
-                    body.get("year", 2000), body.get("month", 1), body.get("day", 1),
-                    body.get("hour", 12), body.get("minute", 0)
-                )
+                # Convert local to UTC
+                year, month, day = body.get("year", 2000), body.get("month", 1), body.get("day", 1)
+                hour, minute = body.get("hour", 12), body.get("minute", 0)
+                tz = body.get("timezone", "UTC")
+                if tz != "UTC":
+                    decimal_hour = hour + minute / 60.0
+                    utc_year, utc_month, utc_day, utc_hour = local_to_utc(
+                        year, month, day, decimal_hour, location=tz,
+                        lat=body.get("lat", 0), lon=body.get("lon", 0)
+                    )
+                    year, month, day = utc_year, utc_month, utc_day
+                    hour, minute = int(utc_hour), int((utc_hour % 1) * 60)
+                birth_dt = datetime(year, month, day, hour, minute)
                 chart = calculate_natal_chart(
                     name=body.get("name", "Unknown"),
                     birth_dt=birth_dt,
@@ -1163,10 +1488,19 @@ class Handler(BaseHTTPRequestHandler):
             body = json.loads(self.rfile.read(length)) if length else {}
             
             try:
-                birth_dt = datetime(
-                    body.get("year", 2000), body.get("month", 1), body.get("day", 1),
-                    body.get("hour", 12), body.get("minute", 0)
-                )
+                # Convert local to UTC
+                year, month, day = body.get("year", 2000), body.get("month", 1), body.get("day", 1)
+                hour, minute = body.get("hour", 12), body.get("minute", 0)
+                tz = body.get("timezone", "UTC")
+                if tz != "UTC":
+                    decimal_hour = hour + minute / 60.0
+                    utc_year, utc_month, utc_day, utc_hour = local_to_utc(
+                        year, month, day, decimal_hour, location=tz,
+                        lat=body.get("lat", 0), lon=body.get("lon", 0)
+                    )
+                    year, month, day = utc_year, utc_month, utc_day
+                    hour, minute = int(utc_hour), int((utc_hour % 1) * 60)
+                birth_dt = datetime(year, month, day, hour, minute)
                 chart = calculate_natal_chart(
                     name=body.get("name", "Unknown"),
                     birth_dt=birth_dt,
@@ -1185,6 +1519,164 @@ class Handler(BaseHTTPRequestHandler):
                 log.exception("Public compute chart failed")
                 self._json({"success": False, "error": str(e)}, 500)
         
+        elif path == '/api/public/bodygraph':
+            # Public endpoint — compute chart and return SVG bodygraph
+            length = int(self.headers.get('Content-Length', 0))
+            body = json.loads(self.rfile.read(length)) if length else {}
+            
+            try:
+                import subprocess, tempfile
+                
+                # Convert local to UTC
+                year, month, day = body.get("year", 2000), body.get("month", 1), body.get("day", 1)
+                hour, minute = body.get("hour", 12), body.get("minute", 0)
+                tz = body.get("timezone", "UTC")
+                if tz != "UTC":
+                    decimal_hour = hour + minute / 60.0
+                    utc_year, utc_month, utc_day, utc_hour = local_to_utc(
+                        year, month, day, decimal_hour, location=tz,
+                        lat=body.get("lat", 0), lon=body.get("lon", 0)
+                    )
+                    year, month, day = utc_year, utc_month, utc_day
+                    hour, minute = int(utc_hour), int((utc_hour % 1) * 60)
+                birth_dt = datetime(year, month, day, hour, minute)
+                chart = calculate_natal_chart(
+                    name=body.get("name", "Unknown"),
+                    birth_dt=birth_dt,
+                    lat=body.get("lat", 0), lon=body.get("lon", 0),
+                    timezone=body.get("timezone", "UTC"),
+                )
+                
+                # Map to Gonzih ChartData
+                pers_gates = set()
+                des_gates = set()
+                for p, d in chart.get("personality_planets", {}).items():
+                    if isinstance(d, dict) and d.get("gate"):
+                        pers_gates.add(d["gate"])
+                for p, d in chart.get("design_planets", {}).items():
+                    if isinstance(d, dict) and d.get("gate"):
+                        des_gates.add(d["gate"])
+                
+                both_gates = sorted(pers_gates & des_gates)
+                pers_only = sorted(pers_gates - des_gates)
+                des_only = sorted(des_gates - pers_gates)
+                
+                # Planet key mapping: MCP engine ⟶ render-pro.mjs
+                _PLANET_MAP = {
+                    "Sun": "sun", "Moon": "moon", "Mercury": "mercury", "Venus": "venus",
+                    "Mars": "mars", "Jupiter": "jupiter", "Saturn": "saturn",
+                    "Uranus": "uranus", "Neptune": "neptune", "Pluto": "pluto",
+                    "True Node": "northnode", "Earth": "earth", "South Node": "southnode",
+                }
+                
+                def _act_pro(planets_dict):
+                    """Return full planet objects: {gate, line, color, tone, base}"""
+                    result = {}
+                    for planet, data in planets_dict.items():
+                        key = _PLANET_MAP.get(planet)
+                        if key and isinstance(data, dict) and data.get("gate"):
+                            result[key] = {
+                                "gate": data.get("gate", ""),
+                                "line": data.get("line", ""),
+                                "color": data.get("color", ""),
+                                "tone": data.get("tone", ""),
+                                "base": data.get("base", ""),
+                            }
+                    return result
+                
+                # Extract incarnation cross
+                cross = chart.get("incarnation_cross", {})
+                cross_name = cross.get("name", "") if isinstance(cross, dict) else str(cross)
+                
+                center_map = {"Heart": "Ego", "Heart/Ego": "Ego"}
+                render_data = {
+                    "definedCenters": [center_map.get(c, c) for c in chart.get("defined_centers", [])],
+                    "personalityGates": pers_only,
+                    "designGates": des_only,
+                    "bothGates": both_gates,
+                    "channels": [
+                        ch["gates"] for ch in chart.get("defined_channels", [])
+                        if len(ch.get("gates", ())) == 2
+                    ],
+                    "type": chart.get("hd_type", ""),
+                    "profile": str(chart.get("profile", "")),
+                    "definition": chart.get("definition", ""),
+                    "authority": chart.get("authority", ""),
+                    "strategy": chart.get("strategy", ""),
+                    "incarnationCross": cross_name,
+                    "variables": chart.get("variables", ""),
+                    "variablesAdvanced": chart.get("variables_advanced", {}),
+                    "activations": {
+                        "design": _act_pro(chart.get("design_planets", {})),
+                        "personality": _act_pro(chart.get("personality_planets", {})),
+                    },
+                }
+                
+                # Call Node.js production renderer
+                with tempfile.NamedTemporaryFile(mode="w", suffix=".json", delete=False) as f:
+                    json.dump(render_data, f)
+                    tmp = f.name
+                
+                try:
+                    result = subprocess.run(
+                        ["node", "/home/ubuntu/work/hd-bodygraph/render-pro.mjs", tmp],
+                        capture_output=True, text=True, timeout=15,
+                        cwd="/home/ubuntu/work/hd-bodygraph",
+                    )
+                    if result.returncode != 0:
+                        raise RuntimeError(f"Renderer failed: {result.stderr}")
+                    svg = result.stdout
+                finally:
+                    os.unlink(tmp)
+                
+                self.send_response(200)
+                self.send_header("Content-Type", "image/svg+xml")
+                self.send_header("Access-Control-Allow-Origin", "*")
+                self.send_header("Cache-Control", "public, max-age=3600")
+                self.end_headers()
+                self.wfile.write(svg.encode())
+                return
+                
+            except Exception as e:
+                log.exception("Bodygraph generation failed")
+                self._json({"success": False, "error": str(e)}, 500)
+        
+        elif path == '/api/public/capture-lead':
+            # Public endpoint — capture lead email + birth data from free chart widget
+            length = int(self.headers.get('Content-Length', 0))
+            body = json.loads(self.rfile.read(length)) if length else {}
+            
+            email = body.get('email', '').strip()
+            if not email:
+                self._json({"success": False, "error": "Email required"}, 400)
+                return
+            
+            lead = {
+                "email": email,
+                "name": body.get("name", ""),
+                "birth_date": body.get("birth_date", ""),
+                "birth_time": body.get("birth_time", ""),
+                "location": body.get("location", ""),
+                "source": body.get("source", "free-chart-widget"),
+                "page": body.get("page", ""),
+                "timestamp": datetime.now().isoformat(),
+                "ip": self.client_address[0],
+            }
+            
+            # Save to leads file
+            leads_file = REPORTS_DIR / "leads.json"
+            leads = []
+            if leads_file.exists():
+                try:
+                    leads = json.loads(leads_file.read_text())
+                except Exception:
+                    pass
+            leads.append(lead)
+            leads_file.write_text(json.dumps(leads, indent=2))
+            
+            log.info("Lead captured: %s from %s", email, lead["source"])
+            self._json({"success": True, "message": "Lead captured"})
+        
         else:
             self._json({"error": "Not found"}, 404)
     
@@ -1195,5 +1687,5 @@ class Handler(BaseHTTPRequestHandler):
 if __name__ == '__main__':
     log.info("🚀 HDE Report Server starting on port %d", PORT)
     log.info("   Engine: %s", ENGINE_PATH)
-    log.info("   Endpoints: /ping /api/compute /api/compute-chart /api/public/compute-chart")
+    log.info("   Endpoints: /ping /api/compute /api/compute-chart /api/public/compute-chart /api/public/capture-lead")
     HTTPServer(('0.0.0.0', PORT), Handler).serve_forever()

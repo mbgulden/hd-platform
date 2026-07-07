@@ -37,22 +37,34 @@ async def lifespan(app: FastAPI) -> AsyncGenerator[None, None]:
     """Handle startup and shutdown events for DB and Redis."""
     logger.info("HD Platform starting up …")
 
-    # Initialise database tables (idempotent)
-    await init_db()
-    logger.info("Database tables ensured.")
+    # Initialise database tables (idempotent) — skip if DB unavailable
+    try:
+        await init_db()
+        logger.info("Database tables ensured.")
+    except Exception as exc:
+        logger.warning("Database init skipped (unavailable): %s", exc)
 
-    # Warm up Redis connection
-    redis = await get_redis()
-    await redis.ping()
-    logger.info("Redis connection verified.")
+    # Warm up Redis connection — skip if unavailable
+    try:
+        redis = await get_redis()
+        await redis.ping()
+        logger.info("Redis connection verified.")
+    except Exception as exc:
+        logger.warning("Redis connection skipped (unavailable): %s", exc)
 
     yield  # application runs here
 
     # Shutdown
     logger.info("HD Platform shutting down …")
-    await close_db()
-    redis_client = await get_redis()
-    await redis_client.aclose()
+    try:
+        await close_db()
+    except Exception:
+        pass
+    try:
+        redis_client = await get_redis()
+        await redis_client.aclose()
+    except Exception:
+        pass
     logger.info("Shutdown complete.")
 
 

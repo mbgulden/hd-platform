@@ -85,9 +85,11 @@ async def transit_chart(
             month=body.month,
             day=body.day,
             hour=body.hour,
+            minute=body.minute,
             lat=body.lat or 0.0,
             lon=body.lon or 0.0,
             location=body.location,
+            timezone=body.timezone,
             target_date=body.target_date,
         )
     except Exception as exc:

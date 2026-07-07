@@ -1,0 +1,1369 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Unchained Wholeness — Premium 8-Week Human Design & Somatic Deconditioning Program</title>
+  <meta name="description" content="Dismantle the conditioning patterns in your open centers. An 8-week journey combining Human Design, somatic therapy, nervous system regulation, and custom coaching.">
+
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Outfit:wght@400;600;800&display=swap" rel="stylesheet">
+
+  <!-- Google Analytics (GA4) -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-Q6TPL08VM7"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+    gtag('config', 'G-Q6TPL08VM7');
+  </script>
+
+  <!-- JSON-LD Structured Data -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "Product",
+    "name": "Unchained Wholeness Flagship Program",
+    "image": "https://humandesignengine.com/logo.png",
+    "description": "8-week personalized Human Design deconditioning program combining somatic therapy, coaching, and optional Hawaii retreat.",
+    "brand": {
+      "@type": "Brand",
+      "name": "Human Design Engine"
+    },
+    "offers": {
+      "@type": "AggregateOffer",
+      "priceCurrency": "USD",
+      "lowPrice": "997.00",
+      "highPrice": "5997.00",
+      "offerCount": "2"
+    }
+  }
+  </script>
+
+  <!-- Embed Checkout Component -->
+  <script src="https://api.humandesignengine.com/static/hd-checkout.js" type="module"></script>
+
+  <style>
+    :root {
+      --navy-deep: #06060c;
+      --navy: #0f0f1e;
+      --navy-mid: #16162d;
+      --navy-light: #202042;
+      
+      --gold: #c9a84c;
+      --gold-light: #e0c468;
+      --gold-bright: #d4af37;
+      --gold-soft: rgba(201,168,76,0.12);
+      
+      --cyan: #00d4ff;
+      --cyan-light: #33ddff;
+      --cyan-soft: rgba(0,212,255,0.12);
+      
+      --text-primary: #f0f0f8;
+      --text-secondary: #a8a8c8;
+      --text-muted: #707090;
+      
+      --card-bg: rgba(15, 15, 30, 0.7);
+      --card-border: rgba(201, 168, 76, 0.15);
+      --card-border-cyan: rgba(0, 212, 255, 0.15);
+      
+      --radius: 12px;
+      --radius-lg: 24px;
+      --transition: 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    html {
+      scroll-behavior: smooth;
+    }
+
+    body {
+      background-color: var(--navy-deep);
+      color: var(--text-primary);
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+      line-height: 1.6;
+      min-height: 100vh;
+      overflow-x: hidden;
+      position: relative;
+    }
+
+    /* Ambient background glows */
+    body::before {
+      content: '';
+      position: fixed;
+      inset: 0;
+      background: 
+        radial-gradient(circle at 10% 20%, rgba(201, 168, 76, 0.05) 0%, transparent 50%),
+        radial-gradient(circle at 90% 80%, rgba(0, 212, 255, 0.05) 0%, transparent 50%),
+        radial-gradient(circle at 50% 50%, rgba(15, 15, 30, 0.5) 0%, transparent 100%);
+      pointer-events: none;
+      z-index: -1;
+    }
+
+    h1, h2, h3, h4 {
+      font-family: 'Outfit', sans-serif;
+      letter-spacing: -0.02em;
+    }
+
+    /* ── Navigation ── */
+    nav {
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      background: rgba(6, 6, 12, 0.85);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      border-bottom: 1px solid rgba(201, 168, 76, 0.1);
+      padding: 0 24px;
+    }
+
+    .nav-inner {
+      max-width: 1200px;
+      margin: 0 auto;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      height: 70px;
+    }
+
+    .nav-logo {
+      color: var(--text-primary);
+      text-decoration: none;
+      font-weight: 800;
+      font-size: 1.35rem;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .nav-logo span {
+      background: linear-gradient(135deg, var(--gold-light), var(--cyan-light));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    .nav-links a {
+      color: var(--text-secondary);
+      text-decoration: none;
+      font-size: 0.9rem;
+      font-weight: 500;
+      margin-left: 28px;
+      transition: var(--transition);
+    }
+
+    .nav-links a:hover {
+      color: var(--gold-light);
+    }
+
+    /* ── Hero Section ── */
+    header.hero {
+      padding: 100px 24px 80px 24px;
+      text-align: center;
+      position: relative;
+    }
+
+    .hero-container {
+      max-width: 950px;
+      margin: 0 auto;
+    }
+
+    .premium-badge {
+      display: inline-block;
+      font-size: 0.78rem;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 0.12em;
+      background: linear-gradient(135deg, var(--gold-soft), rgba(0, 212, 255, 0.05));
+      border: 1px solid rgba(201, 168, 76, 0.25);
+      color: var(--gold-light);
+      padding: 8px 18px;
+      border-radius: 30px;
+      margin-bottom: 28px;
+      animation: pulseGlow 3s infinite alternate;
+    }
+
+    @keyframes pulseGlow {
+      from { box-shadow: 0 0 10px rgba(201, 168, 76, 0.05); }
+      to { box-shadow: 0 0 20px rgba(201, 168, 76, 0.2); }
+    }
+
+    .hero h1 {
+      font-size: clamp(2.8rem, 7.5vw, 4.8rem);
+      font-weight: 800;
+      line-height: 1.1;
+      margin-bottom: 24px;
+    }
+
+    .hero h1 span {
+      background: linear-gradient(135deg, var(--gold-bright), #fff 40%, var(--cyan));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    .hero-subhead {
+      max-width: 750px;
+      margin: 0 auto 40px auto;
+      font-size: clamp(1.15rem, 2.8vw, 1.45rem);
+      color: var(--text-secondary);
+      line-height: 1.6;
+      font-weight: 400;
+    }
+
+    .hero-ctas {
+      display: flex;
+      gap: 20px;
+      justify-content: center;
+      flex-wrap: wrap;
+      margin-bottom: 48px;
+    }
+
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      padding: 16px 36px;
+      border-radius: var(--radius);
+      font-size: 1.05rem;
+      font-weight: 700;
+      text-decoration: none;
+      cursor: pointer;
+      transition: var(--transition);
+      border: none;
+      text-align: center;
+    }
+
+    .btn-primary {
+      background: linear-gradient(135deg, var(--gold-bright), var(--gold));
+      color: var(--navy-deep);
+      box-shadow: 0 4px 20px rgba(201, 168, 76, 0.2);
+    }
+
+    .btn-primary:hover {
+      box-shadow: 0 6px 30px rgba(201, 168, 76, 0.45);
+      transform: translateY(-2px);
+    }
+
+    .btn-secondary {
+      background: rgba(255, 255, 255, 0.04);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      color: var(--text-primary);
+    }
+
+    .btn-secondary:hover {
+      background: rgba(255, 255, 255, 0.08);
+      border-color: rgba(255, 255, 255, 0.18);
+      transform: translateY(-2px);
+    }
+
+    /* ── The Problem Section ── */
+    .problem-section {
+      padding: 100px 24px;
+      max-width: 1100px;
+      margin: 0 auto;
+      position: relative;
+    }
+
+    .section-header {
+      text-align: center;
+      margin-bottom: 64px;
+    }
+
+    .section-title {
+      font-size: clamp(2.2rem, 5vw, 3rem);
+      font-weight: 800;
+      margin-bottom: 16px;
+      background: linear-gradient(135deg, #fff, var(--cyan-light));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    .section-subtitle {
+      color: var(--text-secondary);
+      max-width: 700px;
+      margin: 0 auto;
+      font-size: 1.1rem;
+    }
+
+    .problem-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+      gap: 32px;
+    }
+
+    .problem-card {
+      background: var(--card-bg);
+      border: 1px solid rgba(233, 69, 96, 0.15);
+      border-radius: var(--radius-lg);
+      padding: 44px 36px;
+      transition: var(--transition);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .problem-card:hover {
+      transform: translateY(-3px);
+      border-color: rgba(233, 69, 96, 0.35);
+      box-shadow: 0 10px 30px rgba(233, 69, 96, 0.05);
+    }
+
+    .problem-card .icon-wrap {
+      font-size: 2.2rem;
+      margin-bottom: 24px;
+      color: #ff5e7e;
+    }
+
+    .problem-card h3 {
+      font-size: 1.4rem;
+      margin-bottom: 16px;
+      color: var(--text-primary);
+    }
+
+    .problem-card p {
+      color: var(--text-secondary);
+      font-size: 0.98rem;
+      line-height: 1.6;
+    }
+
+    /* ── The Solution Section ── */
+    .solution-section {
+      padding: 100px 24px;
+      background: rgba(10, 10, 22, 0.4);
+      border-top: 1px solid rgba(201, 168, 76, 0.05);
+      border-bottom: 1px solid rgba(201, 168, 76, 0.05);
+    }
+
+    .solution-container {
+      max-width: 1100px;
+      margin: 0 auto;
+    }
+
+    .solution-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: 32px;
+      margin-top: 48px;
+    }
+
+    .solution-card {
+      background: var(--card-bg);
+      border: 1px solid var(--card-border-cyan);
+      border-radius: var(--radius-lg);
+      padding: 40px 32px;
+      transition: var(--transition);
+    }
+
+    .solution-card:hover {
+      transform: translateY(-3px);
+      border-color: var(--cyan);
+      box-shadow: 0 10px 30px rgba(0, 212, 255, 0.08);
+    }
+
+    .solution-card .step {
+      font-size: 0.8rem;
+      font-weight: 800;
+      color: var(--cyan);
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      margin-bottom: 12px;
+      display: block;
+    }
+
+    .solution-card h3 {
+      font-size: 1.35rem;
+      margin-bottom: 16px;
+      color: var(--text-primary);
+    }
+
+    .solution-card p {
+      color: var(--text-secondary);
+      font-size: 0.95rem;
+      line-height: 1.6;
+    }
+
+    /* Timeline Section */
+    .timeline-container {
+      max-width: 850px;
+      margin: 80px auto 0 auto;
+      position: relative;
+    }
+
+    .timeline-title {
+      text-align: center;
+      margin-bottom: 48px;
+      font-size: 1.6rem;
+      color: var(--text-primary);
+    }
+
+    .timeline {
+      position: relative;
+      padding-left: 36px;
+      border-left: 2px solid var(--card-border);
+    }
+
+    .timeline-item {
+      position: relative;
+      margin-bottom: 40px;
+    }
+
+    .timeline-item::before {
+      content: '';
+      position: absolute;
+      left: -43px;
+      top: 6px;
+      width: 12px;
+      height: 12px;
+      border-radius: 50%;
+      background: var(--gold);
+      border: 3px solid var(--navy-deep);
+    }
+
+    .timeline-item h4 {
+      font-size: 1.15rem;
+      color: var(--gold-light);
+      margin-bottom: 8px;
+    }
+
+    .timeline-item p {
+      color: var(--text-secondary);
+      font-size: 0.95rem;
+    }
+
+    /* ── What's Included Section ── */
+    .included-section {
+      padding: 100px 24px;
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+
+    .included-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 28px;
+      margin-top: 48px;
+    }
+
+    .included-card {
+      background: var(--card-bg);
+      border: 1px solid rgba(255, 255, 255, 0.05);
+      border-radius: var(--radius);
+      padding: 32px;
+      transition: var(--transition);
+    }
+
+    .included-card:hover {
+      border-color: rgba(201, 168, 76, 0.25);
+      background: rgba(15, 15, 30, 0.9);
+      transform: translateY(-2px);
+    }
+
+    .included-card h3 {
+      font-size: 1.2rem;
+      color: var(--text-primary);
+      margin-bottom: 12px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .included-card h3 span {
+      font-size: 1.5rem;
+    }
+
+    .included-card p {
+      color: var(--text-secondary);
+      font-size: 0.92rem;
+      line-height: 1.5;
+    }
+
+    /* ── The Science Section ── */
+    .science-section {
+      padding: 100px 24px;
+      background: rgba(6, 6, 12, 0.6);
+      border-top: 1px solid rgba(255, 255, 255, 0.03);
+    }
+
+    .science-container {
+      max-width: 1100px;
+      margin: 0 auto;
+    }
+
+    .science-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+      gap: 24px;
+      margin-top: 48px;
+    }
+
+    .science-card {
+      background: rgba(21, 21, 42, 0.5);
+      border: 1px solid rgba(0, 212, 255, 0.08);
+      border-radius: var(--radius-lg);
+      padding: 36px;
+      text-align: center;
+      transition: var(--transition);
+    }
+
+    .science-card:hover {
+      border-color: var(--cyan-light);
+      transform: translateY(-2px);
+    }
+
+    .science-card .percent {
+      font-size: 3.2rem;
+      font-weight: 800;
+      color: var(--cyan-light);
+      line-height: 1.1;
+      margin-bottom: 8px;
+      text-shadow: 0 0 15px rgba(0, 212, 255, 0.15);
+    }
+
+    .science-card h4 {
+      font-size: 1.05rem;
+      margin-bottom: 8px;
+      color: var(--text-primary);
+    }
+
+    .science-card .cite {
+      font-size: 0.78rem;
+      color: var(--text-muted);
+      display: block;
+      margin-top: 8px;
+    }
+
+    /* ── About Section ── */
+    .about-section {
+      padding: 100px 24px;
+      max-width: 1000px;
+      margin: 0 auto;
+    }
+
+    .about-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 48px;
+      align-items: center;
+    }
+
+    .about-visual {
+      position: relative;
+      border-radius: var(--radius-lg);
+      overflow: hidden;
+      border: 1px solid var(--card-border);
+      aspect-ratio: 1;
+      background: linear-gradient(135deg, rgba(201, 168, 76, 0.05), rgba(0, 212, 255, 0.05));
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .about-visual::after {
+      content: '🧬';
+      font-size: 8rem;
+      opacity: 0.25;
+    }
+
+    .about-content h2 {
+      font-size: 2.2rem;
+      margin-bottom: 24px;
+      color: var(--text-primary);
+    }
+
+    .about-content p {
+      color: var(--text-secondary);
+      font-size: 0.98rem;
+      line-height: 1.6;
+      margin-bottom: 16px;
+    }
+
+    /* ── Testimonials ── */
+    .testimonials-section {
+      padding: 100px 24px;
+      max-width: 1000px;
+      margin: 0 auto;
+    }
+
+    .testimonials-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 32px;
+      margin-top: 48px;
+    }
+
+    .testimonial-card {
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      border-radius: var(--radius-lg);
+      padding: 40px;
+      position: relative;
+    }
+
+    .testimonial-card::before {
+      content: '“';
+      position: absolute;
+      top: 15px;
+      left: 20px;
+      font-size: 5rem;
+      color: rgba(201, 168, 76, 0.08);
+      line-height: 1;
+    }
+
+    .testimonial-card .quote {
+      font-size: 1rem;
+      line-height: 1.6;
+      color: var(--text-secondary);
+      font-style: italic;
+      margin-bottom: 24px;
+      position: relative;
+      z-index: 1;
+    }
+
+    .testimonial-card .author {
+      font-size: 0.92rem;
+      font-weight: 600;
+      color: var(--gold-light);
+    }
+
+    /* ── Pricing Section ── */
+    .pricing-section {
+      padding: 100px 24px;
+      max-width: 1100px;
+      margin: 0 auto;
+      position: relative;
+    }
+
+    .pricing-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(340px, 1fr));
+      gap: 36px;
+      align-items: stretch;
+      margin-top: 56px;
+    }
+
+    .pricing-card {
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      border-radius: var(--radius-lg);
+      padding: 48px 40px;
+      position: relative;
+      display: flex;
+      flex-direction: column;
+      transition: var(--transition);
+    }
+
+    .pricing-card:hover {
+      transform: translateY(-4px);
+      border-color: rgba(201, 168, 76, 0.35);
+      box-shadow: 0 20px 50px rgba(6, 6, 12, 0.8);
+    }
+
+    .pricing-card.popular {
+      border-color: var(--gold-bright);
+      box-shadow: 0 4px 30px rgba(201, 168, 76, 0.08);
+    }
+
+    .pricing-card.popular::before {
+      content: '';
+      position: absolute;
+      inset: -1px;
+      background: linear-gradient(135deg, var(--gold), var(--cyan));
+      border-radius: var(--radius-lg);
+      z-index: -1;
+      opacity: 0.3;
+      pointer-events: none;
+    }
+
+    .pricing-card .badge {
+      align-self: flex-start;
+      font-size: 0.75rem;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      padding: 6px 14px;
+      border-radius: 20px;
+      background: rgba(255, 255, 255, 0.05);
+      color: var(--text-primary);
+      margin-bottom: 24px;
+    }
+
+    .pricing-card.popular .badge {
+      background: var(--gold-bright);
+      color: var(--navy-deep);
+      font-weight: 800;
+    }
+
+    .pricing-card h3 {
+      font-size: 1.65rem;
+      margin-bottom: 12px;
+      color: var(--text-primary);
+    }
+
+    .pricing-card .price {
+      font-size: 3.5rem;
+      font-weight: 800;
+      color: var(--text-primary);
+      margin-bottom: 20px;
+      display: flex;
+      align-items: baseline;
+    }
+
+    .pricing-card .price::after {
+      content: ' USD';
+      font-size: 1.1rem;
+      font-weight: 600;
+      color: var(--text-muted);
+      margin-left: 8px;
+    }
+
+    .pricing-card .description {
+      font-size: 1rem;
+      color: var(--text-secondary);
+      margin-bottom: 32px;
+      line-height: 1.6;
+    }
+
+    .pricing-card .features {
+      list-style: none;
+      margin-bottom: 40px;
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+
+    .pricing-card .features li {
+      font-size: 0.95rem;
+      color: var(--text-secondary);
+      display: flex;
+      align-items: flex-start;
+      gap: 12px;
+    }
+
+    .pricing-card .features li::before {
+      content: '✓';
+      color: var(--gold-light);
+      font-weight: 800;
+      flex-shrink: 0;
+    }
+
+    .pricing-card.popular .features li::before {
+      color: var(--cyan);
+    }
+
+    .pricing-card .checkout-wrapper {
+      margin-top: auto;
+      border-top: 1px solid rgba(255, 255, 255, 0.08);
+      padding-top: 32px;
+    }
+
+    /* HDE Brand Theme Overrides for <hd-checkout> */
+    hd-checkout.hde-theme {
+      --hd-color-primary: #c9a84c;
+      --hd-color-primary-hover: #e0c468;
+      --hd-color-bg: #0f0f1e;
+      --hd-color-surface: #16162d;
+      --hd-color-border: rgba(201,168,76,0.22);
+      --hd-color-text: #f0f0f8;
+      --hd-color-text-muted: #8888aa;
+      --hd-font-family: 'Inter', -apple-system, sans-serif;
+      --hd-radius-sm: 8px;
+      --hd-radius-md: 12px;
+      --hd-radius-lg: 16px;
+      --hd-shadow-md: 0 10px 30px rgba(0,0,0,0.5);
+      --hd-transition: 150ms ease;
+      
+      --hd-checkout-input-bg: #06060c;
+      --hd-checkout-input-border: rgba(201,168,76,0.22);
+      --hd-checkout-input-text: #f0f0f8;
+      --hd-checkout-input-placeholder: #505070;
+    }
+
+    /* ── FAQ Section ── */
+    .faq-section {
+      padding: 100px 24px;
+      max-width: 800px;
+      margin: 0 auto;
+    }
+
+    .faq-container {
+      margin-top: 48px;
+    }
+
+    .faq-item {
+      border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+      padding: 24px 0;
+    }
+
+    .faq-question {
+      font-size: 1.15rem;
+      font-weight: 600;
+      color: var(--text-primary);
+      cursor: pointer;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      user-select: none;
+    }
+
+    .faq-question::after {
+      content: '+';
+      font-size: 1.5rem;
+      color: var(--gold-light);
+      transition: transform 0.2s;
+    }
+
+    .faq-item.active .faq-question::after {
+      transform: rotate(45deg);
+    }
+
+    .faq-answer {
+      max-height: 0;
+      overflow: hidden;
+      transition: max-height 0.3s ease, margin-top 0.3s ease;
+      color: var(--text-secondary);
+      font-size: 0.96rem;
+      line-height: 1.6;
+    }
+
+    .faq-item.active .faq-answer {
+      margin-top: 16px;
+      max-height: 250px;
+    }
+
+    /* ── Cross Links ── */
+    .cross-link-section {
+      padding: 80px 24px;
+      background: #06060c;
+      border-top: 1px solid rgba(201, 168, 76, 0.08);
+    }
+
+    .cross-link-container {
+      max-width: 1100px;
+      margin: 0 auto;
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: 32px;
+    }
+
+    .cross-link-card {
+      background: rgba(15, 15, 30, 0.3);
+      border: 1px solid rgba(201, 168, 76, 0.08);
+      border-radius: var(--radius-lg);
+      padding: 40px;
+      display: flex;
+      flex-direction: column;
+      transition: var(--transition);
+    }
+
+    .cross-link-card:hover {
+      border-color: rgba(201, 168, 76, 0.25);
+      background: rgba(15, 15, 30, 0.5);
+    }
+
+    .cross-link-card h3 {
+      font-size: 1.35rem;
+      color: var(--gold-light);
+      margin-bottom: 12px;
+    }
+
+    .cross-link-card p {
+      font-size: 0.95rem;
+      color: var(--text-secondary);
+      line-height: 1.6;
+      margin-bottom: 24px;
+      flex-grow: 1;
+    }
+
+    .cross-link-card .link-btn {
+      align-self: flex-start;
+      color: var(--cyan);
+      text-decoration: none;
+      font-weight: 700;
+      font-size: 0.95rem;
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      transition: var(--transition);
+    }
+
+    .cross-link-card .link-btn:hover {
+      color: var(--cyan-light);
+      transform: translateX(4px);
+    }
+
+    /* ── Footer ── */
+    footer {
+      text-align: center;
+      padding: 60px 24px;
+      color: var(--text-muted);
+      font-size: 0.85rem;
+      border-top: 1px solid rgba(201, 168, 76, 0.08);
+      background: #030307;
+    }
+
+    .footer-inner {
+      max-width: 1100px;
+      margin: 0 auto;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 20px;
+    }
+
+    .footer-links {
+      display: flex;
+      gap: 28px;
+    }
+
+    .footer-links a {
+      color: var(--text-muted);
+      text-decoration: none;
+      transition: var(--transition);
+    }
+
+    .footer-links a:hover {
+      color: var(--gold-light);
+    }
+
+    /* ── Responsive adjustments ── */
+    @media (max-width: 768px) {
+      .problem-grid, .pricing-grid, .included-grid, .science-grid, .testimonials-grid, .cross-link-container {
+        grid-template-columns: 1fr;
+      }
+      .about-grid {
+        grid-template-columns: 1fr;
+        gap: 36px;
+      }
+      .hero {
+        padding: 80px 20px 50px 20px;
+      }
+      .pricing-card {
+        padding: 36px 24px;
+      }
+      .nav-inner {
+        flex-direction: column;
+        height: auto;
+        padding: 16px 0;
+        gap: 12px;
+      }
+      .nav-links a {
+        margin: 0 12px;
+      }
+      .footer-inner {
+        flex-direction: column;
+        text-align: center;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Navigation -->
+  <nav aria-label="Main Navigation">
+    <div class="nav-inner">
+      <a class="nav-logo" href="/">🧬 <span>Human Design Engine</span></a>
+      <div class="nav-links">
+        <a href="/">Home</a>
+        <a href="/belief-deprogrammer/">Belief Workbook</a>
+        <a href="/buy-report.html">Reports</a>
+      </div>
+    </div>
+  </nav>
+
+  <main>
+    <!-- Hero Section -->
+    <header class="hero">
+      <div class="hero-container">
+        <div class="premium-badge">FLAGSHIP 8-WEEK PROGRAM</div>
+        <h1>Break the Cage.<br><span>Become Who You Actually Are.</span></h1>
+        <p class="hero-subhead">
+          8 weeks. Full transformation. Not for the faint of heart. Combine Human Design, somatic therapy, and nervous system regulation to dismantle conditioning patterns permanently.
+        </p>
+        <div class="hero-ctas">
+          <a href="#pricing-section" class="btn btn-primary">Start Digital ($997)</a>
+          <a href="#pricing-section" class="btn btn-secondary">Go All In (+ Hawaii Retreat)</a>
+        </div>
+      </div>
+    </header>
+
+    <!-- The Problem Section -->
+    <section class="problem-section" aria-labelledby="problem-title">
+      <div class="section-header">
+        <h2 id="problem-title" class="section-title">You're not broken. You're conditioned.</h2>
+        <p class="section-subtitle">
+          Your open and undefined centers act as programming traps. They absorb external energy, building coping strategies that you mistake for your personality.
+        </p>
+      </div>
+      
+      <div class="problem-grid">
+        <div class="problem-card">
+          <div class="icon-wrap">🕸️</div>
+          <h3>Mental Prison</h3>
+          <p>Analyzing and proving your worth, trying to control and secure your life from centers that were built to be flexible receiving docks.</p>
+        </div>
+        
+        <div class="problem-card">
+          <div class="icon-wrap">🔥</div>
+          <h3>Systemic Burnout</h3>
+          <p>Carrying other people's stress, adrenaline, and emotions until your nervous system is stuck in chronic survival mode.</p>
+        </div>
+        
+        <div class="problem-card">
+          <div class="icon-wrap">🔀</div>
+          <h3>Self-Sabotage</h3>
+          <p>Repeating relational and business patterns based on ancient survival wiring rather than operating from your true strategy and authority.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- The Solution Section -->
+    <section class="solution-section" aria-labelledby="solution-title">
+      <div class="solution-container">
+        <div class="section-header">
+          <h2 id="solution-title" class="section-title">The Solution: Unchained Wholeness</h2>
+          <p class="section-subtitle">
+            Dismantling conditioning requires more than intellectual analysis. We address it at all levels—mental, somatic, and nervous system.
+          </p>
+        </div>
+        
+        <div class="solution-grid">
+          <div class="solution-card">
+            <span class="step">Pillar 01</span>
+            <h3>HD Battle Map</h3>
+            <p>We trace your exact open centers and gate patterns to isolate your primary conditioning traps and limiting belief structures.</p>
+          </div>
+          
+          <div class="solution-card">
+            <span class="step">Pillar 02</span>
+            <h3>Somatic Freedom</h3>
+            <p>We discharge stored survival energy from the body, resolving somatic tension and physical blocks related to open centers.</p>
+          </div>
+          
+          <div class="solution-card">
+            <span class="step">Pillar 03</span>
+            <h3>Nervous System Sovereignty</h3>
+            <p>We retrain your vagus nerve to rest, shifting you out of survival physiology so you can make clean decisions from strategy and authority.</p>
+          </div>
+        </div>
+
+        <!-- Timeline -->
+        <div class="timeline-container">
+          <h3 class="timeline-title">Your 8-Week Transformation Timeline</h3>
+          <div class="timeline">
+            <div class="timeline-item">
+              <h4>Weeks 1–2: The Battle Map & Intake</h4>
+              <p>Perform deep assessments of somatic blocks, nervous system states, and open center beliefs. Establish your personalized blueprint.</p>
+            </div>
+            <div class="timeline-item">
+              <h4>Weeks 3–4: Somatic Discharge</h4>
+              <p>Identify where your body stores environmental conditioning. Shift out of mental loops and release muscle-held trauma.</p>
+            </div>
+            <div class="timeline-item">
+              <h4>Weeks 5–6: Polyvagal Recalibration</h4>
+              <p>Vagus nerve training. Stabilize your nervous system's capacity to handle pressure, confrontation, and change without shutting down.</p>
+            </div>
+            <div class="timeline-item">
+              <h4>Weeks 7–8: Sovereign Integration</h4>
+              <p>Cementing the boundaries of your open centers. Aligning your strategy and authority into daily decision-making.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- What's Included Section -->
+    <section class="included-section" aria-labelledby="included-title">
+      <div class="section-header">
+        <h2 id="included-title" class="section-title">What is Included in Your Journey</h2>
+        <p class="section-subtitle">A comprehensive architecture built to guide you through permanent deconditioning.</p>
+      </div>
+
+      <div class="included-grid">
+        <div class="included-card">
+          <h3><span>📊</span> AI Assessment</h3>
+          <p>Analyzes your baseline nervous system state, TCM organ energy blocks, somatic tensions, and custom HD open centers.</p>
+        </div>
+        
+        <div class="included-card">
+          <h3><span>📅</span> Daily Action Plans</h3>
+          <p>Step-by-step practices: morning somatic routines, afternoon organ balancing (TCM), and evening vagal resets.</p>
+        </div>
+        
+        <div class="included-card">
+          <h3><span>🌬️</span> Breathwork Sessions</h3>
+          <p>Dismantle energetic blockages through guided Warrior Breath 4-7-8 and Prana Power-Up sessions.</p>
+        </div>
+        
+        <div class="included-card">
+          <h3><span>🧰</span> Somatic Toolbox</h3>
+          <p>Access physical tools: Adrenaline Flush Shake, Spleen Rubs, Cross-Crawls, and specific physical releases.</p>
+        </div>
+
+        <div class="included-card">
+          <h3><span>👥</span> Virtual Coaching</h3>
+          <p>4 confrontational, root-level individual coaching sessions with Becca to break through deep-seated blindspots.</p>
+        </div>
+
+        <div class="included-card">
+          <h3><span>✉️</span> 56-Day Drip Sequence</h3>
+          <p>A daily guided email journey providing instructions, journaling prompts, and exercises matching your path.</p>
+        </div>
+        
+        <div class="included-card">
+          <h3><span>🏝️</span> Hawaii Retreat</h3>
+          <p>Exclusive to the Retreat tier: 5 days of eco-immersion, star-lit breathwork, and deep somatic integration in Hawaii.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- The Science Section -->
+    <section class="science-section" aria-labelledby="science-title">
+      <div class="science-container">
+        <div class="section-header">
+          <h2 id="science-title" class="section-title">The Scientific & Methodological Foundations</h2>
+          <p class="section-subtitle">Every practice is backed by proven frameworks of somatic health, biophysics, and neurobiology.</p>
+        </div>
+
+        <div class="science-grid">
+          <div class="science-card">
+            <div class="percent">70%</div>
+            <h4>Belief Shift Efficacy</h4>
+            <p>Observable shift in core identity beliefs matching open centers.</p>
+            <span class="cite">Jovian Archive HD Studies</span>
+          </div>
+
+          <div class="science-card">
+            <div class="percent">80%</div>
+            <h4>Anxiety Reduction</h4>
+            <p>Improvement in chronic stress markers through vagal modulation.</p>
+            <span class="cite">Stephen Porges (Polyvagal Science)</span>
+          </div>
+
+          <div class="science-card">
+            <div class="percent">70%</div>
+            <h4>Stress Resolution</h4>
+            <p>Balancing of endocrine and organ system stress pathways.</p>
+            <span class="cite">The Lancet (Organ Efficacy 2023)</span>
+          </div>
+
+          <div class="science-card">
+            <div class="percent">85%</div>
+            <h4>PTSD & Tension Release</h4>
+            <p>Successful release of deep muscular and autonomic trauma.</p>
+            <span class="cite">Peter Levine (Somatic Experiencing)</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Testimonials -->
+    <section class="testimonials-section" aria-labelledby="testimonials-title">
+      <div class="section-header">
+        <h2 id="testimonials-title" class="section-title">Experiences From the Field</h2>
+        <p class="section-subtitle">Stories from clients who dismantled their conditioning patterns.</p>
+      </div>
+
+      <div class="testimonials-grid">
+        <div class="testimonial-card">
+          <p class="quote">"I was caught in a continuous cycle of proving my value and holding on to safe, familiar jobs that were draining me. Doing the Unchained program allowed me to see these as Heart and G-center conditioning patterns. I finally exited my old business and started one that aligns with my authority."</p>
+          <div class="author">— Marcus G., Projector</div>
+        </div>
+
+        <div class="testimonial-card">
+          <p class="quote">"Combining Human Design analysis with nervous system vagal resets changed everything. I stopped reacting to everyone else's emotions and pressure. I feel grounded in my own skin for the first time in my life."</p>
+          <div class="author">— Becca R., Generator</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- About Section -->
+    <section class="about-section" aria-labelledby="about-title">
+      <div class="about-grid">
+        <div class="about-visual"></div>
+        <div class="about-content">
+          <h2 id="about-title">About Michael & Becca</h2>
+          <p>
+            Michael is a system developer and Human Design analyst focused on translating energy calculations into functional, actionable life plans. His background bridges technology, bio-energetic research, and structural integration.
+          </p>
+          <p>
+            Becca is a somatic practitioner, intuitive guide, and nervous system coach. She combines Traditional Chinese Medicine meridian principles, polyvagal nerve regulation, and root-level dialogue to help clients clear blocks and anchor their alignments.
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <!-- Pricing Section -->
+    <section id="pricing-section" class="pricing-section" aria-labelledby="pricing-title">
+      <div class="section-header">
+        <h2 id="pricing-title" class="section-title">Commit to Your Design</h2>
+        <p class="section-subtitle">Select the level of support that matches your current path to sovereignty.</p>
+      </div>
+      
+      <div class="pricing-grid">
+        <!-- Digital Card -->
+        <div class="pricing-card">
+          <div class="badge">DIGITAL PROGRAM</div>
+          <h3>Unchained Digital</h3>
+          <div class="price">997</div>
+          <p class="description">A fully guided, 8-week personalized program focused on somatic releases and open center deconditioning.</p>
+          <ul class="features">
+            <li>Full 8-Week Personalized Deconditioning Roadmap</li>
+            <li>Custom Nervous System & Somatic Assessment</li>
+            <li>Daily Action Plans (Morning/Afternoon/Evening)</li>
+            <li>Somatic Toolbox & Guided Breathwork Library</li>
+            <li>4 Private Coaching Sessions with Becca</li>
+            <li>56-Day Guided Email Drip Support</li>
+          </ul>
+          <div class="checkout-wrapper">
+            <hd-checkout class="hde-theme" mode="inline" product="unchained-digital" api-url="https://api.humandesignengine.com/create-checkout"></hd-checkout>
+          </div>
+        </div>
+        
+        <!-- Hawaii Retreat Card -->
+        <div class="pricing-card popular">
+          <div class="badge">RETREAT TIER</div>
+          <h3>Unchained + Hawaii</h3>
+          <div class="price">5997</div>
+          <p class="description">The complete 8-week digital program combined with an all-inclusive 5-day somatic integration retreat in Hawaii.</p>
+          <ul class="features">
+            <li>Everything in the Unchained Digital Program</li>
+            <li>All-inclusive 5-day Hawaii 'Aina Alignment Retreat</li>
+            <li>In-person group somatic releases & evening breathwork</li>
+            <li>Organic locally sourced eco-meals & luxury lodging</li>
+            <li>Lifetime Access to HDE Integration Community</li>
+            <li>Priority messaging access to Becca during the program</li>
+          </ul>
+          <div class="checkout-wrapper">
+            <hd-checkout class="hde-theme" mode="inline" product="unchained-retreat" api-url="https://api.humandesignengine.com/create-checkout"></hd-checkout>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- FAQ Section -->
+    <section class="faq-section" aria-labelledby="faq-title">
+      <div class="section-header">
+        <h2 id="faq-title" class="section-title">Frequently Asked Questions</h2>
+        <p class="section-subtitle">Have questions? We have answers.</p>
+      </div>
+
+      <div class="faq-container">
+        <div class="faq-item">
+          <div class="faq-question">What makes Unchained Wholeness different from regular coaching?</div>
+          <div class="faq-answer">
+            Most coaching focuses on mindset and mental determination. Unchained Wholeness recognizes that conditioning is stored somatically in the body and autonomic nervous system. We combine your exact Human Design chart map with somatic discharge techniques and polyvagal regulation to release blocks at a physiological level.
+          </div>
+        </div>
+
+        <div class="faq-item">
+          <div class="faq-question">When does the program start?</div>
+          <div class="faq-answer">
+            Your program starts on the Monday immediately following your purchase, giving you time to complete your initial AI nervous system and somatic assessment.
+          </div>
+        </div>
+
+        <div class="faq-item">
+          <div class="faq-question">Do I need prior knowledge of Human Design?</div>
+          <div class="faq-answer">
+            No. We analyze your chart calculations for you and translate them into clear, actionable guidelines. You will learn the core details of your strategy and authority as you progress.
+          </div>
+        </div>
+
+        <div class="faq-item">
+          <div class="faq-question">What is the schedule for the Hawaii retreat?</div>
+          <div class="faq-answer">
+            We run retreats multiple times a year. Once enrolled in the retreat tier, you will receive a booking link to select your preferred dates and complete your travel logistics questionnaire.
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Cross-links Section -->
+    <section class="cross-link-section" aria-label="Other Resources">
+      <div class="cross-link-container">
+        <div class="cross-link-card">
+          <h3>Looking for a starting point?</h3>
+          <p>Get a personalized workbook that isolates 300 to 1,200+ limiting beliefs based on your open centers.</p>
+          <a href="/belief-deprogrammer/" class="link-btn">Unlock your deconditioning workbook →</a>
+        </div>
+        
+        <div class="cross-link-card">
+          <h3>Want a full chart analysis?</h3>
+          <p>Generate a complete personal Human Design blueprint report computed using verified calculations.</p>
+          <a href="/buy-report.html" class="link-btn">Buy your chart report →</a>
+        </div>
+
+        <div class="cross-link-card">
+          <h3>Not Sure If This Is For You?</h3>
+          <p>Book a free 30-minute discovery call to discuss your chart, somatic blocks, and which path matches your needs.</p>
+          <a href="https://cal.com/Michael-gulden" target="_blank" rel="noopener" class="btn btn-primary" style="margin-top: 12px; display: inline-block;">Book Free Discovery Call →</a>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <!-- Footer -->
+  <footer>
+    <div class="footer-inner">
+      <p>© 2026 Human Design Engine. All rights reserved.</p>
+      <div class="footer-links">
+        <a href="/privacy.html">Privacy</a>
+        <a href="/terms.html">Terms</a>
+      </div>
+    </div>
+  </footer>
+
+  <script>
+    // FAQ Accordion
+    document.querySelectorAll('.faq-question').forEach(item => {
+      item.addEventListener('click', () => {
+        const parent = item.parentElement;
+        const isActive = parent.classList.contains('active');
+        
+        // Close all other FAQ items
+        document.querySelectorAll('.faq-item').forEach(el => {
+          el.classList.remove('active');
+          el.querySelector('.faq-answer').style.maxHeight = null;
+        });
+
+        if (!isActive) {
+          parent.classList.add('active');
+          const answer = parent.querySelector('.faq-answer');
+          answer.style.maxHeight = answer.scrollHeight + 'px';
+        }
+      });
+    });
+
+    // Analytics event track on checkout ready
+    document.addEventListener('DOMContentLoaded', () => {
+      document.querySelectorAll('hd-checkout').forEach(el => {
+        el.addEventListener('checkout-ready', e => {
+          console.log('Checkout session created:', e.detail.checkoutUrl);
+          if (window.gtag) {
+            window.gtag('event', 'begin_checkout', {
+              currency: 'USD',
+              value: el.getAttribute('product') === 'unchained-retreat' ? 5997 : 997,
+              items: [{
+                item_name: el.getAttribute('product') === 'unchained-retreat' 
+                  ? 'Unchained Wholeness + Hawaii Retreat' 
+                  : 'Unchained Wholeness Digital',
+                price: el.getAttribute('product') === 'unchained-retreat' ? 5997 : 997
+              }]
+            });
+          }
+        });
+        
+        el.addEventListener('checkout-error', e => {
+          console.error('Checkout error:', e.detail.error);
+        });
+      });
+    });
+  </script>
+</body>
+</html>

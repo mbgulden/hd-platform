@@ -1,0 +1,24 @@
+{
+  "name": "How to Kayak to the Mokulua Islands",
+  "description": "Step-by-step guide for paddling from Kailua Beach to the Mokulua Islands.",
+  "totalTime": "PT4H",
+  "steps": [
+    {
+      "name": "Launch from Kailua Beach Park",
+      "text": "Park at the Kailua Beach Park boat ramp lot. Carry your kayak to the water's edge and launch from the sandy beach.",
+      "image": "https://activeoahutours.com/wp-content/uploads/kailua-launch.jpg"
+    },
+    {
+      "name": "Paddle to Moku Nui",
+      "text": "Head toward the larger island (Moku Nui). Keep the island at roughly 45 degrees to account for current. Paddle time: 45-60 minutes."
+    },
+    {
+      "name": "Land on the protected side",
+      "text": "Approach from the leeward (west) side of Moku Nui where the water is calmer. Beach your kayak above the tide line."
+    },
+    {
+      "name": "Explore the island",
+      "text": "Hike to the summit for panoramic views, explore tide pools on the north side, and look for wedge-tail shearwaters nesting."
+    }
+  ]
+}

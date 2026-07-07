@@ -1,8 +1,8 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
 <title>Get Your Human Design Report | Human Design Engine</title>
 <style>
   :root {
@@ -48,82 +48,172 @@
   footer a{color:var(--gold);text-decoration:none}
   @media(max-width:600px){.form-grid{grid-template-columns:1fr}}
 </style>
+<!-- Google Analytics (GA4) -->
+<script async="" src="https://www.googletagmanager.com/gtag/js?id=G-Q6TPL08VM7"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-Q6TPL08VM7');
+</script>
+
+
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "Organization",
+  "name": "Human Design Engine",
+  "url": "https://humandesignengine.com",
+  "logo": "https://humandesignengine.com/logo.png",
+  "description": "Human Design Engine — free and premium Human Design charts, reports, and learning resources.",
+  "sameAs": [
+    "https://www.youtube.com/@humandesignengine",
+    "https://www.facebook.com/humandesignengine",
+    "https://www.instagram.com/humandesignengine",
+    "https://x.com/humandesigneng",
+    "https://en.wikipedia.org/wiki/Human_Design"
+  ]
+}
+</script><script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  "itemListElement": [
+    {
+      "@type": "ListItem",
+      "position": 1,
+      "name": "Home",
+      "item": "https://humandesignengine.com/"
+    },
+    {
+      "@type": "ListItem",
+      "position": 2,
+      "name": "Buy Report",
+      "item": "https://humandesignengine.com/buy-report/"
+    }
+  ]
+}
+</script><script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "Article",
+  "headline": "Get Your Human Design Report",
+  "description": "Learn about Your Human DesignBlueprint in Human Design.",
+  "image": "https://humandesignengine.com/logo.png",
+  "author": {
+    "@type": "Organization",
+    "name": "Human Design Engine"
+  },
+  "publisher": {
+    "@type": "Organization",
+    "name": "Human Design Engine",
+    "url": "https://humandesignengine.com"
+  },
+  "datePublished": "2026-06-01",
+  "dateModified": "2026-06-13",
+  "mainEntityOfPage": {
+    "@type": "WebPage",
+    "@id": "https://humandesignengine.com/buy-report/"
+  }
+}
+</script><script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  "mainEntity": [
+    {
+      "@type": "Question",
+      "name": "How long does it take to receive my report?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Your report is generated instantly — you'll receive the PDF within seconds of completing your purchase. No waiting for an analyst to write it. The report is computed from your birth data and delivered immediately to your email."
+      }
+    },    {
+      "@type": "Question",
+      "name": "What payment methods do you accept?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "We accept all major credit and debit cards via Stripe, plus Apple Pay and Google Pay. All payments are processed securely with TLS encryption. Your payment information is never stored on our servers."
+      }
+    },    {
+      "@type": "Question",
+      "name": "Can I gift a report to someone?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Yes! During checkout, you can enter the recipient's birth data and email address. The report will be delivered to them with a personalized gift message. It's a unique and meaningful gift for birthdays, holidays, or anyone starting their HD journey."
+      }
+    }
+  ]
+}
+</script>
+
 </head>
 <body>
-
 <nav>
-  <div class="nav-inner">
-    <a href="/" class="nav-logo">🧬 <span>Human Design Engine</span></a>
-    <div class="nav-links"><a href="/">Home</a><a href="/landing-api.html">API</a><a href="/landing-reports.html">Reports</a></div>
-  </div>
-</nav>
-
-<div class="container">
-  <h1>Your Human Design <span>Blueprint</span></h1>
-  <p class="sub">Enter your birth details, choose a report, and get a beautifully formatted PDF in minutes.</p>
-
-  <div class="step-row">
-    <div class="step"><div class="step-num">1</div><div class="step-label">Enter Birth Data</div></div>
-    <div class="step"><div class="step-num">2</div><div class="step-label">Choose Report</div></div>
-    <div class="step"><div class="step-num">3</div><div class="step-label">Instant PDF</div></div>
-  </div>
-
-  <div class="card">
-    <h2>📋 Your Birth Details</h2>
-    <div class="form-grid">
-      <div><label>Full Name</label><input type="text" id="name" placeholder="Your name" required></div>
-      <div><label>Email (for delivery)</label><input type="email" id="email" placeholder="you@email.com" required></div>
-      <div><label>Birth Date</label><input type="date" id="birthdate" required></div>
-      <div><label>Birth Time</label><input type="time" id="birthtime" required></div>
-      <div><label>Birth Location</label><input type="text" id="location" placeholder="City, State/Country" required></div>
-      <div><label>Partner's Info (for Synastry)</label><input type="text" id="partner" placeholder="Partner name, birth date, time, location" disabled></div>
-    </div>
-  </div>
-
-  <div class="card">
-    <h2>📊 Choose Your Report</h2>
-    <div class="report-cards" id="reportCards">
-      <div class="report-card selected" data-report="natal" onclick="selectReport('natal')">
-        <h3>🌱 Foundation Report</h3>
-        <div class="price">$19</div>
-        <div class="desc">Type, Strategy, Authority, Profile, Centers, Channels, Gates — all in plain English</div>
-      </div>
-      <div class="report-card" data-report="synastry" onclick="selectReport('synastry')">
-        <h3>💫 Relationship Synastry</h3>
-        <div class="price">$29</div>
-        <div class="desc">How two charts interact — electromagnetics, compromise, dominance dynamics</div>
-      </div>
-      <div class="report-card" data-report="transit" onclick="selectReport('transit')">
-        <h3>🌙 12-Month Transit Forecast</h3>
-        <div class="price">$29</div>
-        <div class="desc">What the planets are activating in your chart over the next year</div>
-      </div>
-      <div class="report-card" data-report="bundle" onclick="selectReport('bundle')">
-        <h3>✨ Complete Bundle</h3>
-        <div class="price">$59</div>
-        <div class="desc">All three reports — save $18</div>
-      </div>
-    </div>
-  </div>
-
-  <input type="hidden" id="refCode" value="">
-  <div id="refNotice" style="display:none;text-align:center;margin-top:8px;padding:8px 16px;background:rgba(74,222,128,0.08);border:1px solid rgba(74,222,128,0.2);border-radius:8px;font-size:0.85rem;color:#4ade80"></div>
-
-  <button class="btn" id="buyBtn">🔒 Secure Checkout with Stripe →</button>
-  <div class="error" id="error"></div>
-
-  <div class="trust-row">
-    <div class="trust-item">Verified calculations</div>
-    <div class="trust-item">AGPLv3 open source</div>
-    <div class="trust-item">Secure Stripe payment</div>
-    <div class="trust-item">PDF + email delivery</div>
-  </div>
+<div class="nav-inner">
+<a class="nav-logo" href="/">🧬 <span>Human Design Engine</span></a>
+<div class="nav-links"><a href="/">Home</a><a href="/landing-api.html">API</a><a href="/landing-reports.html">Reports</a></div>
 </div>
-
+</nav>
+<div class="container">
+<h1>Your Human Design <span>Blueprint</span></h1>
+<p class="sub">Enter your birth details, choose a report, and get a beautifully formatted PDF in minutes.</p>
+<div class="step-row">
+<div class="step"><div class="step-num">1</div><div class="step-label">Enter Birth Data</div></div>
+<div class="step"><div class="step-num">2</div><div class="step-label">Choose Report</div></div>
+<div class="step"><div class="step-num">3</div><div class="step-label">Instant PDF</div></div>
+</div>
+<div class="card">
+<h2>📋 Your Birth Details</h2>
+<div class="form-grid">
+<div><label>Full Name</label><input id="name" placeholder="Your name" required="" type="text"/></div>
+<div><label>Email (for delivery)</label><input id="email" placeholder="you@email.com" required="" type="email"/></div>
+<div><label>Birth Date</label><input id="birthdate" required="" type="date"/></div>
+<div><label>Birth Time</label><input id="birthtime" required="" type="time"/></div>
+<div><label>Birth Location</label><input id="location" placeholder="City, State/Country" required="" type="text"/></div>
+<div><label>Partner's Info (for Synastry)</label><input disabled="" id="partner" placeholder="Partner name, birth date, time, location" type="text"/></div>
+</div>
+</div>
+<div class="card">
+<h2>📊 Choose Your Report</h2>
+<div class="report-cards" id="reportCards">
+<div class="report-card selected" data-report="natal" onclick="selectReport('natal')">
+<h3>🌱 Foundation Report</h3>
+<div class="price">$19</div>
+<div class="desc">Type, Strategy, Authority, Profile, Centers, Channels, Gates — all in plain English</div>
+</div>
+<div class="report-card" data-report="synastry" onclick="selectReport('synastry')">
+<h3>💫 Relationship Synastry</h3>
+<div class="price">$29</div>
+<div class="desc">How two charts interact — electromagnetics, compromise, dominance dynamics</div>
+</div>
+<div class="report-card" data-report="transit" onclick="selectReport('transit')">
+<h3>🌙 12-Month Transit Forecast</h3>
+<div class="price">$29</div>
+<div class="desc">What the planets are activating in your chart over the next year</div>
+</div>
+<div class="report-card" data-report="bundle" onclick="selectReport('bundle')">
+<h3>✨ Complete Bundle</h3>
+<div class="price">$59</div>
+<div class="desc">All three reports — save $18</div>
+</div>
+</div>
+</div>
+<input id="refCode" type="hidden" value=""/>
+<div id="refNotice" style="display:none;text-align:center;margin-top:8px;padding:8px 16px;background:rgba(74,222,128,0.08);border:1px solid rgba(74,222,128,0.2);border-radius:8px;font-size:0.85rem;color:#4ade80"></div>
+<button class="btn" id="buyBtn">🔒 Secure Checkout with Stripe →</button>
+<div class="error" id="error"></div>
+<div class="trust-row">
+<div class="trust-item">Verified calculations</div>
+<div class="trust-item">AGPLv3 open source</div>
+<div class="trust-item">Secure Stripe payment</div>
+<div class="trust-item">PDF + email delivery</div>
+</div>
+</div>
 <footer>
-  <p>Powered by <a href="https://github.com/mbgulden/OpenHumanDesignMCP">OpenHumanDesignMCP</a> · AGPLv3 · Charts computed locally, never shared</p>
+<p>Powered by <a href="https://github.com/mbgulden/OpenHumanDesignMCP">OpenHumanDesignMCP</a> · AGPLv3 · Charts computed locally, never shared</p>
 </footer>
-
 <script>
 let selectedReport = 'natal';
 
@@ -136,6 +226,24 @@ if (refCode) {
   document.getElementById('refNotice').style.display = 'block';
   document.getElementById('refNotice').textContent = '🔗 Referred by affiliate partner';
 }
+
+// Auto-fill from chart calculator CTA params
+if (urlParams.get('name')) document.getElementById('name').value = urlParams.get('name');
+if (urlParams.get('email')) document.getElementById('email').value = urlParams.get('email');
+if (urlParams.get('type')) {
+  const typeTag = document.createElement('span');
+  typeTag.style.cssText = 'display:inline-block;margin-left:8px;padding:2px 10px;border-radius:12px;font-size:0.75rem;background:var(--gold-soft);color:var(--gold-light)';
+  typeTag.textContent = 'Your Type: ' + urlParams.get('type');
+  document.querySelector('h1').appendChild(typeTag);
+}
+// Reconstruct birth date from month/day/year params
+const m = urlParams.get('month'), d = urlParams.get('day'), y = urlParams.get('year');
+if (m && d && y) {
+  const mon = m.padStart(2,'0'), day = d.padStart(2,'0');
+  document.getElementById('birthdate').value = `${y}-${mon}-${day}`;
+}
+if (urlParams.get('time')) document.getElementById('birthtime').value = urlParams.get('time');
+if (urlParams.get('loc')) document.getElementById('location').value = decodeURIComponent(urlParams.get('loc'));
 
 function selectReport(report) {
   selectedReport = report;

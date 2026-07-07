@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Verified Reports — Human Design Engine</title>
+<style>
+  :root {
+    --navy-deep: #060d1a; --navy: #0a1628; --navy-mid: #0f1d36; --navy-light: #162744;
+    --gold: #c9a84c; --gold-light: #e0c468; --gold-bright: #d4af37;
+    --gold-soft: rgba(201,168,76,0.15); --text-primary: #e8e6e3; --text-secondary: #8899aa;
+    --card-bg: rgba(15,29,54,0.7); --card-border: rgba(201,168,76,0.12);
+    --radius: 12px; --transition: 0.25s cubic-bezier(0.4,0,0.2,1);
+  }
+  *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+  body{font-family:'Inter',-apple-system,sans-serif;background:var(--navy-deep);color:var(--text-primary);line-height:1.6;min-height:100vh}
+  body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellipse at 20% 10%,rgba(201,168,76,0.04) 0%,transparent 60%);pointer-events:none;z-index:-1}
+  .container{max-width:1100px;margin:0 auto;padding:60px 24px}
+  .hero{text-align:center;padding:20px 0 50px}
+  .hero h1{font-size:2.2rem;font-weight:800;letter-spacing:-0.02em}
+  .hero h1 span{color:var(--gold-light)}
+  .hero p{color:var(--text-secondary);margin-top:12px;font-size:1.05rem}
+  .badge{display:inline-flex;align-items:center;gap:8px;background:var(--gold-soft);border:1px solid rgba(201,168,76,0.25);border-radius:50px;padding:6px 18px;font-size:0.85rem;color:var(--gold-light);margin-bottom:20px}
+  .badge .dot{width:8px;height:8px;background:#4ade80;border-radius:50%;animation:pulse 2s infinite}
+  @keyframes pulse{0%,100%{opacity:1}50%{opacity:0.4}}
+  .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(320px,1fr));gap:24px}
+  .card{background:var(--card-bg);border:1px solid var(--card-border);border-radius:var(--radius);padding:28px;transition:var(--transition)}
+  .card:hover{border-color:rgba(201,168,76,0.3);transform:translateY(-2px)}
+  .card h3{font-size:1.3rem;margin-bottom:4px}
+  .card .subtitle{color:var(--text-secondary);font-size:0.9rem;margin-bottom:16px}
+  .specs{display:grid;grid-template-columns:1fr 1fr;gap:6px 16px;margin-bottom:20px}
+  .spec{display:flex;justify-content:space-between;font-size:0.88rem;padding:4px 0;border-bottom:1px solid rgba(255,255,255,0.04)}
+  .spec-label{color:var(--text-secondary)}
+  .spec-value{color:var(--text-primary);font-weight:500}
+  .price-row{display:flex;justify-content:space-between;align-items:center;margin-top:8px;padding-top:16px;border-top:1px solid rgba(255,255,255,0.08)}
+  .price{font-size:1.4rem;font-weight:700;color:var(--gold-light)}
+  .btn{display:inline-block;padding:10px 22px;background:var(--gold);color:var(--navy-deep);border-radius:8px;text-decoration:none;font-weight:600;font-size:0.92rem;transition:var(--transition)}
+  .btn:hover{background:var(--gold-light)}
+  .footer{text-align:center;margin-top:60px;color:var(--text-secondary);font-size:0.85rem}
+</style>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  "mainEntity": [
+    {
+      "@type": "Question",
+      "name": "What products does Human Design Engine offer?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Human Design Engine offers personalized natal chart reports ($19), relationship synastry reports ($29), 12-month transit forecasts ($29), the All Three Bundle ($59), API access (free to $999/mo), and managed MCP hosting for developers ($29-199/mo)."
+      }
+    },    {
+      "@type": "Question",
+      "name": "Which report should I get first?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Start with the Natal Chart Report if you're new to Human Design — it covers your type, strategy, authority, centers, channels, gates, profile, and incarnation cross. It's the foundation that makes the other reports more meaningful."
+      }
+    },    {
+      "@type": "Question",
+      "name": "Do you offer refunds?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Yes — if you're not satisfied with your report for any reason, email us within 30 days for a full refund. We're confident in the quality of our reports and want you to feel completely comfortable exploring your design."
+      }
+    }
+  ]
+}
+</script>
+
+</head>
+<body>
+<div class="container">
+  <div class="hero">
+    <div class="badge"><span class="dot"></span>Neutrino-Verified</div>
+    <h1>Verified Family <span>Reports</span></h1>
+    <p>Every chart cross-referenced against Neutrino Design. All 26 planets, all 8 AstroHD angles verified.</p>
+  </div>
+  <div class="grid">
+    <div class="card">
+      <h3>Michael</h3>
+      <div class="subtitle">RAX of Rulership 4</div>
+      <div class="specs">
+        <div class="spec"><span class="spec-label">Type</span><span class="spec-value">Projector</span></div>
+        <div class="spec"><span class="spec-label">Profile</span><span class="spec-value">3/5</span></div>
+        <div class="spec"><span class="spec-label">Authority</span><span class="spec-value">Splenic</span></div>
+        <div class="spec"><span class="spec-label">Strategy</span><span class="spec-value">Wait for Invitation</span></div>
+      </div>
+      <div class="price-row"><span class="price">$9.99</span><a href="/reports/michael/individual-deep-dive-2026-05-31.pdf" class="btn">Download</a></div>
+    </div>
+    <div class="card">
+      <h3>Becca</h3>
+      <div class="subtitle">LAX of Confrontation 2</div>
+      <div class="specs">
+        <div class="spec"><span class="spec-label">Type</span><span class="spec-value">Projector</span></div>
+        <div class="spec"><span class="spec-label">Profile</span><span class="spec-value">6/2</span></div>
+        <div class="spec"><span class="spec-label">Authority</span><span class="spec-value">Splenic</span></div>
+        <div class="spec"><span class="spec-label">Strategy</span><span class="spec-value">Wait for Invitation</span></div>
+      </div>
+      <div class="price-row"><span class="price">$9.99</span><a href="/reports/becca/individual-deep-dive-2026-05-31.pdf" class="btn">Download</a></div>
+    </div>
+    <div class="card">
+      <h3>William</h3>
+      <div class="subtitle">RAX of the Vessel of Love 3</div>
+      <div class="specs">
+        <div class="spec"><span class="spec-label">Type</span><span class="spec-value">Generator</span></div>
+        <div class="spec"><span class="spec-label">Profile</span><span class="spec-value">3/6</span></div>
+        <div class="spec"><span class="spec-label">Authority</span><span class="spec-value">Sacral</span></div>
+        <div class="spec"><span class="spec-label">Strategy</span><span class="spec-value">To Respond</span></div>
+      </div>
+      <div class="price-row"><span class="price">$9.99</span><a href="/reports/william/individual-deep-dive-2026-05-31.pdf" class="btn">Download</a></div>
+    </div>
+    <div class="card">
+      <h3>Benjamin</h3>
+      <div class="subtitle">LAX of Dominion 2</div>
+      <div class="specs">
+        <div class="spec"><span class="spec-label">Type</span><span class="spec-value">Manifesting Generator</span></div>
+        <div class="spec"><span class="spec-label">Profile</span><span class="spec-value">5/1</span></div>
+        <div class="spec"><span class="spec-label">Authority</span><span class="spec-value">Emotional</span></div>
+        <div class="spec"><span class="spec-label">Strategy</span><span class="spec-value">To Respond</span></div>
+      </div>
+      <div class="price-row"><span class="price">$9.99</span><a href="/reports/benjamin/individual-deep-dive-2026-05-31.pdf" class="btn">Download</a></div>
+    </div>
+    <div class="card">
+      <h3>Victoria</h3>
+      <div class="subtitle">JUX of Opposition</div>
+      <div class="specs">
+        <div class="spec"><span class="spec-label">Type</span><span class="spec-value">Generator</span></div>
+        <div class="spec"><span class="spec-label">Profile</span><span class="spec-value">4/1</span></div>
+        <div class="spec"><span class="spec-label">Authority</span><span class="spec-value">Sacral</span></div>
+        <div class="spec"><span class="spec-label">Strategy</span><span class="spec-value">To Respond</span></div>
+      </div>
+      <div class="price-row"><span class="price">$9.99</span><a href="/reports/victoria/individual-deep-dive-2026-05-31.pdf" class="btn">Download</a></div>
+    </div>
+    <div class="card">
+      <h3>Ella</h3>
+      <div class="subtitle">RAX of Eden 3</div>
+      <div class="specs">
+        <div class="spec"><span class="spec-label">Type</span><span class="spec-value">Manifesting Generator</span></div>
+        <div class="spec"><span class="spec-label">Profile</span><span class="spec-value">2/4</span></div>
+        <div class="spec"><span class="spec-label">Authority</span><span class="spec-value">Emotional</span></div>
+        <div class="spec"><span class="spec-label">Strategy</span><span class="spec-value">To Respond</span></div>
+      </div>
+      <div class="price-row"><span class="price">$9.99</span><a href="/reports/ella/individual-deep-dive-2026-05-31.pdf" class="btn">Download</a></div>
+    </div>
+  </div>
+  <div class="footer">All charts cross-referenced against Neutrino Design. 26 planets, 8 angles verified per chart.</div>
+</div>
+</body>
+</html>

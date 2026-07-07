@@ -34,23 +34,29 @@ DATABASE_URL: str = os.getenv(
 )
 
 
-def _create_engine() -> AsyncEngine:
-    """Create and return an async SQLAlchemy engine."""
-    return create_async_engine(
-        DATABASE_URL,
-        echo=False,
-        pool_size=20,
-        max_overflow=10,
-        pool_pre_ping=True,
+def _create_engine() -> Optional[AsyncEngine]:
+    """Create and return an async SQLAlchemy engine, or None if DB unavailable."""
+    try:
+        return create_async_engine(
+            DATABASE_URL,
+            echo=False,
+            pool_size=20,
+            max_overflow=10,
+            pool_pre_ping=True,
+        )
+    except Exception:
+        return None
+
+
+engine: Optional[AsyncEngine] = _create_engine()
+
+if engine is not None:
+    async_session_factory: async_sessionmaker[AsyncSession] = async_sessionmaker(
+        bind=engine,
+        expire_on_commit=False,
     )
-
-
-engine: AsyncEngine = _create_engine()
-
-async_session_factory: async_sessionmaker[AsyncSession] = async_sessionmaker(
-    bind=engine,
-    expire_on_commit=False,
-)
+else:
+    async_session_factory = None  # type: ignore
 
 
 class Base(DeclarativeBase):
@@ -127,10 +133,13 @@ class UsageLog(Base):
 
 async def init_db() -> None:
     """Create all tables (idempotent, for development / first-run)."""
+    if engine is None:
+        return
     async with engine.begin() as conn:
         await conn.run_sync(Base.metadata.create_all)
 
 
 async def close_db() -> None:
     """Gracefully dispose of the engine connection pool."""
-    await engine.dispose()
+    if engine is not None:
+        await engine.dispose()

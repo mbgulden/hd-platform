@@ -1,0 +1,29 @@
+{
+  "@id": "https://activeoahutours.com/oahu-kayaking-and-beach-adventures/ultimate-guide-kailua-beach-park/#article",
+  "headline": "Ultimate Guide for Kailua Beach Park: Kayaking, Parking & Tips",
+  "description": "Everything you need to know about kayaking at Kailua Beach Park — where to park, best launch spots, what to bring, and insider tips from local guides.",
+  "url": "https://activeoahutours.com/oahu-kayaking-and-beach-adventures/ultimate-guide-kailua-beach-park/",
+  "image": "https://activeoahutours.com/wp-content/uploads/kailua-beach-aerial.jpg",
+  "datePublished": "2025-06-15",
+  "dateModified": "2026-04-21",
+  "author": {
+    "@type": "Person",
+    "name": "Active Oahu Guides",
+    "description": "Local Oahu kayak guides with 10+ years experience on windward waters"
+  },
+  "publisher": {
+    "@type": "Organization",
+    "@id": "https://activeoahutours.com/#organization"
+  },
+  "about": [
+    {
+      "@type": "Place",
+      "name": "Kailua Beach Park"
+    },
+    {
+      "@type": "Thing",
+      "name": "Kayaking"
+    }
+  ],
+  "keywords": ["Kailua Beach kayaking", "Oahu kayak guide", "Kailua Beach parking", "Mokulua Islands kayak"]
+}

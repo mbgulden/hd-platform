@@ -1,0 +1,458 @@
+openapi: "3.0.3"
+info:
+  title: Human Design Engine API
+  description: |
+    **Accurate Human Design natal charts, transit overlays & relationship synastry — via API.**
+    
+    The Human Design Engine API computes verified Human Design charts using the
+    same open-source OpenHumanDesignMCP calculation engine that powers
+    humandesignengine.com. Built on Swiss Ephemeris with accuracy verified against
+    Neutrino Design and Genetic Matrix — no guesswork, just correct charts.
+
+    **Use cases:** Astrology & spirituality apps, wellness platforms, dating
+    compatibility features, personal growth tools, coaching dashboards, and
+    Human Design education platforms.
+
+    **Endpoints:**
+    - `/natal` — Full natal (birth) chart with type, strategy, authority, centers,
+      channels, gates, profile, incarnation cross, variables, and not-self theme
+    - `/transits` — Planetary transit overlay for any date, showing conditioned
+      centers, temporary channels, and interpretation hints
+    - `/synastry` — Relationship composite between two charts: electromagnetic
+      channels, compromise gates, shared gates, and dynamics
+    - `/public/compute-chart` — Rate-limited simplified chart (no API key needed)
+    - `/ping` — Health check (no auth)
+
+    **Pricing (RapidAPI marketplace):**
+    - **Free:** 100 calls/month
+    - **Pro:** 1,000 calls/month — $49/month
+    - **Enterprise:** Unlimited calls — $499/month
+
+    **Authentication:** Pass your RapidAPI key in the `X-API-Key` header.
+    Sign up at https://humandesignengine.com/landing-api.html
+
+    **License:** AGPLv3 — source code available. If you run this as a network
+    service, source must be provided per Section 13.
+  version: "0.1.0"
+  contact:
+    name: Human Design Engine
+    url: https://humandesignengine.com
+    email: api@humandesignengine.com
+  license:
+    name: AGPLv3
+    url: https://www.gnu.org/licenses/agpl-3.0.html
+  x-logo:
+    url: https://humandesignengine.com/logo.png
+    backgroundColor: "#1a1a2e"
+    altText: Human Design Engine Logo
+
+servers:
+  - url: https://api.humandesignengine.com/v1
+    description: Production
+
+security:
+  - ApiKeyHeader: []
+
+tags:
+  - name: Health
+    description: Service status and version
+  - name: Charts
+    description: Chart computation endpoints — natal, transits, and synastry
+  - name: Public
+    description: Rate-limited endpoints for widgets and demos (no auth)
+
+paths:
+  /ping:
+    get:
+      operationId: ping
+      summary: Health check
+      description: Returns service status, version, and license. No auth required.
+      tags: [Health]
+      responses:
+        "200":
+          description: Service is healthy
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: "ok"
+                  service:
+                    type: string
+                    example: "hde-reports"
+                  version:
+                    type: string
+                    example: "0.1.0"
+                  license:
+                    type: string
+                    example: "AGPLv3"
+
+  /natal:
+    post:
+      operationId: computeNatalChart
+      summary: Compute a natal (birth) chart
+      description: |
+        Calculate a complete Human Design natal chart from birth data.
+        Returns type, strategy, authority, profile, incarnation cross,
+        defined/undefined centers, channels, gates, variables, and more.
+        
+        **Example response:** Type (Manifestor/Generator/Manifesting Generator/
+        Projector/Reflector), Strategy, Inner Authority, Profile, Incarnation Cross,
+        Centers, Channels, Gates, Signature, Not-Self Theme, and Variables.
+      tags: [Charts]
+      security:
+        - ApiKeyHeader: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/BirthData"
+            examples:
+              projector:
+                summary: Self-Projected Projector
+                value:
+                  name: "Jane Doe"
+                  year: 1990
+                  month: 6
+                  day: 1
+                  hour: 8
+                  minute: 0
+                  lat: 40.71
+                  lon: -74.0
+                  timezone: "America/New_York"
+      responses:
+        "200":
+          description: Chart computed successfully
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/NatalChartResponse"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "502":
+          description: Computation engine unavailable
+
+  /transits:
+    post:
+      operationId: computeTransits
+      summary: Compute transit overlay for a natal chart
+      description: |
+        Compute planetary transit conditioning for a birth chart on a given date
+        (defaults to today). Returns activated gates, conditioned centers,
+        temporarily defined channels, and transit interpretation hints.
+      tags: [Charts]
+      security:
+        - ApiKeyHeader: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              allOf:
+                - $ref: "#/components/schemas/BirthData"
+                - type: object
+                  properties:
+                    target_date:
+                      type: string
+                      format: date
+                      description: Snapshot date (defaults to today if omitted)
+                      example: "2026-06-15"
+      responses:
+        "200":
+          description: Transit overlay computed
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/TransitResponse"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+
+  /synastry:
+    post:
+      operationId: computeSynastry
+      summary: Compute relationship composite between two charts
+      description: |
+        Calculate synastry (relationship composite) between two birth charts.
+        Returns composite channels, electromagnetic channels, compromise gates,
+        shared gates, and relationship dynamics.
+
+        **Perfect for:** Dating apps, compatibility reports, and relationship
+        coaching platforms.
+      tags: [Charts]
+      security:
+        - ApiKeyHeader: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [person_a, person_b]
+              properties:
+                person_a:
+                  $ref: "#/components/schemas/BirthData"
+                person_b:
+                  $ref: "#/components/schemas/BirthData"
+      responses:
+        "200":
+          description: Synastry computed
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/SynastryResponse"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+
+  /public/compute-chart:
+    post:
+      operationId: computePublicChart
+      summary: Compute simplified chart (no auth, rate-limited)
+      description: |
+        Public endpoint for free chart widgets and demos. Returns a simplified
+        natal chart with type, profile, authority, centers, and signature.
+        Rate-limited to 10 calls/minute per IP. No API key required.
+      tags: [Public]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/BirthData"
+      responses:
+        "200":
+          description: Simplified chart computed
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                  data:
+                    $ref: "#/components/schemas/SimplifiedChart"
+        "429":
+          description: Rate limit exceeded
+
+components:
+  securitySchemes:
+    ApiKeyHeader:
+      type: apiKey
+      in: header
+      name: X-API-Key
+      description: Your RapidAPI key or Human Design Engine API key
+
+  schemas:
+    BirthData:
+      type: object
+      required: [name, year, month, day, hour]
+      properties:
+        name:
+          type: string
+          minLength: 1
+          maxLength: 255
+          description: Person's full name
+          example: "Jane Doe"
+        year:
+          type: integer
+          minimum: 1900
+          maximum: 2100
+          description: Birth year (1900-2100)
+          example: 1990
+        month:
+          type: integer
+          minimum: 1
+          maximum: 12
+          description: Birth month (1-12)
+          example: 6
+        day:
+          type: integer
+          minimum: 1
+          maximum: 31
+          description: Birth day (1-31)
+          example: 1
+        hour:
+          type: integer
+          minimum: 0
+          maximum: 23
+          description: Birth hour in local time (0-23)
+          example: 8
+        minute:
+          type: integer
+          minimum: 0
+          maximum: 59
+          default: 0
+          description: Birth minute (0-59, default 0)
+          example: 0
+        lat:
+          type: number
+          minimum: -90
+          maximum: 90
+          description: Geographic latitude (-90 to 90)
+          example: 40.71
+        lon:
+          type: number
+          minimum: -180
+          maximum: 180
+          description: Geographic longitude (-180 to 180)
+          example: -74.0
+        timezone:
+          type: string
+          maxLength: 100
+          description: IANA timezone (e.g. America/New_York, Europe/London)
+          example: "America/New_York"
+        location:
+          type: string
+          maxLength: 500
+          description: Human-readable location name (optional)
+          example: "New York, NY"
+
+    NatalChartResponse:
+      type: object
+      properties:
+        success:
+          type: boolean
+        endpoint:
+          type: string
+          example: "/v1/natal"
+        data:
+          type: object
+          properties:
+            name:
+              type: string
+            hd_type:
+              type: string
+              description: Human Design Type
+              example: "Projector"
+            profile:
+              type: string
+              example: "6/2"
+            authority:
+              type: string
+              example: "Self-Projected"
+            strategy:
+              type: string
+              example: "Wait for the Invitation"
+            definition:
+              type: string
+              example: "Single"
+            incarnation_cross:
+              type: object
+              properties:
+                name:
+                  type: string
+                gates:
+                  type: object
+            defined_centers:
+              type: array
+              items:
+                type: string
+              example: ["Ajna", "G", "Throat"]
+            undefined_centers:
+              type: array
+              items:
+                type: string
+            defined_channels:
+              type: array
+              items:
+                type: object
+                properties:
+                  gates:
+                    type: array
+                    items:
+                      type: integer
+                  name:
+                    type: string
+            signature:
+              type: string
+              example: "Success"
+            not_self_theme:
+              type: string
+              example: "Bitterness"
+            variables:
+              type: array
+              items:
+                type: string
+              description: "Variables: Digestion, Environment, Perspective, Motivation, etc."
+
+    SimplifiedChart:
+      type: object
+      properties:
+        name:
+          type: string
+        hd_type:
+          type: string
+        profile:
+          type: string
+        authority:
+          type: string
+        strategy:
+          type: string
+        definition:
+          type: string
+        defined_centers:
+          type: array
+          items:
+            type: string
+        undefined_centers:
+          type: array
+          items:
+            type: string
+        signature:
+          type: string
+        not_self_theme:
+          type: string
+
+    TransitResponse:
+      type: object
+      properties:
+        success:
+          type: boolean
+        data:
+          type: object
+          properties:
+            transit_positions:
+              type: object
+              description: Planet → {gate, line, center, retrograde}
+            conditioned_channels:
+              type: array
+            conditioned_centers:
+              type: array
+            new_gates:
+              type: array
+            interpretation_hints:
+              type: array
+
+    SynastryResponse:
+      type: object
+      properties:
+        success:
+          type: boolean
+        data:
+          type: object
+          properties:
+            composite_channels:
+              type: array
+            electromagnetic_channels:
+              type: array
+            compromise_gates:
+              type: array
+            shared_gates:
+              type: array
+
+  responses:
+    Unauthorized:
+      description: Missing or invalid API key
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              error:
+                type: string
+                example: "Unauthorized"
+              license:
+                type: string
+                example: "AGPLv3"

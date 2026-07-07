@@ -78,6 +78,7 @@ async def natal_chart(
             month=body.month,
             day=body.day,
             hour=body.hour,
+            minute=body.minute,
             lat=body.lat or 0.0,
             lon=body.lon or 0.0,
             location=body.location,
@@ -93,4 +94,25 @@ async def natal_chart(
     if result.get("error"):
         return NatalResponse(success=False, error=result.get("detail", "Unknown MCP error"))
 
+    return NatalResponse(success=True, data=result)
+
+
+# Temporary no-auth testing endpoint — REMOVE BEFORE PRODUCTION
+@router.post("/noauth", response_model=NatalResponse, status_code=status.HTTP_200_OK)
+async def natal_chart_noauth(body: NatalRequest) -> NatalResponse:
+    """Test endpoint — no API key required."""
+    try:
+        result = await compute_natal_chart(
+            name=body.name, year=body.year, month=body.month, day=body.day,
+            hour=body.hour, minute=body.minute,
+            lat=body.lat or 0.0, lon=body.lon or 0.0,
+            location=body.location, timezone=body.timezone,
+        )
+    except Exception as exc:
+        logger.exception("Unhandled exception in natal_chart_noauth")
+        raise HTTPException(status_code=status.HTTP_502_BAD_GATEWAY,
+                           detail=f"MCP engine unavailable: {exc}") from exc
+
+    if result.get("error"):
+        return NatalResponse(success=False, error=result.get("detail", "Unknown error"))
     return NatalResponse(success=True, data=result)

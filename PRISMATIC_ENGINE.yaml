@@ -1,0 +1,58 @@
+# PRISMATIC ENGINE — Workspace Governance
+# Installed: 2026-06-23 by Fred (per GRO-2217)
+# Repo: hd-platform
+#
+# This file governs how AI agents collaborate on this repository.
+# Every agent MUST respect lane assignments, branch conventions, and locking protocol.
+
+version: 1
+
+agents:
+  fred:
+    role: Orchestrator & Infrastructure
+    lanes:
+      owner: ["*"]
+      read_only: []
+    branch_prefix: "feature/"
+    staging_governor: true
+
+  kai:
+    role: Content Writer
+    lanes:
+      owner: ["content/", "okf/"]
+      read_only: ["src/", "api/"]
+    branch_prefix: "content/"
+
+  agy:
+    role: Research & Audit
+    lanes:
+      owner: ["reports/", "docs/"]
+      read_only: ["src/", "api/"]
+    branch_prefix: "research/"
+
+  jules:
+    role: PR Auditor & Code Reviewer
+    lanes:
+      owner: ["docs/"]
+      read_only: ["*"]
+    branch_prefix: "jules/"
+
+  ned:
+    role: Code Execution & Infrastructure
+    lanes:
+      owner: ["src/", "api/", "scripts/"]
+      read_only: ["content/"]
+    branch_prefix: "ned/"
+
+locks:
+  file: "${PRISMATIC_HOME}/.antigravity/swarm_locks.json"
+  heartbeat_interval_s: 60
+  heartbeat_ttl_ms: 300000
+
+staging:
+  governor: "fred"
+  branch: "deploy-fresh"
+
+commit:
+  prefix_format: "[Fred] description (#ISSUE)"
+  require_issue_ref: true
