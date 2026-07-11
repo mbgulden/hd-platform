@@ -8,7 +8,7 @@ from pathlib import Path
 
 # Configuration
 REPORTS_ENGINE_URL = os.environ.get("REPORTS_ENGINE_URL", "http://localhost:8081")
-PODCASTS_DIR = "hd-content/podcasts"
+PODCASTS_DIR = os.environ.get("PODCASTS_DIR") or "hd-content/podcasts"
 GATES_DATA_PATH = os.path.join(os.environ.get("SCRIPTS_DIR", "scripts"), "gates_data.json")
 
 def load_gates_data():
