@@ -1,0 +1,59 @@
+---
+import emdash from '../content/emdash.json';
+const { logo, navLinks, footer } = emdash.global;
+---
+
+<footer>
+  <div class="footer-inner">
+    <div class="footer-logo">{logo.text}</div>
+    <ul class="footer-links">
+      {navLinks.map(link => (
+        <li><a href={link.url}>{link.label}</a></li>
+      ))}
+    </ul>
+    <div class="footer-copy">{footer.copy}</div>
+  </div>
+</footer>
+
+<style>
+  footer {
+    background: var(--sage-deep);
+    color: var(--cream-bg);
+    padding: 60px 24px;
+    border-top: 1px solid var(--sage-dark);
+  }
+  .footer-inner {
+    max-width: 1200px;
+    margin: 0 auto;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 30px;
+  }
+  .footer-logo {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.3rem;
+    font-weight: 700;
+    color: var(--cream-bg);
+  }
+  .footer-links {
+    display: flex;
+    gap: 30px;
+    list-style: none;
+  }
+  .footer-links a {
+    color: var(--cream-light);
+    text-decoration: none;
+    font-size: 0.9rem;
+    opacity: 0.75;
+    transition: var(--transition);
+  }
+  .footer-links a:hover {
+    opacity: 1;
+  }
+  .footer-copy {
+    font-size: 0.85rem;
+    opacity: 0.5;
+  }
+</style>

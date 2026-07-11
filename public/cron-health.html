@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Hermes Swarm — Automation Health</title>
+<meta http-equiv="refresh" content="60">
+<style>
+  :root {
+    --bg: #0a0e17;
+    --card: #111827;
+    --border: #1e293b;
+    --green: #22c55e;
+    --red: #ef4444;
+    --yellow: #eab308;
+    --text: #e2e8f0;
+    --muted: #64748b;
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { background: var(--bg); color: var(--text); font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; padding: 24px; }
+  h1 { font-size: 20px; margin-bottom: 4px; }
+  .subtitle { color: var(--muted); font-size: 13px; margin-bottom: 24px; }
+  .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 12px; }
+  .card { background: var(--card); border: 1px solid var(--border); border-radius: 10px; padding: 16px; }
+  .card-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; }
+  .card-name { font-weight: 600; font-size: 14px; }
+  .status { font-size: 11px; padding: 2px 8px; border-radius: 10px; font-weight: 500; }
+  .status-ok { background: rgba(34,197,94,0.15); color: var(--green); }
+  .status-error { background: rgba(239,68,68,0.15); color: var(--red); }
+  .status-paused { background: rgba(234,179,8,0.15); color: var(--yellow); }
+  .card-meta { font-size: 12px; color: var(--muted); }
+  .card-meta span { display: block; margin-top: 2px; }
+  .summary { display: flex; gap: 24px; margin-bottom: 20px; }
+  .stat { text-align: center; }
+  .stat-value { font-size: 28px; font-weight: 700; }
+  .stat-label { font-size: 11px; color: var(--muted); text-transform: uppercase; letter-spacing: 0.5px; }
+  .refresh { font-size: 11px; color: var(--muted); margin-top: 20px; }
+</style>
+</head>
+<body>
+<h1>🟢 Hermes Swarm — Automation Health</h1>
+<p class="subtitle">10/10 jobs healthy · Auto-refreshes every 60s</p>
+
+<div class="summary">
+  <div class="stat"><div class="stat-value" style="color:var(--green)">10</div><div class="stat-label">Running</div></div>
+  <div class="stat"><div class="stat-value" style="color:var(--red)">0</div><div class="stat-label">Failing</div></div>
+  <div class="stat"><div class="stat-value" style="color:var(--yellow)">0</div><div class="stat-label">Paused</div></div>
+  <div class="stat"><div class="stat-value">10</div><div class="stat-label">Total</div></div>
+</div>
+
+<div class="grid">
+  <div class="card">
+    <div class="card-header"><span class="card-name">🌅 Morning Briefing</span><span class="status status-ok">OK</span></div>
+    <div class="card-meta"><span>Schedule: Daily 8am MT</span><span>Delivery: Telegram → Michael</span></div>
+  </div>
+  <div class="card">
+    <div class="card-header"><span class="card-name">🔗 Golden Thread Digest</span><span class="status status-ok">OK</span></div>
+    <div class="card-meta"><span>Schedule: Daily 9am MT</span><span>Delivery: Telegram → Michael</span></div>
+  </div>
+  <div class="card">
+    <div class="card-header"><span class="card-name">🌍 Daily Transit Briefing</span><span class="status status-ok">OK</span></div>
+    <div class="card-meta"><span>Schedule: Daily 1pm MT</span><span>Delivery: Telegram → Michael</span></div>
+  </div>
+  <div class="card">
+    <div class="card-header"><span class="card-name">🔄 Golden Thread Sync</span><span class="status status-ok">OK</span></div>
+    <div class="card-meta"><span>Schedule: Every 60min</span><span>Delivery: Local file</span></div>
+  </div>
+  <div class="card">
+    <div class="card-header"><span class="card-name">🤖 AGY Linear Worker</span><span class="status status-ok">OK</span></div>
+    <div class="card-meta"><span>Schedule: Every 240min</span><span>Delivery: Local file</span></div>
+  </div>
+  <div class="card">
+    <div class="card-header"><span class="card-name">📊 AGY Research Reporter</span><span class="status status-ok">OK</span></div>
+    <div class="card-meta"><span>Schedule: Every 60min</span><span>Delivery: Local file</span></div>
+  </div>
+  <div class="card">
+    <div class="card-header"><span class="card-name">🔄 PR Auto-Merger & Router</span><span class="status status-ok">OK</span></div>
+    <div class="card-meta"><span>Schedule: Every 60min</span><span>Delivery: Local file</span></div>
+  </div>
+  <div class="card">
+    <div class="card-header"><span class="card-name">📝 Hermes Journal Snapshot</span><span class="status status-ok">OK</span></div>
+    <div class="card-meta"><span>Schedule: Every 60min</span><span>Delivery: Local file</span></div>
+  </div>
+  <div class="card">
+    <div class="card-header"><span class="card-name">🌙 Hermes Journal Recap</span><span class="status status-ok">OK</span></div>
+    <div class="card-meta"><span>Schedule: Nightly 11:59pm</span><span>Delivery: Local file</span></div>
+  </div>
+  <div class="card">
+    <div class="card-header"><span class="card-name">📡 Jules Session Monitor</span><span class="status status-ok">OK</span></div>
+    <div class="card-meta"><span>Schedule: Every 30min</span><span>Delivery: Local file</span></div>
+  </div>
+</div>
+
+<p class="refresh">Last updated: <span id="time"></span> · 4 dead jobs purged (2x Codex-5.5, Jules Bridge, Next-Step Backup)</p>
+
+<script>
+document.getElementById('time').textContent = new Date().toLocaleString();
+</script>
+</body>
+</html>

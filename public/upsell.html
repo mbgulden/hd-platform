@@ -1,0 +1,546 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Special Offer: Upgrade Your Blueprint | Human Design Engine</title>
+<style>
+  :root {
+    --navy-deep: #060d1a; --navy: #0a1628; --navy-mid: #0f1d36; --navy-light: #162744;
+    --gold: #c9a84c; --gold-light: #e0c468; --gold-bright: #d4af37;
+    --gold-soft: rgba(201,168,76,0.15); --text-primary: #e8e6e3; --text-secondary: #8899aa;
+    --text-muted: #5a6a7a; --card-bg: rgba(15,29,54,0.7); --card-border: rgba(201,168,76,0.12);
+    --radius: 12px; --radius-lg: 20px; --transition: 0.25s cubic-bezier(0.4,0,0.2,1);
+    --green-glow: rgba(74, 222, 128, 0.15);
+  }
+  *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+  body{font-family:'Inter',-apple-system,sans-serif;background:var(--navy-deep);color:var(--text-primary);line-height:1.6;min-height:100vh;display:flex;flex-direction:column}
+  body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellipse at 20% 10%,rgba(201,168,76,0.04) 0%,transparent 60%),radial-gradient(ellipse at 80% 90%,rgba(201,168,76,0.03) 0%,transparent 60%);pointer-events:none;z-index:-1}
+  nav{position:sticky;top:0;z-index:100;background:rgba(6,13,26,0.9);backdrop-filter:blur(16px);border-bottom:1px solid rgba(201,168,76,0.1);padding:0 20px}
+  .nav-inner{max-width:1100px;margin:0 auto;display:flex;align-items:center;justify-content:space-between;height:64px}
+  .nav-logo{color:var(--text-primary);text-decoration:none;font-weight:700;font-size:1.2rem;letter-spacing:-0.02em}.nav-logo span{color:var(--gold-light)}
+  
+  .container{max-width:800px;margin:0 auto;padding:40px 24px;flex:1;display:flex;flex-direction:column;justify-content:center}
+  
+  /* Purchase Confirmation Banner */
+  .confirm-banner {
+    background: rgba(74, 222, 128, 0.08);
+    border: 1px solid rgba(74, 222, 128, 0.25);
+    border-radius: var(--radius);
+    padding: 18px 24px;
+    margin-bottom: 32px;
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    animation: fadeInDown 0.5s ease-out;
+  }
+  .confirm-icon {
+    font-size: 1.8rem;
+    color: #4ade80;
+    filter: drop-shadow(0 0 8px rgba(74, 222, 128, 0.4));
+  }
+  .confirm-text h3 {
+    font-size: 1.05rem;
+    color: #e8e6e3;
+    font-weight: 600;
+  }
+  .confirm-text p {
+    font-size: 0.88rem;
+    color: #a3b3c2;
+  }
+
+  /* Upsell Card */
+  .card{
+    background:var(--card-bg);
+    border:1px solid var(--card-border);
+    border-radius:var(--radius-lg);
+    padding:40px;
+    position:relative;
+    box-shadow: 0 20px 40px rgba(0,0,0,0.4);
+    animation: fadeInUp 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+  .badge {
+    position: absolute;
+    top: -14px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: linear-gradient(135deg, var(--gold-bright), var(--gold));
+    color: var(--navy-deep);
+    padding: 6px 18px;
+    border-radius: 30px;
+    font-size: 0.8rem;
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    box-shadow: 0 4px 15px rgba(201,168,76,0.3);
+  }
+  h1 {
+    text-align: center;
+    font-size: clamp(1.8rem, 4vw, 2.4rem);
+    font-weight: 700;
+    margin-bottom: 12px;
+    letter-spacing: -0.02em;
+    line-height: 1.25;
+  }
+  h1 span {
+    color: var(--gold-light);
+    background: linear-gradient(120deg, #fff 30%, var(--gold-light) 90%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+  }
+  .sub {
+    text-align: center;
+    color: var(--text-secondary);
+    margin-bottom: 36px;
+    font-size: 1.05rem;
+  }
+
+  /* Bundle Grid */
+  .bundle-grid {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    margin-bottom: 32px;
+  }
+  .bundle-item {
+    background: var(--navy-deep);
+    border: 1px solid rgba(201,168,76,0.1);
+    border-radius: var(--radius);
+    padding: 20px 24px;
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    transition: var(--transition);
+  }
+  .bundle-item:hover {
+    border-color: rgba(201,168,76,0.25);
+    background: rgba(15,29,54,0.4);
+  }
+  .bundle-item.active {
+    border-color: rgba(74, 222, 128, 0.3);
+    background: rgba(74, 222, 128, 0.02);
+  }
+  .item-status {
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.95rem;
+    flex-shrink: 0;
+  }
+  .bundle-item.active .item-status {
+    background: rgba(74, 222, 128, 0.15);
+    color: #4ade80;
+    border: 1px solid rgba(74, 222, 128, 0.3);
+  }
+  .bundle-item.locked .item-status {
+    background: rgba(201,168,76,0.1);
+    color: var(--gold-light);
+    border: 1px solid rgba(201,168,76,0.2);
+  }
+  .item-info {
+    flex: 1;
+  }
+  .item-info h4 {
+    font-size: 1.05rem;
+    font-weight: 600;
+    margin-bottom: 2px;
+    color: var(--text-primary);
+  }
+  .item-info p {
+    font-size: 0.85rem;
+    color: var(--text-secondary);
+  }
+  .item-price-tag {
+    font-size: 0.8rem;
+    color: var(--text-muted);
+    font-weight: 500;
+    padding: 4px 10px;
+    background: rgba(255,255,255,0.03);
+    border-radius: 6px;
+  }
+  .bundle-item.active .item-price-tag {
+    color: #4ade80;
+    background: rgba(74, 222, 128, 0.08);
+  }
+
+  /* Partner Input Panel */
+  .partner-panel {
+    background: var(--navy-deep);
+    border: 1px solid rgba(201,168,76,0.15);
+    border-radius: var(--radius);
+    padding: 20px;
+    margin-bottom: 28px;
+    display: none;
+    animation: fadeIn 0.4s ease-out;
+  }
+  .partner-panel label {
+    display: block;
+    font-size: 0.85rem;
+    color: var(--gold-light);
+    margin-bottom: 6px;
+    font-weight: 600;
+  }
+  .partner-panel input {
+    width: 100%;
+    padding: 10px 12px;
+    border: 1px solid rgba(201,168,76,0.2);
+    border-radius: 8px;
+    background: var(--navy-deep);
+    color: var(--text-primary);
+    font-size: 0.92rem;
+    font-family: inherit;
+  }
+  .partner-panel input:focus {
+    border-color: var(--gold);
+    outline: none;
+  }
+
+  /* Pricing Box */
+  .pricing-box {
+    text-align: center;
+    margin-top: 12px;
+    margin-bottom: 28px;
+    background: radial-gradient(circle at center, rgba(201,168,76,0.08) 0%, transparent 70%);
+    padding: 16px;
+    border-radius: var(--radius);
+  }
+  .old-price {
+    font-size: 1.1rem;
+    color: var(--text-muted);
+    text-decoration: line-through;
+    margin-bottom: 4px;
+    display: inline-block;
+  }
+  .new-price {
+    font-size: 2.5rem;
+    font-weight: 800;
+    color: var(--gold-light);
+    text-shadow: 0 0 15px rgba(201,168,76,0.2);
+    line-height: 1;
+    margin-bottom: 4px;
+  }
+  .price-sub {
+    font-size: 0.82rem;
+    color: var(--text-secondary);
+  }
+
+  /* Buttons & Actions */
+  .btn{
+    display:block;
+    width:100%;
+    padding:16px;
+    background:linear-gradient(135deg,var(--gold-bright),var(--gold));
+    color:var(--navy-deep);
+    border:none;
+    border-radius:12px;
+    font-size:1.15rem;
+    font-weight:700;
+    cursor:pointer;
+    transition:var(--transition);
+    text-align:center;
+    text-decoration:none;
+    box-shadow: 0 4px 15px rgba(201,168,76,0.2);
+  }
+  .btn:hover{
+    box-shadow:0 8px 30px rgba(201,168,76,0.45);
+    transform:translateY(-1.5px);
+  }
+  .btn:disabled{
+    opacity:0.5;
+    cursor:not-allowed;
+    transform:none;
+  }
+  .skip-link {
+    display: inline-block;
+    margin: 20px auto 0 auto;
+    text-align: center;
+    color: var(--text-muted);
+    text-decoration: none;
+    font-size: 0.9rem;
+    transition: var(--transition);
+    border-bottom: 1px dashed var(--text-muted);
+    padding-bottom: 1px;
+  }
+  .skip-link:hover {
+    color: var(--text-secondary);
+    border-color: var(--text-secondary);
+  }
+  .actions-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+  
+  .error{
+    background:rgba(233,69,96,0.1);
+    border:1px solid rgba(233,69,96,0.3);
+    border-radius:8px;
+    padding:12px 16px;
+    color:#e94560;
+    font-size:0.9rem;
+    display:none;
+    margin-top:16px;
+    width: 100%;
+    text-align: center;
+  }
+
+  /* Trust badges */
+  .trust-row{
+    display:flex;
+    gap:24px;
+    justify-content:center;
+    flex-wrap:wrap;
+    margin-top:40px;
+    border-top: 1px solid rgba(255,255,255,0.05);
+    padding-top: 24px;
+  }
+  .trust-item{
+    font-size:0.8rem;
+    color:var(--text-muted);
+    display:flex;
+    align-items:center;
+    gap:6px;
+  }
+  .trust-item::before{
+    content:'✓';
+    color:var(--gold);
+    font-weight:700;
+  }
+
+  footer{text-align:center;padding:40px 32px 32px 32px;color:var(--text-muted);font-size:0.8rem;margin-top:auto}
+  footer a{color:var(--gold);text-decoration:none}
+
+  /* Keyframe Animations */
+  @keyframes fadeInDown {
+    from { opacity: 0; transform: translateY(-15px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+  @keyframes fadeInUp {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+  @keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+  }
+</style>
+<!-- Google Analytics (GA4) -->
+<script async="" src="https://www.googletagmanager.com/gtag/js?id=G-Q6TPL08VM7"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-Q6TPL08VM7');
+</script>
+</head>
+<body>
+<nav>
+<div class="nav-inner">
+<a class="nav-logo" href="/">🧬 <span>Human Design Engine</span></a>
+</div>
+</nav>
+
+<div class="container">
+  <!-- Dynamic Purchase Confirmation Banner -->
+  <div class="confirm-banner">
+    <div class="confirm-icon">✓</div>
+    <div class="confirm-text">
+      <h3>Payment Confirmed!</h3>
+      <p id="confirmMessage">Your report is now being computed & sent to your email.</p>
+    </div>
+  </div>
+
+  <!-- Special Offer Card -->
+  <div class="card">
+    <div class="badge">One-Time Offer</div>
+    <h1>Complete Your <span>Cosmic Blueprint</span></h1>
+    <p class="sub">Upgrade to the 3-Report Bundle now and save over 30% compared to purchasing separately.</p>
+
+    <!-- Bundle Items Grid -->
+    <div class="bundle-grid">
+      <!-- Natal Report -->
+      <div class="bundle-item" id="item-natal">
+        <div class="item-status">✓</div>
+        <div class="item-info">
+          <h4>Foundation Natal Report</h4>
+          <p>Your unique energetic footprint, strategy, authority, and life purpose.</p>
+        </div>
+        <div class="item-price-tag" id="price-tag-natal">Included</div>
+      </div>
+
+      <!-- Transit Report -->
+      <div class="bundle-item locked" id="item-transit">
+        <div class="item-status">🌙</div>
+        <div class="item-info">
+          <h4>12-Month Transit Forecast</h4>
+          <p>Planetary activations influencing your chart over the next 12 months.</p>
+        </div>
+        <div class="item-price-tag" id="price-tag-transit">$29 Value</div>
+      </div>
+
+      <!-- Synastry Report -->
+      <div class="bundle-item locked" id="item-synastry">
+        <div class="item-status">💫</div>
+        <div class="item-info">
+          <h4>Relationship Synastry Report</h4>
+          <p>Interactive analysis mapping electromagnetic attractions & compatibility.</p>
+        </div>
+        <div class="item-price-tag" id="price-tag-synastry">$29 Value</div>
+      </div>
+    </div>
+
+    <!-- Partner Birth Details Input (shown dynamically if relationship report is not yet configured) -->
+    <div class="partner-panel" id="partnerPanel">
+      <label for="partnerInput">Partner's Info (Name, Date, Time & City of birth)</label>
+      <input id="partnerInput" placeholder="e.g. Sarah, Oct 14 1992, 8:45 AM, Seattle WA" type="text"/>
+    </div>
+
+    <!-- Pricing Area -->
+    <div class="pricing-box">
+      <div class="old-price" id="originalPrice">$77 Total Value</div>
+      <div class="new-price">$59</div>
+      <div class="price-sub">Upgrade price for the entire 3-Report bundle</div>
+    </div>
+
+    <!-- Actions -->
+    <div class="actions-container">
+      <button class="btn" id="upgradeBtn">🔒 Complete My Bundle for $59 →</button>
+      <a class="skip-link" href="#" id="skipBtn">No thanks, just email my single report</a>
+      <div class="error" id="error"></div>
+    </div>
+
+    <!-- Trust Seals -->
+    <div class="trust-row">
+      <div class="trust-item">Instant secure upgrade</div>
+      <div class="trust-item">30-day refund guarantee</div>
+      <div class="trust-item">Secure Stripe processing</div>
+    </div>
+  </div>
+</div>
+
+<footer>
+<p>Powered by <a href="https://github.com/mbgulden/OpenHumanDesignMCP">OpenHumanDesignMCP</a> · AGPLv3</p>
+</footer>
+
+<script>
+  // Parse parameters
+  const urlParams = new URLSearchParams(window.location.search);
+  const sessionId = urlParams.get('session') || '';
+  const name = urlParams.get('name') || 'Friend';
+  const email = urlParams.get('email') || '';
+  const purchasedReport = urlParams.get('report') || 'natal';
+  
+  const birthdate = urlParams.get('birthdate') || '';
+  const birthtime = urlParams.get('birthtime') || '';
+  const locationText = urlParams.get('location') || '';
+  const lat = urlParams.get('lat') || '';
+  const lon = urlParams.get('lon') || '';
+  const timezone = urlParams.get('timezone') || 'UTC';
+  const partner = urlParams.get('partner') || '';
+  const ref = urlParams.get('ref') || '';
+
+  // Setup report names and statuses
+  const reportNames = {
+    natal: 'Foundation Natal Report',
+    synastry: 'Relationship Synastry Report',
+    transit: '12-Month Transit Forecast'
+  };
+  
+  const currentReportName = reportNames[purchasedReport] || 'Human Design Report';
+  document.getElementById('confirmMessage').innerHTML = `Your <strong>${currentReportName}</strong> is being generated and sent to <strong>${email || 'your email'}</strong>.`;
+
+  // Highlight purchased report in UI
+  document.querySelectorAll('.bundle-item').forEach(item => {
+    item.classList.add('locked');
+    item.classList.remove('active');
+  });
+
+  const activeItem = document.getElementById(`item-${purchasedReport}`);
+  if (activeItem) {
+    activeItem.classList.remove('locked');
+    activeItem.classList.add('active');
+    activeItem.querySelector('.item-status').textContent = '✓';
+    const tag = document.getElementById(`price-tag-${purchasedReport}`);
+    if (tag) tag.textContent = 'Purchased';
+  }
+
+  // Handle partner input panel visibility:
+  // If the user hasn't already provided partner info, show the input field so they can configure the relationship synastry report.
+  const partnerPanel = document.getElementById('partnerPanel');
+  const partnerInput = document.getElementById('partnerInput');
+  
+  if (partner) {
+    partnerInput.value = partner;
+  } else {
+    partnerPanel.style.display = 'block';
+  }
+
+  // Detect API Endpoint
+  const API_HOST = (() => {
+    if (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') {
+      return 'http://localhost:8000';
+    }
+    return 'https://api.humandesignengine.com';
+  })();
+
+  // Skip button setup: redirects to success.html with skip=true
+  const skipBtn = document.getElementById('skipBtn');
+  const skipParams = new URLSearchParams();
+  if (sessionId) skipParams.set('session', sessionId);
+  skipParams.set('skip', 'true');
+  skipBtn.href = `success.html?${skipParams.toString()}`;
+
+  // Upgrade button checkout trigger
+  const upgradeBtn = document.getElementById('upgradeBtn');
+  upgradeBtn.addEventListener('click', handleUpgrade);
+
+  async function handleUpgrade() {
+    const errorDiv = document.getElementById('error');
+    errorDiv.style.display = 'none';
+    upgradeBtn.disabled = true;
+    upgradeBtn.textContent = 'Connecting to Stripe...';
+
+    // Collect info
+    const resolvedPartner = partnerInput.value.trim() || partner;
+
+    try {
+      const resp = await fetch(`${API_HOST}/create-checkout`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          name: name,
+          email: email,
+          report: 'bundle',
+          price: 5900,
+          birthdate: birthdate,
+          birthtime: birthtime,
+          location: locationText,
+          lat: lat,
+          lon: lon,
+          timezone: timezone,
+          partner: resolvedPartner || undefined,
+          ref: ref || undefined
+        })
+      });
+
+      if (!resp.ok) throw new Error('Payment server checkout creation failed');
+      const data = await resp.json();
+      if (data.url) {
+        window.location.href = data.url;
+      } else {
+        throw new Error('No checkout session URL returned from server');
+      }
+    } catch (err) {
+      console.error(err);
+      errorDiv.textContent = 'Upgrade server unavailable. Please try again or contact support.';
+      errorDiv.style.display = 'block';
+      upgradeBtn.disabled = false;
+      upgradeBtn.textContent = '🔒 Complete My Bundle for $59 →';
+    }
+  }
+</script>
+</body>
+</html>

@@ -1,0 +1,284 @@
+---
+import Layout from '../layouts/Layout.astro';
+import Nav from '../components/Nav.astro';
+import Footer from '../components/Footer.astro';
+---
+
+<Layout title="Registration Successful | Human Design Engine">
+  <Nav />
+  
+  <main class="container">
+    <div class="success-card">
+      <div class="icon-wrap">✨</div>
+      <h1>Your Vessel is Registered</h1>
+      <p class="subtitle">Observe the mind, validate the centers, and return response to the physical vessel.</p>
+      
+      <!-- Somatic Breathing Circle -->
+      <div class="breathing-container">
+        <div class="breathing-circle" id="breathingCircle"></div>
+        <p class="breathing-instruction" id="breathingText">Inhale...</p>
+      </div>
+
+      <div class="onboarding-action" id="onboardingAction">
+        <p class="status-text">Activating your container... please do not close this window.</p>
+        <div class="spinner"></div>
+      </div>
+
+      <!-- Fallback Email Form -->
+      <div class="fallback-form" id="fallbackForm">
+        <h3>Retrieve Onboarding Link</h3>
+        <p>If your bot activation link didn't load automatically, enter your email below to retrieve it.</p>
+        <form id="emailForm">
+          <input type="email" id="emailInput" placeholder="you@email.com" required />
+          <button type="submit">Get Link</button>
+        </form>
+        <p class="error-msg" id="onboardingError"></p>
+      </div>
+    </div>
+  </main>
+
+  <Footer />
+</Layout>
+
+<style>
+  .container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 80px 24px;
+    display: flex;
+    justify-content: center;
+  }
+  .success-card {
+    background: var(--white);
+    border: 1px solid var(--card-border);
+    border-radius: var(--radius-lg);
+    padding: 60px 40px;
+    max-width: 600px;
+    width: 100%;
+    text-align: center;
+    box-shadow: var(--shadow);
+  }
+  .icon-wrap {
+    font-size: 3rem;
+    margin-bottom: 20px;
+  }
+  h1 {
+    font-family: 'Playfair Display', serif;
+    color: var(--sage-deep);
+    font-size: 2.2rem;
+    margin-bottom: 12px;
+  }
+  .subtitle {
+    color: var(--text-secondary);
+    font-style: italic;
+    font-size: 1.05rem;
+    margin-bottom: 40px;
+    line-height: 1.5;
+  }
+
+  /* Breathing Circle Animation */
+  .breathing-container {
+    margin-bottom: 40px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+  .breathing-circle {
+    width: 120px;
+    height: 120px;
+    border-radius: 50%;
+    background: var(--sage-glow);
+    border: 2px solid var(--sage-light);
+    transition: transform 4s cubic-bezier(0.4, 0, 0.2, 1);
+    transform: scale(0.8);
+  }
+  .breathing-instruction {
+    margin-top: 16px;
+    font-weight: 500;
+    color: var(--sage-mid);
+    font-size: 0.95rem;
+  }
+
+  .onboarding-action {
+    background: var(--cream-bg);
+    border: 1px solid var(--card-border);
+    border-radius: var(--radius);
+    padding: 24px;
+    margin-bottom: 30px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 16px;
+  }
+  .status-text {
+    font-size: 0.95rem;
+    color: var(--text-primary);
+    font-weight: 500;
+  }
+  .spinner {
+    width: 24px;
+    height: 24px;
+    border: 2.5px solid var(--sage-glow);
+    border-top-color: var(--sage-mid);
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+  }
+  
+  .btn-launch {
+    display: inline-block;
+    padding: 14px 28px;
+    background: var(--sage-deep);
+    color: var(--cream-bg);
+    text-decoration: none;
+    font-weight: 600;
+    border-radius: 30px;
+    transition: var(--transition);
+  }
+  .btn-launch:hover {
+    background: var(--sage-mid);
+    transform: translateY(-1px);
+  }
+
+  .fallback-form {
+    border-top: 1px solid var(--card-border);
+    padding-top: 30px;
+    text-align: left;
+    display: none;
+  }
+  .fallback-form h3 {
+    font-size: 1.05rem;
+    color: var(--sage-deep);
+    margin-bottom: 8px;
+  }
+  .fallback-form p {
+    font-size: 0.85rem;
+    color: var(--text-secondary);
+    margin-bottom: 16px;
+  }
+  .fallback-form form {
+    display: flex;
+    gap: 10px;
+  }
+  .fallback-form input {
+    flex: 1;
+    padding: 10px 14px;
+    border: 1px solid var(--card-border);
+    border-radius: 8px;
+    background: var(--cream-bg);
+    font-family: inherit;
+    font-size: 0.9rem;
+  }
+  .fallback-form input:focus {
+    outline: 2px solid var(--sage-mid);
+  }
+  .fallback-form button {
+    padding: 10px 20px;
+    background: var(--sage-deep);
+    color: var(--cream-bg);
+    border: none;
+    border-radius: 8px;
+    font-weight: 600;
+    cursor: pointer;
+    font-size: 0.9rem;
+  }
+  .fallback-form button:hover {
+    background: var(--sage-mid);
+  }
+  .error-msg {
+    color: #cc3333;
+    font-size: 0.85rem;
+    margin-top: 10px;
+    display: none;
+  }
+
+  @keyframes spin {
+    to { transform: rotate(360deg); }
+  }
+</style>
+
+<script>
+  // Somatic Breathing Pacing Loop (4s inhale, 4s exhale)
+  const circle = document.getElementById('breathingCircle');
+  const text = document.getElementById('breathingText');
+  let inhale = true;
+
+  if (circle && text) {
+    setInterval(() => {
+      if (inhale) {
+        circle.style.transform = 'scale(1.2)';
+        text.textContent = 'Hold... Exhale...';
+        inhale = false;
+      } else {
+        circle.style.transform = 'scale(0.8)';
+        text.textContent = 'Inhale...';
+        inhale = true;
+      }
+    }, 4000);
+  }
+
+  // Stripe Session Fetching and Redirect
+  const onboardingContainer = document.getElementById('onboardingAction');
+  const fallback = document.getElementById('fallbackForm');
+  const errorMsg = document.getElementById('onboardingError');
+  const emailForm = document.getElementById('emailForm');
+  
+  const urlParams = new URLSearchParams(window.location.search);
+  const sessionId = urlParams.get('session_id');
+
+  const fetchOnboardingLink = async (queryParam: string, isSessionId = true) => {
+    try {
+      const url = isSessionId 
+        ? `/api/checkout/session?session_id=${queryParam}`
+        : `/api/checkout/session?email=${encodeURIComponent(queryParam)}`;
+        
+      const response = await fetch(url);
+      if (!response.ok) throw new Error('Session not found');
+      
+      const data = await response.json();
+      if (data.deep_link) {
+        if (onboardingContainer) {
+          onboardingContainer.innerHTML = `
+            <p class="status-text" style="color: var(--sage-mid); font-weight: 600;">✨ Onboarding Link Generated!</p>
+            <a class="btn-launch" href="${data.deep_link}" target="_blank" rel="noopener">
+              🤖 Launch Telegram Onboarding Bot
+            </a>
+            <p style="font-size: 0.78rem; color: var(--text-secondary); margin-top: 8px;">
+              Click above to launch your companion. Link expires in 24 hours.
+            </p>
+          `;
+        }
+        if (fallback) fallback.style.display = 'none';
+      } else {
+        throw new Error('Missing onboarding link.');
+      }
+    } catch (err) {
+      if (onboardingContainer) {
+        onboardingContainer.innerHTML = `
+          <p class="status-text" style="color: #cc3333;">⚠️ Verification Pending</p>
+          <p style="font-size: 0.85rem; color: var(--text-secondary); text-align: center;">
+            We couldn't automatically verify your payment session yet. Your bank may still be finalizing.
+          </p>
+        `;
+      }
+      if (fallback) fallback.style.display = 'block';
+    }
+  };
+
+  if (sessionId) {
+    fetchOnboardingLink(sessionId, true);
+  } else {
+    // Show email form immediately if no session_id is provided
+    if (onboardingContainer) onboardingContainer.style.display = 'none';
+    if (fallback) fallback.style.display = 'block';
+  }
+
+  if (emailForm) {
+    emailForm.addEventListener('submit', (e) => {
+      e.preventDefault();
+      const email = (document.getElementById('emailInput') as HTMLInputElement).value.trim();
+      if (email) {
+        fetchOnboardingLink(email, false);
+      }
+    });
+  }
+</script>

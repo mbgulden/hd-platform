@@ -5,6 +5,8 @@ import json
 import logging
 import os
 import secrets
+import stripe
+from pydantic import BaseModel
 import time
 from datetime import datetime, timezone, timedelta
 from typing import Any, Dict, Optional
@@ -254,15 +256,86 @@ async def stripe_webhook(
 
     return {"success": True, "event_received": event_type}
 
+
+class CreateSessionRequest(BaseModel):
+    email: str
+    product_name: str
+    product_description: Optional[str] = None
+    price_cents: int
+    is_subscription: bool = False
+    metadata: Optional[Dict[str, str]] = None
+    success_url: Optional[str] = None
+    cancel_url: Optional[str] = None
+
+@router.post("/checkout/create-session")
+async def create_stripe_session(body: CreateSessionRequest) -> Dict[str, Any]:
+    stripe_key = os.environ.get("STRIPE_SECRET_KEY", "")
+    if not stripe_key or stripe_key.startswith("${"):
+        raise HTTPException(status_code=503, detail="Stripe is not configured.")
+    
+    stripe.api_key = stripe_key
+    
+    line_items = [{
+        "price_data": {
+            "currency": "usd",
+            "product_data": {
+                "name": body.product_name,
+                "description": body.product_description or "",
+            },
+            "unit_amount": body.price_cents,
+        },
+        "quantity": 1
+    }]
+    
+    if body.is_subscription:
+        line_items[0]["price_data"]["recurring"] = {"interval": "month"}
+        
+    try:
+        session = stripe.checkout.Session.create(
+            payment_method_types=["card"],
+            line_items=line_items,
+            mode="subscription" if body.is_subscription else "payment",
+            success_url=body.success_url or "https://humandesignengine.com/success?session_id={CHECKOUT_SESSION_ID}",
+            cancel_url=body.cancel_url or "https://humandesignengine.com/",
+            customer_email=body.email,
+            metadata=body.metadata or {}
+        )
+        return {"url": session.url}
+    except Exception as e:
+        logger.exception("Failed to create Stripe session")
+        raise HTTPException(status_code=502, detail=str(e))
+
+
 # ── Onboarding Deep Link Endpoint ──────────────────────────────────────
 @router.get("/checkout/session")
-async def get_onboarding_link(email: str) -> Dict[str, Any]:
+async def get_onboarding_link(
+    email: Optional[str] = None,
+    session_id: Optional[str] = None
+) -> Dict[str, Any]:
     """
     Retrieve the Telegram Master Bot link containing the secure invite token for onboarding.
+    Accepts email or session_id.
     """
+    resolved_email = email
+    
+    if session_id:
+        stripe_key = os.environ.get("STRIPE_SECRET_KEY", "")
+        if not stripe_key or stripe_key.startswith("${"):
+            raise HTTPException(status_code=503, detail="Stripe is not configured.")
+        stripe.api_key = stripe_key
+        try:
+            session = stripe.checkout.Session.retrieve(session_id)
+            resolved_email = session.get("customer_email") or session.get("customer_details", {}).get("email")
+        except Exception as e:
+            logger.error("Failed to retrieve Stripe session: %s", e)
+            raise HTTPException(status_code=400, detail="Invalid checkout session.")
+            
+    if not resolved_email:
+        raise HTTPException(status_code=400, detail="Missing email or session_id parameter.")
+
     async with async_session_factory() as db_session:
         db_session: AsyncSession
-        result_user = await db_session.execute(select(User).where(User.email == email))
+        result_user = await db_session.execute(select(User).where(User.email == resolved_email))
         user = result_user.scalar_one_or_none()
         if not user:
             raise HTTPException(status_code=404, detail="User profile not found.")
@@ -281,7 +354,7 @@ async def get_onboarding_link(email: str) -> Dict[str, Any]:
 
         deep_link = f"https://t.me/HDE_CoachBot?start={invitation.token}"
         return {
-            "email": email,
+            "email": resolved_email,
             "token": invitation.token,
             "deep_link": deep_link,
             "expires_at": invitation.expires_at

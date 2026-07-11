@@ -1,0 +1,372 @@
+---
+import Layout from '../layouts/Layout.astro';
+import Nav from '../components/Nav.astro';
+import Footer from '../components/Footer.astro';
+import emdash from '../content/emdash.json';
+
+const { title, subtitle, description, packages } = emdash.somaticPage;
+---
+
+<Layout title="Somatic Sanctuary & Deconditioning Container | Human Design Engine" description={description}>
+  <Nav />
+  
+  <main class="container">
+    <div class="header">
+      <span class="badge">Somatic Experiment Station</span>
+      <h1>{title}</h1>
+      <p class="subtitle">{subtitle}</p>
+      <p class="description">{description}</p>
+    </div>
+
+    <div class="packages-grid">
+      {packages.map(pkg => (
+        <div class="pkg-card" id={`pkg-${pkg.id}`}>
+          <div class="pkg-header">
+            <h3>{pkg.name}</h3>
+            <div class="pkg-price">
+              <span class="price-val">${pkg.price}</span>
+              <span class="price-int">/ {pkg.interval}</span>
+            </div>
+            <p class="pkg-desc">{pkg.desc}</p>
+          </div>
+          
+          <ul class="pkg-features">
+            {pkg.features.map(feat => (
+              <li>
+                <svg viewBox="0 0 20 20" aria-hidden="true">
+                  <path d="M7.629,14.566c0.125,0.125,0.291,0.188,0.456,0.188c0.164,0,0.329-0.062,0.456-0.188l8.219-8.221c0.252-0.252,0.252-0.659,0-0.911c-0.252-0.252-0.659-0.252-0.911,0l-7.764,7.763L4.152,9.267c-0.252-0.251-0.66-0.251-0.911,0c-0.252,0.252-0.252,0.66,0,0.911L7.629,14.566z" fill="currentColor"></path>
+                </svg>
+                {feat}
+              </li>
+            ))}
+          </ul>
+          
+          <button 
+            class="checkout-btn" 
+            data-pkg-name={pkg.name}
+            data-pkg-desc={pkg.desc}
+            data-price-cents={pkg.priceCents}
+            data-is-sub={pkg.isSubscription ? "true" : "false"}
+            data-id={pkg.id}
+          >
+            {pkg.id === 'sovereign' ? 'Apply for Sovereign Container' : 'Start Solo Experiment'}
+          </button>
+        </div>
+      ))}
+    </div>
+
+    <!-- Interactive Checkout Email Modal -->
+    <div class="modal" id="emailModal" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
+      <div class="modal-content">
+        <h2 id="modalTitle">Secure Checkout</h2>
+        <p>Please enter your email to proceed to Stripe secure payment.</p>
+        <form id="checkoutForm">
+          <div class="form-group">
+            <label for="checkoutEmail">Email Address</label>
+            <input type="email" id="checkoutEmail" required placeholder="you@example.com" />
+          </div>
+          <div class="modal-actions">
+            <button type="button" class="btn-cancel" id="cancelModalBtn">Cancel</button>
+            <button type="submit" class="btn-submit" id="submitModalBtn">Proceed to Stripe →</button>
+          </div>
+        </form>
+        <p class="error-msg" id="modalError"></p>
+      </div>
+    </div>
+  </main>
+
+  <Footer />
+</Layout>
+
+<style>
+  .container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 80px 24px;
+  }
+  .header {
+    text-align: center;
+    max-width: 700px;
+    margin: 0 auto 60px;
+  }
+  .badge {
+    display: inline-block;
+    padding: 6px 14px;
+    background: var(--sage-glow);
+    color: var(--sage-deep);
+    font-size: 0.8rem;
+    font-weight: 600;
+    border-radius: 20px;
+    margin-bottom: 16px;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+  }
+  h1 {
+    font-family: 'Playfair Display', serif;
+    font-size: 2.8rem;
+    color: var(--sage-deep);
+    margin-bottom: 16px;
+  }
+  .subtitle {
+    font-size: 1.25rem;
+    color: var(--sage-mid);
+    font-style: italic;
+    margin-bottom: 20px;
+  }
+  .description {
+    color: var(--text-secondary);
+  }
+
+  .packages-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+    gap: 40px;
+    max-width: 900px;
+    margin: 0 auto;
+  }
+  .pkg-card {
+    background: var(--white);
+    border: 1px solid var(--card-border);
+    border-radius: var(--radius-lg);
+    padding: 40px 32px;
+    display: flex;
+    flex-direction: column;
+    box-shadow: var(--shadow);
+    transition: var(--transition);
+  }
+  .pkg-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 12px 40px rgba(47, 54, 49, 0.05);
+  }
+  .pkg-header h3 {
+    font-size: 1.4rem;
+    color: var(--sage-deep);
+    margin-bottom: 16px;
+  }
+  .pkg-price {
+    display: flex;
+    align-items: baseline;
+    margin-bottom: 24px;
+  }
+  .price-val {
+    font-size: 2.8rem;
+    font-weight: 700;
+    font-family: 'Playfair Display', serif;
+    color: var(--sage-deep);
+  }
+  .price-int {
+    font-size: 0.95rem;
+    color: var(--text-muted);
+    margin-left: 8px;
+  }
+  .pkg-desc {
+    color: var(--text-secondary);
+    font-size: 0.95rem;
+    min-height: 72px;
+    margin-bottom: 30px;
+    line-height: 1.5;
+  }
+  .pkg-features {
+    list-style: none;
+    margin-bottom: 40px;
+    flex: 1;
+  }
+  .pkg-features li {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 14px;
+    color: var(--text-primary);
+    font-size: 0.95rem;
+  }
+  .pkg-features svg {
+    width: 18px;
+    height: 18px;
+    color: var(--sage-mid);
+    flex-shrink: 0;
+  }
+  .checkout-btn {
+    width: 100%;
+    padding: 14px;
+    background: var(--sage-deep);
+    color: var(--cream-bg);
+    border: none;
+    border-radius: 30px;
+    font-weight: 600;
+    font-size: 0.95rem;
+    cursor: pointer;
+    transition: var(--transition);
+  }
+  .checkout-btn:hover {
+    background: var(--sage-mid);
+  }
+
+  /* Modal Styling */
+  .modal {
+    position: fixed;
+    inset: 0;
+    background: rgba(47, 54, 49, 0.4);
+    backdrop-filter: blur(4px);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 1000;
+    opacity: 0;
+    visibility: hidden;
+    transition: var(--transition);
+  }
+  .modal.active {
+    opacity: 1;
+    visibility: visible;
+  }
+  .modal-content {
+    background: var(--white);
+    padding: 40px;
+    border-radius: var(--radius-lg);
+    max-width: 440px;
+    width: 100%;
+    box-shadow: var(--shadow);
+  }
+  .modal-content h2 {
+    font-family: 'Playfair Display', serif;
+    color: var(--sage-deep);
+    margin-bottom: 10px;
+  }
+  .modal-content p {
+    color: var(--text-secondary);
+    font-size: 0.95rem;
+    margin-bottom: 24px;
+  }
+  .form-group {
+    margin-bottom: 24px;
+  }
+  .form-group label {
+    display: block;
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: var(--sage-deep);
+    margin-bottom: 8px;
+  }
+  .form-group input {
+    width: 100%;
+    padding: 12px;
+    border: 1px solid var(--card-border);
+    border-radius: 8px;
+    font-family: inherit;
+    background: var(--cream-bg);
+  }
+  .form-group input:focus {
+    outline: 2px solid var(--sage-mid);
+  }
+  .modal-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 12px;
+  }
+  .btn-cancel {
+    background: none;
+    border: none;
+    cursor: pointer;
+    font-weight: 600;
+    color: var(--text-muted);
+    padding: 10px 20px;
+  }
+  .btn-submit {
+    background: var(--sage-deep);
+    color: var(--cream-bg);
+    border: none;
+    border-radius: 30px;
+    font-weight: 600;
+    cursor: pointer;
+    padding: 12px 24px;
+    transition: var(--transition);
+  }
+  .btn-submit:hover {
+    background: var(--sage-mid);
+  }
+  .error-msg {
+    color: #cc3333;
+    font-size: 0.85rem;
+    margin-top: 16px;
+    text-align: center;
+    display: none;
+  }
+</style>
+
+<script>
+  let selectedPkg = { name: '', desc: '', priceCents: 0, isSub: false, id: '' };
+  
+  const modal = document.getElementById('emailModal');
+  const cancelBtn = document.getElementById('cancelModalBtn');
+  const form = document.getElementById('checkoutForm');
+  const errorMsg = document.getElementById('modalError');
+  const submitBtn = document.getElementById('submitModalBtn');
+
+  document.querySelectorAll('.checkout-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      selectedPkg = {
+        name: btn.getAttribute('data-pkg-name') || '',
+        desc: btn.getAttribute('data-pkg-desc') || '',
+        priceCents: parseInt(btn.getAttribute('data-price-cents') || '0', 10),
+        isSub: btn.getAttribute('data-is-sub') === 'true',
+        id: btn.getAttribute('data-id') || ''
+      };
+      if (modal) modal.classList.add('active');
+    });
+  });
+
+  if (cancelBtn && modal) {
+    cancelBtn.addEventListener('click', () => {
+      modal.classList.remove('active');
+      if (errorMsg) errorMsg.style.display = 'none';
+    });
+  }
+
+  if (form) {
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      if (submitBtn) {
+        submitBtn.disabled = true;
+        submitBtn.textContent = 'Redirecting...';
+      }
+      if (errorMsg) errorMsg.style.display = 'none';
+
+      const email = (document.getElementById('checkoutEmail') as HTMLInputElement).value.trim();
+
+      try {
+        const response = await fetch('/api/checkout/create-session', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            email: email,
+            product_name: selectedPkg.name,
+            product_description: selectedPkg.desc,
+            price_cents: selectedPkg.priceCents,
+            is_subscription: selectedPkg.isSub,
+            metadata: {
+              tier: selectedPkg.id,
+              product: selectedPkg.id
+            }
+          })
+        });
+
+        if (!response.ok) throw new Error('Checkout API failed');
+        const data = await response.json();
+        if (data.url) {
+          window.location.href = data.url;
+        } else {
+          throw new Error('No checkout URL returned from server.');
+        }
+      } catch (err) {
+        if (errorMsg) {
+          errorMsg.textContent = 'Failed to initiate checkout. Please try again.';
+          errorMsg.style.display = 'block';
+        }
+        if (submitBtn) {
+          submitBtn.disabled = false;
+          submitBtn.textContent = 'Proceed to Stripe →';
+        }
+      }
+    });
+  }
+</script>

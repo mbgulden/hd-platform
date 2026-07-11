@@ -1,0 +1,109 @@
+{
+  "global": {
+    "logo": {
+      "text": "Human Design Engine",
+      "desktopHeight": "35px",
+      "mobileHeight": "28px"
+    },
+    "navLinks": [
+      { "label": "Free Chart", "url": "/#calculator" },
+      { "label": "Somatic Sanctuary", "url": "/deconditioning" },
+      { "label": "She Planted a Tree", "url": "/landing-sheplantedatree" },
+      { "label": "Reports", "url": "/#reports" },
+      { "label": "API", "url": "/docs" }
+    ],
+    "cta": {
+      "label": "Enter Sanctuary",
+      "url": "/deconditioning"
+    },
+    "footer": {
+      "copy": "© 2026 Human Design Engine. All calculations verified."
+    }
+  },
+  "somaticPage": {
+    "title": "Somatic Experiment Station",
+    "subtitle": "Sovereign Container & Somatic Companion",
+    "description": "Step away from rigid mental concepts and learn to respond in real-time. A private, low-stimulus space designed to return you to your authority.",
+    "packages": [
+      {
+        "id": "solo",
+        "name": "Solo Sanctuary",
+        "price": 29,
+        "interval": "mo",
+        "priceCents": 2900,
+        "isSubscription": true,
+        "desc": "Access the private Telegram Coach Bot with daily deconditioning plans, somatic exercises, and progress tracking.",
+        "features": [
+          "Interactive Telegram Coach Bot",
+          "Daily deconditioning exercises",
+          "Somatic nervous system toning",
+          "Weekly progress check-ins"
+        ]
+      },
+      {
+        "id": "sovereign",
+        "name": "Premium Sovereign Container",
+        "price": 1500,
+        "interval": "one-time",
+        "priceCents": 150000,
+        "isSubscription": false,
+        "desc": "Complete 6-week 1-on-1 private nervous system container. Includes virtual coaching sessions and direct Telegram chat with Becca Gulden.",
+        "features": [
+          "6x Private 1-on-1 Coaching Sessions",
+          "Dedicated Telegram Bot instance",
+          "Continuous Telegram messaging support",
+          "Custom daily somatic workbook"
+        ]
+      }
+    ]
+  },
+  "shePlantedATreePage": {
+    "title": "She Planted A Tree",
+    "subtitle": "Certified Somatic Human Design Coaching with Becca Gulden",
+    "description": "Custom readings, cycle alignment, and deep integrations designed to help you live your design.",
+    "readings": [
+      {
+        "id": "reading",
+        "icon": "🌱",
+        "name": "Human Design Foundation Reading",
+        "price": 150,
+        "priceCents": 15000,
+        "isSubscription": false,
+        "desc": "A comprehensive 75-minute dive into your type, strategy, authority, profile, and defined energy centers.",
+        "features": [
+          "75-minute live Zoom session",
+          "Complete custom PDF chart report",
+          "Audio recording & integration notes"
+        ]
+      },
+      {
+        "id": "coaching",
+        "icon": "🌙",
+        "name": "Monthly Cycle Alignment Coaching",
+        "price": 450,
+        "priceCents": 45000,
+        "isSubscription": false,
+        "desc": "A 4-week container designed to align your daily activities and work with your somatic design and transits.",
+        "features": [
+          "2x 60-minute coaching sessions",
+          "Weekly transit activation reports",
+          "Nervous system tone guidelines"
+        ]
+      },
+      {
+        "id": "immersion",
+        "icon": "🔮",
+        "name": "Somatic Immersion (3-Month Container)",
+        "price": 1200,
+        "priceCents": 120000,
+        "isSubscription": false,
+        "desc": "A high-proximity, deep integration container for entrepreneurs and leaders looking to live their design fully.",
+        "features": [
+          "6x Private 1-on-1 integration sessions",
+          "Direct Telegram access to Becca",
+          "Custom somatic blueprints & homework"
+        ]
+      }
+    ]
+  }
+}
