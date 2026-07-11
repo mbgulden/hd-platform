@@ -307,7 +307,7 @@
 <section class="section" id="endpoints">
   <div class="container">
     <h2>Endpoints</h2>
-    <p class="section-sub">All endpoints accept JSON. Authenticated requests use your API key. No-auth endpoints are rate-limited to 3 requests per day per IP — perfect for testing.</p>
+    <p class="section-sub">All endpoints accept JSON. Authentication is required — pass your API key via the <code>X-API-Key</code> header.</p>
     <div class="endpoint-grid">
       <div class="endpoint-card">
         <span class="endpoint-method method-post">POST</span>
@@ -316,18 +316,8 @@
       </div>
       <div class="endpoint-card">
         <span class="endpoint-method method-post">POST</span>
-        <div class="endpoint-path">/v1/natal/noauth</div>
-        <div class="endpoint-desc">Same as /v1/natal but unauthenticated. 3 requests/day per IP for trial users.</div>
-      </div>
-      <div class="endpoint-card">
-        <span class="endpoint-method method-post">POST</span>
         <div class="endpoint-path">/v1/bodygraph</div>
         <div class="endpoint-desc">Generate a rendered SVG bodygraph visualization from birth data. Returns SVG markup ready to embed.</div>
-      </div>
-      <div class="endpoint-card">
-        <span class="endpoint-method method-post">POST</span>
-        <div class="endpoint-path">/v1/bodygraph/noauth</div>
-        <div class="endpoint-desc">Unauthenticated bodygraph generation. 3 requests/day per IP.</div>
       </div>
       <div class="endpoint-card">
         <span class="endpoint-method method-post">POST</span>
@@ -346,7 +336,7 @@
 <section class="section" id="auth">
   <div class="container">
     <h2>Authentication</h2>
-    <p class="section-sub">Two ways to authenticate: API key (production) or no-auth (trial). All `/v1/*` chart endpoints accept both modes.</p>
+    <p class="section-sub">All <code>/v1/*</code> chart endpoints require an API key. Register a key below to get started.</p>
 
     <h3 style="margin-top: 32px; font-size: 20px;">API Key (Production)</h3>
     <div class="code-block"><span class="com"># Register a key via dashboard</span>
@@ -360,11 +350,8 @@
   -H <span class="str">"Content-Type: application/json"</span> \
   -d <span class="str">'{"name":"Jane","year":1990,"month":6,"day":15,"hour":12,"minute":30,"city":"New York"}'</span></div>
 
-    <h3 style="margin-top: 32px; font-size: 20px;">No-Auth (Trial)</h3>
-    <div class="code-block"><span class="com"># No API key needed, but rate-limited to 3 requests/day per IP</span>
-<span class="fn">curl</span> -X POST https://api.humandesignengine.com/v1/natal/noauth \
-  -H <span class="str">"Content-Type: application/json"</span> \
-  -d <span class="str">'{"name":"Jane","year":1990,"month":6,"day":15,"hour":12,"minute":30,"city":"New York"}'</span></div>
+    <h3 style="margin-top: 32px; font-size: 20px;">Try the API (Live Demo)</h3>
+    <p style="font-size:14px; color: var(--text-muted); margin: 8px 0 16px;">Enter your API key below — the form will POST to <code>/v1/natal</code> and render the response inline.</p>
 
     <h3 style="margin-top: 32px; font-size: 20px;">Response Format</h3>
     <div class="code-block">{
@@ -435,9 +422,12 @@
 <section class="try-section" id="try">
   <div class="container">
     <h2 style="text-align:center; font-size:36px; font-weight:700; margin-bottom:16px;">Try It Live</h2>
-    <p class="section-sub">Enter birth details and get a real natal chart response from the production API. No signup required for trial calls.</p>
+    <p class="section-sub">Enter your API key and birth details to get a real natal chart response from the production API.</p>
     <div class="try-grid">
       <form class="try-form" id="natal-form">
+        <label for="api-key">API Key</label>
+        <input type="text" id="api-key" name="api-key" placeholder="hd_live_4vC9kM2pR7xL1nQ8wY3j..." required>
+
         <label for="name">Name</label>
         <input type="text" id="name" name="name" value="Jane Doe" required>
 
@@ -478,10 +468,16 @@ document.getElementById('natal-form').addEventListener('submit', async (e) => {
   e.preventDefault();
   const btn = document.getElementById('submit-btn');
   const box = document.getElementById('response-box');
+  const apiKey = document.getElementById('api-key').value.trim();
+  if (!apiKey) {
+    box.className = 'response-box error';
+    box.textContent = 'API key required. Register a key at /v1/keys/register and paste it above.';
+    return;
+  }
   btn.disabled = true;
   btn.textContent = 'Calculating...';
   box.className = 'response-box loading';
-  box.textContent = 'POST https://api.humandesignengine.com/v1/natal/noauth\n\nSending request...';
+  box.textContent = 'POST https://api.humandesignengine.com/v1/natal\nX-API-Key: ' + apiKey.slice(0, 12) + '...\n\nSending request...';
 
   const payload = {
     name: document.getElementById('name').value,
@@ -494,9 +490,9 @@ document.getElementById('natal-form').addEventListener('submit', async (e) => {
   };
 
   try {
-    const res = await fetch('https://api.humandesignengine.com/v1/natal/noauth', {
+    const res = await fetch('https://api.humandesignengine.com/v1/natal', {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
+      headers: { 'Content-Type': 'application/json', 'X-API-Key': apiKey },
       body: JSON.stringify(payload)
     });
     const data = await res.json();
