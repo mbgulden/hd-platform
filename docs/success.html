@@ -1,127 +1,239 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="utf-8"/><meta content="width=device-width, initial-scale=1.0" name="viewport"/>
-<title>Payment Successful | Human Design Engine</title>
-<style>
-  :root{--navy-deep:#060d1a;--gold:#c9a84c;--gold-light:#e0c468;--text-primary:#e8e6e3;--text-secondary:#8899aa}
-  *{margin:0;padding:0;box-sizing:border-box}
-  body{font-family:'Inter',-apple-system,sans-serif;background:var(--navy-deep);color:var(--text-primary);min-height:100vh;display:flex;align-items:center;justify-content:center;text-align:center}
-  .card{background:rgba(15,29,54,0.7);border:1px solid rgba(201,168,76,0.2);border-radius:20px;padding:48px 40px;max-width:500px;margin:24px}
-  .check{font-size:3rem;margin-bottom:16px;color:#4ade80}
-  h1{font-size:1.6rem;margin-bottom:12px}h1 span{color:var(--gold-light)}
-  p{color:var(--text-secondary);font-size:1rem;margin-bottom:8px;line-height:1.6}
-  .btn{display:inline-block;margin-top:24px;padding:12px 28px;background:linear-gradient(135deg,#d4af37,var(--gold));color:var(--navy-deep);border-radius:10px;text-decoration:none;font-weight:600}
-</style>
-<!-- Google Analytics (GA4) -->
-<script async="" src="https://www.googletagmanager.com/gtag/js?id=G-Q6TPL08VM7"></script>
-<script>
-  window.dataLayer = window.dataLayer || [];
-  function gtag(){dataLayer.push(arguments);}
-  gtag('js', new Date());
-  gtag('config', 'G-Q6TPL08VM7');
-</script>
+  <meta charset="utf-8"/>
+  <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+  <title>Sanctuary Awaits — Human Design Engine</title>
+  
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600&family=Playfair+Display:ital,wght@0,400;0,600;1,400&display=swap" rel="stylesheet">
 
-
-
-<script type="application/ld+json">
-{
-  "@context": "https://schema.org",
-  "@type": "Organization",
-  "name": "Human Design Engine",
-  "url": "https://humandesignengine.com",
-  "logo": "https://humandesignengine.com/logo.png",
-  "description": "Human Design Engine — free and premium Human Design charts, reports, and learning resources.",
-  "sameAs": [
-    "https://www.youtube.com/@humandesignengine",
-    "https://www.facebook.com/humandesignengine",
-    "https://www.instagram.com/humandesignengine",
-    "https://x.com/humandesigneng",
-    "https://en.wikipedia.org/wiki/Human_Design"
-  ]
-}
-</script><script type="application/ld+json">
-{
-  "@context": "https://schema.org",
-  "@type": "BreadcrumbList",
-  "itemListElement": [
-    {
-      "@type": "ListItem",
-      "position": 1,
-      "name": "Home",
-      "item": "https://humandesignengine.com/"
-    },
-    {
-      "@type": "ListItem",
-      "position": 2,
-      "name": "Success",
-      "item": "https://humandesignengine.com/success/"
+  <style>
+    :root {
+      --sage-deep: #2F3631;
+      --sage-dark: #3F4741;
+      --sage-mid: #5F7261;
+      --sage-light: #8E9E90;
+      --sage-lighter: #D4DDD6;
+      --cream-light: #FDFBF7;
+      --cream-bg: #FAF7F0;
+      --text-primary: #2F3631;
+      --text-secondary: #5C625E;
+      --card-bg: rgba(253, 251, 247, 0.95);
+      --card-border: rgba(95, 114, 97, 0.15);
+      --radius-lg: 24px;
+      --shadow: 0 10px 40px rgba(0, 0, 0, 0.04);
+      --transition: 0.4s cubic-bezier(0.4, 0, 0.2, 1);
     }
-  ]
-}
-</script><script type="application/ld+json">
-{
-  "@context": "https://schema.org",
-  "@type": "Article",
-  "headline": "Payment Successful",
-  "description": "Learn about PaymentSuccessful! in Human Design.",
-  "image": "https://humandesignengine.com/logo.png",
-  "author": {
-    "@type": "Organization",
-    "name": "Human Design Engine"
-  },
-  "publisher": {
-    "@type": "Organization",
-    "name": "Human Design Engine",
-    "url": "https://humandesignengine.com"
-  },
-  "datePublished": "2026-06-01",
-  "dateModified": "2026-06-13",
-  "mainEntityOfPage": {
-    "@type": "WebPage",
-    "@id": "https://humandesignengine.com/success/"
-  }
-}
-</script><script type="application/ld+json">
-{
-  "@context": "https://schema.org",
-  "@type": "FAQPage",
-  "mainEntity": [
-    {
-      "@type": "Question",
-      "name": "I just purchased — what happens next?",
-      "acceptedAnswer": {
-        "@type": "Answer",
-        "text": "Your report has been generated and sent to your email. Check your inbox (and spam folder) for the PDF. If you don't see it within 5 minutes, email support and we'll resend it immediately. You can also access past purchases from your account dashboard."
-      }
-    },    {
-      "@type": "Question",
-      "name": "How do I read my report?",
-      "acceptedAnswer": {
-        "@type": "Answer",
-        "text": "Your report is organized into clear sections: Type & Strategy, Centers, Channels, Gates, Profile, and Incarnation Cross. Read it in order for the full picture, or jump to the sections that interest you most. Each section includes practical experiments to try."
-      }
-    },    {
-      "@type": "Question",
-      "name": "Can I get a refund?",
-      "acceptedAnswer": {
-        "@type": "Answer",
-        "text": "Yes — we offer a 30-day satisfaction guarantee. If the report doesn't meet your expectations, reply to your confirmation email or contact support for a full refund, no questions asked."
-      }
-    }
-  ]
-}
-</script>
 
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: 'Outfit', sans-serif;
+      background-color: var(--cream-bg);
+      color: var(--text-primary);
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 24px;
+    }
+
+    .container {
+      max-width: 520px;
+      width: 100%;
+      text-align: center;
+    }
+
+    .card {
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      border-radius: var(--radius-lg);
+      padding: 48px 40px;
+      box-shadow: var(--shadow);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    h1 {
+      font-family: 'Playfair Display', serif;
+      font-size: 2.2rem;
+      font-weight: 400;
+      color: var(--sage-deep);
+      margin-bottom: 12px;
+    }
+
+    p {
+      color: var(--text-secondary);
+      font-size: 1.05rem;
+      font-weight: 300;
+      line-height: 1.6;
+      margin-bottom: 32px;
+      max-width: 380px;
+    }
+
+    /* ---- BREATHING ANIMATION ---- */
+    .breathing-container {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      height: 220px;
+      margin-bottom: 32px;
+    }
+    .breathing-circle {
+      width: 110px;
+      height: 110px;
+      background: var(--sage-lighter);
+      border: 1px solid var(--card-border);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: all 2s ease-in-out;
+      box-shadow: 0 0 20px rgba(95, 114, 97, 0.05);
+    }
+    .breathing-circle.inhale {
+      transform: scale(1.5);
+      background: var(--sage-light);
+      box-shadow: 0 0 35px rgba(95, 114, 97, 0.15);
+    }
+    .breathing-circle.exhale {
+      transform: scale(1.0);
+      background: var(--sage-lighter);
+      box-shadow: 0 0 15px rgba(95, 114, 97, 0.02);
+    }
+    .breathing-label {
+      margin-top: 24px;
+      font-size: 1.15rem;
+      font-weight: 400;
+      color: var(--sage-deep);
+      letter-spacing: 0.05em;
+    }
+
+    /* ---- REDIRECT BUTTON ---- */
+    .enter-btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      background-color: var(--sage-deep);
+      color: var(--cream-light);
+      text-decoration: none;
+      padding: 16px 36px;
+      border-radius: 12px;
+      font-weight: 600;
+      font-size: 1.1rem;
+      width: 100%;
+      max-width: 320px;
+      border: none;
+      cursor: pointer;
+      opacity: 0.5;
+      pointer-events: none;
+      transition: var(--transition);
+      box-shadow: 0 4px 12px rgba(47, 54, 49, 0.15);
+    }
+    .enter-btn.ready {
+      opacity: 1;
+      pointer-events: auto;
+    }
+    .enter-btn.ready:hover {
+      background-color: var(--sage-mid);
+      transform: translateY(-2px);
+      box-shadow: 0 6px 20px rgba(95, 114, 97, 0.25);
+    }
+
+    .status-text {
+      font-size: 0.85rem;
+      color: var(--text-secondary);
+      margin-top: 16px;
+      font-style: italic;
+    }
+  </style>
 </head>
 <body>
-<div class="card">
-<div class="check">✅</div>
-<h1>Payment <span>Successful!</span></h1>
-<p>Your Human Design report is being generated.</p>
-<p>You'll receive an email with your PDF within 5 minutes.</p>
-<p style="font-size:0.85rem;color:#5a6a7a;margin-top:16px">Check your inbox (and spam folder if you don't see it).</p>
-<a class="btn" href="/">← Back to Home</a>
-</div>
+
+  <div class="container">
+    <div class="card">
+      <h1 id="headline">Payment Received</h1>
+      <p id="subheading">Before entering your design sanctuary, let's take a moment to settle your nervous system.</p>
+
+      <!-- Somatic Pacing breathing module -->
+      <div class="breathing-container">
+        <div class="breathing-circle exhale" id="groundingCircle"></div>
+        <div class="breathing-label" id="groundingLabel">Aligning energy...</div>
+      </div>
+
+      <!-- Actionable Launch Button -->
+      <a href="#" class="enter-btn" id="sanctuaryBtn">Enter Your Sanctuary</a>
+      <div class="status-text" id="statusMessage">Retrieving checkout invitation...</div>
+      
+      <!-- Onboarding Clarification -->
+      <p class="status-text" style="margin-top: 24px; max-width: 320px; line-height: 1.4; font-style: normal; font-weight: 300; font-size: 0.8rem;">
+        After payment, you will be redirected to Telegram. Click 'Start' to begin. No setups, API keys, or technical steps required. Your private guide will initialize instantly.
+      </p>
+    </div>
+  </div>
+
+  <script>
+    // Somatic Grounding Loop (Synchronized 2s states: Inhale, Hold, Exhale, Hold)
+    const circle = document.getElementById('groundingCircle');
+    const label = document.getElementById('groundingLabel');
+    const phases = ["Inhale...", "Hold...", "Exhale...", "Hold..."];
+    let phaseIdx = 0;
+
+    function runBreathing() {
+      phaseIdx = (phaseIdx + 1) % 4;
+      label.innerText = phases[phaseIdx];
+      
+      if (phaseIdx === 0) {
+        circle.className = "breathing-circle inhale";
+      } else if (phaseIdx === 2) {
+        circle.className = "breathing-circle exhale";
+      }
+    }
+    
+    // Trigger loop every 2 seconds
+    setInterval(runBreathing, 2000);
+    runBreathing();
+
+    // Query invitation token dynamically from HDE platform API
+    async function loadSanctuaryLink() {
+      const urlParams = new URLSearchParams(window.location.search);
+      const email = urlParams.get('email') || "jane.natal@example.com";
+      const statusText = document.getElementById('statusMessage');
+      const launchBtn = document.getElementById('sanctuaryBtn');
+
+      try {
+        // Query server checkout session
+        const resp = await fetch(`/api/checkout/session?email=${encodeURIComponent(email)}`);
+        if (resp.ok) {
+          const data = await resp.json();
+          if (data.success && data.deep_link) {
+            launchBtn.href = data.deep_link;
+            launchBtn.classList.add('ready');
+            statusText.innerText = "Sanctuary link ready. Open Telegram to begin.";
+          } else {
+            statusText.innerText = "No active invitation found. Contact support.";
+          }
+        } else {
+          statusText.innerText = "Error checking checkout profile.";
+        }
+      } catch (err) {
+        console.error("Fetch failed", err);
+        statusText.innerText = "Offline. Please verify connection.";
+        
+        // Mock fallback for local browser testing / validation
+        setTimeout(() => {
+          launchBtn.href = "https://t.me/HDE_CoachBot?start=hde_xyz123";
+          launchBtn.classList.add('ready');
+          statusText.innerText = "[Dev Mock] Link loaded successfully.";
+        }, 1500);
+      }
+    }
+
+    loadSanctuaryLink();
+  </script>
 </body>
 </html>

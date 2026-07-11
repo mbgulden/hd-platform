@@ -9,6 +9,7 @@
 | **HD Cloud API** | 🚧 Building | $19–$999/mo |
 | **Deep Dive Reports** | 📋 Planned | $19–$59 one-time |
 | **Managed MCP Hosting** | 📋 Planned | $29–$199/mo |
+| **HD Academy** | 🚧 MVP catalog + landing page | $97–$1,997 / $49/mo |
 
 ## Architecture
 
@@ -17,10 +18,22 @@ hd-platform/
 ├── api/           # FastAPI REST service (HD Cloud API)
 ├── reports/       # Report generation pipeline (Deep Dive Reports)
 ├── hosting/       # MCP provisioning service (Managed MCP Hosting)
+├── data/academy/  # File-backed HD Academy course catalog
 ├── shared/        # Common code: DB models, Stripe, MCP client
 ├── docker/        # Docker Compose for full stack deployment
 └── docs/          # Architecture, task board, API docs
 ```
+
+## HD Academy MVP
+
+- Landing page: `docs/academy/index.html`
+- Public catalog API: `GET /v1/academy`
+- Course detail API: `GET /v1/academy/courses/hd-fundamentals`
+- Source of truth: `data/academy/catalog.json`
+
+The launch offer is **HD Fundamentals: Read Any Chart in 30 Days** at **$97**.
+The next production step is adding Gumroad or Stripe checkout URLs to each course
+slug after payment links exist.
 
 ## Quick Start
 

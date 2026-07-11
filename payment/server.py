@@ -13,6 +13,8 @@ from urllib.parse import urlparse, parse_qs
 import urllib.request
 import urllib.error
 
+import printful
+
 STRIPE_KEY = os.environ.get("STRIPE_SECRET_KEY", "")
 STRIPE_WEBHOOK_SECRET = os.environ.get("STRIPE_WEBHOOK_SECRET", "")
 SMTP_HOST = os.environ.get("SMTP_HOST", "smtp.gmail.com")
@@ -186,6 +188,16 @@ class Handler(BaseHTTPRequestHandler):
         }
         if ref:
             meta["ref"] = ref
+        r_lower = (report or '').lower()
+        if r_lower == 'poster':
+            poster_size = str(data.get('poster_size') or '24x36')
+            meta.update({
+                "product_type": "print",
+                "poster_size": poster_size,
+                "poster_image_url": data.get('poster_image_url', ''),
+                "print_file_url": data.get('print_file_url', ''),
+                "printful_sku": printful.poster_sku(poster_size),
+            })
 
         r_lower = (report or '').lower()
         if r_lower == 'natal':
@@ -220,6 +232,13 @@ class Handler(BaseHTTPRequestHandler):
             price = 599700; price_id = UNCHAINED_RETREAT_PRICE_ID
             product_name = "Unchained Wholeness + Hawaii Retreat"
             product_desc = "Full program + all-inclusive 5-day Hawaii retreat"
+        elif r_lower == 'poster':
+            poster_size = str(data.get('poster_size') or '24x36')
+            poster_price_key = printful.poster_sku(poster_size).replace('poster_', '', 1)
+            poster_prices = {'12x18': 3900, '18x24': 4900, '24x36': 7900}
+            price = poster_prices.get(poster_price_key, 7900); price_id = None
+            product_name = f"Human Design Poster Print {poster_size}"
+            product_desc = f"Printed Human Design poster for {name}"
         else:
             price = int(data.get('price', 1900)); price_id = None
             product_name = f"Human Design {report.title()} Report"
@@ -229,10 +248,13 @@ class Handler(BaseHTTPRequestHandler):
         if price_id:
             line_items = [{"price": price_id, "quantity": 1}]
         else:
+            product_data: dict[str, object] = {"name": product_name, "description": product_desc}
+            if r_lower == 'poster' and data.get('poster_image_url'):
+                product_data["images"] = [str(data.get('poster_image_url'))]
             line_items = [{
                 "price_data": {
                     "currency": "usd",
-                    "product_data": {"name": product_name, "description": product_desc},
+                    "product_data": product_data,
                     "unit_amount": price
                 },
                 "quantity": 1
@@ -253,7 +275,7 @@ class Handler(BaseHTTPRequestHandler):
             })
 
         # Success URL
-        if r_lower == 'bundle':
+        if r_lower in ('bundle', 'poster'):
             success_url = "https://humandesignengine.com/success.html?session_id={CHECKOUT_SESSION_ID}"
         else:
             import urllib.parse
@@ -280,6 +302,9 @@ class Handler(BaseHTTPRequestHandler):
             "customer_email": email,
             "metadata": meta
         }
+        if r_lower == 'poster':
+            stripe_payload["shipping_address_collection"] = {"allowed_countries": ["US", "CA"]}
+            stripe_payload["phone_number_collection"] = {"enabled": True}
 
         session = self._stripe("POST", "/v1/checkout/sessions", stripe_payload)
         self._json({"url": session.get("url", "")})
@@ -297,7 +322,17 @@ class Handler(BaseHTTPRequestHandler):
         if event.get('type') == 'checkout.session.completed':
             session = event['data']['object']
             metadata = session.get('metadata', {})
-            self._generate_and_send(metadata)
+            if printful.is_print_order(metadata):
+                try:
+                    result = printful.create_order(session)
+                    order_id = (result.get('result') or result).get('id') if isinstance(result, dict) else None
+                    print(f"✅ Printful poster order submitted for {metadata.get('email', '')}: {order_id or 'draft created'}")
+                except Exception as e:
+                    print(f"❌ Failed to submit Printful poster order: {e}")
+                    self._json({"received": False, "error": "printful_order_failed"}, 500)
+                    return
+            else:
+                self._generate_and_send(metadata)
 
             # Track affiliate conversion
             ref = metadata.get('ref', '')

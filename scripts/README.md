@@ -71,8 +71,10 @@ python3 scripts/generate_rss_feed.py --validate
 ### Configuration
 
 - `PODCAST_BASE_URL`: Base URL for podcast files (default: `https://humandesignengine.com/podcast`)
+- `PODCAST_FEED_URL`: Public RSS URL (default: `https://humandesignengine.com/podcast.xml`)
 - `PODCAST_DIR`: Directory containing episode .md files (default: `hd-content/podcasts`)
 - `RSS_OUTPUT_PATH`: Where to write the RSS XML (default: `docs/podcast.xml`)
+- `PODCAST_INCLUDE_DRAFTS=1`: Include script-only entries without playable audio. By default, the published feed skips drafts so podcast directories only see playable MP3 enclosures.
 
 ### Distribution
 
