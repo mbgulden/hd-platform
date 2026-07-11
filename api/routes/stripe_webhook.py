@@ -323,9 +323,17 @@ async def create_stripe_session(
                 background_tasks
             )
         
+        import urllib.parse
         success_target = body.success_url or "/success?session_id={CHECKOUT_SESSION_ID}"
-        resolved_success_url = success_target.replace("{CHECKOUT_SESSION_ID}", session_id)
-        return {"url": resolved_success_url}
+        checkout_pay_url = (
+            f"/checkout/pay"
+            f"?session_id={session_id}"
+            f"&product={urllib.parse.quote(body.product_name)}"
+            f"&desc={urllib.parse.quote(body.product_description or '')}"
+            f"&price={body.price_cents}"
+            f"&success_url={urllib.parse.quote(success_target)}"
+        )
+        return {"url": checkout_pay_url}
     
     stripe.api_key = stripe_key
     
@@ -418,7 +426,7 @@ async def get_onboarding_link(
             .where(Invitation.expires_at > datetime.now(timezone.utc))
             .order_by(Invitation.created_at.desc())
         )
-        invitation = result_invite.scalar_one_or_none()
+        invitation = result_invite.scalars().first()
         
         # If user is a standard PDF report purchaser and has no invitation, return success details without bot token
         if not invitation:

@@ -16,9 +16,9 @@ const calLink = emdash.global.coachingCalLink || 'becca-gulden/coaching';
       <h1>Your Vessel is Registered</h1>
       <p class="subtitle">Observe the mind, validate the centers, and return response to the physical vessel.</p>
       
-      <!-- Somatic Breathing Circle -->
+      <!-- Somatic Breathing Mandala -->
       <div class="breathing-container">
-        <div class="breathing-circle" id="breathingCircle"></div>
+        <img src="/somatic_mandala.png" class="breathing-mandala" id="breathingMandala" alt="Somatic breathing mandala" />
         <p class="breathing-instruction" id="breathingText">Inhale...</p>
       </div>
 
@@ -95,14 +95,15 @@ const calLink = emdash.global.coachingCalLink || 'becca-gulden/coaching';
     flex-direction: column;
     align-items: center;
   }
-  .breathing-circle {
-    width: 120px;
-    height: 120px;
-    border-radius: 50%;
-    background: var(--sage-glow);
-    border: 2px solid var(--sage-light);
-    transition: transform 4s cubic-bezier(0.4, 0, 0.2, 1);
+  .breathing-mandala {
+    width: 140px;
+    height: 140px;
+    object-fit: contain;
+    mix-blend-mode: multiply;
+    transition: transform 4s cubic-bezier(0.4, 0, 0.2, 1), opacity 4s cubic-bezier(0.4, 0, 0.2, 1);
     transform: scale(0.8);
+    opacity: 0.6;
+    filter: drop-shadow(0 4px 12px var(--sage-glow));
   }
   .breathing-instruction {
     margin-top: 16px;
@@ -210,18 +211,20 @@ const calLink = emdash.global.coachingCalLink || 'becca-gulden/coaching';
 
 <script>
   // Somatic Breathing Pacing Loop (4s inhale, 4s exhale)
-  const circle = document.getElementById('breathingCircle');
+  const mandala = document.getElementById('breathingMandala');
   const text = document.getElementById('breathingText');
   let inhale = true;
 
-  if (circle && text) {
+  if (mandala && text) {
     setInterval(() => {
       if (inhale) {
-        circle.style.transform = 'scale(1.2)';
+        mandala.style.transform = 'scale(1.15) rotate(15deg)';
+        mandala.style.opacity = '1.0';
         text.textContent = 'Hold... Exhale...';
         inhale = false;
       } else {
-        circle.style.transform = 'scale(0.8)';
+        mandala.style.transform = 'scale(0.8) rotate(0deg)';
+        mandala.style.opacity = '0.6';
         text.textContent = 'Inhale...';
         inhale = true;
       }
