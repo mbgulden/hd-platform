@@ -1,0 +1,502 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8"/>
+    <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+    <title>Human Design Chart | Discover Your Unique Blueprint</title>
+    <meta content="Calculate your Human Design chart for free. Get your Type, Authority, and Strategy instantly." name="description"/>
+
+    <!-- Google Analytics (GA4) -->
+    <script async="" src="https://www.googletagmanager.com/gtag/js?id=G-Q6TPL08VM7"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      gtag('config', 'G-Q6TPL08VM7');
+    </script>
+
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+    <style>
+        :root {
+            --bg: #060d1a;
+            --card: #0a1628;
+            --card-border: rgba(201,168,76,0.15);
+            --gold: #c9a84c;
+            --gold-light: #e0c468;
+            --gold-glow: rgba(201,168,76,0.12);
+            --text: #e8e6e3;
+            --muted: #8899aa;
+            --accent: #38bdf8;
+            --red: #f87171;
+            --green: #4ade80;
+            --radius: 12px;
+            --transition: 0.25s cubic-bezier(0.4,0,0.2,1);
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+
+        body {
+            font-family: 'Inter', -apple-system, sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            line-height: 1.6;
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        body::before {
+            content: '';
+            position: fixed;
+            inset: 0;
+            background: radial-gradient(ellipse at 20% 10%, rgba(201,168,76,0.04) 0%, transparent 60%),
+                        radial-gradient(ellipse at 80% 90%, rgba(201,168,76,0.03) 0%, transparent 60%);
+            pointer-events: none;
+            z-index: -1;
+        }
+
+        .container {
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 32px;
+        }
+
+        h1 {
+            font-size: 2rem;
+            font-weight: 700;
+            margin-bottom: 8px;
+            background: linear-gradient(135deg, var(--gold-light), var(--gold));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .subtitle {
+            color: var(--muted);
+            font-size: 1rem;
+        }
+
+        .card {
+            background: var(--card);
+            border: 1px solid var(--card-border);
+            border-radius: var(--radius);
+            padding: 28px;
+            margin-bottom: 24px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.3);
+        }
+
+        .card h2 {
+            font-size: 1.1rem;
+            color: var(--gold-light);
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .form-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 16px;
+        }
+
+        .form-grid.full { grid-template-columns: 1fr; }
+
+        label {
+            display: block;
+            font-size: 0.8rem;
+            color: var(--muted);
+            margin-bottom: 6px;
+            font-weight: 500;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        input, select {
+            width: 100%;
+            padding: 12px;
+            background: rgba(6, 13, 26, 0.6);
+            border: 1px solid rgba(201,168,76,0.2);
+            border-radius: 8px;
+            color: var(--text);
+            font-size: 1rem;
+            transition: var(--transition);
+        }
+
+        input:focus, select:focus {
+            outline: none;
+            border-color: var(--gold);
+            background: rgba(6, 13, 26, 0.8);
+        }
+
+        .btn {
+            width: 100%;
+            padding: 16px;
+            background: linear-gradient(135deg, var(--gold-light), var(--gold));
+            color: #060d1a;
+            border: none;
+            border-radius: 8px;
+            font-size: 1.1rem;
+            font-weight: 700;
+            cursor: pointer;
+            transition: var(--transition);
+            margin-top: 24px;
+        }
+
+        .btn:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 6px 20px var(--gold-glow);
+        }
+
+        .btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .loading {
+            text-align: center;
+            display: none;
+            padding: 40px 0;
+        }
+
+        .spinner {
+            width: 40px;
+            height: 40px;
+            border: 3px solid rgba(201,168,76,0.1);
+            border-top: 3px solid var(--gold);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 16px;
+        }
+
+        @keyframes spin { to { transform: rotate(360deg); } }
+
+        .result-section {
+            display: none;
+            animation: fadeIn 0.5s ease-out;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .free-results {
+            margin-bottom: 24px;
+        }
+
+        .stat-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
+        }
+
+        .stat-box {
+            background: rgba(255,255,255,0.03);
+            border: 1px solid rgba(255,255,255,0.05);
+            padding: 16px;
+            border-radius: 8px;
+            text-align: center;
+        }
+
+        .stat-label {
+            font-size: 0.75rem;
+            color: var(--muted);
+            text-transform: uppercase;
+            margin-bottom: 4px;
+        }
+
+        .stat-value {
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: var(--gold-light);
+        }
+
+        .paywall-container {
+            position: relative;
+            margin-top: 24px;
+            border-radius: var(--radius);
+            overflow: hidden;
+        }
+
+        .paywall-content {
+            filter: blur(8px);
+            pointer-events: none;
+            user-select: none;
+            opacity: 0.6;
+        }
+
+        .paywall-overlay {
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(to bottom, transparent 0%, var(--card) 80%);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: flex-end;
+            padding: 40px 20px;
+            text-align: center;
+        }
+
+        .cta-button {
+            background: linear-gradient(135deg, #38bdf8, #0ea5e9);
+            color: white;
+            padding: 18px 32px;
+            border-radius: 50px;
+            text-decoration: none;
+            font-weight: 700;
+            font-size: 1.2rem;
+            box-shadow: 0 10px 25px rgba(14, 165, 233, 0.3);
+            transition: var(--transition);
+            margin-bottom: 16px;
+            border: none;
+            cursor: pointer;
+        }
+
+        .cta-button:hover {
+            transform: scale(1.05);
+            box-shadow: 0 12px 30px rgba(14, 165, 233, 0.4);
+        }
+
+        .error-message {
+            background: rgba(248, 113, 113, 0.1);
+            border: 1px solid var(--red);
+            color: var(--red);
+            padding: 12px;
+            border-radius: 8px;
+            margin-top: 16px;
+            display: none;
+            text-align: center;
+        }
+
+        .footer {
+            text-align: center;
+            padding: 40px 0;
+            color: var(--muted);
+            font-size: 0.85rem;
+        }
+
+        .footer a { color: var(--gold); text-decoration: none; }
+
+        @media (max-width: 480px) {
+            .form-grid { grid-template-columns: 1fr; }
+            .stat-grid { grid-template-columns: 1fr; }
+            h1 { font-size: 1.75rem; }
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <header>
+        <h1>Your Human Design</h1>
+        <p class="subtitle">Calculate your chart and unlock your unique blueprint</p>
+    </header>
+
+    <div class="card" id="inputCard">
+        <h2>📅 Birth Details</h2>
+        <div class="form-grid">
+            <div style="grid-column: span 2">
+                <label>Full Name</label>
+                <input id="name" placeholder="Enter your name" type="text"/>
+            </div>
+            <div style="grid-column: span 2">
+                <label>Email Address</label>
+                <input id="email" placeholder="you@example.com" type="email"/>
+            </div>
+            <div>
+                <label>Birth Month</label>
+                <select id="month"></select>
+            </div>
+            <div>
+                <label>Birth Day</label>
+                <select id="day"></select>
+            </div>
+            <div>
+                <label>Birth Year</label>
+                <input id="year" max="2030" min="1900" placeholder="1989" type="number" value="1989"/>
+            </div>
+            <div>
+                <label>Birth Time</label>
+                <input id="time" type="time" value="17:07"/>
+            </div>
+            <div style="grid-column: span 2">
+                <label>Birth Location</label>
+                <input id="location" placeholder="City, State/Country" type="text" value="Simi Valley, CA"/>
+            </div>
+        </div>
+        <button class="btn" id="calculateBtn">Calculate My Chart →</button>
+        <div class="error-message" id="error"></div>
+    </div>
+
+    <div class="loading" id="loading">
+        <div class="spinner"></div>
+        <p>Analyzing the stars...</p>
+    </div>
+
+    <div class="result-section" id="results">
+        <div class="card">
+            <div class="free-results">
+                <h2>✨ Your Core Design (Free)</h2>
+                <div class="stat-grid">
+                    <div class="stat-box">
+                        <div class="stat-label">Type</div>
+                        <div class="stat-value" id="res-type">-</div>
+                    </div>
+                    <div class="stat-box">
+                        <div class="stat-label">Authority</div>
+                        <div class="stat-value" id="res-authority">-</div>
+                    </div>
+                    <div class="stat-box" style="grid-column: span 2">
+                        <div class="stat-label">Strategy</div>
+                        <div class="stat-value" id="res-strategy">-</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="paywall-container">
+                <div class="paywall-content">
+                    <div class="stat-grid">
+                        <div class="stat-box">
+                            <div class="stat-label">Profile</div>
+                            <div class="stat-value">4 / 6</div>
+                        </div>
+                        <div class="stat-box">
+                            <div class="stat-label">Definition</div>
+                            <div class="stat-value">Single</div>
+                        </div>
+                        <div class="stat-box">
+                            <div class="stat-label">Incarnation Cross</div>
+                            <div class="stat-value">Right Angle Cross of Laws</div>
+                        </div>
+                    </div>
+                </div>
+                <div class="paywall-overlay">
+                    <button class="cta-button" id="ctaBtn">Unlock Your Full Report — $9.99</button>
+                    <p style="font-size: 0.9rem; color: var(--text);">Includes 40+ pages of deep insights, personalized for you.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <footer class="footer">
+        <p>Powered by <a href="/">Human Design Engine</a></p>
+        <p style="margin-top: 8px; opacity: 0.6;">© 2024 Human Design Engine. All rights reserved.</p>
+    </footer>
+</div>
+
+<script>
+    const months = ['January','February','March','April','May','June','July','August','September','October','November','December'];
+    const monthSel = document.getElementById('month');
+    months.forEach((m, i) => {
+        const o = document.createElement('option');
+        o.value = i + 1;
+        o.textContent = m;
+        monthSel.appendChild(o);
+    });
+    monthSel.value = 12;
+
+    const daySel = document.getElementById('day');
+    for(let i=1; i<=31; i++) {
+        const o = document.createElement('option');
+        o.value = i;
+        o.textContent = i;
+        daySel.appendChild(o);
+    }
+    daySel.value = 10;
+
+    let chartData = null;
+
+    const API = (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1')
+        ? 'http://localhost:8000'
+        : 'https://api.humandesignengine.com';
+
+    document.getElementById('calculateBtn').addEventListener('click', async () => {
+        const btn = document.getElementById('calculateBtn');
+        const loading = document.getElementById('loading');
+        const results = document.getElementById('results');
+        const error = document.getElementById('error');
+
+        const name = document.getElementById('name').value;
+        const month = monthSel.value;
+        const day = daySel.value;
+        const year = document.getElementById('year').value;
+        const time = document.getElementById('time').value;
+        const location = document.getElementById('location').value;
+
+        if (!year || !time || !location) {
+            error.textContent = 'Please provide your birth year, time, and location.';
+            error.style.display = 'block';
+            return;
+        }
+
+        error.style.display = 'none';
+        btn.disabled = true;
+        loading.style.display = 'block';
+        results.style.display = 'none';
+
+        const [h, m] = time.split(':').map(Number);
+
+        try {
+            const res = await fetch(`${API}/v1/natal/noauth`, {
+                method: 'POST',
+                headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify({ name, year: parseInt(year), month: parseInt(month), day: parseInt(day), hour: h, minute: m, location })
+            });
+
+            if (!res.ok) throw new Error('Calculation failed. Please check your connection.');
+
+            const json = await res.json();
+            chartData = json.data || json;
+
+            document.getElementById('res-type').textContent = chartData.hd_type || chartData.type || 'N/A';
+            document.getElementById('res-authority').textContent = chartData.authority || 'N/A';
+            document.getElementById('res-strategy').textContent = chartData.strategy || 'N/A';
+
+            loading.style.display = 'none';
+            results.style.display = 'block';
+            document.getElementById('inputCard').style.display = 'none';
+
+            // Scroll to results
+            results.scrollIntoView({ behavior: 'smooth' });
+
+        } catch (e) {
+            error.textContent = e.message;
+            error.style.display = 'block';
+            loading.style.display = 'none';
+            btn.disabled = false;
+        }
+    });
+
+    document.getElementById('ctaBtn').addEventListener('click', () => {
+        // GA4 Event
+        gtag('event', 'conversion', {
+            'event_category': 'checkout',
+            'event_label': 'Unlock Full Report Landing',
+            'value': 9.99,
+            'currency': 'USD'
+        });
+
+        // Redirect to buy-report.html with params
+        if (chartData) {
+            const name = encodeURIComponent(document.getElementById('name').value || 'Friend');
+            const email = encodeURIComponent(document.getElementById('email').value || '');
+            const type = encodeURIComponent(chartData.hd_type || chartData.type || '');
+            const profile = encodeURIComponent(chartData.profile || '');
+            const month = monthSel.value;
+            const day = daySel.value;
+            const year = document.getElementById('year').value;
+            const time = document.getElementById('time').value;
+            const loc = encodeURIComponent(document.getElementById('location').value);
+
+            window.location.href = `/docs/buy-report.html?name=${name}&email=${email}&type=${type}&profile=${profile}&month=${month}&day=${day}&year=${year}&time=${time}&loc=${loc}`;
+        }
+    });
+</script>
+
+</body>
+</html>
