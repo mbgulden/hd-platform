@@ -1,0 +1,401 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import Nav from '../../components/Nav.astro';
+import Footer from '../../components/Footer.astro';
+---
+
+<Layout title="Secure Checkout | Human Design Engine" description="Complete your secure checkout simulation.">
+  <Nav />
+  
+  <main class="pay-wrapper">
+    <div class="pay-container">
+      <!-- Left Column: Order Summary -->
+      <div class="summary-col">
+        <a class="back-link" href="#" id="backBtn">
+          <svg viewBox="0 0 20 20" fill="currentColor" width="16" height="16"><path fill-rule="evenodd" d="M9.707 16.707a1 1 0 01-1.414 0l-6-6a1 1 0 010-1.414l6-6a1 1 0 011.414 1.414L5.414 9H17a1 1 0 110 2H5.414l4.293 4.293a1 1 0 010 1.414z" clip-rule="evenodd"/></svg> Back to details
+        </a>
+        
+        <div class="brand-sub">HUMAN DESIGN ENGINE</div>
+        <div class="product-title" id="summaryProduct">Your Somatic Container</div>
+        <div class="product-desc" id="summaryDesc">6-Week Private Coaching Container</div>
+        
+        <div class="price-block">
+          <span class="currency">$</span>
+          <span class="price-val" id="summaryPrice">0.00</span>
+        </div>
+        
+        <div class="pricing-details">
+          <div class="price-row">
+            <span>Subtotal</span>
+            <span id="subtotalVal">$0.00</span>
+          </div>
+          <div class="price-row total-row">
+            <span>Total due today</span>
+            <span id="totalVal">$0.00</span>
+          </div>
+        </div>
+        
+        <div class="secure-badge">
+          <svg viewBox="0 0 20 20" fill="currentColor" width="16" height="16"><path fill-rule="evenodd" d="M5 9V7a5 5 0 0110 0v2a2 2 0 012 2v5a2 2 0 01-2 2H5a2 2 0 01-2-2v-5a2 2 0 012-2zm8-2v2H7V7a3 3 0 016 0z" clip-rule="evenodd"/></svg>
+          <span>Simulated secure connection via Stripe Mock Engine</span>
+        </div>
+      </div>
+      
+      <!-- Right Column: Card Details Form -->
+      <div class="form-col">
+        <h2>Complete payment</h2>
+        
+        <form id="paymentForm">
+          <div class="form-group">
+            <label for="cardName">Cardholder name</label>
+            <input type="text" id="cardName" placeholder="Jane Doe" required />
+          </div>
+          
+          <div class="form-group">
+            <label for="cardNumber">Card details</label>
+            <div class="card-input-wrap">
+              <input type="text" id="cardNumber" placeholder="4242 4242 4242 4242" required maxlength="19" />
+              <div class="card-sub-inputs">
+                <input type="text" id="cardExpiry" placeholder="MM / YY" required maxlength="7" />
+                <input type="text" id="cardCvc" placeholder="CVC" required maxlength="4" />
+              </div>
+            </div>
+          </div>
+          
+          <div class="form-group">
+            <label for="postalCode">Postal code</label>
+            <input type="text" id="postalCode" placeholder="90210" required />
+          </div>
+          
+          <button type="submit" class="pay-btn" id="payBtn">
+            <span id="btnText">Pay today</span>
+            <div class="spinner" id="btnSpinner" style="display: none;"></div>
+          </button>
+        </form>
+        
+        <p class="terms-text">By completing this simulated payment, you authorize the mock engine to provision invitation tokens and container services in staging.</p>
+      </div>
+    </div>
+  </main>
+  
+  <Footer />
+</Layout>
+
+<style>
+  .pay-wrapper {
+    background-color: #FAF7F0;
+    min-height: 85vh;
+    padding: 60px 0 100px;
+    font-family: 'Outfit', sans-serif;
+  }
+  .pay-container {
+    max-width: 960px;
+    margin: 0 auto;
+    background-color: var(--white);
+    border: 1px solid var(--card-border);
+    border-radius: var(--radius-lg);
+    box-shadow: var(--shadow);
+    display: grid;
+    grid-template-columns: 1.1fr 1fr;
+    overflow: hidden;
+  }
+  @media (max-width: 868px) {
+    .pay-container {
+      grid-template-columns: 1fr;
+    }
+  }
+  
+  /* Left Column Styling */
+  .summary-col {
+    background-color: #FDFBF7;
+    border-right: 1px solid var(--card-border);
+    padding: 48px;
+    display: flex;
+    flex-direction: column;
+  }
+  @media (max-width: 868px) {
+    .summary-col {
+      border-right: none;
+      border-bottom: 1px solid var(--card-border);
+      padding: 36px;
+    }
+  }
+  .back-link {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 0.85rem;
+    color: var(--text-secondary);
+    text-decoration: none;
+    margin-bottom: 40px;
+    font-weight: 500;
+  }
+  .back-link:hover {
+    color: var(--sage-deep);
+  }
+  .brand-sub {
+    font-size: 0.72rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    color: var(--sage-mid);
+    letter-spacing: 0.08em;
+    margin-bottom: 8px;
+  }
+  .product-title {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.8rem;
+    font-weight: 700;
+    color: var(--sage-deep);
+    margin-bottom: 6px;
+  }
+  .product-desc {
+    font-size: 0.9rem;
+    color: var(--text-secondary);
+    margin-bottom: 24px;
+  }
+  .price-block {
+    display: flex;
+    align-items: baseline;
+    color: var(--sage-deep);
+    margin-bottom: 36px;
+  }
+  .currency {
+    font-size: 1.6rem;
+    font-weight: 600;
+    margin-right: 2px;
+  }
+  .price-val {
+    font-size: 2.8rem;
+    font-weight: 700;
+    font-family: 'Playfair Display', serif;
+  }
+  .pricing-details {
+    border-top: 1px solid var(--card-border);
+    padding-top: 20px;
+    margin-bottom: auto;
+  }
+  .price-row {
+    display: flex;
+    justify-content: space-between;
+    font-size: 0.92rem;
+    color: var(--text-secondary);
+    margin-bottom: 12px;
+  }
+  .total-row {
+    font-weight: 600;
+    color: var(--sage-deep);
+    font-size: 1rem;
+    border-top: 1px dashed var(--card-border);
+    padding-top: 12px;
+    margin-top: 12px;
+  }
+  .secure-badge {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 0.76rem;
+    color: var(--text-muted);
+    background: var(--cream-bg);
+    border: 1px solid var(--card-border);
+    padding: 10px 14px;
+    border-radius: 8px;
+    margin-top: 40px;
+  }
+  .secure-badge svg {
+    color: var(--sage-mid);
+  }
+  
+  /* Right Column Styling */
+  .form-col {
+    padding: 48px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+  }
+  @media (max-width: 868px) {
+    .form-col {
+      padding: 36px;
+    }
+  }
+  .form-col h2 {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.5rem;
+    color: var(--sage-deep);
+    margin-bottom: 24px;
+  }
+  .form-group {
+    margin-bottom: 20px;
+  }
+  .form-group label {
+    display: block;
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: var(--sage-deep);
+    margin-bottom: 8px;
+  }
+  .form-group input {
+    width: 100%;
+    padding: 12px 14px;
+    border: 1px solid var(--taupe-light);
+    border-radius: 8px;
+    font-family: inherit;
+    font-size: 0.92rem;
+    background-color: var(--white);
+    color: var(--text-primary);
+  }
+  .form-group input:focus {
+    outline: none;
+    border-color: var(--sage-mid);
+    box-shadow: 0 0 0 3px var(--sage-glow);
+  }
+  
+  .card-input-wrap {
+    border: 1px solid var(--taupe-light);
+    border-radius: 8px;
+    overflow: hidden;
+  }
+  .card-input-wrap input {
+    border: none;
+    border-radius: 0;
+  }
+  .card-input-wrap input:first-child {
+    border-bottom: 1px solid var(--taupe-light);
+  }
+  .card-sub-inputs {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+  }
+  .card-sub-inputs input:first-child {
+    border-right: 1px solid var(--taupe-light);
+  }
+  
+  .pay-btn {
+    width: 100%;
+    padding: 14px;
+    background-color: var(--sage-deep);
+    color: var(--white);
+    border: none;
+    border-radius: 30px;
+    font-weight: 600;
+    font-size: 1rem;
+    cursor: pointer;
+    transition: var(--transition);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    margin-top: 28px;
+  }
+  .pay-btn:hover {
+    background-color: var(--sage-mid);
+  }
+  
+  .spinner {
+    width: 16px;
+    height: 16px;
+    border: 2px solid var(--sage-glow);
+    border-top-color: var(--white);
+    border-radius: 50%;
+    animation: spin 0.8s linear infinite;
+  }
+  
+  .terms-text {
+    font-size: 0.72rem;
+    color: var(--text-muted);
+    line-height: 1.4;
+    text-align: center;
+    margin-top: 20px;
+  }
+  
+  @keyframes spin {
+    to { transform: rotate(360deg); }
+  }
+</style>
+
+<script>
+  // Read query parameters
+  const urlParams = new URLSearchParams(window.location.search);
+  const sessionId = urlParams.get('session_id') || '';
+  const product = decodeURIComponent(urlParams.get('product') || 'Somatic Session');
+  const desc = decodeURIComponent(urlParams.get('desc') || 'Verified calculation & container registration');
+  const priceCents = parseInt(urlParams.get('price') || '0', 10);
+  const successUrl = decodeURIComponent(urlParams.get('success_url') || '/success?session_id={CHECKOUT_SESSION_ID}');
+  
+  const formattedPrice = (priceCents / 100).toFixed(2);
+  
+  // Prefill DOM
+  const summaryProduct = document.getElementById('summaryProduct');
+  const summaryDesc = document.getElementById('summaryDesc');
+  const summaryPrice = document.getElementById('summaryPrice');
+  const subtotalVal = document.getElementById('subtotalVal');
+  const totalVal = document.getElementById('totalVal');
+  const payBtn = document.getElementById('payBtn');
+  const btnText = document.getElementById('btnText');
+  const form = document.getElementById('paymentForm');
+  const backBtn = document.getElementById('backBtn');
+  
+  if (summaryProduct) summaryProduct.textContent = product;
+  if (summaryDesc) summaryDesc.textContent = desc;
+  if (summaryPrice) summaryPrice.textContent = formattedPrice;
+  if (subtotalVal) subtotalVal.textContent = `$${formattedPrice}`;
+  if (totalVal) totalVal.textContent = `$${formattedPrice}`;
+  if (btnText) btnText.textContent = `Pay $${formattedPrice}`;
+  
+  if (backBtn) {
+    backBtn.addEventListener('click', (e) => {
+      e.preventDefault();
+      window.history.back();
+    });
+  }
+
+  // Format inputs
+  const cardNumInput = document.getElementById('cardNumber') as HTMLInputElement;
+  if (cardNumInput) {
+    cardNumInput.addEventListener('input', (e) => {
+      let val = cardNumInput.value.replace(/\s+/g, '').replace(/[^0-9]/gi, '');
+      let matches = val.match(/\d{4,16}/g);
+      let match = matches && matches[0] || '';
+      let parts = [];
+      for (let i = 0, len = match.length; i < len; i += 4) {
+        parts.push(match.substring(i, i + 4));
+      }
+      if (parts.length > 0) {
+        cardNumInput.value = parts.join(' ');
+      } else {
+        cardNumInput.value = val;
+      }
+    });
+  }
+
+  const expiryInput = document.getElementById('cardExpiry') as HTMLInputElement;
+  if (expiryInput) {
+    expiryInput.addEventListener('input', (e) => {
+      let val = expiryInput.value.replace(/\s+/g, '').replace(/[^0-9]/gi, '');
+      if (val.length >= 2) {
+        expiryInput.value = val.substring(0, 2) + ' / ' + val.substring(2, 4);
+      } else {
+        expiryInput.value = val;
+      }
+    });
+  }
+
+  // Submit payment form
+  if (form && payBtn) {
+    form.addEventListener('submit', (e) => {
+      e.preventDefault();
+      
+      const spinner = document.getElementById('btnSpinner');
+      const textNode = document.getElementById('btnText');
+      
+      payBtn.disabled = true;
+      if (spinner) spinner.style.display = 'block';
+      if (textNode) textNode.textContent = 'Processing payment...';
+      
+      setTimeout(() => {
+        // Redirect to resolved success_url
+        const target = successUrl.replace('{CHECKOUT_SESSION_ID}', sessionId);
+        window.location.href = target;
+      }, 1500);
+    });
+  }
+</script>
