@@ -1,10 +1,11 @@
 {
   "global": {
     "logo": {
-      "text": "Human Design Engine",
+      "text": "Human Design",
       "desktopHeight": "35px",
       "mobileHeight": "28px"
     },
+    "coachingCalLink": "becca-gulden/coaching",
     "navLinks": [
       { "label": "Free Chart", "url": "/#calculator" },
       { "label": "Somatic Sanctuary", "url": "/deconditioning" },

@@ -2,13 +2,16 @@
 import Layout from '../layouts/Layout.astro';
 import Nav from '../components/Nav.astro';
 import Footer from '../components/Footer.astro';
+import emdash from '../content/emdash.json';
+
+const calLink = emdash.global.coachingCalLink || 'becca-gulden/coaching';
 ---
 
 <Layout title="Registration Successful | Human Design Engine">
   <Nav />
   
   <main class="container">
-    <div class="success-card">
+    <div class="success-card" data-cal-link={calLink}>
       <div class="icon-wrap">✨</div>
       <h1>Your Vessel is Registered</h1>
       <p class="subtitle">Observe the mind, validate the centers, and return response to the physical vessel.</p>
@@ -22,6 +25,15 @@ import Footer from '../components/Footer.astro';
       <div class="onboarding-action" id="onboardingAction">
         <p class="status-text">Activating your container... please do not close this window.</p>
         <div class="spinner"></div>
+      </div>
+
+      <!-- Cal.com Scheduling Widget (Conditional) -->
+      <div id="calContainer" style="display: none; margin-top: 36px; border-top: 1px solid var(--card-border); padding-top: 36px; text-align: left;">
+        <h2 style="font-family: 'Playfair Display', serif; font-size: 1.45rem; color: var(--sage-deep); margin-bottom: 12px; display: flex; align-items: center; gap: 8px;">📅 Book Your Coaching Integration</h2>
+        <p style="font-size: 0.92rem; color: var(--text-secondary); margin-bottom: 24px; line-height: 1.5;">Welcome, Sovereign client. Please schedule your first 1-on-1 nervous system coaching session with Becca Gulden using the calendar below:</p>
+        
+        <!-- Cal element-embed start -->
+        <div style="width:100%;height:650px;overflow:scroll;border: 1px solid var(--card-border);border-radius:12px;background-color: var(--white);" id="my-cal-inline"></div>
       </div>
 
       <!-- Fallback Email Form -->
@@ -53,7 +65,7 @@ import Footer from '../components/Footer.astro';
     border: 1px solid var(--card-border);
     border-radius: var(--radius-lg);
     padding: 60px 40px;
-    max-width: 600px;
+    max-width: 720px;
     width: 100%;
     text-align: center;
     box-shadow: var(--shadow);
@@ -222,8 +234,44 @@ import Footer from '../components/Footer.astro';
   const errorMsg = document.getElementById('onboardingError');
   const emailForm = document.getElementById('emailForm');
   
+  const card = document.querySelector('.success-card');
+  const calLink = card ? (card.getAttribute('data-cal-link') || 'becca-gulden/coaching') : 'becca-gulden/coaching';
+
   const urlParams = new URLSearchParams(window.location.search);
   const sessionId = urlParams.get('session_id');
+
+  const loadCalWidget = (calendarPath: string, clientName: string, clientEmail: string) => {
+    const w = window as any;
+    if (!w.Cal) {
+      const s = document.createElement('script');
+      s.type = 'text/javascript';
+      s.innerHTML = `
+        (function (C, A, L) { let p = function (a, ar) { a.q.push(ar); }; C.Cal = C.Cal || function () { let a = C.Cal; if (!a.q) { a.q = []; } p(a, arguments); }; })(window, window.Cal, "init");
+        Cal("init", {origin:"https://cal.com"});
+      `;
+      document.head.appendChild(s);
+    }
+    
+    const interval = setInterval(() => {
+      if (w.Cal) {
+        clearInterval(interval);
+        w.Cal("inline", {
+          elementOrSelector: "#my-cal-inline",
+          calLink: calendarPath,
+          layout: "month_view",
+          config: {
+            name: clientName,
+            email: clientEmail
+          }
+        });
+        w.Cal("ui", {
+          "styles": { "branding": { "brandColor": "#2F3631" } },
+          "hideEventTypeDetails": false,
+          "layout": "month_view"
+        });
+      }
+    }, 100);
+  };
 
   const fetchOnboardingLink = async (queryParam: string, isSessionId = true) => {
     try {
@@ -235,6 +283,16 @@ import Footer from '../components/Footer.astro';
       if (!response.ok) throw new Error('Session not found');
       
       const data = await response.json();
+      
+      // If client has premium tier, mount Cal.com widget inline
+      if (data.is_premium) {
+        const calContainer = document.getElementById('calContainer');
+        if (calContainer) {
+          calContainer.style.display = 'block';
+          loadCalWidget(calLink, data.name || 'Friend', data.email);
+        }
+      }
+
       if (data.deep_link) {
         if (onboardingContainer) {
           onboardingContainer.innerHTML = `
@@ -249,7 +307,16 @@ import Footer from '../components/Footer.astro';
         }
         if (fallback) fallback.style.display = 'none';
       } else {
-        throw new Error('Missing onboarding link.');
+        // Report purchase successful
+        if (onboardingContainer) {
+          onboardingContainer.innerHTML = `
+            <p class="status-text" style="color: var(--sage-mid); font-weight: 600;">✨ Custom PDF Blueprint Purchased!</p>
+            <p style="font-size: 0.92rem; color: var(--text-secondary); text-align: center; line-height: 1.6;">
+              Your customized Human Design report has been computed and sent to <strong>${data.email}</strong>. Please check your inbox (and spam folder) in a few minutes.
+            </p>
+          `;
+        }
+        if (fallback) fallback.style.display = 'none';
       }
     } catch (err) {
       if (onboardingContainer) {
@@ -267,7 +334,6 @@ import Footer from '../components/Footer.astro';
   if (sessionId) {
     fetchOnboardingLink(sessionId, true);
   } else {
-    // Show email form immediately if no session_id is provided
     if (onboardingContainer) onboardingContainer.style.display = 'none';
     if (fallback) fallback.style.display = 'block';
   }

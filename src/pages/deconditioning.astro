@@ -333,6 +333,12 @@ const { title, subtitle, description, packages } = emdash.somaticPage;
 
       const email = (document.getElementById('checkoutEmail') as HTMLInputElement).value.trim();
 
+      const priceIds = {
+        solo: 'price_1TjeSgKfvDG04zCAk7b36taY',
+        sovereign: 'price_1TjeSkKfvDG04zCA18ZU5S1a'
+      };
+      const priceId = priceIds[selectedPkg.id] || '';
+
       try {
         const response = await fetch('/api/checkout/create-session', {
           method: 'POST',
@@ -342,6 +348,7 @@ const { title, subtitle, description, packages } = emdash.somaticPage;
             product_name: selectedPkg.name,
             product_description: selectedPkg.desc,
             price_cents: selectedPkg.priceCents,
+            price_id: priceId,
             is_subscription: selectedPkg.isSub,
             metadata: {
               tier: selectedPkg.id,
