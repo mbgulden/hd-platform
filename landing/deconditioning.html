@@ -1,0 +1,490 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8"/>
+  <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+  <title>Human Design Engine — Your Sanctuary for De-Programming</title>
+  <meta content="Step into a low-stimulus space designed to guide you out of conditioning and into your somatic authority. Discover your Human Design." name="description"/>
+  
+  <!-- Modern Calming Typography -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600&family=Playfair+Display:ital,wght@0,400;0,600;1,400&display=swap" rel="stylesheet">
+  
+  <style>
+    :root {
+      /* Soft Low-Stimulus Color System */
+      --sage-deep: #2F3631;
+      --sage-dark: #3F4741;
+      --sage-mid: #5F7261;
+      --sage-light: #8E9E90;
+      --sage-lighter: #D4DDD6;
+      --cream-light: #FDFBF7;
+      --cream-bg: #FAF7F0;
+      --taupe-muted: #8C8275;
+      --taupe-light: #C7BFB5;
+      
+      --text-primary: #2F3631;
+      --text-secondary: #5C625E;
+      --text-muted: #808682;
+      --white: #ffffff;
+      
+      --card-bg: rgba(253, 251, 247, 0.9);
+      --card-border: rgba(95, 114, 97, 0.15);
+      --radius: 12px;
+      --radius-lg: 20px;
+      --shadow: 0 4px 24px rgba(0, 0, 0, 0.04);
+      --transition: 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      font-family: 'Outfit', -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
+      background-color: var(--cream-bg);
+      color: var(--text-primary);
+      line-height: 1.6;
+      overflow-x: hidden;
+      min-height: 100vh;
+    }
+
+    /* Accessibility Focus Rings */
+    a:focus-visible, button:focus-visible {
+      outline: 2px solid var(--sage-mid);
+      outline-offset: 4px;
+    }
+
+    /* ---- NAV SCHEMA 1: CLEAN INLINE NAV ---- */
+    nav {
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      background: rgba(250, 247, 240, 0.9);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      border-bottom: 1px solid var(--card-border);
+      padding: 0 24px;
+    }
+    .nav-inner {
+      max-width: 1200px;
+      margin: 0 auto;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      height: 70px;
+    }
+    .nav-logo {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      text-decoration: none;
+      /* Clear padding bounds */
+      padding: 6px 12px;
+    }
+    .nav-logo-text {
+      font-family: 'Playfair Display', serif;
+      font-size: 1.5rem;
+      font-weight: 600;
+      color: var(--sage-deep);
+      /* Brand Logo Sizing Rules */
+      height: 35px;
+      display: flex;
+      align-items: center;
+    }
+    .nav-links {
+      display: flex;
+      gap: 32px;
+      list-style: none;
+      align-items: center;
+    }
+    .nav-links a {
+      color: var(--text-secondary);
+      text-decoration: none;
+      font-weight: 500;
+      font-size: 0.95rem;
+      transition: var(--transition);
+    }
+    .nav-links a:hover {
+      color: var(--sage-mid);
+    }
+    .nav-cta {
+      background: var(--sage-deep);
+      color: var(--cream-light);
+      padding: 10px 20px;
+      border-radius: var(--radius);
+      text-decoration: none;
+      font-weight: 600;
+      font-size: 0.9rem;
+      transition: var(--transition);
+    }
+    .nav-cta:hover {
+      background: var(--sage-mid);
+      transform: translateY(-1px);
+    }
+
+    /* Mobile Hamburger Trigger */
+    .menu-trigger {
+      display: none;
+      background: none;
+      border: none;
+      cursor: pointer;
+      padding: 8px;
+      color: var(--sage-deep);
+    }
+    .menu-trigger svg {
+      width: 24px;
+      height: 24px;
+    }
+
+    /* Mobile Nav Drawer */
+    .mobile-drawer {
+      position: fixed;
+      inset: 0;
+      z-index: 99;
+      background: rgba(47, 54, 49, 0.4);
+      backdrop-filter: blur(8px);
+      opacity: 0;
+      visibility: hidden;
+      transition: opacity var(--transition), visibility var(--transition);
+    }
+    .mobile-drawer.is-open {
+      opacity: 1;
+      visibility: visible;
+    }
+    .mobile-drawer-content {
+      position: absolute;
+      top: 0; right: 0; bottom: 0;
+      width: 280px;
+      background: var(--cream-bg);
+      padding: 80px 24px 40px;
+      display: flex;
+      flex-direction: column;
+      gap: 24px;
+      transform: translateX(100%);
+      transition: transform var(--transition);
+      box-shadow: -4px 0 24px rgba(0, 0, 0, 0.05);
+    }
+    .mobile-drawer.is-open .mobile-drawer-content {
+      transform: translateX(0);
+    }
+    .mobile-drawer-links {
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+      list-style: none;
+    }
+    .mobile-drawer-links a {
+      color: var(--text-primary);
+      text-decoration: none;
+      font-size: 1.1rem;
+      font-weight: 500;
+    }
+
+    /* ---- HERO SECTION ---- */
+    .hero {
+      max-width: 900px;
+      margin: 80px auto;
+      text-align: center;
+      padding: 0 24px;
+    }
+    .hero-pre {
+      font-family: 'Outfit', sans-serif;
+      text-transform: uppercase;
+      letter-spacing: 0.15em;
+      color: var(--sage-mid);
+      font-weight: 600;
+      font-size: 0.85rem;
+      margin-bottom: 16px;
+    }
+    .hero h1 {
+      font-family: 'Playfair Display', serif;
+      font-size: 3.5rem;
+      line-height: 1.25;
+      font-weight: 400;
+      color: var(--sage-deep);
+      margin-bottom: 24px;
+    }
+    .hero h1 em {
+      font-style: italic;
+      font-weight: 400;
+    }
+    .hero p {
+      font-size: 1.15rem;
+      color: var(--text-secondary);
+      max-width: 600px;
+      margin: 0 auto 40px;
+      font-weight: 300;
+    }
+    
+    /* ---- CHECKOUT CARD ---- */
+    .checkout-container {
+      max-width: 1000px;
+      margin: 0 auto 120px;
+      padding: 0 24px;
+    }
+    .checkout-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+      gap: 32px;
+      width: 100%;
+      margin: 0 auto;
+    }
+    .card {
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      border-radius: var(--radius-lg);
+      padding: 40px;
+      box-shadow: var(--shadow);
+      text-align: center;
+    }
+    .card-title {
+      font-family: 'Playfair Display', serif;
+      font-size: 1.8rem;
+      margin-bottom: 12px;
+      color: var(--sage-deep);
+    }
+    .card-subtitle {
+      font-size: 0.95rem;
+      color: var(--text-secondary);
+      margin-bottom: 32px;
+    }
+    .price-block {
+      display: flex;
+      justify-content: center;
+      align-items: baseline;
+      gap: 4px;
+      margin-bottom: 32px;
+    }
+    .price-currency {
+      font-size: 1.2rem;
+      color: var(--text-secondary);
+      font-weight: 500;
+    }
+    .price-value {
+      font-size: 3rem;
+      font-weight: 600;
+      color: var(--sage-deep);
+      line-height: 1;
+    }
+    .price-period {
+      color: var(--text-secondary);
+      font-size: 0.95rem;
+    }
+
+    /* Stripe Express Checkout Button Styling */
+    .express-checkout-btn {
+      width: 100%;
+      background: var(--sage-deep);
+      color: var(--cream-light);
+      border: none;
+      padding: 16px;
+      border-radius: var(--radius);
+      font-size: 1rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: var(--transition);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 12px;
+      margin-bottom: 16px;
+    }
+    .express-checkout-btn:hover {
+      background: var(--sage-mid);
+      transform: translateY(-1px);
+    }
+    .express-checkout-btn svg {
+      width: 20px;
+      height: 20px;
+      fill: currentColor;
+    }
+    
+    .card-footer-note {
+      font-size: 0.8rem;
+      color: var(--text-muted);
+      margin-top: 16px;
+    }
+
+    /* RESPONSIVE LAYOUT */
+    @media (max-width: 768px) {
+      .nav-links, .nav-cta { display: none; }
+      .menu-trigger { display: block; }
+      .hero h1 { font-size: 2.5rem; }
+      .hero { margin: 60px auto 40px; }
+      .card { padding: 32px 24px; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Clean Inline Nav (Schema 1) -->
+  <nav>
+    <div class="nav-inner">
+      <a class="nav-logo" href="#">
+        <span class="nav-logo-text">Human Design Engine</span>
+      </a>
+      
+      <ul class="nav-links">
+        <li><a href="#about">Sanctuary</a></li>
+        <li><a href="#framework">Surgical De-programming</a></li>
+        <li><a href="#checkout">Pricing</a></li>
+      </ul>
+      
+      <a class="nav-cta" href="#checkout">Enter Sanctuary</a>
+
+      <button class="menu-trigger" aria-expanded="false" aria-controls="mobileMenu" aria-label="Toggle menu" id="hamburgerTrigger">
+        <svg fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+          <path d="M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25h16.5" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+      </button>
+    </div>
+  </nav>
+
+  <!-- Mobile Drawer Menu -->
+  <div class="mobile-drawer" id="mobileMenu" aria-hidden="true">
+    <div class="mobile-drawer-content">
+      <ul class="mobile-drawer-links">
+        <li><a href="#about" tabindex="-1">Sanctuary</a></li>
+        <li><a href="#framework" tabindex="-1">Surgical De-programming</a></li>
+        <li><a href="#checkout" tabindex="-1">Pricing</a></li>
+      </ul>
+      <a class="nav-cta" href="#checkout" style="display: block; text-align: center; margin-top: 24px;" tabindex="-1">Enter Sanctuary</a>
+    </div>
+  </div>
+
+  <!-- Hero Content -->
+  <header class="hero">
+    <div class="hero-pre">Dismantling the Not-Self</div>
+    <h1>Somatic <em>Experiment Station</em>.</h1>
+    <p>This is not an oracle. We do not validate your ego, comfort your conditioning, or tell you what you want to hear. This is a Somatic Experiment Station for direct, surgical de-programming. If you are seeking gentle affirmations or spiritual entertainment, do not enter. If you are willing to face the discomfort of dismantling your mental programming to find real somatic freedom, step inside.</p>
+  </header>
+
+  <!-- Checkout Container -->
+  <main class="checkout-container" id="checkout">
+    <div class="checkout-grid">
+      <!-- Card 1: Solo Sanctuary -->
+      <div class="card">
+        <h2 class="card-title">Solo Sanctuary</h2>
+        <p class="card-subtitle">24/7 private deconditioning guide. Absolute self-responsibility. No comforting hand-holding.</p>
+        
+        <div class="price-block">
+          <span class="price-currency">$</span>
+          <span class="price-value">29</span>
+          <span class="price-period">/ month</span>
+        </div>
+
+        <button class="express-checkout-btn" onclick="triggerCheckout('solo')" id="soloCheckoutBtn">
+          Solo Checkout
+        </button>
+
+        <p class="card-footer-note">Secure subscription billed via Stripe. Cancel in one click.</p>
+        <p class="card-footer-note" style="margin-top: 16px; line-height: 1.4; color: var(--text-secondary); font-size: 0.8rem; font-weight: 300;">
+          Your private bot sandbox initializes instantly on Telegram after payment. This tool won't do the work for you.
+        </p>
+      </div>
+
+      <!-- Card 2: Sovereign Container -->
+      <div class="card" style="border-color: var(--sage-mid); box-shadow: 0 8px 30px rgba(95,114,97,0.15);">
+        <div style="background: var(--sage-deep); color: var(--cream-light); font-size: 0.75rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.05em; padding: 4px 12px; border-radius: 12px; display: inline-block; margin-bottom: 16px;">6-Week Premium Container</div>
+        <h2 class="card-title">Sovereign Container</h2>
+        <p class="card-subtitle">24/7 deconditioning bot access + weekly 1-on-1 private calibration calls with Certified Coach Becca Gulden.</p>
+        
+        <div class="price-block">
+          <span class="price-currency">$</span>
+          <span class="price-value">350</span>
+          <span class="price-period">one-time</span>
+        </div>
+
+        <button class="express-checkout-btn" onclick="triggerCheckout('sovereign')" id="premiumCheckoutBtn" style="background: var(--sage-deep);">
+          Secure Premium Spot
+        </button>
+
+        <p class="card-footer-note">Strictly limited spots. Billed once. Fully disclaimed somatic experiment.</p>
+        <p class="card-footer-note" style="margin-top: 16px; line-height: 1.4; color: var(--text-secondary); font-size: 0.8rem; font-weight: 300;">
+          Provides instant bot setup and alerts Becca to schedule your weekly somatic calibration. Real change is self-responsibility.
+        </p>
+      </div>
+    </div>
+  </main>
+
+  <script>
+    // Mobile Drawer Navigation Logic (Adhering to accessibility focus traps)
+    const trigger = document.getElementById('hamburgerTrigger');
+    const menu = document.getElementById('mobileMenu');
+    const drawerLinks = menu.querySelectorAll('a, button');
+
+    function toggleMenu() {
+      const isOpen = menu.classList.contains('is-open');
+      if (isOpen) {
+        menu.classList.remove('is-open');
+        trigger.setAttribute('aria-expanded', 'false');
+        menu.setAttribute('aria-hidden', 'true');
+        // Disable tabs inside drawer
+        drawerLinks.forEach(link => link.setAttribute('tabindex', '-1'));
+        trigger.focus();
+      } else {
+        menu.classList.add('is-open');
+        trigger.setAttribute('aria-expanded', 'true');
+        menu.setAttribute('aria-hidden', 'false');
+        // Enable tabs inside drawer
+        drawerLinks.forEach(link => link.setAttribute('tabindex', '0'));
+        drawerLinks[0].focus();
+      }
+    }
+
+    trigger.addEventListener('click', toggleMenu);
+
+    // Close drawer on overlay click
+    menu.addEventListener('click', (e) => {
+      if (e.target === menu) toggleMenu();
+    });
+
+    // Close on Escape key
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape' && menu.classList.contains('is-open')) {
+        toggleMenu();
+      }
+    });
+
+    // Stripe checkout simulator with webhook POST bypass
+    async function triggerCheckout(tier) {
+      const email = prompt("Please enter your email to simulate checkout:", "client@example.com");
+      if (!email) return;
+      
+      const payload = {
+        id: "evt_test_" + Math.random().toString(36).substr(2, 9),
+        type: "checkout.session.completed",
+        data: {
+          object: {
+            customer_email: email,
+            customer: "cus_test_" + Math.random().toString(36).substr(2, 9),
+            metadata: {
+              tier: tier
+            }
+          }
+        }
+      };
+      
+      try {
+        const resp = await fetch("/api/webhooks/stripe", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json"
+          },
+          body: JSON.stringify(payload)
+        });
+        if (resp.ok) {
+          window.location.href = `success.html?email=${encodeURIComponent(email)}&tier=${tier}`;
+        } else {
+          alert("Stripe webhook simulation failed. Make sure the HDE server is running.");
+        }
+      } catch (err) {
+        console.error("Simulation error", err);
+        alert("Failed to connect to backend server.");
+      }
+    }
+  </script>
+</body>
+</html>

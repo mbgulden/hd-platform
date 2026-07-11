@@ -14,6 +14,7 @@ from fastapi.middleware.cors import CORSMiddleware
 
 from .routes import router as v1_router
 from .routes.stripe_webhook import router as stripe_webhook_router
+from .routes.public import router as public_router
 from shared.database import close_db, init_db
 from shared.redis_client import get_redis
 
@@ -99,11 +100,26 @@ app.add_middleware(
 
 app.include_router(v1_router)
 app.include_router(stripe_webhook_router)
+app.include_router(public_router, prefix="/api")
 
 
 # ---------------------------------------------------------------------------
 # Health check
 # ---------------------------------------------------------------------------
+
+
+
+from fastapi.responses import HTMLResponse
+
+@app.get("/docs", response_class=HTMLResponse, include_in_schema=False)
+@app.get("/api/docs", response_class=HTMLResponse, include_in_schema=False)
+async def custom_api_docs():
+    import os
+    path = os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", "docs-api.html")
+    if os.path.exists(path):
+        with open(path, "r", encoding="utf-8") as f:
+            return HTMLResponse(content=f.read(), status_code=200)
+    return HTMLResponse(content="Docs not found", status_code=404)
 
 
 @app.get("/ping", tags=["health"])

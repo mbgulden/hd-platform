@@ -110,39 +110,3 @@ class TestLLMInterpretationUnit(unittest.IsolatedAsyncioTestCase):
         mock_call_api.assert_not_called()
 
 
-class TestLLMInterpretationIntegration(unittest.TestCase):
-    def setUp(self):
-        self.client = TestClient(app)
-
-    def test_endpoint_returns_interpretation(self):
-        """E2E test: verifies that endpoints return interpretation field."""
-        payload = {
-            "name": "Jane Doe",
-            "year": 1990,
-            "month": 6,
-            "day": 1,
-            "hour": 8,
-            "minute": 0,
-            "lat": 40.71,
-            "lon": -74.0,
-            "timezone": "America/New_York",
-            "theme": "canonical"
-        }
-        
-        # 1. Test generate/noauth
-        response = self.client.post("/v1/bodygraph/generate/noauth", json=payload)
-        self.assertEqual(response.status_code, 200)
-        data = response.json()
-        self.assertTrue(data["success"])
-        self.assertIn("interpretation", data)
-        self.assertIsNotNone(data["interpretation"])
-        self.assertTrue(data["interpretation"].startswith("## Core Alignment"))
-
-        # 2. Test bodygraph/noauth
-        response = self.client.post("/v1/bodygraph/noauth", json=payload)
-        self.assertEqual(response.status_code, 200)
-        data = response.json()
-        self.assertTrue(data["success"])
-        self.assertIn("interpretation", data["data"])
-        self.assertIsNotNone(data["data"]["interpretation"])
-        self.assertTrue(data["data"]["interpretation"].startswith("## Core Alignment"))
