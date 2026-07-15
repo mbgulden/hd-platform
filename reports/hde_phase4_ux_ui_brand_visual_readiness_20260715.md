@@ -110,29 +110,26 @@ So this report labels the PDF result honestly:
 | PDF visual baselines accepted | 🟡 accepted for controlled staging only |
 | Semantic image QA/manual checklist added | ✅ manual/OCR checklist added |
 | Brand inconsistencies fixed or tracked | 🟡 tracked |
-| Email brand/signature consistency | ✅ pass |
+| Email brand/signature consistency | 🟡 partial — checkout email branded; PDF report email out-of-lane |
 | Broad launch readiness | 🔴 no — Phase 3/4 live paid Telegram `/start` proof still pending |
 
 
 ## Email brand proof
 
-The missing email design/signature gap was closed for the staging checkout/onboarding path and generated PDF report delivery path. No live customer email was sent; verification used fake SMTP to capture the generated MIME messages.
+The checkout/onboarding email handoff now has a branded plain-text and HTML design/signature in the canonical source repo. No live customer email was sent; verification used fake SMTP to capture the generated MIME message.
 
-Preview artifacts:
+Preview artifact:
 
-- `/tmp/hde-phase4-email-brand-proof/onboarding_email.html`
-- `/tmp/hde-phase4-email-brand-proof/onboarding_email.txt`
-- `/tmp/hde-phase4-email-brand-proof/pdf_report_email.html`
-- `/tmp/hde-phase4-email-brand-proof/pdf_report_email.txt`
+- `/tmp/hde-phase4-email-brand-proof-source/onboarding_email.html`
 
 Focused checks passed:
 
 - Checkout/onboarding email is `multipart/alternative`.
-- PDF report email is `multipart/mixed` with HTML/plain alternatives plus PDF attachment.
 - Plain-text signature includes `Human Design Engine`, `Your private Human Design sanctuary`, and `https://humandesignengine.com`.
 - HTML uses the shared navy/gold system: `#08111f` and `#d8b86a`.
 - Telegram onboarding email has one clear CTA and no exposed real `start` token.
-- PDF email avoids fake companion tone.
+
+PDF report delivery email remains a known gap: `reports/server.py` is outside Ned's canonical push lane, and the Git pre-push guard rejected that change. It needs the correct lane owner before this email surface can be marked green.
 
 ## Remaining risk
 
@@ -140,6 +137,7 @@ Focused checks passed:
 2. PDF is not yet a strong navy/gold premium HDE artifact.
 3. Paid Telegram `/start` path from Phase 3/4 still needs human tester proof before broad launch.
 4. SMTP delivery is verified with fake SMTP only; no live customer email was sent during this proof.
+5. Generated PDF report delivery email still needs correct-lane owner update in `reports/server.py`.
 
 ## Recommendation
 

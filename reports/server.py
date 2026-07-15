@@ -143,18 +143,18 @@ def build_natal_report(chart: dict) -> str:
     """Generate a comprehensive natal chart report as HTML."""
     name = chart.get("name", "Friend")
     date_str = datetime.now().strftime("%B %d, %Y")
-    
+
     html = f"""<!DOCTYPE html>
 <html><head><meta charset="utf-8"><title>{name}'s Natal Chart</title>{CSS}</head><body>
 {make_cover(name, 'natal', date_str)}
 <div class="page">
 """
-    
+
     # ── Section 1: Overview ──
     html += f"""
   <h2>🎯 Your Design at a Glance</h2>
   <p class="section-intro">Your Human Design chart reveals your unique energetic blueprint — how you're designed to make decisions, interact with others, and navigate life in alignment.</p>
-  
+
   <div class="stat-grid">
     <div class="stat-card">
       <div class="label">Type</div>
@@ -181,13 +181,13 @@ def build_natal_report(chart: dict) -> str:
       <div class="value">{(chart.get('incarnation_cross') or {}).get('name', 'Unknown')}</div>
     </div>
   </div>
-  
+
   <div class="highlight-box">
     <h3>✨ Your Signature Theme</h3>
     <p>When you're living in alignment with your design, you feel <strong>{chart.get('signature', 'fulfilled and satisfied')}</strong>. When you're not, you experience <strong>{chart.get('not_self_theme', 'frustration')}</strong> — this is your built-in feedback system.</p>
   </div>
 """
-    
+
     # ── Section 2: Type Deep Dive ──
     type_name = (chart.get('hd_type') or "").lower()
     type_descriptions = {
@@ -202,11 +202,11 @@ def build_natal_report(chart: dict) -> str:
   <h2>🔮 Understanding Your Type</h2>
   <p>{desc}</p>
 """
-    
+
     # ── Section 3: Defined Centers ──
     defined = chart.get('defined_centers', [])
     undefined = chart.get('undefined_centers', [])
-    
+
     center_descriptions = {
         "Head": "Mental pressure and inspiration — you have consistent access to ideas and questions that inspire others.",
         "Ajna": "Conceptualization and certainty — you process information in a fixed, reliable way.",
@@ -218,7 +218,7 @@ def build_natal_report(chart: dict) -> str:
         "Solar Plexus": "Emotions and clarity — you experience emotional waves that bring depth and eventual clarity.",
         "Root": "Pressure and drive — you have a consistent pulse of adrenaline to get things done.",
     }
-    
+
     html += """
   <h2>🔮 Your Defined Centers</h2>
   <p class="section-intro">Defined centers carry consistent, reliable energy. These are your natural gifts — the ways you consistently show up and impact others.</p>
@@ -228,7 +228,7 @@ def build_natal_report(chart: dict) -> str:
             html += f'  <p><strong>{c}</strong>: {center_descriptions.get(c, "")}</p>\n'
     else:
         html += "  <p><em>No centers defined — you're a Reflector, sampling and reflecting the world's energy.</em></p>\n"
-    
+
     html += """
   <h2>🌊 Your Open Centers</h2>
   <p class="section-intro">Undefined and open centers are where you're deeply perceptive — and where you take in and amplify the energy of others. This is your wisdom, not a weakness.</p>
@@ -247,7 +247,7 @@ def build_natal_report(chart: dict) -> str:
         }
         for c in undefined:
             html += f'  <p><strong>{c}</strong>: {open_wisdom.get(c, "")}</p>\n'
-    
+
     # ── Section 4: Channels ──
     channels = chart.get('defined_channels', [])
     html += f"""
@@ -265,16 +265,16 @@ def build_natal_report(chart: dict) -> str:
   </div>"""
     else:
         html += "  <p><em>You have no defined channels — all your gates hang individually, creating a unique openness.</em></p>\n"
-    
+
     # ── Section 5: Gates ──
     personality_gates = chart.get('personality_gates', [])
     design_gates = chart.get('design_gates', [])
     all_gates = sorted(set(
-        (g.get('gate') if isinstance(g, dict) else g) 
-        for g in (personality_gates + design_gates) 
+        (g.get('gate') if isinstance(g, dict) else g)
+        for g in (personality_gates + design_gates)
         if (isinstance(g, dict) and g.get('gate')) or isinstance(g, (int, float))
     ))
-    
+
     if all_gates:
         html += f"""
   <h2>🧬 Your Activated Gates ({len(all_gates)})</h2>
@@ -285,7 +285,7 @@ def build_natal_report(chart: dict) -> str:
             gname = GATE_NAMES.get(int(g), f"Gate {g}")
             html += f'    <span class="gate-badge">Gate {g}: {gname}</span>\n'
         html += "  </div>\n"
-    
+
     # ── Section 6: Variables ──
     variables = chart.get('variables', [])
     if isinstance(variables, list) and len(variables) >= 7:
@@ -299,7 +299,7 @@ def build_natal_report(chart: dict) -> str:
         for i, label in enumerate(var_labels[:4]):
             html += f"    <tr><td><strong>{label}</strong></td><td>{variables[i] if i < len(variables) else 'Unknown'}</td></tr>\n"
         html += "  </table>\n"
-        
+
         # Additional variables
         extra_vars = [
             ("Sense", chart.get('sense', '')),
@@ -315,7 +315,7 @@ def build_natal_report(chart: dict) -> str:
             if val:
                 html += f"    <tr><td><strong>{label}</strong></td><td>{val}</td></tr>\n"
         html += "  </table>\n"
-    
+
     # ── Section 7: Incarnation Cross ──
     cross = chart.get('incarnation_cross', {})
     if cross:
@@ -327,31 +327,31 @@ def build_natal_report(chart: dict) -> str:
     <p>This cross is carried by approximately {cross.get('population_percent', 'a small')}% of the population.</p>
   </div>
 """
-    
+
     # ── Section 8: Living Your Design ──
     html += f"""
   <h2>🚀 Living Your Design: Practical Experiments</h2>
   <p class="section-intro">Human Design isn't a belief system — it's an experiment. Here are practical ways to test your design in daily life.</p>
-  
+
   <div class="experiment-box">
     <h3>Experiment 1: Follow Your Strategy</h3>
     <p>For the next 3 days, practice <strong>{chart.get('strategy', 'your strategy')}</strong>. Notice what changes.</p>
   </div>
-  
+
   <div class="experiment-box">
     <h3>Experiment 2: Notice Your Signature</h3>
     <p>Pay attention to when you feel <strong>{chart.get('signature', 'aligned')}</strong> vs <strong>{chart.get('not_self_theme', 'off')}</strong>. These are your internal compass directions.</p>
   </div>
-  
+
   <div class="experiment-box">
     <h3>Experiment 3: Observe Your Open Centers</h3>
     <p>Notice when you're amplifying energy from others. Ask: is this mine, or am I picking it up?</p>
   </div>
-  
+
   <div class="cert-badge">
     🌿 Verified by OpenHumanDesignMCP — open-source calculations (AGPLv3) <span class="badge">Certified by Light Filled Human Design</span>
   </div>
-  
+
   <div class="footer">
     <p>Report generated by <a href="https://humandesignengine.com">Human Design Engine</a></p>
     <p>Calculations powered by OpenHumanDesignMCP v0.3.0 · <a href="https://github.com/mbgulden/OpenHumanDesignMCP">github.com/mbgulden/OpenHumanDesignMCP</a></p>
@@ -359,7 +359,7 @@ def build_natal_report(chart: dict) -> str:
   </div>
 </div>
 </body></html>"""
-    
+
     return html
 
 
@@ -368,7 +368,7 @@ def build_relationship_report(chart_a: dict, chart_b: dict, composite: dict) -> 
     name_a = chart_a.get("name", "Person A")
     name_b = chart_b.get("name", "Person B")
     date_str = datetime.now().strftime("%B %d, %Y")
-    
+
     html = f"""<!DOCTYPE html>
 <html><head><meta charset="utf-8"><title>{name_a} & {name_b} Relationship</title>{CSS}</head><body>
 {make_cover(f'{name_a} & {name_b}', 'relationship', date_str)}
@@ -376,7 +376,7 @@ def build_relationship_report(chart_a: dict, chart_b: dict, composite: dict) -> 
 
   <h2>💞 Your Connection at a Glance</h2>
   <p class="section-intro">Every relationship is a unique energetic dance. This report reveals how your designs interact — where you lift each other up, and where you need to give each other space.</p>
-  
+
   <div class="center-grid">
     <div class="center-box defined">
       <h3>{name_a}</h3>
@@ -398,7 +398,7 @@ def build_relationship_report(chart_a: dict, chart_b: dict, composite: dict) -> 
     </div>
   </div>
 """
-    
+
     # Composite data
     if composite:
         comp_data = composite.get('result', composite)
@@ -407,7 +407,7 @@ def build_relationship_report(chart_a: dict, chart_b: dict, composite: dict) -> 
         shared = comp_data.get('shared_gates', [])
         electromagnetics = comp_data.get('electromagnetic_channels', [])
         compromises = comp_data.get('compromise_gates', [])
-        
+
         html += f"""
   <h2>🔗 Your Composite Channels ({len(channels)})</h2>
   <p class="section-intro">When your charts combine, these channels emerge — representing the shared energy and purpose of your relationship.</p>
@@ -422,7 +422,7 @@ def build_relationship_report(chart_a: dict, chart_b: dict, composite: dict) -> 
   </div>"""
         else:
             html += "  <p><em>Your composite chart doesn't define any channels — your relationship is more about openness and learning than fixed dynamics.</em></p>\n"
-        
+
         gates_display = [g for g in gates if isinstance(g, (int, float)) or (isinstance(g, dict) and g.get('gate'))]
         if gates_display:
             html += f"""
@@ -434,7 +434,7 @@ def build_relationship_report(chart_a: dict, chart_b: dict, composite: dict) -> 
                 gname = GATE_NAMES.get(int(gval), f"Gate {gval}")
                 html += f'    <span class="gate-badge">Gate {gval}: {gname}</span>\n'
             html += "  </div>\n"
-        
+
         if electromagnetics:
             html += f"""
   <h2>⚡ Electromagnetic Channels ({len(electromagnetics)})</h2>
@@ -442,7 +442,7 @@ def build_relationship_report(chart_a: dict, chart_b: dict, composite: dict) -> 
 """
             for em in electromagnetics:
                 html += f'  <p>⚡ <strong>Channel {em}</strong></p>\n'
-        
+
         if compromises:
             html += f"""
   <h2>🤝 Compromise Gates ({len(compromises)})</h2>
@@ -450,24 +450,24 @@ def build_relationship_report(chart_a: dict, chart_b: dict, composite: dict) -> 
 """
             for cg in compromises:
                 html += f'  <p>🤝 Gate {cg}</p>\n'
-    
+
     html += """
   <div class="experiment-box">
     <h3>💡 Relationship Wisdom</h3>
     <p>In Human Design, differences aren't problems to fix — they're the mechanics of how you grow each other. Your partner's 'not-you' is their gift to you. Your differences are the curriculum.</p>
   </div>
-  
+
   <div class="cert-badge">
     🌿 Verified by OpenHumanDesignMCP · <span class="badge">Light Filled Human Design</span>
   </div>
-  
+
   <div class="footer">
     <p>Report generated by <a href="https://humandesignengine.com">Human Design Engine</a></p>
     <p>AGPLv3 — Free Software</p>
   </div>
 </div>
 </body></html>"""
-    
+
     return html
 
 
@@ -476,7 +476,7 @@ def compute_30day_solar_transits() -> list:
     Groups consecutive days with the same gate into date-range entries.
     Returns list of {start_date, end_date, gate, gate_name, center} dicts."""
     from datetime import datetime, timezone, timedelta
-    
+
     raw = []
     for i in range(30):
         dt = datetime.now(timezone.utc) + timedelta(days=i)
@@ -494,10 +494,10 @@ def compute_30day_solar_transits() -> list:
             })
         except Exception:
             continue
-    
+
     if not raw:
         return []
-    
+
     # Group consecutive days with the same gate
     grouped = []
     current = dict(raw[0], start_date=raw[0]["date_str"], end_date=raw[0]["date_str"])
@@ -527,7 +527,7 @@ def build_transit_report(natal: dict, overlay: dict, solar_forecast: list = None
     """Generate a comprehensive transit forecast report."""
     name = natal.get("name", "Friend")
     date_str = datetime.now().strftime("%B %d, %Y")
-    
+
     # ── Extract data ──────────────────────────────────────────────────
     overlay = overlay or {}
     conditioning = overlay.get("conditioning", {})
@@ -535,16 +535,16 @@ def build_transit_report(natal: dict, overlay: dict, solar_forecast: list = None
     conditioned_centers = conditioning.get("conditioned_centers", [])
     new_transit_gates = conditioning.get("new_transit_gates", [])
     interpretation_hints = overlay.get("interpretation_hints", [])
-    
+
     # Get full transit positions (with retrograde, longitude for the table)
     try:
         full_positions = calculate_transit_positions()
     except Exception:
         full_positions = {}
-    
+
     # Get simplified transit positions from overlay
     transit_positions = overlay.get("transit_positions", full_positions)
-    
+
     natal_type = natal.get("hd_type", "Unknown")
     natal_authority = natal.get("authority", "Unknown")
     natal_strategy = natal.get("strategy", "Unknown")
@@ -552,19 +552,19 @@ def build_transit_report(natal: dict, overlay: dict, solar_forecast: list = None
     natal_not_self = natal.get("not_self_theme", "frustration")
     natal_defined = set(natal.get("defined_centers", []))
     natal_undefined = set(natal.get("undefined_centers", []))
-    
+
     # All transit gates for the badge display
     all_transit_gates = sorted(set(
         p.get("gate") for p in transit_positions.values() if p.get("gate")
     ))
-    
+
     # Conditioned but normally undefined centers
     conditioned_open = [c for c in conditioned_centers if c not in natal_defined]
-    
+
     # Solar forecast data
     solar_forecast = solar_forecast or []
     current_solar_gate = solar_forecast[0] if solar_forecast else None
-    
+
     # ── HTML Generation ───────────────────────────────────────────────
     html = f"""<!DOCTYPE html>
 <html><head><meta charset="utf-8"><title>{name}'s Transit Forecast</title>{CSS}</head><body>
@@ -573,7 +573,7 @@ def build_transit_report(natal: dict, overlay: dict, solar_forecast: list = None
 
   <h2>🌟 Your Current Transit Snapshot</h2>
   <p class="section-intro">Planetary transits are like cosmic weather — they activate different parts of your chart each day. This report shows what's being lit up in your unique design right now, how it's conditioning your open centers, and what themes the coming month holds for you.</p>
-  
+
   <div class="stat-grid">
     <div class="stat-card">
       <div class="label">Your Type</div>
@@ -600,20 +600,20 @@ def build_transit_report(natal: dict, overlay: dict, solar_forecast: list = None
       <div class="value">{len(conditioned_centers)}</div>
     </div>
   </div>
-  
+
   <div class="highlight-box">
     <h3>🌊 What Are Transits?</h3>
     <p>As the planets move through the sky, they pass through different gates — activating specific themes and energies. For your <strong>{natal_type}</strong> design, transits temporarily condition your undefined centers. They bring experiences and flavors that aren't consistently yours — like visiting a new city. The key is awareness: <em>is this my energy, or am I sampling something passing through?</em> Your signature of <strong>{natal_signature}</strong> is your compass. When you feel <strong>{natal_not_self}</strong>, a transit may be pulling you off-center.</p>
   </div>
-  
+
   <h2>🪐 Current Planetary Positions</h2>
   <p class="section-intro">Each planet carries a unique frequency as it moves through the gates. Below are the exact positions at the moment this report was generated.</p>
   <table>
     <tr><th>Planet</th><th>Gate</th><th>Gate Name</th><th>Line</th><th>Center</th><th>Rx</th></tr>
 """
-    
+
     # Build planet position rows
-    planet_order = ["Sun", "Earth", "Moon", "North Node", "South Node", 
+    planet_order = ["Sun", "Earth", "Moon", "North Node", "South Node",
                     "Mercury", "Venus", "Mars", "Jupiter", "Saturn",
                     "Uranus", "Neptune", "Pluto", "Chiron", "Mean Lilith", "True Lilith"]
     for planet_name in planet_order:
@@ -629,7 +629,7 @@ def build_transit_report(natal: dict, overlay: dict, solar_forecast: list = None
       <td>{retro}</td>
     </tr>
 """
-    
+
     # Any remaining planets not in our order
     for planet_name, pos in full_positions.items():
         if planet_name not in planet_order and pos.get("gate"):
@@ -643,9 +643,9 @@ def build_transit_report(natal: dict, overlay: dict, solar_forecast: list = None
       <td>{retro}</td>
     </tr>
 """
-    
+
     html += """  </table>
-  
+
   <h2>🧬 All Activated Transit Gates</h2>
   <p class="section-intro">These are all the gates currently being activated by planetary transits. When a transit gate matches one in your natal chart, it amplifies your natural expression. When it's new to you, it introduces a temporary theme to explore.</p>
   <div class="gate-list">
@@ -654,17 +654,17 @@ def build_transit_report(natal: dict, overlay: dict, solar_forecast: list = None
         gname = GATE_NAMES.get(int(g), f"Gate {g}")
         html += f'    <span class="gate-badge">Gate {g}: {gname}</span>\n'
     html += """  </div>
-  
+
 """
-    
+
     # ── Section 2: Conditioning Analysis ──
     html += """  <h2>🔮 How Transits Are Conditioning Your Chart</h2>
   <p class="section-intro">Transits interact with your natal design in specific, measurable ways. Below is a personalized analysis of what's being conditioned in your chart right now.</p>
 """
-    
+
     # Conditioned channels
     if conditioned_channels:
-        html += f"""  
+        html += f"""
   <h3>🔗 Temporarily Completed Channels ({len(conditioned_channels)})</h3>
   <p class="section-intro">When a transit provides the missing gate to one of your hanging gates, a full channel temporarily lights up. This is <em>borrowed definition</em> — energy available to you right now that isn't consistently yours.</p>
 """
@@ -682,7 +682,7 @@ def build_transit_report(natal: dict, overlay: dict, solar_forecast: list = None
         html += """  <h3>🔗 Temporarily Completed Channels</h3>
   <p><em>No channels are being completed by transits at this time. Your hanging gates remain open — this is a time of pure self, without borrowed definition.</em></p>
 """
-    
+
     # Conditioned open centers
     if conditioned_open:
         open_wisdom = {
@@ -696,7 +696,7 @@ def build_transit_report(natal: dict, overlay: dict, solar_forecast: list = None
             "Solar Plexus": "Emotions may feel intense, dramatic, or unusually clear. You're sampling the emotional wave of the transit. Ask: is this feeling mine, or am I amplifying something from outside? Wait for clarity before making emotional decisions.",
             "Root": "You may feel a surge of urgency or pressure to act immediately. This is borrowed adrenaline. Practice doing things at your own pace — the pressure will pass with the transit.",
         }
-        html += f"""  
+        html += f"""
   <h3>🌊 Conditioned Open Centers ({len(conditioned_open)})</h3>
   <p class="section-intro">These are your normally undefined centers that are being temporarily conditioned by current transits. This is where you're most likely to feel something <em>different</em> today.</p>
 """
@@ -707,18 +707,18 @@ def build_transit_report(natal: dict, overlay: dict, solar_forecast: list = None
     <p>{wisdom}</p>
   </div>
 """
-    
+
     # Interpretation hints
     if interpretation_hints:
-        html += """  
+        html += """
   <h3>💡 Key Transit Messages for You</h3>
 """
         for hint in interpretation_hints:
             html += f'  <p>▸ {hint}</p>\n'
-    
+
     # New transit gates
     if new_transit_gates:
-        html += f"""  
+        html += f"""
   <h3>🆕 Gates New to Your Design ({len(new_transit_gates)})</h3>
   <p class="section-intro">These gates are being activated by transits but don't appear in your natal chart. They represent themes that are visiting you — temporary flavors to sample and learn from.</p>
   <div class="gate-list">
@@ -728,13 +728,13 @@ def build_transit_report(natal: dict, overlay: dict, solar_forecast: list = None
             html += f'    <span class="gate-badge">Gate {g}: {gname}</span>\n'
         html += """  </div>
 """
-    
+
     # ── Section 3: 30-Day Solar Transit Forecast ──
-    html += """  
+    html += """
   <h2>📅 Your 30-Day Solar Transit Forecast</h2>
   <p class="section-intro">The Sun moves approximately one degree per day, spending about 5–6 days in each gate. As it shifts, different themes light up in your chart. Below is your forecast for the coming month.</p>
 """
-    
+
     if solar_forecast:
         html += """  <table>
     <tr><th>Period</th><th>Gate</th><th>Theme</th><th>Center</th></tr>
@@ -752,10 +752,10 @@ def build_transit_report(natal: dict, overlay: dict, solar_forecast: list = None
 """
         html += """  </table>
 """
-        
+
         # Current solar gate theme
         if current_solar_gate:
-            html += f"""  
+            html += f"""
   <div class="highlight-box">
     <h3>☀️ Current Solar Theme: Gate {current_solar_gate['gate']} — {current_solar_gate['gate_name']}</h3>
     <p>Right now, the Sun is activating <strong>Gate {current_solar_gate['gate']} ({current_solar_gate['gate_name']})</strong> in the <strong>{current_solar_gate['center']}</strong> center. This sets the collective tone — the question or theme that humanity as a whole is working with. For you personally, this gate {'is part of your consistent definition — it may feel amplified and familiar' if current_solar_gate['gate'] in (natal.get('all_active_gates', []) or []) else 'is not in your natal chart — it brings a visiting theme that you get to explore and learn from temporarily'}.</p>
@@ -764,13 +764,13 @@ def build_transit_report(natal: dict, overlay: dict, solar_forecast: list = None
     else:
         html += """  <p><em>Solar transit forecast data is being calculated. Check back shortly for your personalized 30-day forecast.</em></p>
 """
-    
+
     # ── Section 4: Practical Guidance ──
-    html += f"""  
+    html += f"""
   <h2>🧭 Practical Guidance for Current Transits</h2>
   <p class="section-intro">Transits are not here to derail you — they're here to awaken you. Here's how to navigate current cosmic weather as your unique design type.</p>
 """
-    
+
     # Type-specific transit advice
     type_advice = {
         "manifestor": {
@@ -799,7 +799,7 @@ def build_transit_report(natal: dict, overlay: dict, solar_forecast: list = None
             "gift": "You're the most transit-sensitive type. Use this report to understand WHY you feel different day to day. Your wellbeing is a barometer of the collective.",
         },
     }
-    
+
     type_key = natal_type.lower().replace(" ", " ").strip()
     # Normalize lookup
     type_lookup = {
@@ -809,27 +809,27 @@ def build_transit_report(natal: dict, overlay: dict, solar_forecast: list = None
     }
     advice_key = type_lookup.get(type_key, "generator")
     advice = type_advice.get(advice_key, type_advice["generator"])
-    
-    html += f"""  
+
+    html += f"""
   <div class="experiment-box">
     <h3>🎯 Your Strategy Under Transits: {natal_strategy}</h3>
     <p>{advice['strategy']}</p>
   </div>
-  
+
   <div class="experiment-box">
     <h3>🧪 Practical Experiment for This Transit Period</h3>
     <p>{advice['practice']}</p>
   </div>
-  
+
   <div class="experiment-box">
     <h3>🎁 The Gift of Current Transits for Your Design</h3>
     <p>{advice['gift']}</p>
   </div>
 """
-    
+
     # Conditioned center-specific practices
     if conditioned_open:
-        html += """  
+        html += """
   <h3>🔬 Working With Your Currently Conditioned Open Centers</h3>
 """
         for c in conditioned_open:
@@ -847,46 +847,46 @@ def build_transit_report(natal: dict, overlay: dict, solar_forecast: list = None
             practice = center_practices.get(c, "Notice what feels different. Ask: is this mine to carry, or can I let it pass through?")
             html += f"""  <p><strong>{c}:</strong> {practice}</p>
 """
-    
+
     # ── Section 5: Monthly Themes ──
-    html += """  
+    html += """
   <h2>🌙 Monthly Transit Themes</h2>
   <p class="section-intro">Zooming out, here's the broader transit landscape for the coming month — the energetic weather report for your journey.</p>
 """
-    
+
     if solar_forecast and len(solar_forecast) >= 2:
         # Get unique centers being activated by upcoming solar transits
         upcoming_centers = sorted(set(e["center"] for e in solar_forecast if e.get("center")))
         upcoming_gates = [e["gate"] for e in solar_forecast]
-        
-        html += f"""  
+
+        html += f"""
   <div class="highlight-box">
     <h3>🗓️ Centers Being Highlighted This Month</h3>
     <p>Over the next 30 days, the Sun will move through these centers: <strong>{', '.join(upcoming_centers)}</strong>. Each center brings its own flavor of experience and conditioning. Pay special attention to days when the Sun activates a center that is undefined in your chart — those are the days you'll feel the transit most strongly.</p>
   </div>
-  
+
   <div class="highlight-box">
     <h3>🔢 Gate Count This Month</h3>
     <p>The Sun will activate <strong>{len(set(upcoming_gates))} distinct gates</strong> over {len(solar_forecast)} transit periods. Some gates may feel more resonant than others — those that match your natal gates will amplify what's already you. Those that don't are your curriculum for the month.</p>
   </div>
 """
-    
+
     # General monthly guidance
-    html += f"""  
+    html += f"""
   <div class="experiment-box">
     <h3>📓 Your Transit Journal Prompt for This Month</h3>
     <p>For the next 30 days, each morning ask yourself: <em>"What center am I feeling most today?"</em> Write down one word and one observation. At the end of the month, look back — you'll see the transit weather written in your own experience. This practice builds self-awareness that no report can give you.</p>
   </div>
-  
+
   <div class="experiment-box">
     <h3>🌿 A Note on Timing</h3>
     <p>Remember: transits are temporary. The energy you feel today will shift within days. Don't make permanent decisions based on temporary conditioning — especially if you're a <strong>Reflector</strong> (wait 28 days) or <strong>Projector</strong> (wait for the invitation). Use transits as a spotlight: they show you what's available to learn, not what you must become.</p>
   </div>
-  
+
   <div class="cert-badge">
     🌿 Verified by OpenHumanDesignMCP — open-source calculations (AGPLv3) <span class="badge">Certified by Light Filled Human Design</span>
   </div>
-  
+
   <div class="footer">
     <p>Report generated by <a href="https://humandesignengine.com">Human Design Engine</a></p>
     <p>Calculations powered by OpenHumanDesignMCP v0.3.0 · <a href="https://github.com/mbgulden/OpenHumanDesignMCP">github.com/mbgulden/OpenHumanDesignMCP</a></p>
@@ -895,7 +895,7 @@ def build_transit_report(natal: dict, overlay: dict, solar_forecast: list = None
   </div>
 </div>
 </body></html>"""
-    
+
     return html
 
 
@@ -905,7 +905,7 @@ def html_to_pdf(html_content: str, output_path: Path) -> Path:
     """Convert HTML to PDF using wkhtmltopdf."""
     html_path = output_path.with_suffix('.html')
     html_path.write_text(html_content)
-    
+
     result = subprocess.run(
         ["wkhtmltopdf", "--quiet", "--enable-local-file-access",
          "--page-size", "Letter", "--margin-top", "0", "--margin-bottom", "0",
@@ -914,11 +914,11 @@ def html_to_pdf(html_content: str, output_path: Path) -> Path:
          str(html_path), str(output_path)],
         capture_output=True, text=True, timeout=60
     )
-    
+
     if result.returncode != 0:
         log.error("wkhtmltopdf failed: %s", result.stderr[:500])
         raise RuntimeError(f"PDF generation failed: {result.stderr[:200]}")
-    
+
     return output_path
 
 
@@ -932,7 +932,7 @@ def compute_and_render(metadata: dict) -> dict:
     lat = float(metadata.get("lat", 0))
     lon = float(metadata.get("lon", 0))
     timezone = metadata.get("timezone", "UTC")
-    
+
     # Parse birth data
     y, m, d = map(int, birthdate.split("-"))
     h, mi = map(int, birthtime.split(":"))
@@ -945,7 +945,7 @@ def compute_and_render(metadata: dict) -> dict:
     else:
         utc_year, utc_month, utc_day, utc_hour = y, m, d, decimal_hour
     birth_dt = datetime(utc_year, utc_month, utc_day, int(utc_hour), int((utc_hour % 1) * 60))
-    
+
     # Compute
     chart = calculate_natal_chart(
         name=name,
@@ -953,7 +953,7 @@ def compute_and_render(metadata: dict) -> dict:
         lat=lat, lon=lon,
         timezone=timezone,
     )
-    
+
     # Generate HTML
     if report_type == "natal":
         html = build_natal_report(chart)
@@ -992,14 +992,14 @@ def compute_and_render(metadata: dict) -> dict:
             html = build_natal_report(chart)
     else:
         html = build_natal_report(chart)
-    
+
     # PDF
     safe_name = "".join(c if c.isalnum() else "_" for c in name)
     pdf_path = REPORTS_DIR / f"{safe_name}_{report_type}_{int(time.time())}.pdf"
     html_to_pdf(html, pdf_path)
-    
+
     log.info("Generated PDF: %s (%d bytes)", pdf_path, pdf_path.stat().st_size)
-    
+
     return {
         "pdf_path": str(pdf_path),
         "name": name,
@@ -1018,77 +1018,48 @@ def send_email(to_email: str, name: str, report_type: str, pdf_path: str):
     if not SMTP_USER:
         log.warning("SMTP not configured — skipping email to %s", to_email)
         return
-    
+
     from email.mime.text import MIMEText
     from email.mime.multipart import MIMEMultipart
     from email.mime.application import MIMEApplication
     import smtplib
-    
-    msg = MIMEMultipart('mixed')
+
+    msg = MIMEMultipart()
     msg['From'] = FROM_EMAIL
     msg['To'] = to_email
-    msg['Subject'] = f"Your Human Design {report_type.title()} Report is ready, {name}"
+    msg['Subject'] = f"Your Human Design {report_type.title()} Report is Ready, {name}!"
 
     body = f"""Hi {name},
 
 Your Human Design {report_type.title()} Report is attached as a PDF.
 
-This report was computed by Human Design Engine using verified chart calculations, then shaped into a plain-English guide you can return to at your own pace.
+This report was computed using verified, open-source calculations — the same engine trusted by developers and practitioners worldwide.
 
-If anything feels confusing, reply to this email and we’ll help.
+If you have any questions about your chart, we're here to help. Just reply to this email.
 
-—
-Human Design Engine
-Your private Human Design sanctuary
-https://humandesignengine.com"""
-    html = f"""<!doctype html>
-<html>
-  <body style=\"margin:0;background:#08111f;color:#f8f2df;font-family:Inter,Arial,sans-serif;\">
-    <table role=\"presentation\" width=\"100%\" cellpadding=\"0\" cellspacing=\"0\" style=\"background:#08111f;padding:32px 12px;\">
-      <tr><td align=\"center\">
-        <table role=\"presentation\" width=\"100%\" cellpadding=\"0\" cellspacing=\"0\" style=\"max-width:640px;background:#101c2d;border:1px solid #d8b86a;border-radius:22px;overflow:hidden;\">
-          <tr><td style=\"padding:28px 28px 10px;\">
-            <div style=\"letter-spacing:.18em;text-transform:uppercase;color:#d8b86a;font-size:12px;font-weight:700;\">Human Design Engine</div>
-            <h1 style=\"margin:14px 0 8px;font-size:28px;line-height:1.15;color:#fff7df;\">Your {report_type.title()} report is ready.</h1>
-            <p style=\"margin:0;color:#d8d2c0;font-size:16px;line-height:1.6;\">Hi {name}, your PDF is attached. Read it at your own pace; there is nothing to perform here.</p>
-          </td></tr>
-          <tr><td style=\"padding:18px 28px;color:#d8d2c0;font-size:15px;line-height:1.7;\">
-            <p>This report was computed by Human Design Engine using verified chart calculations, then shaped into a plain-English guide you can return to when you need it.</p>
-            <p>If anything feels confusing, reply to this email and we’ll help.</p>
-          </td></tr>
-          <tr><td style=\"background:#0b1626;border-top:1px solid rgba(216,184,106,.35);padding:20px 28px;color:#b8ad93;font-size:13px;line-height:1.6;\">
-            <strong style=\"color:#d8b86a;\">Human Design Engine</strong><br>
-            Your private Human Design sanctuary<br>
-            <a href=\"https://humandesignengine.com\" style=\"color:#d8b86a;\">humandesignengine.com</a>
-          </td></tr>
-        </table>
-      </td></tr>
-    </table>
-  </body>
-</html>"""
+With gratitude,
+The Human Design Engine Team
+humandesignengine.com"""
 
-    alternative = MIMEMultipart('alternative')
-    alternative.attach(MIMEText(body, 'plain', 'utf-8'))
-    alternative.attach(MIMEText(html, 'html', 'utf-8'))
-    msg.attach(alternative)
+    msg.attach(MIMEText(body, 'plain'))
 
     with open(pdf_path, 'rb') as f:
         attachment = MIMEApplication(f.read(), _subtype='pdf')
         attachment.add_header('Content-Disposition', 'attachment', filename=f'{name}_HD_{report_type}_Report.pdf')
         msg.attach(attachment)
-    
+
     with smtplib.SMTP(SMTP_HOST, SMTP_PORT) as server:
         server.starttls()
         server.login(SMTP_USER, SMTP_PASS)
         server.send_message(msg)
-    
+
     log.info("Email sent to %s", to_email)
 
 
 # ── HTTP Server ───────────────────────────────────────────────────────
 
 class Handler(BaseHTTPRequestHandler):
-    
+
     def _require_auth(self):
         key = self.headers.get('X-API-Key', '')
         if key != API_KEY:
@@ -1098,26 +1069,26 @@ class Handler(BaseHTTPRequestHandler):
             self.wfile.write(json.dumps({"error": "Unauthorized", "license": "AGPLv3"}).encode())
             return False
         return True
-    
+
     def _cors(self):
         self.send_header('Access-Control-Allow-Origin', '*')
         self.send_header('Access-Control-Allow-Methods', 'POST, GET, OPTIONS')
         self.send_header('Access-Control-Allow-Headers', 'Content-Type, X-API-Key')
-    
+
     def _json(self, data, status=200):
         self.send_response(status)
         self.send_header('Content-Type', 'application/json')
         self._cors()
         self.end_headers()
         self.wfile.write(json.dumps(data).encode())
-    
+
     def do_OPTIONS(self):
         self._json({})
-    
+
     def do_GET(self):
         path = urlparse(self.path).path
         params = dict(parse_qsl(urlparse(self.path).query))
-        
+
         if path == '/ping':
             self._json({
                 "status": "ok",
@@ -1132,7 +1103,7 @@ class Handler(BaseHTTPRequestHandler):
             # GET version — read from query params
             try:
                 import subprocess, tempfile
-                
+
                 # Convert local to UTC
                 year, month, day = int(params.get("year", 2000)), int(params.get("month", 1)), int(params.get("day", 1))
                 hour, minute = int(params.get("hour", 12)), int(params.get("minute", 0))
@@ -1153,20 +1124,20 @@ class Handler(BaseHTTPRequestHandler):
                     lat=float(params.get("lat", 0)), lon=float(params.get("lon", 0)),
                     timezone=params.get("timezone", "UTC"),
                 )
-                
+
                 # Map to Gonzih ChartData for the bodygraph renderer
                 pers_gates = set()
                 des_gates = set()
                 both_gates = set()
                 all_activations = {'design': {}, 'personality': {}}
-                
+
                 # Planet name mapping: chart keys → renderer keys
                 planet_map = {
                     'Sun': 'sun', 'Earth': 'earth', 'True Node': 'northnode', 'South Node': 'southnode',
                     'Moon': 'moon', 'Mercury': 'mercury', 'Venus': 'venus', 'Mars': 'mars',
                     'Jupiter': 'jupiter', 'Saturn': 'saturn', 'Uranus': 'uranus', 'Neptune': 'neptune', 'Pluto': 'pluto',
                 }
-                
+
                 for side_key, planets in [('design', chart.get('design_planets', {})),
                                            ('personality', chart.get('personality_planets', {}))]:
                     for planet_name, data in planets.items():
@@ -1183,12 +1154,12 @@ class Handler(BaseHTTPRequestHandler):
                                     'color': data.get('color'), 'tone': data.get('tone'),
                                     'base': data.get('base'),
                                 }
-                
+
                 for g in des_gates & pers_gates:
                     both_gates.add(g)
                     des_gates.discard(g)
                     pers_gates.discard(g)
-                
+
                 gonzih_data = {
                     'name': chart.get('name', 'Unknown'),
                     'type': chart.get('hd_type', ''),
@@ -1205,7 +1176,7 @@ class Handler(BaseHTTPRequestHandler):
                     'activations': all_activations,
                     'variables': chart.get('variables', ''),
                 }
-                
+
                 with tempfile.NamedTemporaryFile(mode='w', suffix='.json', delete=False) as tmp:
                     json.dump(gonzih_data, tmp)
                     tmp.flush()
@@ -1215,7 +1186,7 @@ class Handler(BaseHTTPRequestHandler):
                         cwd="/home/ubuntu/work/hd-bodygraph",
                     )
                     os.unlink(tmp.name)
-                
+
                 if result.returncode == 0:
                     svg_data = result.stdout.encode()
                     # Default to PDF (vector, crisp); ?format=svg for SVG
@@ -1436,20 +1407,20 @@ class Handler(BaseHTTPRequestHandler):
                 self._json({"error": "Invalid report name"}, 400)
         else:
             self._json({"error": "Not found"}, 404)
-    
+
     def do_POST(self):
         path = urlparse(self.path).path
-        
+
         if path == '/api/compute':
             if not self._require_auth():
                 return
-            
+
             length = int(self.headers.get('Content-Length', 0))
             body = json.loads(self.rfile.read(length)) if length else {}
-            
+
             try:
                 result = compute_and_render(body)
-                
+
                 # Save order
                 _save_order({
                     "name": body.get("name"),
@@ -1458,7 +1429,7 @@ class Handler(BaseHTTPRequestHandler):
                     "pdf_path": result["pdf_path"],
                     "timestamp": time.time(),
                 })
-                
+
                 # Send email if requested
                 email = body.get("email", "").strip()
                 if email and SMTP_USER:
@@ -1466,19 +1437,19 @@ class Handler(BaseHTTPRequestHandler):
                         send_email(email, body.get("name", "Friend"), body.get("report", "natal"), result["pdf_path"])
                     except Exception as e:
                         log.error("Email failed: %s", e)
-                
+
                 self._json({"success": True, **result})
             except Exception as e:
                 log.exception("Compute failed")
                 self._json({"success": False, "error": str(e)}, 500)
-        
+
         elif path == '/api/compute-chart':
             # Simplified endpoint — just compute, no PDF
             if not self._require_auth():
                 return
             length = int(self.headers.get('Content-Length', 0))
             body = json.loads(self.rfile.read(length)) if length else {}
-            
+
             try:
                 # Convert local to UTC
                 year, month, day = body.get("year", 2000), body.get("month", 1), body.get("day", 1)
@@ -1510,12 +1481,12 @@ class Handler(BaseHTTPRequestHandler):
             except Exception as e:
                 log.exception("Compute chart failed")
                 self._json({"success": False, "error": str(e)}, 500)
-        
+
         elif path == '/api/public/compute-chart':
             # Public endpoint — no auth required, for the embeddable widget
             length = int(self.headers.get('Content-Length', 0))
             body = json.loads(self.rfile.read(length)) if length else {}
-            
+
             try:
                 # Convert local to UTC
                 year, month, day = body.get("year", 2000), body.get("month", 1), body.get("day", 1)
@@ -1547,15 +1518,15 @@ class Handler(BaseHTTPRequestHandler):
             except Exception as e:
                 log.exception("Public compute chart failed")
                 self._json({"success": False, "error": str(e)}, 500)
-        
+
         elif path == '/api/public/bodygraph':
             # Public endpoint — compute chart and return SVG bodygraph
             length = int(self.headers.get('Content-Length', 0))
             body = json.loads(self.rfile.read(length)) if length else {}
-            
+
             try:
                 import subprocess, tempfile
-                
+
                 # Convert local to UTC
                 year, month, day = body.get("year", 2000), body.get("month", 1), body.get("day", 1)
                 hour, minute = body.get("hour", 12), body.get("minute", 0)
@@ -1575,7 +1546,7 @@ class Handler(BaseHTTPRequestHandler):
                     lat=body.get("lat", 0), lon=body.get("lon", 0),
                     timezone=body.get("timezone", "UTC"),
                 )
-                
+
                 # Map to Gonzih ChartData
                 pers_gates = set()
                 des_gates = set()
@@ -1585,11 +1556,11 @@ class Handler(BaseHTTPRequestHandler):
                 for p, d in chart.get("design_planets", {}).items():
                     if isinstance(d, dict) and d.get("gate"):
                         des_gates.add(d["gate"])
-                
+
                 both_gates = sorted(pers_gates & des_gates)
                 pers_only = sorted(pers_gates - des_gates)
                 des_only = sorted(des_gates - pers_gates)
-                
+
                 # Planet key mapping: MCP engine ⟶ render-pro.mjs
                 _PLANET_MAP = {
                     "Sun": "sun", "Moon": "moon", "Mercury": "mercury", "Venus": "venus",
@@ -1597,7 +1568,7 @@ class Handler(BaseHTTPRequestHandler):
                     "Uranus": "uranus", "Neptune": "neptune", "Pluto": "pluto",
                     "True Node": "northnode", "Earth": "earth", "South Node": "southnode",
                 }
-                
+
                 def _act_pro(planets_dict):
                     """Return full planet objects: {gate, line, color, tone, base}"""
                     result = {}
@@ -1612,11 +1583,11 @@ class Handler(BaseHTTPRequestHandler):
                                 "base": data.get("base", ""),
                             }
                     return result
-                
+
                 # Extract incarnation cross
                 cross = chart.get("incarnation_cross", {})
                 cross_name = cross.get("name", "") if isinstance(cross, dict) else str(cross)
-                
+
                 center_map = {"Heart": "Ego", "Heart/Ego": "Ego"}
                 render_data = {
                     "definedCenters": [center_map.get(c, c) for c in chart.get("defined_centers", [])],
@@ -1640,12 +1611,12 @@ class Handler(BaseHTTPRequestHandler):
                         "personality": _act_pro(chart.get("personality_planets", {})),
                     },
                 }
-                
+
                 # Call Node.js production renderer
                 with tempfile.NamedTemporaryFile(mode="w", suffix=".json", delete=False) as f:
                     json.dump(render_data, f)
                     tmp = f.name
-                
+
                 try:
                     result = subprocess.run(
                         ["node", "/home/ubuntu/work/hd-bodygraph/render-pro.mjs", tmp],
@@ -1657,7 +1628,7 @@ class Handler(BaseHTTPRequestHandler):
                     svg = result.stdout
                 finally:
                     os.unlink(tmp)
-                
+
                 self.send_response(200)
                 self.send_header("Content-Type", "image/svg+xml")
                 self.send_header("Access-Control-Allow-Origin", "*")
@@ -1665,21 +1636,21 @@ class Handler(BaseHTTPRequestHandler):
                 self.end_headers()
                 self.wfile.write(svg.encode())
                 return
-                
+
             except Exception as e:
                 log.exception("Bodygraph generation failed")
                 self._json({"success": False, "error": str(e)}, 500)
-        
+
         elif path == '/api/public/capture-lead':
             # Public endpoint — capture lead email + birth data from free chart widget
             length = int(self.headers.get('Content-Length', 0))
             body = json.loads(self.rfile.read(length)) if length else {}
-            
+
             email = body.get('email', '').strip()
             if not email:
                 self._json({"success": False, "error": "Email required"}, 400)
                 return
-            
+
             lead = {
                 "email": email,
                 "name": body.get("name", ""),
@@ -1691,7 +1662,7 @@ class Handler(BaseHTTPRequestHandler):
                 "timestamp": datetime.now().isoformat(),
                 "ip": self.client_address[0],
             }
-            
+
             # Save to leads file
             leads_file = REPORTS_DIR / "leads.json"
             leads = []
@@ -1702,13 +1673,13 @@ class Handler(BaseHTTPRequestHandler):
                     pass
             leads.append(lead)
             leads_file.write_text(json.dumps(leads, indent=2))
-            
+
             log.info("Lead captured: %s from %s", email, lead["source"])
             self._json({"success": True, "message": "Lead captured"})
-        
+
         else:
             self._json({"error": "Not found"}, 404)
-    
+
     def log_message(self, format, *args):
         log.info("%s %s", self.address_string(), args[0])
 

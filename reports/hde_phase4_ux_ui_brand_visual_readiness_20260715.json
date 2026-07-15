@@ -57,15 +57,14 @@
       "semantic_image_qa": "unavailable; vision tooling returned Cloudflare challenge HTML, so this is manual/OCR/mechanical proof, not final semantic design approval"
     },
     "email_branding": {
-      "status": "pass",
-      "scope": "staging checkout/onboarding email and PDF report delivery email templates",
-      "proof": "/tmp/hde-phase4-email-brand-proof",
-      "checks": "13 focused checks passed with fake SMTP; no live email sent",
+      "status": "partial",
+      "scope": "checkout/onboarding email template only; PDF report delivery email lives in reports/server.py and is outside Ned push lane for the canonical repo",
+      "proof": "/tmp/hde-phase4-email-brand-proof-source/onboarding_email.html",
+      "checks": "source checkout email fake-SMTP proof passed; PDF report email redesign needs correct-lane owner",
       "plain_text_signature": "Human Design Engine / Your private Human Design sanctuary / https://humandesignengine.com",
-      "html_brand_system": "navy #08111f + gold #d8b86a, rounded card, single clear CTA where applicable",
+      "html_brand_system": "navy #08111f + gold #d8b86a, rounded card, single clear Telegram CTA",
       "artifacts": [
-        "/tmp/hde-phase4-email-brand-proof/onboarding_email.html",
-        "/tmp/hde-phase4-email-brand-proof/pdf_report_email.html"
+        "/tmp/hde-phase4-email-brand-proof-source/onboarding_email.html"
       ]
     }
   },
@@ -84,12 +83,13 @@
     "brand_inconsistencies": "tracked",
     "final_design_approval": "not_yet",
     "broad_launch_ready": false,
-    "email_brand_consistency": "pass"
+    "email_brand_consistency": "partial_pdf_report_email_out_of_lane"
   },
   "remaining_risk": [
     "PDF semantic image QA tool was unavailable; baseline is mechanical/OCR/manual only.",
     "PDF is not yet a strong navy/gold premium HDE brand artifact.",
     "Paid Telegram /start path from Phase 3/4 still requires human tester proof before broad launch.",
-    "SMTP delivery is verified with fake SMTP only; no live customer email was sent during this proof."
+    "SMTP delivery is verified with fake SMTP only; no live customer email was sent during this proof.",
+    "Generated PDF report delivery email still needs correct-lane owner update in reports/server.py."
   ]
 }
