@@ -110,13 +110,36 @@ So this report labels the PDF result honestly:
 | PDF visual baselines accepted | 🟡 accepted for controlled staging only |
 | Semantic image QA/manual checklist added | ✅ manual/OCR checklist added |
 | Brand inconsistencies fixed or tracked | 🟡 tracked |
+| Email brand/signature consistency | ✅ pass |
 | Broad launch readiness | 🔴 no — Phase 3/4 live paid Telegram `/start` proof still pending |
+
+
+## Email brand proof
+
+The missing email design/signature gap was closed for the staging checkout/onboarding path and generated PDF report delivery path. No live customer email was sent; verification used fake SMTP to capture the generated MIME messages.
+
+Preview artifacts:
+
+- `/tmp/hde-phase4-email-brand-proof/onboarding_email.html`
+- `/tmp/hde-phase4-email-brand-proof/onboarding_email.txt`
+- `/tmp/hde-phase4-email-brand-proof/pdf_report_email.html`
+- `/tmp/hde-phase4-email-brand-proof/pdf_report_email.txt`
+
+Focused checks passed:
+
+- Checkout/onboarding email is `multipart/alternative`.
+- PDF report email is `multipart/mixed` with HTML/plain alternatives plus PDF attachment.
+- Plain-text signature includes `Human Design Engine`, `Your private Human Design sanctuary`, and `https://humandesignengine.com`.
+- HTML uses the shared navy/gold system: `#08111f` and `#d8b86a`.
+- Telegram onboarding email has one clear CTA and no exposed real `start` token.
+- PDF email avoids fake companion tone.
 
 ## Remaining risk
 
 1. PDF semantic image QA tool was unavailable; current baseline is mechanical/OCR/manual only.
 2. PDF is not yet a strong navy/gold premium HDE artifact.
 3. Paid Telegram `/start` path from Phase 3/4 still needs human tester proof before broad launch.
+4. SMTP delivery is verified with fake SMTP only; no live customer email was sent during this proof.
 
 ## Recommendation
 

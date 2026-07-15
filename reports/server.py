@@ -1024,25 +1024,54 @@ def send_email(to_email: str, name: str, report_type: str, pdf_path: str):
     from email.mime.application import MIMEApplication
     import smtplib
     
-    msg = MIMEMultipart()
+    msg = MIMEMultipart('mixed')
     msg['From'] = FROM_EMAIL
     msg['To'] = to_email
-    msg['Subject'] = f"Your Human Design {report_type.title()} Report is Ready, {name}!"
-    
+    msg['Subject'] = f"Your Human Design {report_type.title()} Report is ready, {name}"
+
     body = f"""Hi {name},
 
 Your Human Design {report_type.title()} Report is attached as a PDF.
 
-This report was computed using verified, open-source calculations — the same engine trusted by developers and practitioners worldwide.
+This report was computed by Human Design Engine using verified chart calculations, then shaped into a plain-English guide you can return to at your own pace.
 
-If you have any questions about your chart, we're here to help. Just reply to this email.
+If anything feels confusing, reply to this email and we’ll help.
 
-With gratitude,
-The Human Design Engine Team
-humandesignengine.com"""
-    
-    msg.attach(MIMEText(body, 'plain'))
-    
+—
+Human Design Engine
+Your private Human Design sanctuary
+https://humandesignengine.com"""
+    html = f"""<!doctype html>
+<html>
+  <body style=\"margin:0;background:#08111f;color:#f8f2df;font-family:Inter,Arial,sans-serif;\">
+    <table role=\"presentation\" width=\"100%\" cellpadding=\"0\" cellspacing=\"0\" style=\"background:#08111f;padding:32px 12px;\">
+      <tr><td align=\"center\">
+        <table role=\"presentation\" width=\"100%\" cellpadding=\"0\" cellspacing=\"0\" style=\"max-width:640px;background:#101c2d;border:1px solid #d8b86a;border-radius:22px;overflow:hidden;\">
+          <tr><td style=\"padding:28px 28px 10px;\">
+            <div style=\"letter-spacing:.18em;text-transform:uppercase;color:#d8b86a;font-size:12px;font-weight:700;\">Human Design Engine</div>
+            <h1 style=\"margin:14px 0 8px;font-size:28px;line-height:1.15;color:#fff7df;\">Your {report_type.title()} report is ready.</h1>
+            <p style=\"margin:0;color:#d8d2c0;font-size:16px;line-height:1.6;\">Hi {name}, your PDF is attached. Read it at your own pace; there is nothing to perform here.</p>
+          </td></tr>
+          <tr><td style=\"padding:18px 28px;color:#d8d2c0;font-size:15px;line-height:1.7;\">
+            <p>This report was computed by Human Design Engine using verified chart calculations, then shaped into a plain-English guide you can return to when you need it.</p>
+            <p>If anything feels confusing, reply to this email and we’ll help.</p>
+          </td></tr>
+          <tr><td style=\"background:#0b1626;border-top:1px solid rgba(216,184,106,.35);padding:20px 28px;color:#b8ad93;font-size:13px;line-height:1.6;\">
+            <strong style=\"color:#d8b86a;\">Human Design Engine</strong><br>
+            Your private Human Design sanctuary<br>
+            <a href=\"https://humandesignengine.com\" style=\"color:#d8b86a;\">humandesignengine.com</a>
+          </td></tr>
+        </table>
+      </td></tr>
+    </table>
+  </body>
+</html>"""
+
+    alternative = MIMEMultipart('alternative')
+    alternative.attach(MIMEText(body, 'plain', 'utf-8'))
+    alternative.attach(MIMEText(html, 'html', 'utf-8'))
+    msg.attach(alternative)
+
     with open(pdf_path, 'rb') as f:
         attachment = MIMEApplication(f.read(), _subtype='pdf')
         attachment.add_header('Content-Disposition', 'attachment', filename=f'{name}_HD_{report_type}_Report.pdf')

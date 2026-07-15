@@ -7,6 +7,7 @@ import os
 import secrets
 import smtplib
 import stripe
+from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
 from pydantic import BaseModel
 import time
@@ -147,27 +148,60 @@ def send_customer_onboarding_email(email: str, deep_link: str, is_premium: bool)
         return False
 
     subject = "Your next step: open your Human Design sanctuary"
-    premium_note = "\n\nAfter Telegram is open, you can come back to the success page to schedule your coaching integration."
+    premium_plain = "\nAfter Telegram opens, return to the success page to schedule your coaching integration." if is_premium else ""
+    premium_html = "<p class=\"note\">After Telegram opens, return to the success page to schedule your coaching integration.</p>" if is_premium else ""
     body = f"""You’re in.
 
 Nothing else to figure out right now.
 
-Your next step is simple:
-
-Open your private Telegram sanctuary:
+Your next step is simple: open your private Telegram sanctuary:
 {deep_link}
 
-This link does not expire. If you get interrupted, overwhelmed, distracted, or need to come back later, use this email and pick up right here.{premium_note if is_premium else ""}
+This link does not expire. If you get interrupted, overwhelmed, distracted, or need to come back later, use this email and pick up right here.{premium_plain}
 
 If anything feels confusing, reply to this email and we’ll help.
 
+—
 Human Design Engine
+Your private Human Design sanctuary
+https://humandesignengine.com
 """
+    html = f"""<!doctype html>
+<html>
+  <body style=\"margin:0;background:#08111f;color:#f8f2df;font-family:Inter,Arial,sans-serif;\">
+    <table role=\"presentation\" width=\"100%\" cellpadding=\"0\" cellspacing=\"0\" style=\"background:#08111f;padding:32px 12px;\">
+      <tr><td align=\"center\">
+        <table role=\"presentation\" width=\"100%\" cellpadding=\"0\" cellspacing=\"0\" style=\"max-width:640px;background:#101c2d;border:1px solid #d8b86a;border-radius:22px;overflow:hidden;\">
+          <tr><td style=\"padding:28px 28px 10px;\">
+            <div style=\"letter-spacing:.18em;text-transform:uppercase;color:#d8b86a;font-size:12px;font-weight:700;\">Human Design Engine</div>
+            <h1 style=\"margin:14px 0 8px;font-size:28px;line-height:1.15;color:#fff7df;\">You’re in.</h1>
+            <p style=\"margin:0;color:#d8d2c0;font-size:16px;line-height:1.6;\">Nothing else to figure out right now. Your next step is simple.</p>
+          </td></tr>
+          <tr><td style=\"padding:18px 28px;\">
+            <a href=\"{deep_link}\" style=\"display:inline-block;background:#d8b86a;color:#08111f;text-decoration:none;font-weight:800;border-radius:999px;padding:14px 22px;\">Open your private Telegram sanctuary</a>
+          </td></tr>
+          <tr><td style=\"padding:0 28px 22px;color:#d8d2c0;font-size:15px;line-height:1.7;\">
+            <p>This link does not expire. If you get interrupted, overwhelmed, distracted, or need to come back later, use this email and pick up right here.</p>
+            {premium_html}
+            <p>If anything feels confusing, reply to this email and we’ll help.</p>
+          </td></tr>
+          <tr><td style=\"background:#0b1626;border-top:1px solid rgba(216,184,106,.35);padding:20px 28px;color:#b8ad93;font-size:13px;line-height:1.6;\">
+            <strong style=\"color:#d8b86a;\">Human Design Engine</strong><br>
+            Your private Human Design sanctuary<br>
+            <a href=\"https://humandesignengine.com\" style=\"color:#d8b86a;\">humandesignengine.com</a>
+          </td></tr>
+        </table>
+      </td></tr>
+    </table>
+  </body>
+</html>"""
 
-    msg = MIMEText(body, "plain", "utf-8")
+    msg = MIMEMultipart("alternative")
     msg["From"] = from_email
     msg["To"] = email
     msg["Subject"] = subject
+    msg.attach(MIMEText(body, "plain", "utf-8"))
+    msg.attach(MIMEText(html, "html", "utf-8"))
 
     try:
         with smtplib.SMTP(smtp_host, smtp_port, timeout=15) as server:
