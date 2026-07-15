@@ -1,0 +1,79 @@
+{
+  "report": "hde_phase3_stripe_telegram_onboarding_proof_20260715",
+  "status": "YELLOW",
+  "date": "2026-07-15",
+  "branch": "ned/hde-phase3-stripe-telegram-proof-2026-07-15",
+  "canonical_workflow_source": "https://staging.humandesignengine.com/deconditioning/",
+  "summary": "Stripe test-mode checkout completion and webhook/onboarding state are proven on staging after fixing the staging User model consent-field mismatch. Human Telegram tap/start proof remains pending, so this is YELLOW rather than GREEN.",
+  "phase3_requirements": {
+    "checkout_session_completed_in_stripe_test_mode": "pass",
+    "stripe_webhook_received_by_staging_api": "pass_after_signed_replay",
+    "paid_user_subscription_state_created": "pass_subscription_active",
+    "secure_invitation_deep_link_created": "pass",
+    "success_page_session_resolution": "pass_api_session_resolution",
+    "tester_can_open_telegram_from_success_page": "pending_human_tester",
+    "bot_routes_user_to_correct_guest_flow": "pending_human_tester_start",
+    "router_metrics_clean": "pass"
+  },
+  "evidence": {
+    "stripe_mode": "test",
+    "checkout_completion": {
+      "method": "Playwright automation against Stripe-hosted checkout",
+      "card": "Stripe test card 4242",
+      "session_status": "complete",
+      "payment_status": "paid",
+      "mode": "subscription",
+      "customer_present": true,
+      "subscription_present": true,
+      "session_id": "[REDACTED]",
+      "customer_email": "[REDACTED_PHASE3_TEST_EMAIL]"
+    },
+    "initial_webhook_failure": {
+      "observed": true,
+      "error": "TypeError: coach_review_consent is an invalid keyword argument for User",
+      "fix": "Added coach_review_consent fields and idempotent migration entries to staging shared.database.User/init_db."
+    },
+    "webhook_replay": {
+      "method": "Signed checkout.session.completed replay using the real completed Stripe test session and staging STRIPE_WEBHOOK_SECRET",
+      "endpoint": "http://127.0.0.1:8010/api/webhooks/stripe",
+      "http_status": 200,
+      "response": {"success": true, "event_received": "checkout.session.completed"}
+    },
+    "database_state": {
+      "user_exists": true,
+      "subscription_status": "active",
+      "stripe_customer_id_present": true,
+      "coach_review_consent": false,
+      "invitation_count": 1,
+      "invitation_token_present": true,
+      "invitation_is_used": false,
+      "bot_instance_exists_before_telegram_start": false
+    },
+    "success_session_resolution": {
+      "http_status": 200,
+      "deep_link_present": true,
+      "deep_link": "https://t.me/Humandesigncompanionbot?start=[REDACTED]",
+      "token_present": true
+    },
+    "router_metrics": {
+      "status": "ok",
+      "redis_ok": true,
+      "guest_containers_healthy": 2,
+      "chat_pending": 0,
+      "media_pending": 0,
+      "wake_pending": 0
+    },
+    "services": {
+      "hde_api_staging.service": "active",
+      "hde_router.service": "active",
+      "hde-payment.service": "active",
+      "guest-hermes-23": "running healthy"
+    }
+  },
+  "remaining_risks": [
+    "A real Telegram tester still needs to tap the success-page deep link and send /start so invitation usage and BotInstance creation can be observed.",
+    "The first live webhook attempts before the model fix returned 500; after the fix, the same webhook code path was proven with a signed replay. A fresh automatic Stripe webhook from a new completed checkout should be observed before marking GREEN.",
+    "Solo checkout currently creates subscription_status=active and invitation, but is_premium remains false by current metadata rules; confirm this is intended for Solo Sanctuary before broad paid traffic."
+  ],
+  "recommendation": "YELLOW: proceed to controlled human Telegram tester for Phase 3 completion proof; do not open broad paid traffic yet."
+}

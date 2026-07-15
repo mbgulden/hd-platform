@@ -32,13 +32,15 @@ from sqlalchemy.orm import DeclarativeBase, Mapped, mapped_column, relationship
 
 DATABASE_URL: str = os.getenv(
     "DATABASE_URL",
-    "postgresql+asyncpg://hduser:hdpassword@localhost:5432/hdplatform",
+    "__SET_DATABASE_URL__",
 )
 
 
 def _create_engine() -> Optional[AsyncEngine]:
     """Create and return an async SQLAlchemy engine, or None if DB unavailable."""
     try:
+        if not DATABASE_URL or DATABASE_URL.startswith("__SET_"):
+            return None
         kwargs = {}
         if not DATABASE_URL.startswith("sqlite"):
             kwargs["pool_size"] = 20
@@ -86,6 +88,10 @@ class User(Base):
     )
     is_premium: Mapped[bool] = mapped_column(Boolean, nullable=False, default=False)
     coaching_container_end: Mapped[Optional[datetime]] = mapped_column(DateTime(timezone=True), nullable=True)
+    coach_review_consent: Mapped[bool] = mapped_column(Boolean, nullable=False, default=False)
+    coach_review_consent_at: Mapped[Optional[datetime]] = mapped_column(DateTime(timezone=True), nullable=True)
+    coach_review_consent_source: Mapped[Optional[str]] = mapped_column(String(100), nullable=True)
+    coach_review_consent_revoked_at: Mapped[Optional[datetime]] = mapped_column(DateTime(timezone=True), nullable=True)
     created_at: Mapped[datetime] = mapped_column(
         DateTime(timezone=True),
         server_default=func.now(),
@@ -198,6 +204,22 @@ async def init_db() -> None:
             pass
         try:
             await conn.execute(text("ALTER TABLE users ADD COLUMN coaching_container_end TIMESTAMP WITH TIME ZONE"))
+        except Exception:
+            pass
+        try:
+            await conn.execute(text("ALTER TABLE users ADD COLUMN coach_review_consent BOOLEAN DEFAULT FALSE NOT NULL"))
+        except Exception:
+            pass
+        try:
+            await conn.execute(text("ALTER TABLE users ADD COLUMN coach_review_consent_at TIMESTAMP WITH TIME ZONE"))
+        except Exception:
+            pass
+        try:
+            await conn.execute(text("ALTER TABLE users ADD COLUMN coach_review_consent_source VARCHAR(100)"))
+        except Exception:
+            pass
+        try:
+            await conn.execute(text("ALTER TABLE users ADD COLUMN coach_review_consent_revoked_at TIMESTAMP WITH TIME ZONE"))
         except Exception:
             pass
 
