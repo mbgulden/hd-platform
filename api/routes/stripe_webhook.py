@@ -5,7 +5,9 @@ import json
 import logging
 import os
 import secrets
+import smtplib
 import stripe
+from email.mime.text import MIMEText
 from pydantic import BaseModel
 import time
 from datetime import datetime, timezone, timedelta
@@ -26,6 +28,7 @@ router = APIRouter(prefix="/api", tags=["stripe-webhooks"])
 STRIPE_WEBHOOK_SECRET = os.environ.get("STRIPE_WEBHOOK_SECRET", "")
 ORCHESTRATOR_URL = os.environ.get("ORCHESTRATOR_URL", "http://localhost:8001")
 ORCHESTRATOR_SHARED_SECRET = os.environ.get("ORCHESTRATOR_SHARED_SECRET", "default_shared_secret")
+ONBOARDING_BOT_USERNAME = os.environ.get("HDE_ONBOARDING_BOT_USERNAME", "HDE_CoachBot").lstrip("@")
 
 # In-memory session store for mock checkouts
 # session_id -> { "email": email, "name": name, "is_premium": is_premium }
@@ -131,6 +134,53 @@ def send_premium_signup_notification(email: str, user_id: int, token: str):
             except Exception as e:
                 logger.error("Failed to send Telegram signup alert to %d: %s", chat_id, e)
 
+def send_customer_onboarding_email(email: str, deep_link: str, is_premium: bool) -> bool:
+    """Email the customer their one-step onboarding link so they can resume later."""
+    smtp_host = os.environ.get("SMTP_HOST", "smtp.gmail.com")
+    smtp_port = int(os.environ.get("SMTP_PORT", "587"))
+    smtp_user = os.environ.get("SMTP_USER", "")
+    smtp_pass = os.environ.get("SMTP_PASS", "")
+    from_email = os.environ.get("FROM_EMAIL", "support@humandesignengine.com")
+
+    if not smtp_user or not smtp_pass:
+        logger.warning("Customer onboarding email skipped for %s: SMTP credentials incomplete.", email)
+        return False
+
+    subject = "Your next step: open your Human Design sanctuary"
+    premium_note = "\n\nAfter Telegram is open, you can come back to the success page to schedule your coaching integration."
+    body = f"""You’re in.
+
+Nothing else to figure out right now.
+
+Your next step is simple:
+
+Open your private Telegram sanctuary:
+{deep_link}
+
+This link does not expire. If you get interrupted, overwhelmed, distracted, or need to come back later, use this email and pick up right here.{premium_note if is_premium else ""}
+
+If anything feels confusing, reply to this email and we’ll help.
+
+Human Design Engine
+"""
+
+    msg = MIMEText(body, "plain", "utf-8")
+    msg["From"] = from_email
+    msg["To"] = email
+    msg["Subject"] = subject
+
+    try:
+        with smtplib.SMTP(smtp_host, smtp_port, timeout=15) as server:
+            server.starttls()
+            server.login(smtp_user, smtp_pass)
+            server.send_message(msg)
+        logger.info("Customer onboarding email sent to %s", email)
+        return True
+    except Exception as exc:
+        logger.exception("Customer onboarding email failed for %s: %s", email, exc)
+        return False
+
+
 # ── Shared Onboarding Processor ────────────────--------------------------
 async def process_successful_checkout(
     email: str,
@@ -143,6 +193,9 @@ async def process_successful_checkout(
     and handles notification dispatch.
     """
     is_premium_tier = (metadata.get("tier") == "premium" or metadata.get("tier") == "sovereign" or metadata.get("product") == "sovereign")
+    consent_value = str(metadata.get("coach_review_consent", "false")).lower() in ("1", "true", "yes", "on")
+    consent_granted = bool(is_premium_tier and consent_value)
+    consent_source = metadata.get("coach_review_consent_source") or "checkout"
 
     async with async_session_factory() as db_session:
         db_session: AsyncSession
@@ -154,6 +207,10 @@ async def process_successful_checkout(
                 stripe_customer_id=stripe_customer_id, 
                 subscription_status="active",
                 is_premium=is_premium_tier,
+                coach_review_consent=consent_granted,
+                coach_review_consent_at=datetime.now(timezone.utc) if consent_granted else None,
+                coach_review_consent_source=consent_source if consent_granted else None,
+                coach_review_consent_revoked_at=None,
                 coaching_container_end=datetime.now(timezone.utc) + timedelta(weeks=6) if is_premium_tier else None
             )
             db_session.add(user)
@@ -167,6 +224,11 @@ async def process_successful_checkout(
             if is_premium_tier:
                 user.is_premium = True
                 user.coaching_container_end = datetime.now(timezone.utc) + timedelta(weeks=6)
+                if consent_granted:
+                    user.coach_review_consent = True
+                    user.coach_review_consent_at = datetime.now(timezone.utc)
+                    user.coach_review_consent_source = consent_source
+                    user.coach_review_consent_revoked_at = None
             
             bot_instance_res = await db_session.execute(select(BotInstance).where(BotInstance.user_id == user.id))
             bot_instance = bot_instance_res.scalar_one_or_none()
@@ -177,13 +239,17 @@ async def process_successful_checkout(
             logger.info("Activated existing user profile for: %s (Premium: %s)", email, is_premium_tier)
 
         token = "hde_" + secrets.token_urlsafe(16)
-        expires_at = datetime.now(timezone.utc) + timedelta(hours=24)
+        # Paid onboarding links should not punish slow, overwhelmed, or neurodivergent users.
+        # Keep a far-future timestamp only because the DB column is non-null.
+        expires_at = datetime.now(timezone.utc) + timedelta(days=3650)
         invitation = Invitation(user_id=user.id, token=token, expires_at=expires_at)
         db_session.add(invitation)
         await db_session.commit()
         
-        logger.info("Generated onboarding token: %s (Expires: %s)", token, expires_at)
-        print(f"[ONBOARDING DEEP LINK]: https://t.me/HDE_MasterBot?start={token}")
+        deep_link = f"https://t.me/{ONBOARDING_BOT_USERNAME}?start={token}"
+        logger.info("Generated durable onboarding token: %s", token)
+        print(f"[ONBOARDING DEEP LINK]: {deep_link}")
+        background_tasks.add_task(send_customer_onboarding_email, email, deep_link, is_premium_tier)
 
         if is_premium_tier:
             send_premium_signup_notification(email, user.id, token)
@@ -277,6 +343,8 @@ class CreateSessionRequest(BaseModel):
     product_description: Optional[str] = None
     price_cents: int
     price_id: Optional[str] = None
+    recurring_price_id: Optional[str] = None
+    subscription_trial_days: Optional[int] = None
     is_subscription: bool = False
     metadata: Optional[Dict[str, str]] = None
     success_url: Optional[str] = None
@@ -337,36 +405,43 @@ async def create_stripe_session(
     
     stripe.api_key = stripe_key
     
-    # Use Stripe Price ID directly if provided
-    if body.price_id:
-        line_items = [{"price": body.price_id, "quantity": 1}]
-    else:
-        line_items = [{
-            "price_data": {
-                "currency": "usd",
-                "product_data": {
-                    "name": body.product_name,
-                    "description": body.product_description or "",
-                },
-                "unit_amount": body.price_cents,
+    # Use configured Stripe Price IDs only with live-mode keys. Staging runs
+    # against Stripe test keys, so live Price IDs would produce a 400 and break
+    # the deconditioning checkout smoke. In test mode, build price_data instead.
+    use_configured_price_ids = not stripe_key.startswith("sk_test_")
+    line_items = []
+    if use_configured_price_ids and body.price_id:
+        line_items.append({"price": body.price_id, "quantity": 1})
+    if use_configured_price_ids and body.recurring_price_id:
+        line_items.append({"price": body.recurring_price_id, "quantity": 1})
+    if not line_items:
+        price_data = {
+            "currency": "usd",
+            "product_data": {
+                "name": body.product_name,
+                "description": body.product_description or "",
             },
-            "quantity": 1
-        }]
-    
-    if body.is_subscription:
-        if not body.price_id:
-            line_items[0]["price_data"]["recurring"] = {"interval": "month"}
-        
+            "unit_amount": body.price_cents,
+        }
+        if body.is_subscription:
+            price_data["recurring"] = {"interval": "month"}
+        line_items = [{"price_data": price_data, "quantity": 1}]
     try:
-        session = stripe.checkout.Session.create(
-            payment_method_types=["card"],
-            line_items=line_items,
-            mode="subscription" if body.is_subscription else "payment",
-            success_url=body.success_url or "https://humandesignengine.com/success?session_id={CHECKOUT_SESSION_ID}",
-            cancel_url=body.cancel_url or "https://humandesignengine.com/",
-            customer_email=body.email,
-            metadata=body.metadata or {}
-        )
+        session_kwargs = {
+            "payment_method_types": ["card"],
+            "line_items": line_items,
+            "mode": "subscription" if body.is_subscription else "payment",
+            "success_url": body.success_url or "https://humandesignengine.com/success?session_id={CHECKOUT_SESSION_ID}",
+            "cancel_url": body.cancel_url or "https://humandesignengine.com/",
+            "customer_email": body.email,
+            "metadata": body.metadata or {},
+        }
+        if body.is_subscription and body.subscription_trial_days:
+            session_kwargs["subscription_data"] = {
+                "trial_period_days": body.subscription_trial_days,
+                "metadata": body.metadata or {},
+            }
+        session = stripe.checkout.Session.create(**session_kwargs)
         return {"url": session.url}
     except Exception as e:
         logger.exception("Failed to create Stripe session")
@@ -400,10 +475,20 @@ async def get_onboarding_link(
             stripe.api_key = stripe_key
             try:
                 session = stripe.checkout.Session.retrieve(session_id)
-                resolved_email = session.get("customer_email") or session.get("customer_details", {}).get("email")
-                resolved_name = session.get("customer_details", {}).get("name") or "Friend"
-                metadata = session.get("metadata") or {}
-                is_premium = (metadata.get("tier") == "premium" or metadata.get("tier") == "sovereign" or metadata.get("product") == "sovereign")
+                customer_details = getattr(session, "customer_details", None) or {}
+                metadata = getattr(session, "metadata", None) or {}
+                resolved_email = (
+                    getattr(session, "customer_email", None)
+                    or getattr(customer_details, "email", None)
+                    or (customer_details.get("email") if isinstance(customer_details, dict) else None)
+                )
+                resolved_name = (
+                    getattr(customer_details, "name", None)
+                    or (customer_details.get("name") if isinstance(customer_details, dict) else None)
+                    or "Friend"
+                )
+                metadata_get = metadata.get if hasattr(metadata, "get") else lambda key, default=None: getattr(metadata, key, default)
+                is_premium = (metadata_get("tier") == "premium" or metadata_get("tier") == "sovereign" or metadata_get("product") == "sovereign")
             except Exception as e:
                 logger.error("Failed to retrieve Stripe session: %s", e)
                 raise HTTPException(status_code=400, detail="Invalid checkout session.")
@@ -418,12 +503,12 @@ async def get_onboarding_link(
         if not user:
             raise HTTPException(status_code=404, detail="User profile not found.")
 
-        # Find active unused invitation
+        # Find latest unused invitation. Do not time out paid onboarding links;
+        # users may return days/weeks later and still deserve one clear next step.
         result_invite = await db_session.execute(
             select(Invitation)
             .where(Invitation.user_id == user.id)
             .where(Invitation.is_used == False)
-            .where(Invitation.expires_at > datetime.now(timezone.utc))
             .order_by(Invitation.created_at.desc())
         )
         invitation = result_invite.scalars().first()
@@ -436,15 +521,17 @@ async def get_onboarding_link(
                 "is_premium": is_premium or user.is_premium,
                 "token": None,
                 "deep_link": None,
-                "expires_at": None
+                "expires_at": None,
+                "coach_review_consent": bool(getattr(user, "coach_review_consent", False))
             }
 
-        deep_link = f"https://t.me/HDE_CoachBot?start={invitation.token}"
+        deep_link = f"https://t.me/{ONBOARDING_BOT_USERNAME}?start={invitation.token}"
         return {
             "email": resolved_email,
             "name": resolved_name,
             "token": invitation.token,
             "deep_link": deep_link,
             "expires_at": invitation.expires_at,
-            "is_premium": is_premium or user.is_premium
+            "is_premium": is_premium or user.is_premium,
+            "coach_review_consent": bool(getattr(user, "coach_review_consent", False))
         }
