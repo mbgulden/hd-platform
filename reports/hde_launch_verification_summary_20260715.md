@@ -1,6 +1,6 @@
 # HDE Launch Verification Summary — 2026-07-15
 
-**Recommendation:** 🟡 **YELLOW** — server-side launch checks are healthy, but live Telegram media proof is still pending.
+**Recommendation:** 🟢 **GREEN** — live Telegram media proof passed; proceed to controlled public bot traffic.
 
 This report supersedes the stale July 11 RED report at `reports/deconditioning_launch_verification_summary.json`. Several launch-critical conditions have changed since then: the router is active, Telegram identity is correct, Redis queues are healthy, the guest canary passes, the HDE runtime checkpoint branch exists, and coach review access has been hardened separately.
 
@@ -85,27 +85,25 @@ This is a branch-shape caveat, not a build failure. This `deploy-fresh` / checkp
 
 ## Live Telegram media proof
 
-**Status:** 🟡 blocked / timed out waiting for live user message.
+**Status:** 🟢 passed after Michael sent:
+
+```text
+Compare me and Becca
+```
 
 Watcher command:
 
 ```bash
-python3 scripts/hde_telegram_media_watch.py --since now --expect-documents 2 --watch-seconds 1200 --interval 10 --guest-id 23 --pretty
+python3 scripts/hde_telegram_media_watch.py --since '25 minutes ago' --expect-documents 2 --watch-seconds 1 --interval 1 --guest-id 23 --pretty
 ```
 
-Watcher session:
-
-```text
-proc_3e448aceea09
-```
-
-Exit summary:
+Live proof summary:
 
 | Field | Result |
 |---|---:|
 | Expected documents | `2` |
-| Document log lines | `0` |
-| Successful document sends | `0` |
+| Document log lines | `4` |
+| Successful document sends | `2` |
 | Router status | `ok` |
 | Media pending | `0` |
 | Chat pending | `0` |
@@ -113,31 +111,17 @@ Exit summary:
 | Healthy guest containers | `2` |
 | Fresh error lines | `0` |
 
-Required live prompt remains:
+Redacted send evidence:
 
 ```text
-Compare me and Becca
+2026-07-15T17:20:45Z POST https://api.telegram.org/bot[REDACTED]/sendDocument HTTP/1.1 200 OK
+2026-07-15T17:20:45Z POST https://api.telegram.org/bot[REDACTED]/sendDocument HTTP/1.1 200 OK
 ```
 
-Bot:
+Documents sent:
 
-```text
-@Humandesigncompanionbot
-```
-
-Do **not** call this launch GREEN until the watcher sees at least 2 successful Telegram `sendDocument` calls and clean queue drain after the live prompt.
-
-## Verification commands run
-
-| Command | Result |
-|---|---|
-| `/home/ubuntu/work/hd-platform/.venv/bin/python3 -m py_compile scripts/hde_router_metrics.py scripts/hde_guest_canary.py scripts/hde_telegram_media_watch.py scripts/hde_tenant_router.py scripts/vm_orchestrator.py shared/database.py scripts/hde_rate_limits.py scripts/hde_job_queue.py scripts/hde_usage_budgets.py` | ✅ passed |
-| `/home/ubuntu/work/hd-platform/.venv/bin/python3 scripts/hde_router_metrics.py --pretty` | ✅ `status: ok`; Redis enabled; queue pending counts `0` |
-| `python3 scripts/hde_guest_canary.py --guest-id 23 --pretty` | ✅ `pass` |
-| `systemctl is-active hde_router.service` | ✅ `active` |
-| `systemctl is-active hde_api_staging.service` | ✅ `active` |
-| `sudo docker inspect -f '{{.State.Health.Status}}' guest-hermes-23` | ✅ `healthy` |
-| Telegram `getMe` | ✅ `@Humandesigncompanionbot` |
+- `/home/ubuntu/users/guest_23/charts/personal/becca_gulden/report_Becca_Gulden_20260714_143151.pdf`
+- `/home/ubuntu/users/guest_23/charts/personal/michael_gulden/report_Michael_Gulden_20260715_040103.pdf`
 
 ## Remaining risks and blockers
 
@@ -147,7 +131,7 @@ Do **not** call this launch GREEN until the watcher sees at least 2 successful T
 
 ## Launch recommendation
 
-🟡 **YELLOW** — server-side runtime, router, Redis queues, Telegram identity, guest canary, and service health are good. Launch should not be marked GREEN until live Telegram media proof is rerun and completes successfully.
+🟢 **GREEN** — server-side runtime, router, Redis queues, Telegram identity, guest canary, service health, and live Telegram media proof are good. Proceed with controlled public bot traffic.
 
 ## No secrets included
 

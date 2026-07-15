@@ -1,7 +1,7 @@
 {
-  "timestamp_utc": "2026-07-15T13:58:36Z",
+  "timestamp_utc": "2026-07-15T17:39:03Z",
   "branch": "ned/hde-fresh-launch-report-2026-07-15",
-  "commit_checked": "e667535",
+  "commit_checked": "dfe760c",
   "supersedes": {
     "file": "reports/deconditioning_launch_verification_summary.json",
     "prior_status": "RED",
@@ -9,8 +9,8 @@
     "note": "Supersedes stale July 11 RED report with fresh July 15 service, router, Telegram identity, guest canary, and live-proof status evidence."
   },
   "launch_recommendation": {
-    "status": "YELLOW",
-    "reason": "Server-side launch checks are healthy, but live Telegram media proof timed out with no live document sends; still waiting for the live Compare me and Becca prompt."
+    "status": "GREEN",
+    "reason": "Live Telegram media proof passed: two successful sendDocument calls for Compare me and Becca, router metrics ok, Redis pending queues at 0, and guest container healthy."
   },
   "service_health": {
     "hde_router_service": "active",
@@ -30,8 +30,8 @@
       "chat_pending": 0,
       "media_pending": 0,
       "wake_pending": 0,
-      "chat_length": 120,
-      "media_length": 12,
+      "chat_length": 122,
+      "media_length": 14,
       "wake_length": 2
     },
     "docker_ok": true,
@@ -60,9 +60,9 @@
     "reason": "package.json missing on this deploy-fresh/checkpoint-derived branch; branch-shape caveat, not a build failure"
   },
   "live_telegram_media_proof": {
-    "status": "blocked_timeout_no_live_message",
-    "watcher_session": "proc_3e448aceea09",
-    "watcher_command": "python3 scripts/hde_telegram_media_watch.py --since now --expect-documents 2 --watch-seconds 1200 --interval 10 --guest-id 23 --pretty",
+    "status": "pass",
+    "watcher_session": "manual_check_2026-07-15T17:39:03Z",
+    "watcher_command": "python3 scripts/hde_telegram_media_watch.py --since '25 minutes ago' --expect-documents 2 --watch-seconds 1 --interval 1 --guest-id 23 --pretty",
     "expected_prompt": "Compare me and Becca",
     "expected_bot": "@Humandesigncompanionbot",
     "required_success_criteria": [
@@ -72,15 +72,23 @@
       "router metrics remain healthy",
       "no fresh post-watch-start router delivery errors"
     ],
-    "current_state": "watcher exited after 1200 seconds with 0 document log lines and 0 successful document sends; router stayed ok, Redis pending queues stayed 0, guest containers healthy, and no fresh error lines appeared",
-    "document_log_lines": 0,
-    "successful_document_log_lines": 0,
+    "current_state": "passed after Michael sent Compare me and Becca; router forwarded User 23 message, sent one text reply and two Telegram documents successfully.",
+    "document_log_lines": 4,
+    "successful_document_log_lines": 2,
     "router_status_at_exit": "ok",
     "media_pending_at_exit": 0,
     "chat_pending_at_exit": 0,
     "redis_enabled_at_exit": true,
     "guest_containers_healthy_at_exit": 2,
-    "fresh_error_lines_at_exit": []
+    "fresh_error_lines_at_exit": [],
+    "recent_successful_document_lines_redacted": [
+      "2026-07-15T17:20:45Z POST https://api.telegram.org/bot[REDACTED]/sendDocument HTTP/1.1 200 OK",
+      "2026-07-15T17:20:45Z POST https://api.telegram.org/bot[REDACTED]/sendDocument HTTP/1.1 200 OK"
+    ],
+    "sent_documents_redacted": [
+      "/home/ubuntu/users/guest_23/charts/personal/becca_gulden/report_Becca_Gulden_20260714_143151.pdf",
+      "/home/ubuntu/users/guest_23/charts/personal/michael_gulden/report_Michael_Gulden_20260715_040103.pdf"
+    ]
   },
   "verification_commands": [
     {
@@ -109,9 +117,9 @@
     }
   ],
   "remaining_risks_and_blockers": [
-    "Live Telegram media proof timed out without a live user prompt/document delivery; rerun the watcher and send Compare me and Becca to @Humandesigncompanionbot before marking GREEN.",
     "Build command is skipped on this branch because package.json is missing; verify frontend build on a branch/checkout that contains package.json before frontend launch claims.",
-    "Router support scripts had to be restored onto this branch to keep hde_router.service active; ensure they remain in the pushed branch or a downstream merge target."
+    "Router support scripts had to be restored onto this branch to keep hde_router.service active; ensure they remain in the pushed branch or a downstream merge target.",
+    "Use controlled public traffic first; continue monitoring router metrics, media sends, Redis pending queues, and guest container health."
   ],
   "secrets": {
     "contains_secrets": false,
