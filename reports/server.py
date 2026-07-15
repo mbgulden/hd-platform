@@ -75,48 +75,48 @@ def _save_order(order):
 # ── HTML/CSS Report Templates ────────────────────────────────────────
 CSS = """
 <style>
-  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&family=Playfair+Display:wght@400;700&display=swap');
+  @import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&family=Playfair+Display:wght@400;600;700&display=swap');
   * { margin: 0; padding: 0; box-sizing: border-box; }
-  body { font-family: 'Inter', -apple-system, sans-serif; color: #1a1a2e; line-height: 1.7; font-size: 11pt; }
-  .cover { min-height: 100vh; display: flex; flex-direction: column; justify-content: center; align-items: center; text-align: center; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; padding: 60px 40px; }
-  .cover h1 { font-family: 'Playfair Display', serif; font-size: 42pt; margin-bottom: 16px; font-weight: 700; }
-  .cover .subtitle { font-size: 18pt; opacity: 0.9; margin-bottom: 8px; }
-  .cover .meta { font-size: 12pt; opacity: 0.7; margin-top: 40px; }
-  .cover .brand { font-size: 10pt; opacity: 0.6; margin-top: 20px; }
-  .page { padding: 50px 60px; page-break-after: always; }
+  body { font-family: 'Outfit', -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif; background: #FAF7F0; color: #2F3631; line-height: 1.7; font-size: 11pt; }
+  .cover { min-height: 100vh; display: flex; flex-direction: column; justify-content: center; align-items: center; text-align: center; background: #FAF7F0; color: #2F3631; padding: 60px 40px; border: 28px solid #2F3631; }
+  .cover h1 { font-family: 'Playfair Display', Georgia, serif; font-size: 42pt; margin-bottom: 16px; font-weight: 600; color: #2F3631; }
+  .cover .subtitle { font-size: 18pt; color: #5C625E; margin-bottom: 8px; }
+  .cover .meta { font-size: 12pt; color: #808682; margin-top: 40px; }
+  .cover .brand { font-size: 10pt; color: #5F7261; margin-top: 20px; text-transform: uppercase; letter-spacing: 1.8px; }
+  .page { padding: 50px 60px; page-break-after: always; background: #FAF7F0; }
   .page:last-child { page-break-after: avoid; }
-  h2 { font-family: 'Playfair Display', serif; font-size: 24pt; color: #667eea; margin: 30px 0 14px; padding-bottom: 8px; border-bottom: 2px solid #e8e8f0; }
-  h3 { font-size: 14pt; color: #764ba2; margin: 20px 0 10px; }
-  .section-intro { color: #666; font-style: italic; margin-bottom: 16px; }
+  h2 { font-family: 'Playfair Display', Georgia, serif; font-size: 24pt; color: #2F3631; margin: 30px 0 14px; padding-bottom: 8px; border-bottom: 2px solid rgba(95,114,97,.15); font-weight: 600; }
+  h3 { font-size: 14pt; color: #5F7261; margin: 20px 0 10px; font-weight: 600; }
+  .section-intro { color: #5C625E; font-style: italic; margin-bottom: 16px; }
   .stat-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 16px; margin: 20px 0; }
-  .stat-card { background: #f8f7ff; border-radius: 12px; padding: 16px; border-left: 4px solid #667eea; }
-  .stat-card .label { font-size: 9pt; text-transform: uppercase; letter-spacing: 1px; color: #888; margin-bottom: 4px; }
-  .stat-card .value { font-size: 14pt; font-weight: 600; color: #1a1a2e; }
+  .stat-card { background: #FFFFFF; border-radius: 12px; padding: 16px; border-left: 4px solid #5F7261; box-shadow: 0 8px 30px rgba(47,54,49,.03); }
+  .stat-card .label { font-size: 9pt; text-transform: uppercase; letter-spacing: 1px; color: #808682; margin-bottom: 4px; }
+  .stat-card .value { font-size: 14pt; font-weight: 600; color: #2F3631; }
   .center-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; margin: 20px 0; }
   .center-box { padding: 20px; border-radius: 12px; }
-  .defined { background: linear-gradient(135deg, #e8f5e9, #c8e6c9); border: 1px solid #a5d6a7; }
-  .undefined { background: linear-gradient(135deg, #fff3e0, #ffe0b2); border: 1px solid #ffcc80; }
+  .defined { background: rgba(95,114,97,.12); border: 1px solid rgba(95,114,97,.22); }
+  .undefined { background: #FDFBF7; border: 1px solid #C7BFB5; }
   .center-box h3 { margin-top: 0; }
   .center-box ul { list-style: none; padding: 0; }
   .center-box li { padding: 6px 0; font-size: 11pt; }
-  .center-box li:before { content: "▸ "; color: #667eea; }
+  .center-box li:before { content: "▸ "; color: #5F7261; }
   .gate-list { display: flex; flex-wrap: wrap; gap: 8px; margin: 12px 0; }
-  .gate-badge { background: #667eea; color: white; padding: 4px 12px; border-radius: 20px; font-size: 10pt; font-weight: 600; }
-  .channel-row { display: flex; align-items: center; gap: 12px; padding: 10px; background: #f8f7ff; border-radius: 8px; margin: 8px 0; }
+  .gate-badge { background: #2F3631; color: #FAF7F0; padding: 4px 12px; border-radius: 20px; font-size: 10pt; font-weight: 600; }
+  .channel-row { display: flex; align-items: center; gap: 12px; padding: 10px; background: #FFFFFF; border: 1px solid rgba(95,114,97,.15); border-radius: 8px; margin: 8px 0; }
   .channel-name { font-weight: 600; flex: 1; }
-  .channel-gates { color: #667eea; font-size: 10pt; }
-  .highlight-box { background: linear-gradient(135deg, #f3e5f5, #e1bee7); border-radius: 12px; padding: 24px; margin: 20px 0; border-left: 4px solid #9c27b0; }
-  .highlight-box h3 { color: #6a1b9a; margin-top: 0; }
-  .experiment-box { background: #e8eaf6; border-radius: 12px; padding: 24px; margin: 20px 0; }
-  .experiment-box h3 { color: #283593; }
-  table { width: 100%; border-collapse: collapse; margin: 16px 0; }
-  th { background: #667eea; color: white; padding: 10px 14px; text-align: left; font-size: 10pt; }
-  td { padding: 10px 14px; border-bottom: 1px solid #e8e8f0; font-size: 10pt; }
-  tr:nth-child(even) td { background: #fafaff; }
-  .footer { text-align: center; padding: 40px; color: #999; font-size: 9pt; }
-  .footer a { color: #667eea; }
-  .badge { display: inline-block; background: #667eea; color: white; padding: 2px 10px; border-radius: 12px; font-size: 9pt; margin-left: 8px; vertical-align: middle; }
-  .cert-badge { text-align: center; margin: 30px 0; padding: 12px; background: #f8f7ff; border-radius: 12px; font-size: 9pt; color: #888; }
+  .channel-gates { color: #5F7261; font-size: 10pt; }
+  .highlight-box { background: #FFFFFF; border-radius: 12px; padding: 24px; margin: 20px 0; border-left: 4px solid #5F7261; box-shadow: 0 8px 30px rgba(47,54,49,.03); }
+  .highlight-box h3 { color: #2F3631; margin-top: 0; }
+  .experiment-box { background: rgba(95,114,97,.12); border: 1px solid rgba(95,114,97,.15); border-radius: 12px; padding: 24px; margin: 20px 0; }
+  .experiment-box h3 { color: #2F3631; }
+  table { width: 100%; border-collapse: collapse; margin: 16px 0; background: #FFFFFF; }
+  th { background: #2F3631; color: #FAF7F0; padding: 10px 14px; text-align: left; font-size: 10pt; }
+  td { padding: 10px 14px; border-bottom: 1px solid rgba(95,114,97,.15); font-size: 10pt; }
+  tr:nth-child(even) td { background: #FDFBF7; }
+  .footer { text-align: center; padding: 40px; color: #808682; font-size: 9pt; }
+  .footer a { color: #5F7261; }
+  .badge { display: inline-block; background: #2F3631; color: #FAF7F0; padding: 2px 10px; border-radius: 12px; font-size: 9pt; margin-left: 8px; vertical-align: middle; }
+  .cert-badge { text-align: center; margin: 30px 0; padding: 12px; background: #FFFFFF; border: 1px solid rgba(95,114,97,.15); border-radius: 12px; font-size: 9pt; color: #808682; }
   @media print { body { -webkit-print-color-adjust: exact; print-color-adjust: exact; } }
 </style>
 """
@@ -1024,24 +1024,53 @@ def send_email(to_email: str, name: str, report_type: str, pdf_path: str):
     from email.mime.application import MIMEApplication
     import smtplib
 
-    msg = MIMEMultipart()
+    msg = MIMEMultipart('mixed')
     msg['From'] = FROM_EMAIL
     msg['To'] = to_email
-    msg['Subject'] = f"Your Human Design {report_type.title()} Report is Ready, {name}!"
+    msg['Subject'] = f"Your Human Design {report_type.title()} report is ready, {name}"
 
     body = f"""Hi {name},
 
-Your Human Design {report_type.title()} Report is attached as a PDF.
+Your Human Design {report_type.title()} report is attached as a PDF.
 
-This report was computed using verified, open-source calculations — the same engine trusted by developers and practitioners worldwide.
+Read it at your own pace. This is a private reference, not another task to perform.
 
-If you have any questions about your chart, we're here to help. Just reply to this email.
+If anything feels confusing, reply to this email and we’ll help.
 
-With gratitude,
-The Human Design Engine Team
-humandesignengine.com"""
+—
+Human Design Engine
+Your private Human Design sanctuary
+https://staging.humandesignengine.com/deconditioning/"""
+    html = f"""<!doctype html>
+<html>
+  <body style=\"margin:0;background:#FAF7F0;color:#2F3631;font-family:Outfit,-apple-system,BlinkMacSystemFont,'Segoe UI',system-ui,sans-serif;\">
+    <table role=\"presentation\" width=\"100%\" cellpadding=\"0\" cellspacing=\"0\" style=\"background:#FAF7F0;padding:32px 12px;\">
+      <tr><td align=\"center\">
+        <table role=\"presentation\" width=\"100%\" cellpadding=\"0\" cellspacing=\"0\" style=\"max-width:640px;background:#FFFFFF;border:1px solid rgba(95,114,97,.15);border-radius:24px;overflow:hidden;box-shadow:0 8px 30px rgba(47,54,49,.03);\">
+          <tr><td style=\"padding:30px 30px 12px;\">
+            <div style=\"letter-spacing:.16em;text-transform:uppercase;color:#5F7261;font-size:12px;font-weight:700;\">Human Design Engine</div>
+            <h1 style=\"margin:14px 0 8px;font-family:'Playfair Display',Georgia,serif;font-size:32px;line-height:1.12;color:#2F3631;font-weight:600;\">Your {report_type.title()} report is ready.</h1>
+            <p style=\"margin:0;color:#5C625E;font-size:16px;line-height:1.65;\">Hi {name}, your PDF is attached. Read it at your own pace.</p>
+          </td></tr>
+          <tr><td style=\"padding:18px 30px;color:#5C625E;font-size:15px;line-height:1.7;\">
+            <p>This is a private reference, not another task to perform.</p>
+            <p>If anything feels confusing, reply to this email and we’ll help.</p>
+          </td></tr>
+          <tr><td style=\"background:#2F3631;border-top:1px solid rgba(95,114,97,.15);padding:20px 30px;color:#FAF7F0;font-size:13px;line-height:1.6;\">
+            <strong style=\"color:#FAF7F0;\">Human Design Engine</strong><br>
+            Your private Human Design sanctuary<br>
+            <a href=\"https://staging.humandesignengine.com/deconditioning/\" style=\"color:#C7BFB5;\">staging.humandesignengine.com/deconditioning</a>
+          </td></tr>
+        </table>
+      </td></tr>
+    </table>
+  </body>
+</html>"""
 
-    msg.attach(MIMEText(body, 'plain'))
+    alternative = MIMEMultipart('alternative')
+    alternative.attach(MIMEText(body, 'plain', 'utf-8'))
+    alternative.attach(MIMEText(html, 'html', 'utf-8'))
+    msg.attach(alternative)
 
     with open(pdf_path, 'rb') as f:
         attachment = MIMEApplication(f.read(), _subtype='pdf')

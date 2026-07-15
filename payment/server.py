@@ -261,24 +261,53 @@ class Handler(BaseHTTPRequestHandler):
 
     def _email_report(self, to_email, name, report, pdf_path):
         """Send the PDF report via email"""
-        msg = MIMEMultipart()
+        msg = MIMEMultipart('mixed')
         msg['From'] = FROM_EMAIL
         msg['To'] = to_email
-        msg['Subject'] = f"Your Human Design {report.title()} Report is Ready, {name}!"
+        msg['Subject'] = f"Your Human Design {report.title()} report is ready, {name}"
 
         body = f"""Hi {name},
 
-Your Human Design {report.title()} Report is attached as a PDF.
+Your Human Design {report.title()} report is attached as a PDF.
 
-This report was computed using verified, open-source calculations — the same engine trusted by developers and practitioners worldwide.
+Read it at your own pace. This is a private reference, not another task to perform.
 
-If you have any questions about your chart, we're here to help. Just reply to this email.
+If anything feels confusing, reply to this email and we’ll help.
 
-With gratitude,
-The Human Design Engine Team
-humandesignengine.com"""
+—
+Human Design Engine
+Your private Human Design sanctuary
+https://staging.humandesignengine.com/deconditioning/"""
+        html = f"""<!doctype html>
+<html>
+  <body style=\"margin:0;background:#FAF7F0;color:#2F3631;font-family:Outfit,-apple-system,BlinkMacSystemFont,'Segoe UI',system-ui,sans-serif;\">
+    <table role=\"presentation\" width=\"100%\" cellpadding=\"0\" cellspacing=\"0\" style=\"background:#FAF7F0;padding:32px 12px;\">
+      <tr><td align=\"center\">
+        <table role=\"presentation\" width=\"100%\" cellpadding=\"0\" cellspacing=\"0\" style=\"max-width:640px;background:#FFFFFF;border:1px solid rgba(95,114,97,.15);border-radius:24px;overflow:hidden;box-shadow:0 8px 30px rgba(47,54,49,.03);\">
+          <tr><td style=\"padding:30px 30px 12px;\">
+            <div style=\"letter-spacing:.16em;text-transform:uppercase;color:#5F7261;font-size:12px;font-weight:700;\">Human Design Engine</div>
+            <h1 style=\"margin:14px 0 8px;font-family:'Playfair Display',Georgia,serif;font-size:32px;line-height:1.12;color:#2F3631;font-weight:600;\">Your {report.title()} report is ready.</h1>
+            <p style=\"margin:0;color:#5C625E;font-size:16px;line-height:1.65;\">Hi {name}, your PDF is attached. Read it at your own pace.</p>
+          </td></tr>
+          <tr><td style=\"padding:18px 30px;color:#5C625E;font-size:15px;line-height:1.7;\">
+            <p>This is a private reference, not another task to perform.</p>
+            <p>If anything feels confusing, reply to this email and we’ll help.</p>
+          </td></tr>
+          <tr><td style=\"background:#2F3631;border-top:1px solid rgba(95,114,97,.15);padding:20px 30px;color:#FAF7F0;font-size:13px;line-height:1.6;\">
+            <strong style=\"color:#FAF7F0;\">Human Design Engine</strong><br>
+            Your private Human Design sanctuary<br>
+            <a href=\"https://staging.humandesignengine.com/deconditioning/\" style=\"color:#C7BFB5;\">staging.humandesignengine.com/deconditioning</a>
+          </td></tr>
+        </table>
+      </td></tr>
+    </table>
+  </body>
+</html>"""
 
-        msg.attach(MIMEText(body, 'plain'))
+        alternative = MIMEMultipart('alternative')
+        alternative.attach(MIMEText(body, 'plain', 'utf-8'))
+        alternative.attach(MIMEText(html, 'html', 'utf-8'))
+        msg.attach(alternative)
 
         with open(pdf_path, 'rb') as f:
             attachment = MIMEApplication(f.read(), _subtype='pdf')

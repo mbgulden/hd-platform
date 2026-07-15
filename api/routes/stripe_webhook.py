@@ -168,27 +168,27 @@ https://humandesignengine.com
 """
     html = f"""<!doctype html>
 <html>
-  <body style=\"margin:0;background:#08111f;color:#f8f2df;font-family:Inter,Arial,sans-serif;\">
-    <table role=\"presentation\" width=\"100%\" cellpadding=\"0\" cellspacing=\"0\" style=\"background:#08111f;padding:32px 12px;\">
+  <body style=\"margin:0;background:#FAF7F0;color:#2F3631;font-family:Outfit,-apple-system,BlinkMacSystemFont,'Segoe UI',system-ui,sans-serif;\">
+    <table role=\"presentation\" width=\"100%\" cellpadding=\"0\" cellspacing=\"0\" style=\"background:#FAF7F0;padding:32px 12px;\">
       <tr><td align=\"center\">
-        <table role=\"presentation\" width=\"100%\" cellpadding=\"0\" cellspacing=\"0\" style=\"max-width:640px;background:#101c2d;border:1px solid #d8b86a;border-radius:22px;overflow:hidden;\">
-          <tr><td style=\"padding:28px 28px 10px;\">
-            <div style=\"letter-spacing:.18em;text-transform:uppercase;color:#d8b86a;font-size:12px;font-weight:700;\">Human Design Engine</div>
-            <h1 style=\"margin:14px 0 8px;font-size:28px;line-height:1.15;color:#fff7df;\">You’re in.</h1>
-            <p style=\"margin:0;color:#d8d2c0;font-size:16px;line-height:1.6;\">Nothing else to figure out right now. Your next step is simple.</p>
+        <table role=\"presentation\" width=\"100%\" cellpadding=\"0\" cellspacing=\"0\" style=\"max-width:640px;background:#FFFFFF;border:1px solid rgba(95,114,97,.15);border-radius:24px;overflow:hidden;box-shadow:0 8px 30px rgba(47,54,49,.03);\">
+          <tr><td style=\"padding:30px 30px 12px;\">
+            <div style=\"letter-spacing:.16em;text-transform:uppercase;color:#5F7261;font-size:12px;font-weight:700;\">Somatic Experiment Station</div>
+            <h1 style=\"margin:14px 0 8px;font-family:'Playfair Display',Georgia,serif;font-size:32px;line-height:1.12;color:#2F3631;font-weight:600;\">You’re in.</h1>
+            <p style=\"margin:0;color:#5C625E;font-size:16px;line-height:1.65;\">Nothing else to figure out right now. Your next step is simple.</p>
           </td></tr>
-          <tr><td style=\"padding:18px 28px;\">
-            <a href=\"{deep_link}\" style=\"display:inline-block;background:#d8b86a;color:#08111f;text-decoration:none;font-weight:800;border-radius:999px;padding:14px 22px;\">Open your private Telegram sanctuary</a>
+          <tr><td style=\"padding:18px 30px;\">
+            <a href=\"{deep_link}\" style=\"display:inline-block;background:#2F3631;color:#FAF7F0;text-decoration:none;font-weight:600;border-radius:12px;padding:14px 22px;\">Open your private Telegram sanctuary</a>
           </td></tr>
-          <tr><td style=\"padding:0 28px 22px;color:#d8d2c0;font-size:15px;line-height:1.7;\">
+          <tr><td style=\"padding:0 30px 24px;color:#5C625E;font-size:15px;line-height:1.7;\">
             <p>This link does not expire. If you get interrupted, overwhelmed, distracted, or need to come back later, use this email and pick up right here.</p>
             {premium_html}
             <p>If anything feels confusing, reply to this email and we’ll help.</p>
           </td></tr>
-          <tr><td style=\"background:#0b1626;border-top:1px solid rgba(216,184,106,.35);padding:20px 28px;color:#b8ad93;font-size:13px;line-height:1.6;\">
-            <strong style=\"color:#d8b86a;\">Human Design Engine</strong><br>
+          <tr><td style=\"background:#2F3631;border-top:1px solid rgba(95,114,97,.15);padding:20px 30px;color:#FAF7F0;font-size:13px;line-height:1.6;\">
+            <strong style=\"color:#FAF7F0;\">Human Design Engine</strong><br>
             Your private Human Design sanctuary<br>
-            <a href=\"https://humandesignengine.com\" style=\"color:#d8b86a;\">humandesignengine.com</a>
+            <a href=\"https://staging.humandesignengine.com/deconditioning/\" style=\"color:#C7BFB5;\">staging.humandesignengine.com/deconditioning</a>
           </td></tr>
         </table>
       </td></tr>
