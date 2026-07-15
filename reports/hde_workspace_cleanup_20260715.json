@@ -1,0 +1,82 @@
+{
+  "timestamp_utc": "2026-07-15T14:11:48Z",
+  "repo": "/home/ubuntu/work/hd-platform-staging",
+  "branch": "ned/hde-fresh-launch-report-2026-07-15",
+  "head": "57fba43",
+  "goal": "Clean HDE staging workspace, preserve launch/runtime/coach-gate work, and leave branches/worktree understandable for the Human Design bot workflow.",
+  "plan_executed": [
+    "Inventory repo status, branches, worktrees, untracked artifacts, and HDE docs/report files.",
+    "Classify untracked artifacts as reproducible cache, runtime state, secret-bearing backup, stale report, unrelated product media, or manual-review archive.",
+    "Archive ambiguous/runtime/report artifacts before removing them from the repo worktree.",
+    "Move secret-bearing .env backups to a private archive without printing values.",
+    "Remove reproducible dependency cache node_modules from the repo worktree.",
+    "Delete only local branches that are either superseded by a pushed fresh branch or already integrated into the current pushed report branch.",
+    "Leave remote review branches intact and leave canonical checkout on the latest launch-report branch."
+  ],
+  "archive_root": "/home/ubuntu/work/_hde_cleanup_archive/20260715T141148Z",
+  "archived_or_moved": {
+    "repo_artifacts": [
+      ".astro/",
+      "docker/data/",
+      "docs/podcast/",
+      "reports/deconditioning_launch_verification_summary.json",
+      "staging_database.db",
+      "tests/"
+    ],
+    "private_secret_backups": [
+      ".env.bak-20260712T213223Z",
+      ".env.pre-token-rotation-20260712T215915Z.bak"
+    ],
+    "removed_reproducible_cache": [
+      "node_modules/"
+    ]
+  },
+  "branches_cleaned": {
+    "deleted_local": [
+      "ned/hde-staging-runtime-checkpoint-2026-07-15",
+      "ned/hde-staging-runtime-checkpoint-2026-07-15-fresh",
+      "ned/hde-coach-review-consent-gate-2026-07-15"
+    ],
+    "retained_local": [
+      "ned/hde-fresh-launch-report-2026-07-15",
+      "staging",
+      "feature/fred-hde-stripe-staging-gro3792"
+    ],
+    "retained_remote_review_branches": [
+      "origin/ned/hde-staging-runtime-checkpoint-2026-07-15-fresh",
+      "origin/ned/hde-coach-review-consent-gate-2026-07-15",
+      "origin/ned/hde-fresh-launch-report-2026-07-15"
+    ]
+  },
+  "documentation_map": {
+    "launch_report": "reports/hde_launch_verification_summary_20260715.md",
+    "launch_report_json": "reports/hde_launch_verification_summary_20260715.json",
+    "workspace_cleanup_report": "reports/hde_workspace_cleanup_20260715.md",
+    "head_bot_scaling_runbook": "docs/hde-head-bot-scaling-runbook.md",
+    "guide_deconditioning_runtime": "docs/hd-engine/guide-deconditioning-runtime-workflow.md",
+    "router_runtime_scripts": [
+      "scripts/hde_tenant_router.py",
+      "scripts/hde_router_metrics.py",
+      "scripts/hde_job_queue.py",
+      "scripts/hde_rate_limits.py",
+      "scripts/hde_usage_budgets.py"
+    ],
+    "proof_scripts": [
+      "scripts/hde_guest_canary.py",
+      "scripts/hde_telegram_media_watch.py",
+      "scripts/hde_guest_canary_watchdog.sh"
+    ],
+    "coach_gate": "scripts/vm_orchestrator.py"
+  },
+  "final_expected_state": {
+    "worktrees": "single worktree at /home/ubuntu/work/hd-platform-staging",
+    "repo_status": "clean except this cleanup report until committed",
+    "live_proof": "Telegram media watcher still pending user prompt at cleanup time"
+  },
+  "safety_notes": [
+    "No .env files, database dumps, Redis dumps, or runtime customer data were committed.",
+    "Secret-bearing env backups were moved to a chmod 600 private archive and values were not printed.",
+    "Ambiguous docs/podcast and tests artifacts were archived, not deleted outright.",
+    "Remote branches were not deleted; only local superseded/integrated branches were removed."
+  ]
+}
