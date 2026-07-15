@@ -7,12 +7,13 @@ import subprocess
 import shutil
 import sqlite3
 import time
+from datetime import datetime, timezone
 from pathlib import Path
 from typing import Optional
 from fastapi import FastAPI, Request, HTTPException, status
 from fastapi.responses import HTMLResponse
 from pydantic import BaseModel
-from sqlalchemy import select
+from sqlalchemy import select, or_
 from shared.database import User, BotInstance, async_session_factory
 
 # Initialize logger
@@ -449,6 +450,64 @@ class CoachReviewRequest(BaseModel):
 
 
 COACH_ACCESS_TOKEN = os.getenv("COACH_ACCESS_TOKEN", "coach_secret_access_key_change_me_in_production")
+COACH_REVIEW_FORBIDDEN_DETAIL = "Coach review consent or eligibility required."
+
+
+def user_has_active_coach_review_access(user: User) -> bool:
+    """Return True only when coach review is consented and currently eligible."""
+    if not bool(getattr(user, "is_premium", False)):
+        return False
+    if getattr(user, "subscription_status", None) != "active":
+        return False
+    if not bool(getattr(user, "coach_review_consent", False)):
+        return False
+    if getattr(user, "coach_review_consent_revoked_at", None) is not None:
+        return False
+    coaching_end = getattr(user, "coaching_container_end", None)
+    if coaching_end is not None:
+        now = datetime.now(timezone.utc)
+        if getattr(coaching_end, "tzinfo", None) is None:
+            coaching_end = coaching_end.replace(tzinfo=timezone.utc)
+        if coaching_end < now:
+            return False
+    return True
+
+
+def safe_client_workspace_path(client_user_id: int, bot_instance: BotInstance | None = None) -> str:
+    """Resolve a client workspace path after DB consent has been verified."""
+    candidates: list[str] = []
+    if bot_instance and getattr(bot_instance, "workspace_path", None):
+        candidates.append(str(bot_instance.workspace_path))
+    candidates.extend([
+        f"/home/ubuntu/users/guest_hermes_{client_user_id}",
+        f"/home/ubuntu/users/guest_{client_user_id}",
+    ])
+    users_root = os.path.abspath("/home/ubuntu/users")
+    for candidate in candidates:
+        abs_candidate = os.path.abspath(candidate)
+        if not abs_candidate.startswith(users_root + os.sep):
+            logger.warning("Rejected coach workspace path outside users root: %s", candidate)
+            continue
+        if os.path.exists(abs_candidate):
+            return abs_candidate
+    raise HTTPException(status_code=404, detail="Client workspace directory not found.")
+
+
+async def require_coach_review_access(client_user_id: int, token: str) -> tuple[User, BotInstance | None]:
+    """Validate coach token and client consent/eligibility before workspace access."""
+    if token != COACH_ACCESS_TOKEN:
+        raise HTTPException(status_code=401, detail="Unauthorized access token.")
+
+    async with async_session_factory() as session:
+        user_res = await session.execute(select(User).where(User.id == client_user_id))
+        user = user_res.scalar_one_or_none()
+        if user is None:
+            raise HTTPException(status_code=404, detail="Client not found.")
+        if not user_has_active_coach_review_access(user):
+            raise HTTPException(status_code=403, detail=COACH_REVIEW_FORBIDDEN_DETAIL)
+        bot_res = await session.execute(select(BotInstance).where(BotInstance.user_id == client_user_id))
+        bot_instance = bot_res.scalar_one_or_none()
+        return user, bot_instance
 
 
 @app.post("/api/coach/review")
@@ -457,14 +516,8 @@ async def coach_review(payload: CoachReviewRequest):
     Secure endpoint for certified coach Becca to review client deconditioning metrics.
     Retrieves client chart data, next step task states, and the last 15 journal entries.
     """
-    if payload.token != COACH_ACCESS_TOKEN:
-        raise HTTPException(status_code=401, detail="Unauthorized access token.")
-        
-    user_dir = f"/home/ubuntu/users/guest_hermes_{payload.client_user_id}"
-    if not os.path.exists(user_dir):
-        user_dir = f"/home/ubuntu/users/guest_{payload.client_user_id}"
-    if not os.path.exists(user_dir):
-         raise HTTPException(status_code=404, detail="Client workspace directory not found.")
+    _, bot_instance = await require_coach_review_access(payload.client_user_id, payload.token)
+    user_dir = safe_client_workspace_path(payload.client_user_id, bot_instance)
     
     # 1. Retrieve Human Design chart data
     chart_data = {}
@@ -551,12 +604,14 @@ async def get_coach_clients(token: str):
         raise HTTPException(status_code=401, detail="Unauthorized access token.")
         
     async with async_session_factory() as session:
+        now = datetime.now(timezone.utc)
         result = await session.execute(
             select(User)
             .where(User.is_premium == True)
             .where(User.subscription_status == "active")
             .where(User.coach_review_consent == True)
             .where(User.coach_review_consent_revoked_at == None)
+            .where(or_(User.coaching_container_end == None, User.coaching_container_end >= now))
         )
         users = result.scalars().all()
         
@@ -586,14 +641,8 @@ class UpdateStepsRequest(BaseModel):
 @app.post("/api/coach/update_steps")
 async def coach_update_steps(payload: UpdateStepsRequest):
     """Writes updated deconditioning homework directly to the user's workspace json file."""
-    if payload.token != COACH_ACCESS_TOKEN:
-        raise HTTPException(status_code=401, detail="Unauthorized access token.")
-        
-    user_dir = f"/home/ubuntu/users/guest_hermes_{payload.client_user_id}"
-    if not os.path.exists(user_dir):
-        user_dir = f"/home/ubuntu/users/guest_{payload.client_user_id}"
-    if not os.path.exists(user_dir):
-        raise HTTPException(status_code=404, detail="Client workspace directory not found.")
+    _, bot_instance = await require_coach_review_access(payload.client_user_id, payload.token)
+    user_dir = safe_client_workspace_path(payload.client_user_id, bot_instance)
         
     next_steps_path = os.path.join(user_dir, "guest_next_steps.json")
     try:

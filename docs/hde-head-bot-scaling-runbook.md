@@ -67,6 +67,10 @@ python3 scripts/hde_telegram_media_watch.py --since now --expect-documents 2 --w
 
 Then the tester completes the comparison flow in Telegram. The watcher passes only when router logs show at least two successful document uploads, Redis chat/media pending counts are zero, router metrics are healthy, and no recent router error lines appear. It redacts token-shaped strings in log snippets.
 
+## Coach review consent gate
+
+Coach dashboard APIs must not treat the coach token as sufficient authority to read or mutate client workspaces. `/api/coach/clients`, `/api/coach/review`, and `/api/coach/update_steps` gate access to active premium users with `coach_review_consent=true`, `coach_review_consent_revoked_at is null`, and a non-expired coaching window when `coaching_container_end` is set. The review/update endpoints run this database eligibility check before resolving or reading any `/home/ubuntu/users/...` workspace path.
+
 ## Current router backpressure controls
 
 Environment knobs:
