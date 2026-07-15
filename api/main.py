@@ -13,6 +13,7 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
 from .routes import router as v1_router
+from .routes.stripe_webhook import router as stripe_webhook_router
 from shared.database import close_db, init_db
 from shared.redis_client import get_redis
 
@@ -97,6 +98,7 @@ app.add_middleware(
 # ---------------------------------------------------------------------------
 
 app.include_router(v1_router)
+app.include_router(stripe_webhook_router)
 
 
 # ---------------------------------------------------------------------------
