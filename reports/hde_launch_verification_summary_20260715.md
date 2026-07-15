@@ -85,9 +85,9 @@ This is a branch-shape caveat, not a build failure. This `deploy-fresh` / checkp
 
 ## Live Telegram media proof
 
-**Status:** 🟡 blocked / pending live user message.
+**Status:** 🟡 blocked / timed out waiting for live user message.
 
-Watcher started:
+Watcher command:
 
 ```bash
 python3 scripts/hde_telegram_media_watch.py --since now --expect-documents 2 --watch-seconds 1200 --interval 10 --guest-id 23 --pretty
@@ -99,7 +99,21 @@ Watcher session:
 proc_3e448aceea09
 ```
 
-Required live prompt:
+Exit summary:
+
+| Field | Result |
+|---|---:|
+| Expected documents | `2` |
+| Document log lines | `0` |
+| Successful document sends | `0` |
+| Router status | `ok` |
+| Media pending | `0` |
+| Chat pending | `0` |
+| Redis enabled | `true` |
+| Healthy guest containers | `2` |
+| Fresh error lines | `0` |
+
+Required live prompt remains:
 
 ```text
 Compare me and Becca
@@ -111,15 +125,7 @@ Bot:
 @Humandesigncompanionbot
 ```
 
-Pass criteria:
-
-- at least 2 successful Telegram `sendDocument` calls
-- media queue drains to `0`
-- chat queue drains to `0`
-- router metrics remain healthy
-- no fresh post-watch-start router delivery errors
-
-At last poll, the watcher was still running with no output. Do **not** call this launch GREEN until this proof completes.
+Do **not** call this launch GREEN until the watcher sees at least 2 successful Telegram `sendDocument` calls and clean queue drain after the live prompt.
 
 ## Verification commands run
 
@@ -135,13 +141,13 @@ At last poll, the watcher was still running with no output. Do **not** call this
 
 ## Remaining risks and blockers
 
-1. 🟡 **Live Telegram media proof pending.** The watcher is running, but the live `Compare me and Becca` message has not produced proof yet.
+1. 🟡 **Live Telegram media proof timed out.** The watcher exited after 1200 seconds with zero document sends. Rerun it and send `Compare me and Becca` before marking launch GREEN.
 2. 🟡 **Frontend build skipped on this branch.** `package.json` is absent on this `deploy-fresh` / checkpoint-derived branch. Verify build from the frontend-bearing branch before frontend launch claims.
 3. 🟡 **Router support scripts were restored onto this branch.** The router needed `hde_rate_limits.py`, `hde_job_queue.py`, `hde_usage_budgets.py`, and `hde_router_metrics.py` present to stay active. Keep those in the pushed branch or merge target.
 
 ## Launch recommendation
 
-🟡 **YELLOW** — server-side runtime, router, Redis queues, Telegram identity, guest canary, and service health are good. Launch should not be marked GREEN until live Telegram media proof completes successfully.
+🟡 **YELLOW** — server-side runtime, router, Redis queues, Telegram identity, guest canary, and service health are good. Launch should not be marked GREEN until live Telegram media proof is rerun and completes successfully.
 
 ## No secrets included
 

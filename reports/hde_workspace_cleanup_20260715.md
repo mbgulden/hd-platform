@@ -116,7 +116,7 @@ Good. Remote review history stays findable. Local clutter gets out of the way.
 
 - Server-side HDE runtime evidence is healthy in the fresh launch report.
 - Launch remains 🟡 **YELLOW** until live Telegram media proof completes.
-- Watcher session at cleanup time: `proc_3e448aceea09`.
+- Watcher session `proc_3e448aceea09` later timed out with 0 document sends; rerun it before marking launch GREEN.
 - Required live prompt remains:
 
 ```text

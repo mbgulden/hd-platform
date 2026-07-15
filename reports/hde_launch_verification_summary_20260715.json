@@ -10,7 +10,7 @@
   },
   "launch_recommendation": {
     "status": "YELLOW",
-    "reason": "Server-side launch checks are healthy, but live Telegram media proof is still pending; watcher is running and waiting for the live Compare me and Becca prompt."
+    "reason": "Server-side launch checks are healthy, but live Telegram media proof timed out with no live document sends; still waiting for the live Compare me and Becca prompt."
   },
   "service_health": {
     "hde_router_service": "active",
@@ -60,7 +60,7 @@
     "reason": "package.json missing on this deploy-fresh/checkpoint-derived branch; branch-shape caveat, not a build failure"
   },
   "live_telegram_media_proof": {
-    "status": "blocked_pending_user_message",
+    "status": "blocked_timeout_no_live_message",
     "watcher_session": "proc_3e448aceea09",
     "watcher_command": "python3 scripts/hde_telegram_media_watch.py --since now --expect-documents 2 --watch-seconds 1200 --interval 10 --guest-id 23 --pretty",
     "expected_prompt": "Compare me and Becca",
@@ -72,7 +72,15 @@
       "router metrics remain healthy",
       "no fresh post-watch-start router delivery errors"
     ],
-    "current_state": "watcher running with no output yet at last poll; waiting for live Telegram prompt"
+    "current_state": "watcher exited after 1200 seconds with 0 document log lines and 0 successful document sends; router stayed ok, Redis pending queues stayed 0, guest containers healthy, and no fresh error lines appeared",
+    "document_log_lines": 0,
+    "successful_document_log_lines": 0,
+    "router_status_at_exit": "ok",
+    "media_pending_at_exit": 0,
+    "chat_pending_at_exit": 0,
+    "redis_enabled_at_exit": true,
+    "guest_containers_healthy_at_exit": 2,
+    "fresh_error_lines_at_exit": []
   },
   "verification_commands": [
     {
@@ -101,7 +109,7 @@
     }
   ],
   "remaining_risks_and_blockers": [
-    "Live Telegram media proof is not complete yet; do not mark GREEN until the watcher sees the live Compare me and Becca flow deliver two documents and queues drain.",
+    "Live Telegram media proof timed out without a live user prompt/document delivery; rerun the watcher and send Compare me and Becca to @Humandesigncompanionbot before marking GREEN.",
     "Build command is skipped on this branch because package.json is missing; verify frontend build on a branch/checkout that contains package.json before frontend launch claims.",
     "Router support scripts had to be restored onto this branch to keep hde_router.service active; ensure they remain in the pushed branch or a downstream merge target."
   ],

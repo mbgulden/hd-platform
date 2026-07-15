@@ -71,7 +71,7 @@
   "final_expected_state": {
     "worktrees": "single worktree at /home/ubuntu/work/hd-platform-staging",
     "repo_status": "clean except this cleanup report until committed",
-    "live_proof": "Telegram media watcher still pending user prompt at cleanup time"
+    "live_proof": "Telegram media watcher timed out with zero document sends; live proof still pending a real Compare me and Becca prompt"
   },
   "safety_notes": [
     "No .env files, database dumps, Redis dumps, or runtime customer data were committed.",
