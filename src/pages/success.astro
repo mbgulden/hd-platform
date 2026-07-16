@@ -13,18 +13,23 @@ const calLink = emdash.global.coachingCalLink || 'becca-gulden/coaching';
   <main class="container">
     <div class="success-card" data-cal-link={calLink}>
       <div class="icon-wrap">✨</div>
-      <h1>Your Vessel is Registered</h1>
-      <p class="subtitle">Observe the mind, validate the centers, and return response to the physical vessel.</p>
+      <h1>You’re in.</h1>
+      <p class="subtitle">Nothing else to figure out right now. We’ll show you one step at a time.</p>
+      <div class="test-consent-note">
+        <strong>Family/staging test note:</strong> Michael and Ned may review test conversations, generated chart artifacts, stuck states, and feedback to improve the Sanctuary bot experience. This applies to this staging test round and is separate from production customer privacy.
+      </div>
       
       <!-- Somatic Breathing Mandala -->
       <div class="breathing-container">
-        <img src="/somatic_mandala.png" class="breathing-mandala" id="breathingMandala" alt="Somatic breathing mandala" />
+        <img src="/somatic_mandala.png?v=box-breathing-transparent-20260716" class="breathing-mandala" id="breathingMandala" alt="Somatic breathing mandala" />
         <p class="breathing-instruction" id="breathingText">Inhale...</p>
       </div>
 
-      <div class="onboarding-action" id="onboardingAction">
-        <p class="status-text">Activating your container... please do not close this window.</p>
-        <div class="spinner"></div>
+      <div class="onboarding-action" id="onboardingAction" aria-live="polite">
+        <p class="step-label">Next step</p>
+        <p class="status-text">We’re finding your personal Telegram link.</p>
+        <p class="helper-text">You can breathe. If this takes a moment, nothing is wrong.</p>
+        <div class="spinner" aria-hidden="true"></div>
       </div>
 
       <!-- Cal.com Scheduling Widget (Conditional) -->
@@ -38,11 +43,12 @@ const calLink = emdash.global.coachingCalLink || 'becca-gulden/coaching';
 
       <!-- Fallback Email Form -->
       <div class="fallback-form" id="fallbackForm">
-        <h3>Retrieve Onboarding Link</h3>
-        <p>If your bot activation link didn't load automatically, enter your email below to retrieve it.</p>
+        <p class="step-label">Next step</p>
+        <h3>Enter your purchase email</h3>
+        <p>We’ll find your Telegram link. No timer. No pressure. Use the same email you used at checkout.</p>
         <form id="emailForm">
-          <input type="email" id="emailInput" placeholder="you@email.com" required />
-          <button type="submit">Get Link</button>
+          <input type="email" id="emailInput" placeholder="you@email.com" autocomplete="email" required />
+          <button type="submit">Find my link</button>
         </form>
         <p class="error-msg" id="onboardingError"></p>
       </div>
@@ -84,11 +90,27 @@ const calLink = emdash.global.coachingCalLink || 'becca-gulden/coaching';
     color: var(--text-secondary);
     font-style: italic;
     font-size: 1.05rem;
-    margin-bottom: 40px;
+    margin-bottom: 18px;
     line-height: 1.5;
   }
+  .test-consent-note {
+    background: #FDFBF7;
+    border: 1px solid var(--card-border);
+    border-left: 4px solid var(--sage-deep);
+    border-radius: var(--radius);
+    color: var(--text-secondary);
+    font-size: 0.9rem;
+    line-height: 1.5;
+    margin: 0 auto 36px;
+    max-width: 560px;
+    padding: 14px 16px;
+    text-align: left;
+  }
+  .test-consent-note strong {
+    color: var(--sage-deep);
+  }
 
-  /* Breathing Circle Animation */
+  /* Real 4-4-4-4 box breathing animation */
   .breathing-container {
     margin-bottom: 40px;
     display: flex;
@@ -99,17 +121,38 @@ const calLink = emdash.global.coachingCalLink || 'becca-gulden/coaching';
     width: 140px;
     height: 140px;
     object-fit: contain;
-    mix-blend-mode: multiply;
-    transition: transform 4s cubic-bezier(0.4, 0, 0.2, 1), opacity 4s cubic-bezier(0.4, 0, 0.2, 1);
-    transform: scale(0.8);
-    opacity: 0.6;
+    background: transparent;
+    mix-blend-mode: normal;
+    transform: scale(0.82) rotate(0deg);
+    opacity: 0.68;
     filter: drop-shadow(0 4px 12px var(--sage-glow));
+    will-change: transform, opacity;
+    transition:
+      transform 4s cubic-bezier(0.45, 0, 0.20, 1),
+      opacity 4s cubic-bezier(0.45, 0, 0.20, 1);
+  }
+  .breathing-mandala.phase-inhale,
+  .breathing-mandala.phase-hold-full {
+    transform: scale(1.14) rotate(8deg);
+    opacity: 1;
+  }
+  .breathing-mandala.phase-exhale,
+  .breathing-mandala.phase-hold-empty {
+    transform: scale(0.82) rotate(0deg);
+    opacity: 0.68;
   }
   .breathing-instruction {
     margin-top: 16px;
     font-weight: 500;
     color: var(--sage-mid);
     font-size: 0.95rem;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .breathing-mandala {
+      transition: opacity 400ms ease;
+      transform: scale(1);
+    }
   }
 
   .onboarding-action {
@@ -124,9 +167,32 @@ const calLink = emdash.global.coachingCalLink || 'becca-gulden/coaching';
     gap: 16px;
   }
   .status-text {
-    font-size: 0.95rem;
+    font-size: 1.05rem;
     color: var(--text-primary);
-    font-weight: 500;
+    font-weight: 650;
+    margin: 0;
+  }
+  .step-label {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    align-self: center;
+    padding: 5px 12px;
+    border-radius: 999px;
+    background: rgba(95, 114, 97, 0.12);
+    color: var(--sage-deep);
+    font-size: 0.72rem;
+    font-weight: 800;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    margin: 0 0 2px;
+  }
+  .helper-text {
+    margin: 0;
+    max-width: 460px;
+    color: var(--text-secondary);
+    font-size: 0.92rem;
+    line-height: 1.55;
   }
   .spinner {
     width: 24px;
@@ -139,17 +205,32 @@ const calLink = emdash.global.coachingCalLink || 'becca-gulden/coaching';
   
   .btn-launch {
     display: inline-block;
-    padding: 14px 28px;
+    width: min(100%, 360px);
+    padding: 16px 28px;
     background: var(--sage-deep);
     color: var(--cream-bg);
     text-decoration: none;
-    font-weight: 600;
+    font-weight: 700;
     border-radius: 30px;
     transition: var(--transition);
+    font-size: 1.02rem;
   }
   .btn-launch:hover {
     background: var(--sage-mid);
     transform: translateY(-1px);
+  }
+  .btn-secondary {
+    border: 1px solid var(--card-border);
+    background: var(--white);
+    color: var(--sage-deep);
+    border-radius: 999px;
+    padding: 11px 18px;
+    font-weight: 700;
+    cursor: pointer;
+    font-family: inherit;
+  }
+  .btn-secondary:hover {
+    border-color: var(--sage-mid);
   }
 
   .fallback-form {
@@ -210,25 +291,29 @@ const calLink = emdash.global.coachingCalLink || 'becca-gulden/coaching';
 </style>
 
 <script>
-  // Somatic Breathing Pacing Loop (4s inhale, 4s exhale)
+  // Real box breathing loop: inhale 4s, hold 4s, exhale 4s, hold 4s.
   const mandala = document.getElementById('breathingMandala');
   const text = document.getElementById('breathingText');
-  let inhale = true;
+  const breathingPhases = [
+    { className: 'phase-inhale', label: 'Inhale — 4' },
+    { className: 'phase-hold-full', label: 'Hold — 4' },
+    { className: 'phase-exhale', label: 'Exhale — 4' },
+    { className: 'phase-hold-empty', label: 'Hold — 4' }
+  ];
+  let breathingPhaseIndex = 0;
+
+  const applyBreathingPhase = () => {
+    if (!mandala || !text) return;
+    const phase = breathingPhases[breathingPhaseIndex];
+    mandala.classList.remove(...breathingPhases.map((item) => item.className));
+    mandala.classList.add(phase.className);
+    text.textContent = phase.label;
+    breathingPhaseIndex = (breathingPhaseIndex + 1) % breathingPhases.length;
+  };
 
   if (mandala && text) {
-    setInterval(() => {
-      if (inhale) {
-        mandala.style.transform = 'scale(1.15) rotate(15deg)';
-        mandala.style.opacity = '1.0';
-        text.textContent = 'Hold... Exhale...';
-        inhale = false;
-      } else {
-        mandala.style.transform = 'scale(0.8) rotate(0deg)';
-        mandala.style.opacity = '0.6';
-        text.textContent = 'Inhale...';
-        inhale = true;
-      }
-    }, 4000);
+    applyBreathingPhase();
+    setInterval(applyBreathingPhase, 4000);
   }
 
   // Stripe Session Fetching and Redirect
@@ -242,6 +327,7 @@ const calLink = emdash.global.coachingCalLink || 'becca-gulden/coaching';
 
   const urlParams = new URLSearchParams(window.location.search);
   const sessionId = urlParams.get('session_id');
+  const emailParam = urlParams.get('email');
 
   const loadCalWidget = (calendarPath: string, clientName: string, clientEmail: string) => {
     const w = window as any;
@@ -287,35 +373,48 @@ const calLink = emdash.global.coachingCalLink || 'becca-gulden/coaching';
       
       const data = await response.json();
       
-      // If client has premium tier, mount Cal.com widget inline
-      if (data.is_premium) {
-        const calContainer = document.getElementById('calContainer');
-        if (calContainer) {
-          calContainer.style.display = 'block';
-          loadCalWidget(calLink, data.name || 'Friend', data.email);
-        }
-      }
+      // Sovereign users schedule after the Telegram sanctuary is active.
+      // Do not show the calendar alongside the first onboarding step.
 
       if (data.deep_link) {
         if (onboardingContainer) {
           onboardingContainer.innerHTML = `
-            <p class="status-text" style="color: var(--sage-mid); font-weight: 600;">✨ Onboarding Link Generated!</p>
-            <a class="btn-launch" href="${data.deep_link}" target="_blank" rel="noopener">
-              🤖 Launch Telegram Onboarding Bot
+            <p class="step-label">Next step</p>
+            <p class="status-text" style="color: var(--sage-mid);">Open your private Telegram sanctuary</p>
+            <a class="btn-launch" id="telegramLaunch" href="${data.deep_link}" target="_blank" rel="noopener">
+              Open Telegram
             </a>
-            <p style="font-size: 0.78rem; color: var(--text-secondary); margin-top: 8px;">
-              Click above to launch your companion. Link expires in 24 hours.
+            <p class="helper-text">
+              That is the only thing to do right now. The link does not expire; come back whenever you need. We’ll also email this step for reference.
             </p>
+            ${data.is_premium ? '<div id="calendarReveal" style="display:none;"><p class="helper-text">When Telegram is open, your next step is optional: schedule your first coaching integration.</p><button class="btn-secondary" id="showCalendarStep" type="button">Show my coaching calendar</button></div>' : ''}
           `;
+          if (data.is_premium) {
+            const telegramLaunch = document.getElementById('telegramLaunch');
+            const calendarReveal = document.getElementById('calendarReveal');
+            telegramLaunch?.addEventListener('click', () => {
+              if (calendarReveal) calendarReveal.style.display = 'block';
+            });
+            const showCalendar = document.getElementById('showCalendarStep');
+            showCalendar?.addEventListener('click', () => {
+              const calContainer = document.getElementById('calContainer');
+              if (calContainer) {
+                calContainer.style.display = 'block';
+                loadCalWidget(calLink, data.name || 'Friend', data.email);
+                calContainer.scrollIntoView({ behavior: 'smooth', block: 'start' });
+              }
+            });
+          }
         }
         if (fallback) fallback.style.display = 'none';
       } else {
         // Report purchase successful
         if (onboardingContainer) {
           onboardingContainer.innerHTML = `
-            <p class="status-text" style="color: var(--sage-mid); font-weight: 600;">✨ Custom PDF Blueprint Purchased!</p>
-            <p style="font-size: 0.92rem; color: var(--text-secondary); text-align: center; line-height: 1.6;">
-              Your customized Human Design report has been computed and sent to <strong>${data.email}</strong>. Please check your inbox (and spam folder) in a few minutes.
+            <p class="step-label">Next step</p>
+            <p class="status-text" style="color: var(--sage-mid);">Check your email</p>
+            <p class="helper-text">
+              Your Human Design report is being sent to <strong>${data.email}</strong>. If you do not see it, check spam or come back here later.
             </p>
           `;
         }
@@ -324,9 +423,10 @@ const calLink = emdash.global.coachingCalLink || 'becca-gulden/coaching';
     } catch (err) {
       if (onboardingContainer) {
         onboardingContainer.innerHTML = `
-          <p class="status-text" style="color: #cc3333;">⚠️ Verification Pending</p>
-          <p style="font-size: 0.85rem; color: var(--text-secondary); text-align: center;">
-            We couldn't automatically verify your payment session yet. Your bank may still be finalizing.
+          <p class="step-label">Next step</p>
+          <p class="status-text">Enter your purchase email below</p>
+          <p class="helper-text">
+            Your payment may still be finalizing. Nothing is lost. Use the same email from checkout and we’ll find your link.
           </p>
         `;
       }
@@ -336,6 +436,8 @@ const calLink = emdash.global.coachingCalLink || 'becca-gulden/coaching';
 
   if (sessionId) {
     fetchOnboardingLink(sessionId, true);
+  } else if (emailParam) {
+    fetchOnboardingLink(emailParam, false);
   } else {
     if (onboardingContainer) onboardingContainer.style.display = 'none';
     if (fallback) fallback.style.display = 'block';
@@ -346,6 +448,16 @@ const calLink = emdash.global.coachingCalLink || 'becca-gulden/coaching';
       e.preventDefault();
       const email = (document.getElementById('emailInput') as HTMLInputElement).value.trim();
       if (email) {
+        if (errorMsg) errorMsg.style.display = 'none';
+        if (onboardingContainer) {
+          onboardingContainer.style.display = 'flex';
+          onboardingContainer.innerHTML = `
+            <p class="step-label">Next step</p>
+            <p class="status-text">Finding your Telegram link</p>
+            <p class="helper-text">Stay on this page if you want, or come back later. Nothing expires.</p>
+            <div class="spinner" aria-hidden="true"></div>
+          `;
+        }
         fetchOnboardingLink(email, false);
       }
     });

@@ -76,17 +76,16 @@ def _save_order(order):
 # ── HTML/CSS Report Templates ────────────────────────────────────────
 CSS = """
 <style>
-  @import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&family=Playfair+Display:wght@400;600;700&display=swap');
   * { margin: 0; padding: 0; box-sizing: border-box; }
-  body { font-family: 'Outfit', -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif; background: #FAF7F0; color: #2F3631; line-height: 1.7; font-size: 11pt; }
+  body { font-family: Arial, Helvetica, sans-serif; background: #FAF7F0; color: #2F3631; line-height: 1.7; font-size: 11pt; }
   .cover { min-height: 100vh; display: flex; flex-direction: column; justify-content: center; align-items: center; text-align: center; background: #FAF7F0; color: #2F3631; padding: 60px 40px; border: 28px solid #2F3631; }
-  .cover h1 { font-family: 'Playfair Display', Georgia, serif; font-size: 42pt; margin-bottom: 16px; font-weight: 600; color: #2F3631; }
+  .cover h1 { font-family: Georgia, 'Times New Roman', serif; font-size: 42pt; margin-bottom: 16px; font-weight: 600; color: #2F3631; }
   .cover .subtitle { font-size: 18pt; color: #5C625E; margin-bottom: 8px; }
   .cover .meta { font-size: 12pt; color: #808682; margin-top: 40px; }
   .cover .brand { font-size: 10pt; color: #5F7261; margin-top: 20px; text-transform: uppercase; letter-spacing: 1.8px; }
   .page { padding: 50px 60px; page-break-after: always; background: #FAF7F0; }
   .page:last-child { page-break-after: avoid; }
-  h2 { font-family: 'Playfair Display', Georgia, serif; font-size: 24pt; color: #2F3631; margin: 30px 0 14px; padding-bottom: 8px; border-bottom: 2px solid rgba(95,114,97,.15); font-weight: 600; }
+  h2 { font-family: Georgia, 'Times New Roman', serif; font-size: 24pt; color: #2F3631; margin: 30px 0 14px; padding-bottom: 8px; border-bottom: 2px solid rgba(95,114,97,.15); font-weight: 600; }
   h3 { font-size: 14pt; color: #5F7261; margin: 20px 0 10px; font-weight: 600; }
   .section-intro { color: #5C625E; font-style: italic; margin-bottom: 16px; }
   .stat-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 16px; margin: 20px 0; }
@@ -1059,13 +1058,33 @@ def build_transit_report(natal: dict, overlay: dict, solar_forecast: list = None
 
 # ── PDF Generation ────────────────────────────────────────────────────
 
+def _pdf_safe_html(html_content: str) -> str:
+    """Return renderer-safe HTML with extractable text for wkhtmltopdf.
+
+    wkhtmltopdf can render remote web fonts and emoji/pictograph glyphs as
+    non-Unicode vector glyphs. The PDF looks like a report but `pdftotext`
+    returns nearly blank/junk, which makes automated QA and searchable PDFs
+    useless. Keep the HTML content, but strip decorative pictographs and force
+    system fonts before handing it to the PDF renderer.
+    """
+    decorative = str.maketrans({
+        "🎯": "", "🧭": "", "🌿": "", "🕰": "", "✨": "", "🔮": "",
+        "🌊": "", "🔗": "", "🧬": "", "🪐": "", "✝": "", "🚀": "",
+        "☀": "", "🗓": "",
+        "️": "",
+    })
+    cleaned = html_content.translate(decorative)
+    return cleaned
+
+
 def html_to_pdf(html_content: str, output_path: Path) -> Path:
     """Convert HTML to PDF using wkhtmltopdf."""
     html_path = output_path.with_suffix('.html')
-    html_path.write_text(html_content)
+    html_path.write_text(_pdf_safe_html(html_content), encoding="utf-8")
 
     result = subprocess.run(
         ["wkhtmltopdf", "--quiet", "--enable-local-file-access",
+         "--encoding", "utf-8",
          "--page-size", "Letter", "--margin-top", "0", "--margin-bottom", "0",
          "--margin-left", "0", "--margin-right", "0",
          "--no-stop-slow-scripts", "--javascript-delay", "1000",

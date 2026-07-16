@@ -110,6 +110,27 @@
     .auth-btn:hover {
       background: var(--sage-mid);
     }
+    .auth-status {
+      background: #FDFBF7;
+      border: 1px solid var(--card-border);
+      border-radius: var(--radius);
+      color: var(--text-secondary);
+      font-size: 0.82rem;
+      line-height: 1.45;
+      margin: 0 0 16px;
+      padding: 12px;
+      text-align: left;
+    }
+    .auth-status.ok {
+      background: rgba(95, 114, 97, 0.10);
+      border-color: rgba(95, 114, 97, 0.25);
+      color: var(--sage-deep);
+    }
+    .auth-status.warn {
+      background: #FFF8E8;
+      border-color: #E9D7A8;
+      color: #735A1C;
+    }
 
     /* ---- MAIN DASHBOARD ---- */
     .sidebar {
@@ -369,8 +390,9 @@
   <div id="authOverlay">
     <div class="auth-card">
       <h2>Becca's Coach Portal</h2>
-      <p>Please enter your access token to view client records and assign deconditioning experiments.</p>
-      <input type="password" id="tokenInput" class="auth-input" placeholder="Access Token">
+      <p>Sign in through Cloudflare Access, or enter the legacy access token if you are working locally.</p>
+      <div id="authStatus" class="auth-status">Checking Cloudflare Access session…</div>
+      <input type="password" id="tokenInput" class="auth-input" placeholder="Legacy Access Token">
       <button class="auth-btn" onclick="submitAuth()">Enter Dashboard</button>
     </div>
   </div>
@@ -397,12 +419,48 @@
   <script>
     let coachToken = sessionStorage.getItem("COACH_ACCESS_TOKEN") || "";
 
-    window.addEventListener("load", () => {
+    window.addEventListener("load", initializeAuth);
+
+    async function initializeAuth() {
+      const status = document.getElementById("authStatus");
       if (coachToken) {
+        if (status) {
+          status.className = "auth-status ok";
+          status.textContent = "Using stored legacy token for this browser session.";
+        }
         document.getElementById("authOverlay").classList.add("hidden");
         loadClients();
+        return;
       }
-    });
+      try {
+        const resp = await fetch("/api/coach/session", { credentials: "same-origin" });
+        if (resp.ok) {
+          const session = await resp.json();
+          coachToken = "";
+          if (status) {
+            status.className = "auth-status ok";
+            status.textContent = `Cloudflare Access detected for ${session.email || "approved coach"}. Loading clients…`;
+          }
+          document.getElementById("authOverlay").classList.add("hidden");
+          const subtitle = document.querySelector(".sidebar-header p");
+          if (subtitle && session.email) subtitle.textContent = `Cloudflare Access: ${session.email}`;
+          loadClients();
+          return;
+        }
+        if (status) {
+          status.className = "auth-status warn";
+          status.textContent = resp.status === 401
+            ? "Cloudflare Access identity was not detected on this request. If you expected email login, the Access policy for /coach/* and /api/coach/* is not matching yet. Legacy token fallback remains available."
+            : `Cloudflare session check returned HTTP ${resp.status}. Legacy token fallback remains available.`;
+        }
+      } catch (err) {
+        console.info("Cloudflare Access session not detected; legacy token entry remains available.");
+        if (status) {
+          status.className = "auth-status warn";
+          status.textContent = "Could not check the Cloudflare Access session. Legacy token fallback remains available.";
+        }
+      }
+    }
 
     function submitAuth() {
       const val = document.getElementById("tokenInput").value.trim();
@@ -418,7 +476,7 @@
       container.innerHTML = `<div style="text-align: center; color: var(--text-secondary); font-size: 0.9rem;">Loading client profiles...</div>`;
       
       try {
-        const resp = await fetch(`/api/coach/clients?token=${encodeURIComponent(coachToken)}`);
+        const resp = await fetch(coachToken ? `/api/coach/clients?token=${encodeURIComponent(coachToken)}` : "/api/coach/clients");
         if (resp.status === 401) {
           alert("Invalid Access Token.");
           sessionStorage.removeItem("COACH_ACCESS_TOKEN");
@@ -474,7 +532,7 @@
         const resp = await fetch("/api/coach/review", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ client_user_id: clientId, token: coachToken })
+          body: JSON.stringify({ client_user_id: clientId, token: coachToken || "" })
         });
         
         if (!resp.ok) {
@@ -606,7 +664,7 @@
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({
             client_user_id: activeClientId,
-            token: coachToken,
+            token: coachToken || "",
             steps: steps
           })
         });
