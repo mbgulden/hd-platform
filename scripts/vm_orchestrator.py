@@ -27,7 +27,11 @@ app = FastAPI(
 
 # ── Shared Secrets & Templates Config ──────────────────────────────────
 SHARED_SECRET = os.getenv("ORCHESTRATOR_SHARED_SECRET", "default_shared_secret")
-TEMPLATE_DIR = os.getenv("TEMPLATE_DIR", "/home/ubuntu/guest_hermes_bot")
+REPO_GUEST_TEMPLATE_DIR = Path(__file__).resolve().parent / "guest_hermes_template"
+TEMPLATE_DIR = os.getenv(
+    "TEMPLATE_DIR",
+    str(REPO_GUEST_TEMPLATE_DIR if REPO_GUEST_TEMPLATE_DIR.exists() else Path("/home/ubuntu/guest_hermes_bot")),
+)
 
 class OrchestrationPayload(BaseModel):
     user_id: int
@@ -446,11 +450,41 @@ OHDMCP_SOURCE_PATH=/home/ubuntu/work/OpenHumanDesignMCP
 
 class CoachReviewRequest(BaseModel):
     client_user_id: int
-    token: str
+    token: str = ""
 
 
 COACH_ACCESS_TOKEN = os.getenv("COACH_ACCESS_TOKEN", "coach_secret_access_key_change_me_in_production")
 COACH_REVIEW_FORBIDDEN_DETAIL = "Coach review consent or eligibility required."
+COACH_ACCESS_ALLOWED_EMAILS = {
+    email.strip().lower()
+    for email in os.getenv(
+        "COACH_ACCESS_ALLOWED_EMAILS",
+        "mbgulden@gmail.com,becca.gulden@gmail.com",
+    ).split(",")
+    if email.strip()
+}
+
+
+def cloudflare_access_email(request: Request | None) -> str | None:
+    """Return the Cloudflare Access-authenticated email when the request is Access-backed."""
+    if request is None:
+        return None
+    # Cloudflare Access injects these headers after policy auth. Requiring the
+    # JWT header prevents a bare email header from acting as auth if the route is
+    # ever hit without Access in front of it.
+    if not request.headers.get("cf-access-jwt-assertion"):
+        return None
+    email = (request.headers.get("cf-access-authenticated-user-email") or "").strip().lower()
+    if email and email in COACH_ACCESS_ALLOWED_EMAILS:
+        return email
+    return None
+
+
+def request_has_coach_portal_access(token: str | None, request: Request | None) -> bool:
+    """Allow either the legacy dashboard token or Cloudflare Access email auth."""
+    if token and hmac.compare_digest(token, COACH_ACCESS_TOKEN):
+        return True
+    return cloudflare_access_email(request) is not None
 
 
 def user_has_active_coach_review_access(user: User) -> bool:
@@ -493,9 +527,9 @@ def safe_client_workspace_path(client_user_id: int, bot_instance: BotInstance | 
     raise HTTPException(status_code=404, detail="Client workspace directory not found.")
 
 
-async def require_coach_review_access(client_user_id: int, token: str) -> tuple[User, BotInstance | None]:
-    """Validate coach token and client consent/eligibility before workspace access."""
-    if token != COACH_ACCESS_TOKEN:
+async def require_coach_review_access(client_user_id: int, token: str, request: Request | None = None) -> tuple[User, BotInstance | None]:
+    """Validate coach token or Cloudflare Access email and client eligibility before workspace access."""
+    if not request_has_coach_portal_access(token, request):
         raise HTTPException(status_code=401, detail="Unauthorized access token.")
 
     async with async_session_factory() as session:
@@ -511,12 +545,12 @@ async def require_coach_review_access(client_user_id: int, token: str) -> tuple[
 
 
 @app.post("/api/coach/review")
-async def coach_review(payload: CoachReviewRequest):
+async def coach_review(payload: CoachReviewRequest, request: Request):
     """
     Secure endpoint for certified coach Becca to review client deconditioning metrics.
     Retrieves client chart data, next step task states, and the last 15 journal entries.
     """
-    _, bot_instance = await require_coach_review_access(payload.client_user_id, payload.token)
+    _, bot_instance = await require_coach_review_access(payload.client_user_id, payload.token, request)
     user_dir = safe_client_workspace_path(payload.client_user_id, bot_instance)
     
     # 1. Retrieve Human Design chart data
@@ -586,6 +620,10 @@ async def coach_review(payload: CoachReviewRequest):
 @app.get("/coach/dashboard", response_class=HTMLResponse)
 async def get_coach_dashboard():
     """Serves the coach dashboard HTML page from templates/landing folder."""
+    dashboard_path = "/home/ubuntu/work/hd-platform-staging/landing/coach_dashboard.html"
+    if os.path.exists(dashboard_path):
+        with open(dashboard_path, "r", encoding="utf-8") as f:
+            return HTMLResponse(content=f.read())
     dashboard_path = "/home/ubuntu/work/hd-platform/landing/coach_dashboard.html"
     if os.path.exists(dashboard_path):
         with open(dashboard_path, "r", encoding="utf-8") as f:
@@ -597,10 +635,21 @@ async def get_coach_dashboard():
     raise HTTPException(status_code=404, detail="Dashboard UI template not found.")
 
 
+@app.get("/api/coach/session")
+async def get_coach_session(request: Request, token: str = ""):
+    """Report whether the caller is authorized by token or Cloudflare Access."""
+    cf_email = cloudflare_access_email(request)
+    if token and hmac.compare_digest(token, COACH_ACCESS_TOKEN):
+        return {"authenticated": True, "method": "token", "email": None}
+    if cf_email:
+        return {"authenticated": True, "method": "cloudflare_access", "email": cf_email}
+    raise HTTPException(status_code=401, detail="Unauthorized coach session.")
+
+
 @app.get("/api/coach/clients")
-async def get_coach_clients(token: str):
+async def get_coach_clients(request: Request, token: str = ""):
     """Retrieves all users marked as is_premium=True and their container statuses."""
-    if token != COACH_ACCESS_TOKEN:
+    if not request_has_coach_portal_access(token, request):
         raise HTTPException(status_code=401, detail="Unauthorized access token.")
         
     async with async_session_factory() as session:
@@ -634,14 +683,14 @@ async def get_coach_clients(token: str):
 
 class UpdateStepsRequest(BaseModel):
     client_user_id: int
-    token: str
+    token: str = ""
     steps: list[str]
 
 
 @app.post("/api/coach/update_steps")
-async def coach_update_steps(payload: UpdateStepsRequest):
+async def coach_update_steps(payload: UpdateStepsRequest, request: Request):
     """Writes updated deconditioning homework directly to the user's workspace json file."""
-    _, bot_instance = await require_coach_review_access(payload.client_user_id, payload.token)
+    _, bot_instance = await require_coach_review_access(payload.client_user_id, payload.token, request)
     user_dir = safe_client_workspace_path(payload.client_user_id, bot_instance)
         
     next_steps_path = os.path.join(user_dir, "guest_next_steps.json")

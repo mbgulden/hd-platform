@@ -231,6 +231,9 @@ def normalize_guide_name(text: str) -> tuple[str | None, str | None]:
     key = raw.lower().strip("./! ")
     if key in GUIDE_PRESETS:
         return GUIDE_PRESETS[key], "preset"
+    for preset_key, preset_name in GUIDE_PRESETS.items():
+        if re.fullmatch(rf"(?:let'?s\s+)?(?:do|use|pick|choose|go\s+with)\s+{re.escape(preset_key)}", key):
+            return preset_name, "preset"
     if key in {"3", "custom", "choose", "choose my own", "fill in the blank"}:
         return None, "custom_prompt"
     clean = " ".join(raw.replace("\n", " ").split())[:GUIDE_NAME_MAX_CHARS].strip(" .,;:!?@#")
@@ -276,7 +279,7 @@ async def provision_bot_instance(client: httpx.AsyncClient, chat_id: int, user: 
     try:
         target_url = f"{ORCHESTRATOR_URL}/api/orchestrate/provision"
         logger.info("Triggering VM container provisioning on %s...", target_url)
-        resp = await client.post(target_url, content=payload_bytes, headers=headers, timeout=25.0)
+        resp = await client.post(target_url, content=payload_bytes, headers=headers, timeout=float(os.getenv("HDE_ORCHESTRATOR_PROVISION_TIMEOUT_SECONDS", "180")))
         if resp.status_code == 200:
             api_success = True
             logger.info("VM container provisioned successfully for user %d.", user.id)

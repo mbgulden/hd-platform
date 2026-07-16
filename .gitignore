@@ -11,3 +11,8 @@ build/
 .dev.vars*
 !.dev.vars.example
 !.env.example
+
+# Generated HDE staging artifacts
+staging_database.db
+docs/hde-family-test-monitor.html
+docs/hde-family-test-monitor.json

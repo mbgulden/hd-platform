@@ -92,6 +92,8 @@ class User(Base):
     coach_review_consent_at: Mapped[Optional[datetime]] = mapped_column(DateTime(timezone=True), nullable=True)
     coach_review_consent_source: Mapped[Optional[str]] = mapped_column(String(100), nullable=True)
     coach_review_consent_revoked_at: Mapped[Optional[datetime]] = mapped_column(DateTime(timezone=True), nullable=True)
+    guide_name: Mapped[Optional[str]] = mapped_column(String(80), nullable=True)
+    guide_name_source: Mapped[Optional[str]] = mapped_column(String(50), nullable=True)
     created_at: Mapped[datetime] = mapped_column(
         DateTime(timezone=True),
         server_default=func.now(),

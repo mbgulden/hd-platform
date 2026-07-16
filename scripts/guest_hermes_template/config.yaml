@@ -1,0 +1,42 @@
+# Hardened Guest Hermes Configuration
+model:
+  provider: minimax
+  default: MiniMax-M3
+approvals:
+  mode: deny
+  rules: []
+
+# Disable native command execution and python runtime toolsets
+toolsets:
+  - name: native
+    enabled: false
+  - name: code_interpreter
+    enabled: false
+
+web:
+  # Search is a secondary factual lookup tool for current/external facts.
+  # Extraction stays disabled so guest bots do not drift into web-browsing mode.
+  search_backend: ddgs
+  extract_backend: ""
+
+mcp_servers:
+  daily_journal:
+    command: python3
+    args:
+      - /workspace/daily_journal_mcp.py
+    enabled: true
+  next_step:
+    command: python3
+    args:
+      - /workspace/next_step_mcp.py
+    enabled: true
+  hd:
+    command: python3
+    args:
+      - /app/OpenHumanDesignMCP/hd-mcp-server/src/mcp_server.py
+    enabled: true
+
+web:
+  search_backend: ddgs
+  # Keep extraction disabled for HDE guest bots: search is only a secondary factual lookup tool.
+  extract_backend: ""

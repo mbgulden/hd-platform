@@ -1,0 +1,68 @@
+version: '3.8'
+
+services:
+  guest-hermes:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: ${GUEST_CONTAINER_NAME:-guest-hermes}
+    restart: unless-stopped
+    # Drop all Linux capabilities by default
+    cap_drop:
+      - ALL
+    # Block privilege escalation
+    security_opt:
+      - no-new-privileges:true
+    # Run explicitly as the standard non-root user pn (UID 1000)
+    user: "1000:1000"
+    read_only: false
+    # DoS Protection: Hard resource limits
+    deploy:
+      resources:
+        limits:
+          cpus: '2.0'
+          memory: 2G
+    # Prevent disk space exhaustion from container logs
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "3"
+    environment:
+      - MINIMAX_API_KEY=${GUEST_MINIMAX_API_KEY}
+      - TELEGRAM_BOT_TOKEN=${GUEST_TELEGRAM_BOT_TOKEN}
+      - TELEGRAM_ALLOWED_USERS=${GUEST_TELEGRAM_ALLOWED_USERS}
+      - OHDMCP_FAMILY_JSON=/workspace/guest_family.json
+      - HDE_API_KEY=${REPORTS_API_KEY}
+    volumes:
+      # Mount the dedicated host directory as the workspace root
+      - ${GUEST_WORKSPACE_PATH}:/workspace
+      # Mount configurations read-only into the user's home directory
+      - ./config.yaml:/home/pn/.hermes/config.yaml:ro
+      - ./soul.md:/home/pn/.hermes/SOUL.base.md:ro
+      - ./active_soul.md:/home/pn/.hermes/SOUL.md
+      - ./skills:/home/pn/.hermes/skills:ro
+      # Mount the Human Design MCP codebase read-only
+      - ${OHDMCP_SOURCE_PATH:-/home/ubuntu/work/OpenHumanDesignMCP}:/app/OpenHumanDesignMCP:ro
+      # Mount generated host reports read-only so guest containers can attach PDFs.
+      - /tmp/hde-reports:/tmp/hde-reports:ro
+    working_dir: /workspace
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+    entrypoint: ""
+    command: uvicorn guest_agent_server:app --host 0.0.0.0 --port 8000
+    healthcheck:
+      test: ["CMD", "python3", "-c", "import urllib.request; urllib.request.urlopen('http://localhost:8000/docs')"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 15s
+    networks:
+      hde_private_net:
+        aliases:
+          - guest-hermes-${USER_ID}
+
+networks:
+  hde_private_net:
+    name: hde_private_net
+    external: true
