@@ -142,12 +142,8 @@ function writeRedirects() {
     ['/landing-', ['/', '301']],
     ['/reports', ['/buy-report/', '301']],
     ['/reports/', ['/buy-report/', '301']],
-    ['/buy-report.html', ['/buy-report/', '301']],
     ['/buy-report', ['/buy-report/', '301']],
-    ['/success.html', ['/success/', '301']],
     ['/success', ['/success/', '301']],
-    ['/privacy.html', ['/privacy/', '301']],
-    ['/terms.html', ['/terms/', '301']],
   ]);
 
   for (const file of walk(distDir).filter((f) => f.endsWith('.html'))) {
@@ -155,8 +151,12 @@ function writeRedirects() {
     if (route === '/' || route.endsWith('/')) continue;
     if (!route.endsWith('.html')) continue;
     const extensionless = route.slice(0, -5);
-    if (!redirectMap.has(extensionless)) redirectMap.set(extensionless, [route, '301']);
-    if (!redirectMap.has(`${extensionless}/`)) redirectMap.set(`${extensionless}/`, [route, '301']);
+    const extensionlessDir = path.join(distDir, extensionless.slice(1));
+    const hasAstroDirectoryRoute = fs.existsSync(path.join(extensionlessDir, 'index.html'));
+    if (!hasAstroDirectoryRoute) {
+      if (!redirectMap.has(extensionless)) redirectMap.set(extensionless, [route, '301']);
+      if (!redirectMap.has(`${extensionless}/`)) redirectMap.set(`${extensionless}/`, [route, '301']);
+    }
 
     const channelMatch = route.match(/^\/human-design\/channels\/(\d+)-(\d+)-.+\.html$/);
     if (channelMatch) {
@@ -202,6 +202,20 @@ function materializeRedirectPage(from, to) {
   return true;
 }
 
+
+function syncFirstClassHtmlAliases() {
+  const aliases = ['buy-report', 'success', 'privacy', 'terms'];
+  let synced = 0;
+  for (const alias of aliases) {
+    const canonical = path.join(distDir, alias, 'index.html');
+    const htmlAlias = path.join(distDir, `${alias}.html`);
+    if (!fs.existsSync(canonical)) continue;
+    fs.copyFileSync(canonical, htmlAlias);
+    synced += 1;
+  }
+  return synced;
+}
+
 function escapeXml(value) {
   return value
     .replaceAll('&', '&amp;')
@@ -214,14 +228,16 @@ function escapeXml(value) {
 copyLegacyDocs();
 const routeCount = writeSitemap();
 const { redirectCount, materializedRedirectCount } = writeRedirects();
+const syncedAliasCount = syncFirstClassHtmlAliases();
 const summary = {
   preserved_files: preserved.length,
   skipped_files: skipped.length,
   route_count: routeCount,
   redirect_count: redirectCount,
   materialized_redirect_count: materializedRedirectCount,
+  synced_alias_count: syncedAliasCount,
   dist: distDir,
 };
 fs.writeFileSync(path.join(distDir, 'route-complete-summary.json'), JSON.stringify(summary, null, 2));
-console.log(`[route-complete] preserved ${preserved.length} legacy files, generated ${routeCount} sitemap routes, ${redirectCount} redirects, and ${materializedRedirectCount} redirect pages`);
+console.log(`[route-complete] preserved ${preserved.length} legacy files, generated ${routeCount} sitemap routes, ${redirectCount} redirects, ${materializedRedirectCount} redirect pages, and synced ${syncedAliasCount} first-class aliases`);
 if (skipped.length) console.log(`[route-complete] skipped ${skipped.length} directory collisions`);
