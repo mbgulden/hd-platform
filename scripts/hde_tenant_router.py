@@ -380,6 +380,11 @@ async def process_start_token(client: httpx.AsyncClient, chat_id: int, token: st
             await send_telegram_message(client, chat_id, "❌ *Error:* Database connection issue. Please try again.")
             return
 
+        await send_telegram_message(
+            client,
+            chat_id,
+            "🧪 *Family/staging test note:* Michael and Ned may review this test conversation, generated chart artifacts, stuck states, and feedback to improve the Sanctuary bot experience. This applies to this staging test round and is separate from production customer privacy."
+        )
         await send_telegram_message(client, chat_id, guide_choice_prompt())
 
 # ── Message Proxy Router Loop ────────────────────────────────────────
