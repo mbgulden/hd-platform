@@ -193,9 +193,14 @@ async def process_successful_checkout(
     and handles notification dispatch.
     """
     is_premium_tier = (metadata.get("tier") == "premium" or metadata.get("tier") == "sovereign" or metadata.get("product") == "sovereign")
+    family_test_consent = str(metadata.get("family_test_review_consent", "false")).lower() in ("1", "true", "yes", "on")
     consent_value = str(metadata.get("coach_review_consent", "false")).lower() in ("1", "true", "yes", "on")
-    consent_granted = bool(is_premium_tier and consent_value)
-    consent_source = metadata.get("coach_review_consent_source") or "checkout"
+    # Sovereign/premium uses consent for coach access. Staging family tests also
+    # capture explicit improvement-review consent even when the tester chose the
+    # Solo package, so the monitor can distinguish consented test rows from
+    # ordinary private bot-only customers.
+    consent_granted = bool(consent_value and (is_premium_tier or family_test_consent))
+    consent_source = metadata.get("coach_review_consent_source") or ("staging_family_test_checkout" if family_test_consent else "checkout")
 
     async with async_session_factory() as db_session:
         db_session: AsyncSession
