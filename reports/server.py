@@ -16,6 +16,7 @@ import logging
 import subprocess
 import tempfile
 import hashlib
+import html as html_lib
 from datetime import datetime, timedelta
 from pathlib import Path
 from io import BytesIO
@@ -92,6 +93,9 @@ CSS = """
   .stat-card { background: #FFFFFF; border-radius: 12px; padding: 16px; border-left: 4px solid #5F7261; box-shadow: 0 8px 30px rgba(47,54,49,.03); }
   .stat-card .label { font-size: 9pt; text-transform: uppercase; letter-spacing: 1px; color: #808682; margin-bottom: 4px; }
   .stat-card .value { font-size: 14pt; font-weight: 600; color: #2F3631; }
+  .field-grid { grid-template-columns: repeat(auto-fit, minmax(170px, 1fr)); }
+  .field-card { page-break-inside: avoid; }
+  .field-desc { margin-top: 8px; color: #5C625E; font-size: 9.5pt; line-height: 1.45; }
   .center-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; margin: 20px 0; }
   .center-box { padding: 20px; border-radius: 12px; }
   .defined { background: rgba(95,114,97,.12); border: 1px solid rgba(95,114,97,.22); }
@@ -137,6 +141,140 @@ def make_cover(name, report_type, date_str):
     </div>
     """
 
+
+def _clean_text(value, fallback="Pending in engine"):
+    """Return display-safe text and repair common mojibake from copied rich text."""
+    if value is None or value == "":
+        return fallback
+    if isinstance(value, (list, tuple, set)):
+        value = ", ".join(str(v) for v in value if v not in (None, ""))
+    elif isinstance(value, dict):
+        value = value.get("name") or value.get("label") or json.dumps(value, ensure_ascii=False)
+    text = str(value)
+    replacements = {
+        "Youâ€Tvre": "You're",
+        "youâ€Tvre": "you're",
+        "â€™": "'",
+        "â€˜": "'",
+        "â€œ": '"',
+        "â€�": '"',
+        "â€“": "–",
+        "â€”": "—",
+        "Â ": " ",
+        "Â": "",
+        "America/Los_Angeles": "America/Los Angeles",
+        "America/Los\n_\nAngeles": "America/Los Angeles",
+    }
+    for bad, good in replacements.items():
+        text = text.replace(bad, good)
+    return " ".join(text.split()) or fallback
+
+
+def _esc(value, fallback="Pending in engine"):
+    return html_lib.escape(_clean_text(value, fallback))
+
+
+def _chart_get(chart, *keys, fallback="Pending in engine"):
+    for key in keys:
+        if key in chart and chart.get(key) not in (None, "", [], {}):
+            return chart.get(key)
+    return fallback
+
+
+def _var_code(chart):
+    value = chart.get("variables") or chart.get("variable") or chart.get("variable_code")
+    if isinstance(value, (list, tuple)):
+        return "".join(str(v) for v in value) if len(value) >= 4 else ", ".join(str(v) for v in value)
+    return value or "Pending in engine"
+
+
+def _field_card(label, value, description):
+    return f"""
+    <div class=\"stat-card field-card\">
+      <div class=\"label\">{_esc(label)}</div>
+      <div class=\"value\">{_esc(value)}</div>
+      <div class=\"field-desc\">{_esc(description, "")}</div>
+    </div>"""
+
+
+def _field_section(title, intro, fields):
+    cards = "\n".join(_field_card(label, value, desc) for label, value, desc in fields)
+    return f"""
+  <h2>{title}</h2>
+  <p class=\"section-intro\">{_esc(intro, "")}</p>
+  <div class=\"stat-grid field-grid\">
+{cards}
+  </div>
+"""
+
+
+def _count_label(value, singular, plural=None):
+    if value in (None, "", [], {}):
+        return "Pending in engine"
+    if isinstance(value, int):
+        return f"{value} {singular if value == 1 else (plural or singular + 's')}"
+    if isinstance(value, (list, tuple, set)):
+        n = len(value)
+        return f"{n} {singular if n == 1 else (plural or singular + 's')}"
+    return value
+
+
+def _planet_rows(chart):
+    planet_descriptions = {
+        "Sun": "core life-force and visible theme",
+        "Earth": "grounding, balance, and integration point",
+        "Moon": "emotional pull and recurring need",
+        "Mercury": "communication, naming, and mental processing",
+        "Venus": "values, aesthetics, and relational standards",
+        "Mars": "maturation edge, assertion, and raw drive",
+        "Jupiter": "growth, protection, and natural opportunity",
+        "Saturn": "discipline, consequence, and life lessons",
+        "Uranus": "disruption, originality, and individuation",
+        "Neptune": "mystery, sensitivity, and spiritual atmosphere",
+        "Pluto": "depth, transformation, and evolutionary pressure",
+        "True Node": "directional environment and life path orientation",
+        "South Node": "familiar patterning and early-life orientation",
+    }
+    rows = []
+    for side_label, planets in (("Personality", chart.get("personality_planets", {})), ("Design", chart.get("design_planets", {}))):
+        if not isinstance(planets, dict):
+            continue
+        for planet, data in planets.items():
+            if not isinstance(data, dict):
+                continue
+            gate = data.get("gate")
+            line = data.get("line")
+            if gate in (None, ""):
+                continue
+            try:
+                center = GATE_CENTER.get(int(gate), "")
+                gate_name = GATE_NAMES.get(int(gate), f"Gate {gate}")
+            except Exception:
+                center = ""
+                gate_name = f"Gate {gate}"
+            rows.append((side_label, planet, gate, line, center, gate_name, planet_descriptions.get(planet, "chart-specific planetary emphasis")))
+    return rows
+
+
+def _planet_activation_table(chart):
+    rows = _planet_rows(chart)
+    if not rows:
+        return """
+  <h2>🪐 Gates + Planets</h2>
+  <p class=\"section-intro\">Planet/gate activations will appear here when the engine returns planetary positions.</p>
+"""
+    html = """
+  <h2>🪐 Gates + Planets: Professional Activation Map</h2>
+  <p class=\"section-intro\">These combinations are where Becca’s deeper coaching lens lives: the planet tells us the life function, while the gate and line show the specific theme being expressed.</p>
+  <table>
+    <tr><th>Side</th><th>Planet</th><th>Gate.Line</th><th>Center</th><th>Theme</th><th>Why It Matters</th></tr>
+"""
+    for side, planet, gate, line, center, gate_name, why in rows:
+        gate_line = f"{gate}.{line}" if line not in (None, "") else str(gate)
+        html += f"    <tr><td>{_esc(side)}</td><td><strong>{_esc(planet)}</strong></td><td>{_esc(gate_line)}</td><td>{_esc(center)}</td><td>{_esc(gate_name)}</td><td>{_esc(why)}</td></tr>\n"
+    html += "  </table>\n"
+    return html
+
 # ── Report Builders ──────────────────────────────────────────────────
 
 def build_natal_report(chart: dict) -> str:
@@ -151,40 +289,58 @@ def build_natal_report(chart: dict) -> str:
 """
 
     # ── Section 1: Overview ──
+    cross = chart.get('incarnation_cross', {})
+    cross_name = cross.get('name', 'Pending in engine') if isinstance(cross, dict) else cross
+    core_fields = [
+        ("Profile", _chart_get(chart, 'profile'), "Your conscious/unconscious role pattern: how you learn, relate, and are projected on by others."),
+        ("Type", _chart_get(chart, 'hd_type', 'type'), "Your aura mechanics and the broad way your energy engages with life."),
+        ("Definition", _chart_get(chart, 'definition'), "How your defined centers connect internally, and where relationships may bridge gaps."),
+        ("Authority", _chart_get(chart, 'authority'), "Your body’s decision-making process; the signal to trust before the mind explains it."),
+        ("Strategy", _chart_get(chart, 'strategy'), "The cleanest way to meet life with less resistance."),
+        ("Signature", _chart_get(chart, 'signature'), "The felt signal that your mechanics are working."),
+        ("Not-Self Theme", _chart_get(chart, 'not_self_theme', 'not_self'), "The early warning light that you are forcing, proving, or moving off-pattern."),
+        ("Incarnation Cross", cross_name, "The life-theme frame carried by your Sun/Earth gates."),
+    ]
+    advanced_fields = [
+        ("Variables", _var_code(chart), "The four-arrow orientation code for digestion, environment, mind, and motivation."),
+        ("Environment", _chart_get(chart, 'environment'), "The setting where your nervous system and awareness tend to regulate best."),
+        ("View / Perspective", _chart_get(chart, 'perspective', 'view'), "The way your mind is designed to see clearly when it is not controlling decisions."),
+        ("Distraction", _chart_get(chart, 'distraction'), "The mental lure that pulls perspective off its natural track."),
+        ("Sense", _chart_get(chart, 'sense'), "The sensory emphasis your body uses to orient and take in life."),
+        ("Trajectory", _chart_get(chart, 'trajectory'), "The directional arc your cognition and environment are tuned to follow."),
+        ("Cognition", _chart_get(chart, 'cognition'), "The specific sense channel your body may use as a reliable intelligence."),
+        ("Motivation", _chart_get(chart, 'motivation'), "The deeper motive that keeps the mind clean and useful."),
+        ("Transference", _chart_get(chart, 'transference'), "The motive your mind can slide into when it is compensating."),
+        ("Determination", _chart_get(chart, 'determination', 'digestion'), "How your body best digests food, information, and experience."),
+    ]
+    coaching_fields = [
+        ("Bridging Gates", _count_label(_chart_get(chart, 'bridging_gates', fallback=[]), 'Gate'), "Gates that can bridge split definition or become important relational connectors."),
+        ("Melancholy", _count_label(_chart_get(chart, 'melancholy_gates', fallback=[]), 'Gate'), "Individual-circuit gates where mood, timing, and creative pulse may need space."),
+        ("Fears", _count_label(_chart_get(chart, 'fear_gates', 'fears', fallback=[]), 'Gate'), "Splenic fear themes that can become wisdom when named instead of obeyed blindly."),
+        ("Penta Qualities", _count_label(_chart_get(chart, 'penta_qualities', fallback=[]), 'Family & Business Quality', 'Family & Business Qualities'), "Group and business dynamics that become visible in family/team fields."),
+        ("Genetic Trauma", _chart_get(chart, 'genetic_trauma'), "A Gene Keys / trauma lens for the wound pattern asking for integration."),
+        ("AstroHD Star Archetype", _chart_get(chart, 'star_archetype', 'astrohd_star_archetype'), "A star/archetype layer for mythic language, content themes, and coaching depth."),
+    ]
+    timing_fields = [
+        ("Birth Date", _chart_get(chart, 'birth_date', 'local_birth_date'), "The local birth date used for the Personality calculation."),
+        ("Birth Date (UTC)", _chart_get(chart, 'birth_date_utc', 'utc_birth_date'), "The normalized UTC birth timestamp used by the ephemeris."),
+        ("Design Date", _chart_get(chart, 'design_date', 'local_design_date'), "The approximate 88° solar-arc date for the Design/body calculation."),
+        ("Design Date (UTC)", _chart_get(chart, 'design_date_utc', 'utc_design_date'), "The UTC Design timestamp used for unconscious activations."),
+        ("Location", _chart_get(chart, 'location', 'birth_location'), "The birthplace used for local time and geography-sensitive context."),
+        ("Time Zone", _chart_get(chart, 'timezone', 'time_zone'), "The local time zone used before UTC normalization."),
+        ("Saturn Return (UTC)", _chart_get(chart, 'saturn_return_utc'), "The first Saturn return window for maturity and responsibility themes."),
+        ("Second Saturn Return (UTC)", _chart_get(chart, 'second_saturn_return_utc'), "The second Saturn return window for elder-cycle restructuring."),
+        ("Uranus Opposition (UTC)", _chart_get(chart, 'uranus_opposition_utc'), "The midlife individuation transit when old compromises often surface."),
+        ("Chiron Return (UTC)", _chart_get(chart, 'chiron_return_utc'), "The Chiron return window for wound-to-medicine integration."),
+    ]
+    html += _field_section("🎯 Your Design at a Glance", "A clean reference for the core mechanics. Each card stays short so the chart can support coaching without becoming cluttered.", core_fields)
+    html += _field_section("🧭 Variables + Advanced Orientation", "These fields describe digestion, environment, motivation, view, cognition, and the places the mind can drift off-track.", advanced_fields)
+    html += _field_section("🌿 Coaching + Content Lenses", "Additional lenses for coaching calls, education content, relationship work, and practical pattern recognition.", coaching_fields)
+    html += _field_section("🕰️ Dates + Cycles", "Timing fields used for chart transparency, returns, and longer-arc life-cycle work.", timing_fields)
     html += f"""
-  <h2>🎯 Your Design at a Glance</h2>
-  <p class="section-intro">Your Human Design chart reveals your unique energetic blueprint — how you're designed to make decisions, interact with others, and navigate life in alignment.</p>
-
-  <div class="stat-grid">
-    <div class="stat-card">
-      <div class="label">Type</div>
-      <div class="value">{chart.get('hd_type', 'Unknown')}</div>
-    </div>
-    <div class="stat-card">
-      <div class="label">Profile</div>
-      <div class="value">{chart.get('profile', 'Unknown')}</div>
-    </div>
-    <div class="stat-card">
-      <div class="label">Authority</div>
-      <div class="value">{chart.get('authority', 'Unknown')}</div>
-    </div>
-    <div class="stat-card">
-      <div class="label">Strategy</div>
-      <div class="value">{chart.get('strategy', 'Unknown')}</div>
-    </div>
-    <div class="stat-card">
-      <div class="label">Definition</div>
-      <div class="value">{chart.get('definition', 'Unknown')}</div>
-    </div>
-    <div class="stat-card">
-      <div class="label">Incarnation Cross</div>
-      <div class="value">{(chart.get('incarnation_cross') or {}).get('name', 'Unknown')}</div>
-    </div>
-  </div>
-
   <div class="highlight-box">
     <h3>✨ Your Signature Theme</h3>
-    <p>When you're living in alignment with your design, you feel <strong>{chart.get('signature', 'fulfilled and satisfied')}</strong>. When you're not, you experience <strong>{chart.get('not_self_theme', 'frustration')}</strong> — this is your built-in feedback system.</p>
+    <p>When you're living in alignment with your design, you feel <strong>{_esc(chart.get('signature', 'aligned'))}</strong>. When you're not, you experience <strong>{_esc(chart.get('not_self_theme', 'off-pattern'))}</strong> — this is your built-in feedback system.</p>
   </div>
 """
 
@@ -285,6 +441,8 @@ def build_natal_report(chart: dict) -> str:
             gname = GATE_NAMES.get(int(g), f"Gate {g}")
             html += f'    <span class="gate-badge">Gate {g}: {gname}</span>\n'
         html += "  </div>\n"
+
+    html += _planet_activation_table(chart)
 
     # ── Section 6: Variables ──
     variables = chart.get('variables', [])
