@@ -8,7 +8,7 @@
 
 Michael approved the staging design direction, then flagged two requirements:
 
-1. Fix mojibake / wrong characters such as `Youâ€Tvre`.
+1. Fix mojibake / wrong characters such as a copied rich-text mojibake example for “You’re”.
 2. Make natal chart output useful for coaching, education, and HDE content by including the important Human Design fields with short, organized descriptions rather than a cluttered dump.
 
 ## Field groups now represented
@@ -74,7 +74,7 @@ This is the right foundation for coaching-call prep, web education content, and 
 
 ## Implementation notes
 
-- `reports/server.py` now repairs common mojibake before display, including `Youâ€Tvre` → `You're`.
+- `reports/server.py` now repairs common mojibake before display, including a copied rich-text mojibake example for “You’re” → `You're`.
 - `reports/server.py` renders all required fields as compact cards with short descriptions.
 - `reports/server.py` preserves the staging cream/sage visual system.
 - `api/routes/bodygraph.py` now exposes the same field descriptions in `meta.field_descriptions` and adds a structured `activations` array for professional planet/gate rendering.
