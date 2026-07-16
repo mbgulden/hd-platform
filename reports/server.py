@@ -1111,6 +1111,9 @@ def compute_and_render(metadata: dict) -> dict:
         lat=lat, lon=lon,
         timezone=timezone,
     )
+    chart_overrides = metadata.get("chart_overrides") or {}
+    if isinstance(chart_overrides, dict):
+        chart.update(chart_overrides)
 
     # Generate HTML
     if report_type == "natal":
