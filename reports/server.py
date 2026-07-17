@@ -1637,18 +1637,19 @@ class Handler(BaseHTTPRequestHandler):
 
                 if result.returncode == 0:
                     svg_data = result.stdout.encode()
-                    # Default to PDF (vector, crisp); ?format=svg for SVG
-                    want_svg = params.get('format', 'pdf') == 'svg'
-                    if want_svg:
+                    # Default to PDF (vector, crisp); ?format=svg for SVG, ?format=png for Telegram-ready PNG
+                    requested_format = params.get('format', 'pdf')
+                    if requested_format == 'svg':
                         content_type = 'image/svg+xml'
                         body = svg_data
                     else:
                         import subprocess as sp
-                        pdf = sp.run(['rsvg-convert', '-f', 'pdf', '/dev/stdin'],
-                                     input=svg_data, capture_output=True, timeout=10)
-                        if pdf.returncode == 0:
-                            content_type = 'application/pdf'
-                            body = pdf.stdout
+                        target_format = 'png' if requested_format == 'png' else 'pdf'
+                        rendered = sp.run(['rsvg-convert', '-f', target_format, '/dev/stdin'],
+                                          input=svg_data, capture_output=True, timeout=10)
+                        if rendered.returncode == 0:
+                            content_type = 'image/png' if target_format == 'png' else 'application/pdf'
+                            body = rendered.stdout
                         else:
                             content_type = 'image/svg+xml'
                             body = svg_data
@@ -2076,6 +2077,21 @@ class Handler(BaseHTTPRequestHandler):
                     svg = result.stdout
                 finally:
                     os.unlink(tmp)
+
+                requested_format = str(body.get("format", "svg")).lower()
+                if requested_format in {"png", "pdf"}:
+                    converted = subprocess.run(
+                        ["rsvg-convert", "-f", requested_format, "/dev/stdin"],
+                        input=svg.encode(), capture_output=True, timeout=10,
+                    )
+                    if converted.returncode == 0:
+                        self.send_response(200)
+                        self.send_header("Content-Type", "image/png" if requested_format == "png" else "application/pdf")
+                        self.send_header("Access-Control-Allow-Origin", "*")
+                        self.send_header("Cache-Control", "public, max-age=3600")
+                        self.end_headers()
+                        self.wfile.write(converted.stdout)
+                        return
 
                 self.send_response(200)
                 self.send_header("Content-Type", "image/svg+xml")
