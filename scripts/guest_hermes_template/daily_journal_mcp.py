@@ -39,20 +39,8 @@ def write_coach_event(event_type: str, payload: dict) -> None:
         pass
 
 
-def load_chart_overrides(subject_name: str) -> dict:
-    """Return per-person corrected Human Design fields to merge into generated chart/report payloads."""
-    try:
-        import json
-        profile_path = os.path.join(PEOPLE_DIR, subject_name or "", "profile.json")
-        if not os.path.exists(profile_path):
-            return {}
-        with open(profile_path) as f:
-            profile = json.load(f)
-        overrides = profile.get("chart_overrides") or {}
-        return overrides if isinstance(overrides, dict) else {}
-    except Exception:
-        return {}
-
+# Chart results must come from the calculation engine. Do not merge per-person
+# chart field overrides into generated JSON/PDF payloads.
 
 def write_person_profile(subject_name: str, name: str, birth_input: dict, relationship_type: str, chart_record: dict, manifest: dict) -> None:
     """Persist durable per-person birth details and chart links for reuse."""
@@ -235,10 +223,8 @@ def generate_human_design_chart(
         year, month, day = [int(x) for x in birth_date.split("-")]
         hour_part, minute_part = [int(x) for x in birth_time.split(":")]
         decimal_hour = hour_part + minute_part / 60.0
-        chart_data = calculate_chart_detailed(name, year, month, day, decimal_hour, location, lat, lon)
-        chart_overrides = load_chart_overrides(subject_name)
-        if chart_overrides:
-            chart_data.update(chart_overrides)
+        calc_location = f"{lat},{lon}" if (lat or lon) else location
+        chart_data = calculate_chart_detailed(name, year, month, day, decimal_hour, calc_location, lat, lon)
     except Exception as e:
         return f"Failed to calculate chart data: {e}"
 
@@ -255,7 +241,6 @@ def generate_human_design_chart(
         "lon": lon,
         "timezone": tz,
         "email": "",
-        "chart_overrides": chart_overrides,
     }
     
     headers = {
