@@ -161,6 +161,9 @@ class Handler(BaseHTTPRequestHandler):
                 'lat': v(parsed, 'lat'),
                 'lon': v(parsed, 'lon'),
                 'timezone': v(parsed, 'timezone') or 'UTC',
+                'poster_size': v(parsed, 'poster_size'),
+                'poster_image_url': v(parsed, 'poster_image_url') or v(parsed, 'mockup_url'),
+                'print_file_url': v(parsed, 'print_file_url'),
             }
         else:
             data = json.loads(body)
@@ -189,7 +192,8 @@ class Handler(BaseHTTPRequestHandler):
         if ref:
             meta["ref"] = ref
         r_lower = (report or '').lower()
-        if r_lower == 'poster':
+        is_poster = r_lower in {'poster', 'print-poster', 'poster-print'}
+        if is_poster:
             poster_size = str(data.get('poster_size') or '24x36')
             meta.update({
                 "product_type": "print",
@@ -199,7 +203,6 @@ class Handler(BaseHTTPRequestHandler):
                 "printful_sku": printful.poster_sku(poster_size),
             })
 
-        r_lower = (report or '').lower()
         if r_lower == 'natal':
             price = 1900; price_id = 'price_1TjZKVKfvDG04zCAZkiCFrnL'
             product_name = "Human Design Natal Report"
@@ -232,7 +235,7 @@ class Handler(BaseHTTPRequestHandler):
             price = 599700; price_id = UNCHAINED_RETREAT_PRICE_ID
             product_name = "Unchained Wholeness + Hawaii Retreat"
             product_desc = "Full program + all-inclusive 5-day Hawaii retreat"
-        elif r_lower == 'poster':
+        elif is_poster:
             poster_size = str(data.get('poster_size') or '24x36')
             poster_price_key = printful.poster_sku(poster_size).replace('poster_', '', 1)
             poster_prices = {'12x18': 3900, '18x24': 4900, '24x36': 7900}
@@ -249,7 +252,7 @@ class Handler(BaseHTTPRequestHandler):
             line_items = [{"price": price_id, "quantity": 1}]
         else:
             product_data: dict[str, object] = {"name": product_name, "description": product_desc}
-            if r_lower == 'poster' and data.get('poster_image_url'):
+            if is_poster and data.get('poster_image_url'):
                 product_data["images"] = [str(data.get('poster_image_url'))]
             line_items = [{
                 "price_data": {
@@ -275,7 +278,7 @@ class Handler(BaseHTTPRequestHandler):
             })
 
         # Success URL
-        if r_lower in ('bundle', 'poster'):
+        if r_lower == 'bundle' or is_poster:
             success_url = "https://humandesignengine.com/success.html?session_id={CHECKOUT_SESSION_ID}"
         else:
             import urllib.parse
@@ -302,7 +305,7 @@ class Handler(BaseHTTPRequestHandler):
             "customer_email": email,
             "metadata": meta
         }
-        if r_lower == 'poster':
+        if is_poster:
             stripe_payload["shipping_address_collection"] = {"allowed_countries": ["US", "CA"]}
             stripe_payload["phone_number_collection"] = {"enabled": True}
 

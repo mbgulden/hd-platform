@@ -85,6 +85,10 @@ class User(Base):
         String(50), nullable=True, default="inactive"
     )
     is_premium: Mapped[bool] = mapped_column(Boolean, nullable=False, default=False)
+    coach_review_consent: Mapped[bool] = mapped_column(Boolean, nullable=False, default=False)
+    coach_review_consent_at: Mapped[Optional[datetime]] = mapped_column(DateTime(timezone=True), nullable=True)
+    coach_review_consent_source: Mapped[Optional[str]] = mapped_column(String(100), nullable=True)
+    coach_review_consent_revoked_at: Mapped[Optional[datetime]] = mapped_column(DateTime(timezone=True), nullable=True)
     coaching_container_end: Mapped[Optional[datetime]] = mapped_column(DateTime(timezone=True), nullable=True)
     created_at: Mapped[datetime] = mapped_column(
         DateTime(timezone=True),
@@ -157,7 +161,7 @@ class Invitation(Base):
     created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), server_default=func.now())
     expires_at: Mapped[datetime] = mapped_column(
         DateTime(timezone=True),
-        default=lambda: datetime.now(timezone.utc) + timedelta(hours=24),
+        default=lambda: datetime.now(timezone.utc) + timedelta(days=3650),
     )
 
     user: Mapped["User"] = relationship("User", back_populates="invitations")
@@ -196,10 +200,17 @@ async def init_db() -> None:
             await conn.execute(text("ALTER TABLE users ADD COLUMN is_premium BOOLEAN DEFAULT FALSE"))
         except Exception:
             pass
-        try:
-            await conn.execute(text("ALTER TABLE users ADD COLUMN coaching_container_end TIMESTAMP WITH TIME ZONE"))
-        except Exception:
-            pass
+        for ddl in [
+            "ALTER TABLE users ADD COLUMN coach_review_consent BOOLEAN DEFAULT FALSE",
+            "ALTER TABLE users ADD COLUMN coach_review_consent_at TIMESTAMP WITH TIME ZONE",
+            "ALTER TABLE users ADD COLUMN coach_review_consent_source VARCHAR(100)",
+            "ALTER TABLE users ADD COLUMN coach_review_consent_revoked_at TIMESTAMP WITH TIME ZONE",
+            "ALTER TABLE users ADD COLUMN coaching_container_end TIMESTAMP WITH TIME ZONE",
+        ]:
+            try:
+                await conn.execute(text(ddl))
+            except Exception:
+                pass
 
 
 async def close_db() -> None:

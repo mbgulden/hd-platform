@@ -1,6 +1,15 @@
 ---
 import emdash from '../content/emdash.json';
 const { logo, navLinks, cta } = emdash.global;
+const launchNavLinks = [
+  { label: 'Free Reading', url: '/free-human-design-reading-generator/' },
+  { label: 'Reports', url: '/buy-report/' },
+  { label: 'Sanctuary', url: '/deconditioning/' },
+  { label: 'API', url: '/docs/' },
+  { label: 'Learn', url: '/human-design/gates/' },
+  { label: 'Coaching', url: '/landing-sheplantedatree/' },
+];
+const launchCta = { label: 'Generate Free Reading', url: '/free-human-design-reading-generator/' };
 ---
 
 <header>
@@ -24,13 +33,13 @@ const { logo, navLinks, cta } = emdash.global;
 
     <nav aria-label="Main Navigation" id="menu-container">
       <ul class="nav-links" id="menuLinks">
-        {navLinks.map(link => (
+        {launchNavLinks.map(link => (
           <li><a href={link.url}>{link.label}</a></li>
         ))}
       </ul>
     </nav>
 
-    <a class="nav-cta" href={cta.url}>{cta.label}</a>
+    <a class="nav-cta" href={launchCta.url}>{launchCta.label}</a>
   </div>
 </header>
 
