@@ -14,6 +14,7 @@ A tester can ask for a PDF report after providing birth details, but if the prio
 - Accept terse family-test shorthand such as `August 2 1952 6:46pm Glendale California`; once date and clock are parsed, trailing city/state text should become the birth place and still generate artifacts.
 - Chart mechanics must come from the Human Design calculation engine/API. Do not use per-person profile/profile-line overrides to force expected results; fix location/time/timezone parsing and calculation plumbing instead.
 - Reports must not render `Pending in engine` in user PDFs. When the engine omits a secondary coaching field, derive it from returned activations where possible (bridging gates, melancholy, Spleen fear gates, Penta gates, timing cycles) or render a clear explanatory value tied to an available engine field (for example Perspective/Motivation) instead of a placeholder.
+- Chart image previews should prefer the restored Fred-era `hd-bodygraph/render-pro.mjs` SVG renderer through `/api/public/bodygraph?format=png`; it shows Personality/Design gates and split channels in the professional black/red visual language. The older local Pillow renderer is fallback only.
 - Keep the reports API key in environment only; do not print or embed it.
 
 ## Coach dashboard route note

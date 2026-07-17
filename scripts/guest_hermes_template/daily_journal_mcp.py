@@ -288,17 +288,45 @@ def generate_human_design_chart(
     except Exception as e:
         return f"Failed to connect to reports server: {e}"
 
-    # 4. Render Bodygraph Image locally (no network egress needed!)
+    # 4. Render professional Bodygraph image via the restored SVG renderer
+    # (Gonzih/hd-bodygraph wrapper from Fred-era bodygraph work). It preserves
+    # Personality/Design split coloring for gates/channels. Fall back to the
+    # local Pillow renderer only if the report-side renderer is unavailable.
     image_path_for_router = dest_png_path
     try:
-        render_bodygraph(normalize_defined_channels_for_renderer(chart_data), dest_png_path)
+        bodygraph_params = {
+            "format": "png",
+            "name": name,
+            "year": year,
+            "month": month,
+            "day": day,
+            "hour": hour_part,
+            "minute": minute_part,
+            "location": location,
+            "lat": lat,
+            "lon": lon,
+            "timezone": tz,
+        }
+        with httpx.Client(timeout=45.0) as client:
+            image_resp = client.get("http://host.docker.internal:8081/api/public/bodygraph", params=bodygraph_params)
+            image_resp.raise_for_status()
+            content_type = image_resp.headers.get("content-type", "")
+            if "png" not in content_type.lower() or len(image_resp.content) < 10000:
+                raise RuntimeError(f"unexpected bodygraph response: {content_type} {len(image_resp.content)} bytes")
+            with open(dest_png_path, "wb") as f:
+                f.write(image_resp.content)
     except Exception as e:
-        image_path_for_router = ""
-        # The PDF + chart JSON are still valid. Some chart payload shapes do not
-        # match the local PNG renderer; do not fail the user-facing chart flow
-        # just because the optional image preview could not be rendered.
-        import logging
-        logging.getLogger("daily-journal-mcp").warning("Chart PNG render skipped: %s", e)
+        try:
+            render_bodygraph(normalize_defined_channels_for_renderer(chart_data), dest_png_path)
+        except Exception as fallback_error:
+            image_path_for_router = ""
+            # The PDF + chart JSON are still valid. Some chart payload shapes do not
+            # match the local PNG renderer; do not fail the user-facing chart flow
+            # just because the optional image preview could not be rendered.
+            import logging
+            logging.getLogger("daily-journal-mcp").warning(
+                "Professional chart PNG render skipped: %s; fallback failed: %s", e, fallback_error
+            )
 
     # 5. Write chart data JSON for backend coach review and future comparisons.
     # Personal charts also update the live Soul with design context.
