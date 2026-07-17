@@ -48,6 +48,11 @@ def slugify_person_name(name: str) -> str:
     return raw or "person"
 
 
+GENERIC_PROFILE_NAMES = {"sanctuary guest", "guest", "user", "my human design", "human design", "this person"}
+GENERIC_PROFILE_SLUGS = {slugify_person_name(name) for name in GENERIC_PROFILE_NAMES}
+GENERIC_PROFILE_SLUGS.update({"sanctuary_guest", "user", "my_human_design"})
+
+
 NAME_STOPWORDS = {
     "a", "an", "and", "are", "around", "as", "at", "be", "birth", "bodygraph", "born", "build",
     "chart", "charts", "compare", "design", "edit", "existing", "for", "from", "generate", "human",
@@ -230,6 +235,140 @@ def save_person_profile(slug: str, profile: dict) -> None:
     if not index.get("default_person"):
         index["default_person"] = slug
     save_people_index(index)
+
+
+def is_generic_profile(slug: str | None, profile: dict | None = None) -> bool:
+    raw_slug = (slug or "").strip().lower()
+    name = ((profile or {}).get("name") or "").strip().lower()
+    return raw_slug in GENERIC_PROFILE_SLUGS or name in GENERIC_PROFILE_NAMES
+
+
+def rewrite_profile_paths(value, old_slug: str, new_slug: str, old_name: str, new_name: str):
+    if isinstance(value, dict):
+        return {k: rewrite_profile_paths(v, old_slug, new_slug, old_name, new_name) for k, v in value.items()}
+    if isinstance(value, list):
+        return [rewrite_profile_paths(v, old_slug, new_slug, old_name, new_name) for v in value]
+    if isinstance(value, str):
+        return value.replace(f"/{old_slug}/", f"/{new_slug}/").replace(old_name, new_name)
+    return value
+
+
+def migrate_person_profile_slug(old_slug: str, new_name: str) -> dict:
+    """Move a generic/self profile to the user's real name and keep artifacts/index coherent."""
+    import shutil
+    new_name = clean_person_name(new_name)
+    if not is_valid_person_name(new_name, allow_single_known=False):
+        raise ValueError("I need a real first and last name before I rename the profile.")
+    new_slug = slugify_person_name(new_name)
+    old_profile = load_person_profile(old_slug)
+    old_name = old_profile.get("name") or old_slug.replace("_", " ").title()
+    if old_slug == new_slug:
+        old_profile["name"] = new_name
+        old_profile["subject_name"] = new_slug
+        old_profile["slug"] = new_slug
+        old_profile["updated_at"] = datetime.utcnow().isoformat(timespec="seconds") + "Z"
+        save_person_profile(new_slug, old_profile)
+        return old_profile
+
+    old_person_dir = PEOPLE_DIR / old_slug
+    new_person_dir = PEOPLE_DIR / new_slug
+    if old_person_dir.exists():
+        new_person_dir.parent.mkdir(parents=True, exist_ok=True)
+        if new_person_dir.exists():
+            shutil.rmtree(new_person_dir)
+        shutil.move(str(old_person_dir), str(new_person_dir))
+
+    for rel in (Path("/workspace/charts/personal"), Path("/workspace/charts/friends"), Path("/workspace/charts/family"), Path("/workspace/charts/composite")):
+        old_chart_dir = rel / old_slug
+        new_chart_dir = rel / new_slug
+        if old_chart_dir.exists():
+            new_chart_dir.parent.mkdir(parents=True, exist_ok=True)
+            if new_chart_dir.exists():
+                shutil.rmtree(new_chart_dir)
+            shutil.move(str(old_chart_dir), str(new_chart_dir))
+
+    profile = load_person_profile(new_slug) or old_profile
+    profile = rewrite_profile_paths(profile, old_slug, new_slug, old_name, new_name)
+    profile.update({
+        "name": new_name,
+        "slug": new_slug,
+        "subject_name": new_slug,
+        "updated_at": datetime.utcnow().isoformat(timespec="seconds") + "Z",
+    })
+    save_person_profile(new_slug, profile)
+
+    for chart_path in [Path("/workspace/charts/personal/chart_data.json"), PEOPLE_DIR / new_slug / "latest_chart_data.json", Path("/workspace/charts/personal") / new_slug / "chart_data.json"]:
+        try:
+            if chart_path.exists():
+                data = json.loads(chart_path.read_text())
+                data["name"] = new_name
+                chart_path.write_text(json.dumps(data, indent=2, sort_keys=True))
+        except Exception as exc:
+            logger.warning("Failed to update renamed chart data %s: %s", chart_path, exc)
+
+    index = normalize_people_index(preferred_slug=new_slug)
+    people = index.get("people") or {}
+    if old_slug in people:
+        people.pop(old_slug, None)
+    index["default_person"] = new_slug
+    index["people"] = people
+    save_people_index(index)
+    return profile
+
+
+def extract_self_name(text: str) -> str | None:
+    raw = (text or "").strip()
+    patterns = [
+        r"\b(?:my name is|i am|i'm|this is)\s+([A-Z][A-Za-z0-9'’-]+(?:\s+[A-Z][A-Za-z0-9'’-]+){1,3})\b",
+        r"\b(?:this chart is for|the chart is for|chart is for|this profile is for|profile is for)\s+([A-Z][A-Za-z0-9'’-]+(?:\s+[A-Z][A-Za-z0-9'’-]+){1,3})(?:\b.*\b(?:me|myself)\b|[.!?]?$)",
+    ]
+    for pat in patterns:
+        m = re.search(pat, raw)
+        if not m:
+            continue
+        candidate = clean_person_name(m.group(1))
+        if is_valid_person_name(candidate, allow_single_known=False):
+            return candidate
+    return None
+
+
+def handle_name_association_request(text: str) -> dict | None:
+    name = extract_self_name(text)
+    if not name:
+        return None
+    index = normalize_people_index()
+    people = index.get("people") or {}
+    target_slug = None
+    # Prefer the default generic/self profile, then any single generic profile.
+    default = index.get("default_person") or ""
+    if default and is_generic_profile(default, load_person_profile(default)):
+        target_slug = default
+    if not target_slug:
+        generic = [slug for slug in people if is_generic_profile(slug, load_person_profile(slug))]
+        if len(generic) == 1:
+            target_slug = generic[0]
+    if not target_slug and len(people) == 1:
+        only = next(iter(people))
+        profile = load_person_profile(only)
+        if is_generic_profile(only, profile):
+            target_slug = only
+    new_slug = slugify_person_name(name)
+    if target_slug:
+        profile = migrate_person_profile_slug(target_slug, name)
+        birth = profile.get("birth_input") or {}
+        has_birth = bool(birth.get("birth_date") and birth.get("birth_time") and birth.get("location"))
+        return {"response": f"Got it — I moved the stored chart/profile from {target_slug.replace('_', ' ').title()} to {name}." + (" I can use those saved birth details from here." if has_birth else " I’ll attach the birth details once we build the chart.")}
+    existing = load_person_profile(new_slug)
+    if existing:
+        index["default_person"] = new_slug
+        save_people_index(index)
+        return {"response": f"Got it — I’ll treat {name} as the active profile."}
+    profile = {"name": name, "slug": new_slug, "subject_name": new_slug, "updated_at": datetime.utcnow().isoformat(timespec="seconds") + "Z"}
+    save_person_profile(new_slug, profile)
+    index = normalize_people_index(preferred_slug=new_slug)
+    index["default_person"] = new_slug
+    save_people_index(index)
+    return {"response": f"Got it — I’ll store this profile under {name}. When we build the chart, the artifacts will use that name."}
 
 
 def update_profile_birth_input(slug: str, field: str, value: str) -> dict:
@@ -1235,7 +1374,10 @@ def generate_one_shot_chart_from_details(text: str) -> dict | None:
     details = extract_full_birth_details(text)
     if not details:
         return None
-    name = (details.get("name") or os.getenv("GUEST_USER_NAME") or "Sanctuary Guest").strip()
+    existing_default = default_person_slug()
+    existing_profile = load_person_profile(existing_default) if existing_default else {}
+    fallback_name = existing_profile.get("name") if existing_profile and not is_generic_profile(existing_default, existing_profile) else os.getenv("GUEST_USER_NAME")
+    name = (details.get("name") or fallback_name or "Sanctuary Guest").strip()
     slug = slugify_person_name(name)
     index = normalize_people_index(preferred_slug=slug)
     index["default_person"] = slug
@@ -2262,6 +2404,13 @@ async def process_message(payload: dict = Body(...)):
             "Say the outcome, not the form — for example: build my chart, fix my birth time, explore missing time, or just talk through what this means."
         )
         usage = build_usage(text, response_text)
+        return {"response": response_text, "image_path": None, "pdf_path": None, "pdf_paths": [], "usage": usage, "model_usage": usage}
+
+    name_result = handle_name_association_request(text)
+    if name_result is not None:
+        response_text = name_result.get("response", "").strip()
+        usage = build_usage(text, response_text)
+        append_history(text, response_text)
         return {"response": response_text, "image_path": None, "pdf_path": None, "pdf_paths": [], "usage": usage, "model_usage": usage}
 
     continuity_result = handle_continuity_memory_lookup(text)

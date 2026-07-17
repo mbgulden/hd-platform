@@ -15,6 +15,8 @@ A tester can ask for a PDF report after providing birth details, but if the prio
 - Chart mechanics must come from the Human Design calculation engine/API. Do not use per-person profile/profile-line overrides to force expected results; fix location/time/timezone parsing and calculation plumbing instead.
 - Reports must not render `Pending in engine` in user PDFs. When the engine omits a secondary coaching field, derive it from returned activations where possible (bridging gates, melancholy, Spleen fear gates, Penta gates, timing cycles) or render a clear explanatory value tied to an available engine field (for example Perspective/Motivation) instead of a placeholder.
 - Chart image previews should prefer the restored Fred-era `hd-bodygraph/render-pro.mjs` SVG renderer through `/api/public/bodygraph?format=png`; it shows Personality/Design gates and split channels in the professional black/red visual language. The older local Pillow renderer is fallback only.
+- Names are profile identity, not decoration. If a chart starts as a generic `Sanctuary Guest` profile and the tester later says `my name is ...` or `this chart is for ... that's me`, deterministically move the stored profile, people index, and chart artifact directories to the real first/last name before LLM fallback. Future chart/report generation must use the real name.
+- Premium signup Telegram alerts should be sent as plain text because onboarding tokens contain Markdown-sensitive characters; log non-200 Telegram responses instead of silently accepting failed alerts.
 - Keep the reports API key in environment only; do not print or embed it.
 
 ## Coach dashboard route note
@@ -30,5 +32,7 @@ The report-follow-up runtime is now snapshotted in the staging repo under `scrip
 1. Compile `scripts/guest_hermes_template/guest_agent_server.py` and the live `/home/ubuntu/guest_hermes_bot/guest_agent_server.py`.
 2. Probe reports server from `guest-hermes-2` with the container env key; expect `/api/compute` status `200`.
 3. Exercise `/api/message` with a full birth-detail message followed by `Yes pdf report`; expect a PDF path in the response metadata.
-4. Verify `https://staging.humandesignengine.com/coach/dashboard` returns HTML shell `200`.
-5. Verify `/api/coach/session` still returns `401` without auth and `200` for simulated allowed Cloudflare Access email.
+4. Exercise generic-profile rename: generate under `Sanctuary Guest`, send `This chart is for Jessica Piscitello that's me`, then verify `/workspace/people/jessica_piscitello/profile.json`, `/workspace/people/index.json`, and later PDF/image names use Jessica.
+5. Verify premium signup notification code sends plain-text Telegram payloads and records non-200 responses.
+6. Verify `https://staging.humandesignengine.com/coach/dashboard` returns HTML shell `200`.
+7. Verify `/api/coach/session` still returns `401` without auth and `200` for simulated allowed Cloudflare Access email.

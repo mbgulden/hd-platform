@@ -42,6 +42,29 @@ def write_coach_event(event_type: str, payload: dict) -> None:
 # Chart results must come from the calculation engine. Do not merge per-person
 # chart field overrides into generated JSON/PDF payloads.
 
+GEO_OVERRIDES = {
+    # Family-test staging gap: OpenHumanDesignMCP currently knows Simi Valley and
+    # Glendale, but not Provo. Do not let a real US birthplace silently become
+    # UTC/0,0 just because the small local gazetteer is incomplete.
+    "provo ut": {"lat": 40.2338, "lon": -111.6585, "timezone": "America/Denver", "utc_offset": -6.0},
+    "provo, ut": {"lat": 40.2338, "lon": -111.6585, "timezone": "America/Denver", "utc_offset": -6.0},
+    "provo utah": {"lat": 40.2338, "lon": -111.6585, "timezone": "America/Denver", "utc_offset": -6.0},
+    "provo, utah": {"lat": 40.2338, "lon": -111.6585, "timezone": "America/Denver", "utc_offset": -6.0},
+    "provo, utah, usa": {"lat": 40.2338, "lon": -111.6585, "timezone": "America/Denver", "utc_offset": -6.0},
+}
+
+
+def resolve_geo_with_overrides(location: str, resolver):
+    import re
+    key = re.sub(r"\s+", " ", (location or "").strip().lower()).strip(" .")
+    if key in GEO_OVERRIDES:
+        return dict(GEO_OVERRIDES[key])
+    geo = resolver(location)
+    if geo and key.startswith("provo") and (geo.get("timezone") == "UTC" or float(geo.get("lat", 0) or 0) == 0.0):
+        return dict(GEO_OVERRIDES["provo utah"])
+    return geo
+
+
 def write_person_profile(subject_name: str, name: str, birth_input: dict, relationship_type: str, chart_record: dict, manifest: dict) -> None:
     """Persist durable per-person birth details and chart links for reuse."""
     try:
@@ -206,7 +229,7 @@ def generate_human_design_chart(
 
     # 1. Resolve Location Coordinates
     try:
-        geo = resolve_geo(location)
+        geo = resolve_geo_with_overrides(location, resolve_geo)
         if not geo or "lat" not in geo:
             return f"Error: Could not resolve location '{location}'"
         lat = geo["lat"]

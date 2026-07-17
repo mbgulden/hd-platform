@@ -120,18 +120,23 @@ def send_premium_signup_notification(email: str, user_id: int, token: str):
     alert_ids = [int(cid.strip()) for cid in alert_ids_str.split(",") if cid.strip().isdigit()]
 
     if bot_token and alert_ids:
-        text = f"🔔 *New Premium Client!*\n\n{email} has joined the 6-Week Sovereign Container.\n\nOnboarding token: `{token}`"
+        # Send as plain text. Onboarding tokens contain underscores/hyphens, which
+        # made Telegram Markdown reject otherwise valid premium alerts with 400.
+        text = (
+            "New Premium Client\n\n"
+            f"{email} has joined the 6-Week Sovereign Container.\n"
+            f"User ID: {user_id}\n"
+            f"Onboarding token: {token}"
+        )
         for chat_id in alert_ids:
             try:
-                httpx.post(
+                resp = httpx.post(
                     f"https://api.telegram.org/bot{bot_token}/sendMessage",
-                    json={
-                        "chat_id": chat_id,
-                        "text": text,
-                        "parse_mode": "Markdown"
-                    },
+                    json={"chat_id": chat_id, "text": text},
                     timeout=5.0
                 )
+                if resp.status_code != 200:
+                    logger.error("Telegram signup alert to %d failed with %d: %s", chat_id, resp.status_code, resp.text)
             except Exception as e:
                 logger.error("Failed to send Telegram signup alert to %d: %s", chat_id, e)
 
