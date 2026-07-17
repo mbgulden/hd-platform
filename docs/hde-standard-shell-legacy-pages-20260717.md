@@ -25,5 +25,6 @@ Covered route families:
 
 ## Verification
 
-- `npm run pwp:verify` passed after the change.
-- Live staging Playwright check confirmed the standard shell on the listed route families, representative sub-pages, Cloudflare alias, and direct deployment URL.
+- `npm run pwp:verify` passed after the original change.
+- 2026-07-17 correction: the original shell proof was too weak; it did not fail duplicate Astro headers or broken mobile menu behavior. PWP visual smoke now asserts exactly one `body > header`, exactly one `body > footer`, the homepage nav links, footer groups, no legacy `.hde-standard-*` shell classes, and mobile menu open/close behavior.
+- Live staging Playwright check now verifies the homepage, listed index pages, representative sub-pages, Cloudflare alias, and direct deployment URL on desktop and mobile.

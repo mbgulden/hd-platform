@@ -41,6 +41,11 @@
       "requiredText": "Emotional Authority"
     },
     {
+      "name": "authorities-index",
+      "path": "/human-design/authorities/",
+      "requiredText": "The 7 Authorities of Human Design"
+    },
+    {
       "name": "profile-1-3",
       "path": "/human-design/profiles/1-3.html",
       "requiredText": "Profile"
