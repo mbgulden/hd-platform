@@ -1195,12 +1195,20 @@ def extract_full_birth_details(text: str) -> dict | None:
         # Do not let a trailing display name become part of the place.
         location = re.split(r"\s+-\s+[A-Z][A-Za-z .'-]{2,80}$", location, maxsplit=1)[0].strip(" .")
     if not location:
+        place_match = re.search(r"\b(?:birth\s+place|birthplace|born\s+in|place)\s+([A-Za-z][A-Za-z .'-]+(?:,\s*[A-Za-z]{2,}|\s+[A-Za-z]{2,})?)", raw, re.I)
+        if place_match:
+            location = place_match.group(1).strip(" .")
+    if not location:
         return None
 
     name = None
     trailing_name = re.search(r"\s+-\s+([A-Z][A-Za-z .'-]{2,80})$", raw)
     if trailing_name:
         name = clean_person_name(trailing_name.group(1))
+    if not name:
+        for_name = re.search(r"\bfor\s+([A-Z][A-Za-z .'-]{2,80}?)(?:\s+(?:born|birth|date|with|at|in|\.))", raw)
+        if for_name:
+            name = clean_person_name(for_name.group(1))
     if not name and re.search(r"\bbecca\b|\bmy wife\b|\bwife\b", raw, re.I):
         name = "Becca Gulden" if re.search(r"\bgulden\b", raw, re.I) or re.search(r"\bbecca\b", raw, re.I) else "Becca"
     if not name:
@@ -1208,6 +1216,27 @@ def extract_full_birth_details(text: str) -> dict | None:
         if name_match:
             name = clean_person_name(re.split(r"\b(?:it should|birth|born|date|at|in)\b", name_match.group(1), maxsplit=1, flags=re.I)[0])
     return {"birth_date": birth_date, "birth_time": birth_time, "location": location, "name": name}
+
+
+def generate_one_shot_chart_from_details(text: str) -> dict | None:
+    """Generate a chart immediately when one message has name/date/time/place.
+
+    This catches family-test users who paste complete birth details after the
+    guide says it can build a chart. Without this rail the LLM can summarize a
+    chart but leave no image/PDF artifacts behind.
+    """
+    details = extract_full_birth_details(text)
+    if not details:
+        return None
+    name = (details.get("name") or os.getenv("GUEST_USER_NAME") or "Sanctuary Guest").strip()
+    slug = slugify_person_name(name)
+    index = normalize_people_index(preferred_slug=slug)
+    index["default_person"] = slug
+    index.setdefault("people", {}).setdefault(slug, {"name": name, "slug": slug})
+    save_people_index(index)
+    birth = {"birth_date": details["birth_date"], "birth_time": details["birth_time"], "location": details["location"]}
+    generated = generate_chart_for_birth_details(name, slug, birth, relationship_type="personal")
+    return {"response": "I generated the chart from the birth details you sent.\n" + generated.get("response", "")}
 
 
 def extract_partial_birth_slots(text: str) -> dict:
@@ -2179,6 +2208,14 @@ async def process_message(payload: dict = Body(...)):
     has_pending_structured = bool(pending_state.get("pending_chart") or pending_state.get("pending_profile_edit"))
 
     if is_explicit_structured_command(text):
+        one_shot_chart = generate_one_shot_chart_from_details(text)
+        if one_shot_chart is not None:
+            response_text = one_shot_chart.get("response", "").strip()
+            image_path, pdf_path, pdf_paths, response_text = extract_chart_file_paths(response_text)
+            usage = build_usage(text, response_text)
+            append_history(text, response_text)
+            return {"response": response_text, "image_path": image_path, "pdf_path": pdf_path, "pdf_paths": pdf_paths, "usage": usage, "model_usage": usage}
+
         natural_update = handle_natural_profile_update(text)
         if natural_update is not None:
             response_text = natural_update.get("response", "").strip()

@@ -9,6 +9,8 @@ A tester can ask for a PDF report after providing birth details, but if the prio
 - Treat `pdf report` / `yes pdf report` as a deterministic report-generation request before LLM fallback.
 - If a stored profile has birth details, rebuild/generate from those details and return chart media metadata for the router to upload.
 - If no profile is stored, scan recent user turns for a complete birth-detail sentence and persist/generate from that instead of asking the user to repeat themselves.
+- If a user pastes a complete one-shot birth-detail sentence (`name + date + time + place`) after the guide invited chart generation, generate the chart immediately before LLM fallback. Do not let the LLM summarize a chart without leaving PDF/image artifacts.
+- Accept natural one-shot phrasing such as `for Alicia Gulden ... birth place Provo, UT`; explicit names and `birth place` should not be rejected as loose profile phrases.
 - Keep the reports API key in environment only; do not print or embed it.
 
 ## Coach dashboard route note
