@@ -1,0 +1,233 @@
+---
+import emdash from '../content/emdash.json';
+const { logo, navLinks, cta } = emdash.global;
+const launchNavLinks = [
+  { label: 'Free Reading', url: '/free-human-design-reading-generator/' },
+  { label: 'Reports', url: '/buy-report/' },
+  { label: 'Sanctuary', url: '/deconditioning/' },
+  { label: 'API', url: '/docs/' },
+  { label: 'Learn', url: '/human-design/gates/' },
+  { label: 'Coaching', url: '/landing-sheplantedatree/' },
+];
+const launchCta = { label: 'Generate Free Reading', url: '/free-human-design-reading-generator/' };
+---
+
+<header>
+  <div class="nav-inner">
+    <a class="nav-logo" href="/" aria-label="Human Design Engine Home">
+      <span class="nav-logo-text">{logo.text}<span>Engine</span></span>
+    </a>
+    
+    <button 
+      class="menu-toggle" 
+      aria-expanded="false" 
+      aria-controls="menu-container" 
+      aria-label="Toggle menu"
+      id="menuTrigger"
+    >
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <path d="M4 6h16M4 12h16M4 18h16" class="hamburger-icon"></path>
+        <path d="M6 18L18 6M6 6l12 12" class="close-icon" style="display: none;"></path>
+      </svg>
+    </button>
+
+    <nav aria-label="Main Navigation" id="menu-container">
+      <ul class="nav-links" id="menuLinks">
+        {launchNavLinks.map(link => (
+          <li><a href={link.url}>{link.label}</a></li>
+        ))}
+      </ul>
+    </nav>
+
+    <a class="nav-cta" href={launchCta.url}>{launchCta.label}</a>
+  </div>
+</header>
+
+<style>
+  header {
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    background: rgba(250, 247, 240, 0.92);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border-bottom: 1px solid var(--card-border);
+    padding: 0 24px;
+  }
+  .nav-inner {
+    max-width: 1200px;
+    margin: 0 auto;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    height: 72px;
+  }
+  .nav-logo {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    text-decoration: none;
+    padding: 6px 0;
+  }
+  .nav-logo-text {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.45rem;
+    font-weight: 700;
+    color: var(--sage-deep);
+    height: var(--logo-height-desktop, 35px);
+    display: flex;
+    align-items: center;
+    letter-spacing: -0.01em;
+  }
+  .nav-logo-text span {
+    font-style: italic;
+    font-weight: 400;
+    color: var(--sage-mid);
+    margin-left: 5px;
+  }
+  .nav-links {
+    display: flex;
+    gap: 36px;
+    list-style: none;
+    align-items: center;
+  }
+  .nav-links :global(a) {
+    color: var(--text-secondary);
+    text-decoration: none;
+    font-weight: 500;
+    font-size: 0.95rem;
+    transition: var(--transition);
+    padding: 8px 0;
+    border-bottom: 2px solid transparent;
+  }
+  .nav-links :global(a):hover {
+    color: var(--sage-deep);
+    border-bottom-color: var(--sage-light);
+  }
+  .nav-cta {
+    background-color: var(--sage-deep);
+    color: var(--cream-bg) !important;
+    padding: 10px 22px;
+    border-radius: 30px;
+    font-weight: 600;
+    font-size: 0.9rem;
+    text-decoration: none;
+    transition: var(--transition);
+    border: 1px solid transparent;
+  }
+  .nav-cta:hover {
+    background-color: var(--sage-mid);
+    transform: translateY(-1px);
+  }
+
+  .menu-toggle {
+    display: none;
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 8px;
+    z-index: 110;
+  }
+  .menu-toggle svg {
+    width: 24px;
+    height: 24px;
+    stroke: var(--sage-deep);
+  }
+
+  /* Mobile Responsive navigation style overrides */
+  @media (max-width: 868px) {
+    .menu-toggle {
+      display: block;
+    }
+    .nav-logo-text {
+      height: var(--logo-height-mobile, 28px);
+    }
+    nav {
+      position: fixed;
+      top: 72px;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background-color: #FAF7F0 !important;
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
+      padding: 40px 24px;
+      transition: opacity var(--transition), visibility var(--transition);
+      opacity: 0;
+      visibility: hidden; /* Hidden when closed for screen readers */
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      z-index: 105;
+    }
+    .nav-links {
+      flex-direction: column;
+      gap: 24px;
+      width: 100%;
+      text-align: center;
+    }
+    .nav-links :global(a) {
+      font-size: 1.25rem;
+      display: block;
+      width: 100%;
+    }
+    .nav-cta {
+      display: none; /* Hide standard CTA link on mobile in favor of drawer navigation */
+    }
+
+    /* Open State */
+    :global(.drawer-open) nav {
+      opacity: 1;
+      visibility: visible;
+    }
+  }
+</style>
+
+<script>
+  const trigger = document.getElementById('menuTrigger');
+  const container = document.getElementById('menu-container');
+  const links = document.querySelectorAll('#menuLinks a');
+
+  if (trigger && container) {
+    const hamburgerIcon = trigger.querySelector('.hamburger-icon') as HTMLElement;
+    const closeIcon = trigger.querySelector('.close-icon') as HTMLElement;
+
+    const toggleMenu = (open: boolean) => {
+      trigger.setAttribute('aria-expanded', open ? 'true' : 'false');
+      if (open) {
+        document.body.classList.add('drawer-open');
+        if (hamburgerIcon) hamburgerIcon.style.display = 'none';
+        if (closeIcon) closeIcon.style.display = 'block';
+        // Focus first link inside drawer
+        if (links.length > 0) {
+          (links[0] as HTMLElement).focus();
+        }
+      } else {
+        document.body.classList.remove('drawer-open');
+        if (hamburgerIcon) hamburgerIcon.style.display = 'block';
+        if (closeIcon) closeIcon.style.display = 'none';
+        // Return focus to trigger
+        trigger.focus();
+      }
+    };
+
+    trigger.addEventListener('click', () => {
+      const isOpen = trigger.getAttribute('aria-expanded') === 'true';
+      toggleMenu(!isOpen);
+    });
+
+    // Close menu when clicking a link
+    links.forEach(link => {
+      link.addEventListener('click', () => {
+        toggleMenu(false);
+      });
+    });
+
+    // Escape key to close menu
+    window.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape' && trigger.getAttribute('aria-expanded') === 'true') {
+        toggleMenu(false);
+      }
+    });
+  }
+</script>

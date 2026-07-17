@@ -1,0 +1,60 @@
+# PRISMATIC ENGINE — Workspace Governance
+# Installed: 2026-06-23 by Fred (per GRO-2217)
+# Repo: hd-platform
+#
+# This file governs how AI agents collaborate on this repository.
+# Every agent MUST respect lane assignments, branch conventions, and locking protocol.
+
+version: 1
+
+agents:
+  fred:
+    role: Orchestrator & Infrastructure
+    lanes:
+      owner: ["*"]
+      read_only: []
+    branch_prefix: "feature/"
+    staging_governor: true
+
+  kai:
+    role: Content Writer
+    lanes:
+      owner: ["content/", "okf/"]
+      read_only: ["src/", "api/"]
+    branch_prefix: "content/"
+
+  agy:
+    role: Research & Audit
+    lanes:
+      owner: ["reports/", "docs/"]
+      read_only: ["src/", "api/"]
+    branch_prefix: "research/"
+
+  jules:
+    role: PR Auditor & Code Reviewer
+    lanes:
+      owner: ["docs/"]
+      read_only: ["*"]
+    branch_prefix: "jules/"
+
+  ned:
+    role: Code Execution & Infrastructure
+    lanes:
+      # Temporary HDE checkpoint branch expansion authorized by Michael, 2026-07-17.
+      # Scope: ned/hde-phase1-phase2-staging-funnel-2026-07-15 only; revert/narrow before generalizing.
+      owner: ["src/", "api/", "scripts/", "docs/", "payment/", "public/", "shared/", "tests/", ".pwp/", "package.json", "package-lock.json", "playwright.config.ts", "lighthouserc.json", "PRISMATIC_ENGINE.yaml"]
+      read_only: ["content/"]
+    branch_prefix: "ned/"
+
+locks:
+  file: "${PRISMATIC_HOME}/.antigravity/swarm_locks.json"
+  heartbeat_interval_s: 60
+  heartbeat_ttl_ms: 300000
+
+staging:
+  governor: "fred"
+  branch: "deploy-fresh"
+
+commit:
+  prefix_format: "[Fred] description (#ISSUE)"
+  require_issue_ref: true

@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Human Design Engine API Reference</title>
+    <!-- Needed for adaptive design -->
+    <meta charset="utf-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link href="https://fonts.googleapis.com/css?family=Montserrat:300,400,700|Fira+Code:400,700&display=swap" rel="stylesheet">
+    <style>
+      body {
+        margin: 0;
+        padding: 0;
+        background-color: #060d1a;
+      }
+      /* Customize Redoc layout for branding */
+      .redoc-wrap {
+        font-family: 'Montserrat', sans-serif !important;
+      }
+      code {
+        font-family: 'Fira Code', monospace !important;
+      }
+      /* Custom back link in sidebar */
+      .back-link {
+        display: block;
+        padding: 15px 24px;
+        background-color: #050b14;
+        color: #c9a84c;
+        text-decoration: none;
+        font-size: 0.9em;
+        font-weight: bold;
+        border-bottom: 1px solid rgba(201, 168, 76, 0.15);
+        transition: 0.2s ease;
+      }
+      .back-link:hover {
+        background-color: #0a1628;
+        color: #e0c468;
+      }
+    </style>
+  </head>
+  <body>
+    <a class="back-link" href="/docs/api">← Back to Dev Portal</a>
+    <redoc spec-url='./openapi.yaml'></redoc>
+    <script src="https://cdn.jsdelivr.net/npm/redoc@next/bundles/redoc.standalone.js"> </script>
+    <script>
+      // Initialize Redoc with HDE Brand styling configuration
+      Redoc.init('./openapi.yaml', {
+        theme: {
+          colors: {
+            primary: {
+              main: '#c9a84c'
+            },
+            text: {
+              primary: '#e8e6e3',
+              secondary: '#8899aa'
+            },
+            responses: {
+              success: {
+                color: '#2ecc71',
+                backgroundColor: 'rgba(46, 204, 113, 0.1)'
+              },
+              error: {
+                color: '#e74c3c',
+                backgroundColor: 'rgba(231, 76, 60, 0.1)'
+              }
+            }
+          },
+          sidebar: {
+            backgroundColor: '#0a1628',
+            textColor: '#8899aa',
+            activeTextColor: '#c9a84c',
+            borderColor: 'rgba(201, 168, 76, 0.15)'
+          },
+          rightPanel: {
+            backgroundColor: '#060d1a',
+            textColor: '#e8e6e3',
+            servers: {
+              backgroundColor: '#0a1628'
+            }
+          },
+          typography: {
+            fontSize: '15px',
+            fontFamily: 'Montserrat, sans-serif',
+            headings: {
+              fontFamily: 'Montserrat, sans-serif'
+            },
+            code: {
+              fontFamily: 'Fira Code, monospace',
+              fontSize: '13px',
+              backgroundColor: '#0a1628',
+              color: '#e0c468'
+            }
+          }
+        }
+      });
+    </script>
+  </body>
+</html>

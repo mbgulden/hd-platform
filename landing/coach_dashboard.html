@@ -1,0 +1,684 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>HDE Coach Dashboard</title>
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Playfair+Display:ital,wght@0,400;0,600;1,400&display=swap" rel="stylesheet">
+  
+  <style>
+    :root {
+      --cream-light: #F7F5F0;
+      --charcoal: #1F2421;
+      --sage-deep: #5F7261;
+      --sage-mid: #8FA89B;
+      --sage-light: #C2D3CD;
+      --card-bg: #FFFFFF;
+      --card-border: #E5ECE9;
+      --text-secondary: #4A524D;
+      --text-muted: #8E9892;
+      --radius: 8px;
+      --radius-lg: 12px;
+      --transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+      --shadow: 0 4px 20px rgba(31, 36, 33, 0.04);
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: 'Inter', sans-serif;
+      background-color: var(--cream-light);
+      color: var(--charcoal);
+      height: 100vh;
+      display: flex;
+      overflow: hidden;
+    }
+
+    /* ---- AUTH DIALOG ---- */
+    #authOverlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      background: rgba(31, 36, 33, 0.7);
+      backdrop-filter: blur(8px);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      z-index: 1000;
+      transition: var(--transition);
+    }
+    #authOverlay.hidden {
+      opacity: 0;
+      pointer-events: none;
+    }
+    .auth-card {
+      background: var(--card-bg);
+      border-radius: var(--radius-lg);
+      padding: 40px;
+      width: 100%;
+      max-width: 400px;
+      box-shadow: 0 10px 40px rgba(0,0,0,0.15);
+      text-align: center;
+    }
+    .auth-card h2 {
+      font-family: 'Playfair Display', serif;
+      color: var(--sage-deep);
+      font-size: 1.75rem;
+      margin-bottom: 12px;
+    }
+    .auth-card p {
+      font-size: 0.9rem;
+      color: var(--text-secondary);
+      margin-bottom: 24px;
+      line-height: 1.4;
+    }
+    .auth-input {
+      width: 100%;
+      padding: 14px;
+      border: 1px solid var(--card-border);
+      border-radius: var(--radius);
+      font-size: 0.95rem;
+      margin-bottom: 16px;
+      text-align: center;
+      background: var(--cream-light);
+      outline: none;
+    }
+    .auth-input:focus {
+      border-color: var(--sage-deep);
+    }
+    .auth-btn {
+      width: 100%;
+      padding: 14px;
+      background: var(--sage-deep);
+      color: #fff;
+      border: none;
+      border-radius: var(--radius);
+      font-size: 1rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: var(--transition);
+    }
+    .auth-btn:hover {
+      background: var(--sage-mid);
+    }
+    .auth-status {
+      background: #FDFBF7;
+      border: 1px solid var(--card-border);
+      border-radius: var(--radius);
+      color: var(--text-secondary);
+      font-size: 0.82rem;
+      line-height: 1.45;
+      margin: 0 0 16px;
+      padding: 12px;
+      text-align: left;
+    }
+    .auth-status.ok {
+      background: rgba(95, 114, 97, 0.10);
+      border-color: rgba(95, 114, 97, 0.25);
+      color: var(--sage-deep);
+    }
+    .auth-status.warn {
+      background: #FFF8E8;
+      border-color: #E9D7A8;
+      color: #735A1C;
+    }
+
+    /* ---- MAIN DASHBOARD ---- */
+    .sidebar {
+      width: 320px;
+      border-right: 1px solid var(--card-border);
+      background: var(--card-bg);
+      display: flex;
+      flex-direction: column;
+      height: 100%;
+    }
+    .sidebar-header {
+      padding: 24px;
+      border-bottom: 1px solid var(--card-border);
+    }
+    .sidebar-header h1 {
+      font-family: 'Playfair Display', serif;
+      font-size: 1.4rem;
+      color: var(--sage-deep);
+      font-weight: 600;
+    }
+    .sidebar-header p {
+      font-size: 0.75rem;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      margin-top: 4px;
+    }
+    .client-list {
+      flex: 1;
+      overflow-y: auto;
+      padding: 16px;
+    }
+    .client-item {
+      padding: 16px;
+      border-radius: var(--radius);
+      border: 1px solid transparent;
+      cursor: pointer;
+      transition: var(--transition);
+      margin-bottom: 12px;
+    }
+    .client-item:hover {
+      background: var(--cream-light);
+      border-color: var(--card-border);
+    }
+    .client-item.active {
+      background: var(--cream-light);
+      border-color: var(--sage-light);
+    }
+    .client-email {
+      font-weight: 500;
+      font-size: 0.9rem;
+      color: var(--charcoal);
+    }
+    .client-meta {
+      font-size: 0.75rem;
+      color: var(--text-secondary);
+      margin-top: 4px;
+      display: flex;
+      justify-content: space-between;
+    }
+    .status-badge {
+      font-size: 0.7rem;
+      padding: 2px 8px;
+      border-radius: 12px;
+      font-weight: 600;
+      text-transform: uppercase;
+    }
+    .status-active { background: #E6F4EA; color: #137333; }
+    .status-suspended { background: #FCE8E6; color: #C5221F; }
+
+    /* ---- MAIN PANEL ---- */
+    .main-content {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      height: 100%;
+      background: var(--cream-light);
+      padding: 40px;
+      overflow-y: auto;
+    }
+    .empty-state {
+      margin: auto;
+      text-align: center;
+      max-width: 400px;
+    }
+    .empty-state h3 {
+      font-family: 'Playfair Display', serif;
+      font-size: 1.5rem;
+      color: var(--sage-deep);
+      margin-bottom: 12px;
+    }
+    .empty-state p {
+      font-size: 0.9rem;
+      color: var(--text-secondary);
+      line-height: 1.5;
+    }
+
+    /* ---- CLIENT DETAILS PANEL ---- */
+    .details-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 32px;
+      width: 100%;
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+    .details-card {
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      border-radius: var(--radius-lg);
+      padding: 32px;
+      box-shadow: var(--shadow);
+      display: flex;
+      flex-direction: column;
+    }
+    .card-heading {
+      font-family: 'Playfair Display', serif;
+      font-size: 1.25rem;
+      color: var(--sage-deep);
+      margin-bottom: 20px;
+      border-bottom: 1px solid var(--cream-light);
+      padding-bottom: 10px;
+    }
+    
+    /* HD Table */
+    .hd-property {
+      display: flex;
+      justify-content: space-between;
+      padding: 12px 0;
+      border-bottom: 1px dashed var(--card-border);
+      font-size: 0.9rem;
+    }
+    .hd-label {
+      color: var(--text-secondary);
+      font-weight: 500;
+    }
+    .hd-val {
+      color: var(--charcoal);
+      font-weight: 600;
+    }
+
+    /* Journal Timeline */
+    .timeline {
+      position: relative;
+      padding-left: 24px;
+      margin-top: 10px;
+      max-height: 400px;
+      overflow-y: auto;
+    }
+    .timeline::before {
+      content: '';
+      position: absolute;
+      left: 7px;
+      top: 0;
+      bottom: 0;
+      width: 2px;
+      background: var(--sage-light);
+    }
+    .timeline-item {
+      position: relative;
+      margin-bottom: 24px;
+    }
+    .timeline-item::before {
+      content: '';
+      position: absolute;
+      left: -22px;
+      top: 4px;
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      background: var(--sage-deep);
+      border: 2px solid var(--card-bg);
+    }
+    .timeline-date {
+      font-size: 0.75rem;
+      color: var(--text-muted);
+      font-weight: 600;
+      margin-bottom: 4px;
+    }
+    .timeline-body {
+      font-size: 0.85rem;
+      color: var(--text-secondary);
+      line-height: 1.4;
+      background: var(--cream-light);
+      padding: 12px;
+      border-radius: var(--radius);
+    }
+
+    /* Homework Portal */
+    .task-item {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 12px;
+    }
+    .task-input {
+      flex: 1;
+      padding: 10px 14px;
+      border: 1px solid var(--card-border);
+      border-radius: var(--radius);
+      font-size: 0.9rem;
+      outline: none;
+      background: var(--cream-light);
+    }
+    .task-input:focus {
+      border-color: var(--sage-deep);
+      background: #fff;
+    }
+    .remove-task-btn {
+      background: none;
+      border: none;
+      color: #C5221F;
+      cursor: pointer;
+      font-size: 1.2rem;
+      padding: 4px;
+      transition: var(--transition);
+    }
+    .remove-task-btn:hover {
+      transform: scale(1.1);
+    }
+    .add-task-btn {
+      background: none;
+      border: 1px dashed var(--sage-deep);
+      color: var(--sage-deep);
+      padding: 10px;
+      border-radius: var(--radius);
+      font-size: 0.85rem;
+      font-weight: 600;
+      cursor: pointer;
+      width: 100%;
+      margin-bottom: 20px;
+      transition: var(--transition);
+    }
+    .add-task-btn:hover {
+      background: rgba(95, 114, 97, 0.05);
+    }
+    .save-btn {
+      padding: 14px;
+      background: var(--sage-deep);
+      color: #fff;
+      border: none;
+      border-radius: var(--radius);
+      font-size: 0.95rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: var(--transition);
+      margin-top: auto;
+    }
+    .save-btn:hover {
+      background: var(--sage-mid);
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Auth Dialog Overlay -->
+  <div id="authOverlay">
+    <div class="auth-card">
+      <h2>Becca's Coach Portal</h2>
+      <p>Sign in through Cloudflare Access, or enter the legacy access token if you are working locally.</p>
+      <div id="authStatus" class="auth-status">Checking Cloudflare Access session…</div>
+      <input type="password" id="tokenInput" class="auth-input" placeholder="Legacy Access Token">
+      <button class="auth-btn" onclick="submitAuth()">Enter Dashboard</button>
+    </div>
+  </div>
+
+  <!-- Left Sidebar -->
+  <aside class="sidebar">
+    <div class="sidebar-header">
+      <h1>Coach Portal</h1>
+      <p>Sovereign Container Management</p>
+    </div>
+    <div class="client-list" id="clientListContainer">
+      <!-- Clients loaded dynamically -->
+    </div>
+  </aside>
+
+  <!-- Main Panel -->
+  <main class="main-content" id="mainPanel">
+    <div class="empty-state">
+      <h3>Dismantling the Not-Self</h3>
+      <p>Select a client from the list to inspect their somatic de-programming metrics, daily journal feeds, and update active design experiments.</p>
+    </div>
+  </main>
+
+  <script>
+    let coachToken = sessionStorage.getItem("COACH_ACCESS_TOKEN") || "";
+
+    window.addEventListener("load", initializeAuth);
+
+    async function initializeAuth() {
+      const status = document.getElementById("authStatus");
+      if (coachToken) {
+        if (status) {
+          status.className = "auth-status ok";
+          status.textContent = "Using stored legacy token for this browser session.";
+        }
+        document.getElementById("authOverlay").classList.add("hidden");
+        loadClients();
+        return;
+      }
+      try {
+        const resp = await fetch("/api/coach/session", { credentials: "same-origin" });
+        if (resp.ok) {
+          const session = await resp.json();
+          coachToken = "";
+          if (status) {
+            status.className = "auth-status ok";
+            status.textContent = `Cloudflare Access detected for ${session.email || "approved coach"}. Loading clients…`;
+          }
+          document.getElementById("authOverlay").classList.add("hidden");
+          const subtitle = document.querySelector(".sidebar-header p");
+          if (subtitle && session.email) subtitle.textContent = `Cloudflare Access: ${session.email}`;
+          loadClients();
+          return;
+        }
+        if (status) {
+          status.className = "auth-status warn";
+          status.textContent = resp.status === 401
+            ? "Cloudflare Access identity was not detected on this request. If you expected email login, the Access policy for /coach/* and /api/coach/* is not matching yet. Legacy token fallback remains available."
+            : `Cloudflare session check returned HTTP ${resp.status}. Legacy token fallback remains available.`;
+        }
+      } catch (err) {
+        console.info("Cloudflare Access session not detected; legacy token entry remains available.");
+        if (status) {
+          status.className = "auth-status warn";
+          status.textContent = "Could not check the Cloudflare Access session. Legacy token fallback remains available.";
+        }
+      }
+    }
+
+    function submitAuth() {
+      const val = document.getElementById("tokenInput").value.trim();
+      if (!val) return;
+      coachToken = val;
+      sessionStorage.setItem("COACH_ACCESS_TOKEN", coachToken);
+      document.getElementById("authOverlay").classList.add("hidden");
+      loadClients();
+    }
+
+    async function loadClients() {
+      const container = document.getElementById("clientListContainer");
+      container.innerHTML = `<div style="text-align: center; color: var(--text-secondary); font-size: 0.9rem;">Loading client profiles...</div>`;
+      
+      try {
+        const resp = await fetch(coachToken ? `/api/coach/clients?token=${encodeURIComponent(coachToken)}` : "/api/coach/clients");
+        if (resp.status === 401) {
+          alert("Invalid Access Token.");
+          sessionStorage.removeItem("COACH_ACCESS_TOKEN");
+          document.getElementById("authOverlay").classList.remove("hidden");
+          return;
+        }
+        if (!resp.ok) {
+          container.innerHTML = `<div style="color: #C5221F; font-size: 0.85rem;">Failed to retrieve clients list.</div>`;
+          return;
+        }
+        
+        const clients = await resp.json();
+        if (clients.length === 0) {
+          container.innerHTML = `<div style="color: var(--text-muted); font-size: 0.85rem; text-align: center; margin-top: 20px;">No premium clients found.</div>`;
+          return;
+        }
+
+        container.innerHTML = "";
+        clients.forEach(client => {
+          const item = document.createElement("div");
+          item.className = "client-item";
+          item.onclick = () => selectClient(client.id, item);
+          
+          const badgeClass = client.subscription_status === "active" ? "status-badge status-active" : "status-badge status-suspended";
+          const displayStatus = client.subscription_status === "active" ? "Active" : "Suspended";
+          
+          item.innerHTML = `
+            <div class="client-email">${client.email}</div>
+            <div class="client-meta">
+              <span>ID: ${client.id}</span>
+              <span class="${badgeClass}">${displayStatus}</span>
+            </div>
+          `;
+          container.appendChild(item);
+        });
+      } catch (err) {
+        console.error(err);
+        container.innerHTML = `<div style="color: #C5221F; font-size: 0.85rem;">Network error fetching clients.</div>`;
+      }
+    }
+
+    let activeClientId = null;
+
+    async function selectClient(clientId, element) {
+      document.querySelectorAll(".client-item").forEach(item => item.classList.remove("active"));
+      if (element) element.classList.add("active");
+      
+      activeClientId = clientId;
+      const mainPanel = document.getElementById("mainPanel");
+      mainPanel.innerHTML = `<div style="margin: auto; color: var(--text-secondary);">Loading client deconditioning dossier...</div>`;
+
+      try {
+        const resp = await fetch("/api/coach/review", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ client_user_id: clientId, token: coachToken || "" })
+        });
+        
+        if (!resp.ok) {
+          mainPanel.innerHTML = `<div style="margin: auto; color: #C5221F;">Failed to retrieve client data.</div>`;
+          return;
+        }
+
+        const data = await resp.json();
+        renderClientDossier(data);
+      } catch (err) {
+        console.error(err);
+        mainPanel.innerHTML = `<div style="margin: auto; color: #C5221F;">Error loading client deconditioning feed.</div>`;
+      }
+    }
+
+    function renderClientDossier(data) {
+      const mainPanel = document.getElementById("mainPanel");
+      const chart = data.chart || {};
+      const journal = data.journal || [];
+      const tasks = data.tasks?.steps || [];
+
+      // Build HD Properties List
+      const hdProps = [
+        { label: "Type", val: chart.type || "Undefined" },
+        { label: "Profile", val: chart.profile || "Undefined" },
+        { label: "Strategy", val: chart.strategy || "Undefined" },
+        { label: "Inner Authority", val: chart.authority || "Undefined" }
+      ];
+      const hdListHtml = hdProps.map(p => `
+        <div class="hd-property">
+          <span class="hd-label">${p.label}</span>
+          <span class="hd-val">${p.val}</span>
+        </div>
+      `).join("");
+
+      // Build Journal Timeline
+      let journalHtml = "";
+      if (journal.length === 0) {
+        journalHtml = `<div style="color: var(--text-muted); font-size: 0.85rem; font-style: italic;">No somatic entries found in guest journal.</div>`;
+      } else {
+        journalHtml = `
+          <div class="timeline">
+            ${journal.map(entry => {
+              const rawDate = entry.created_at || entry.timestamp || "";
+              const formattedDate = rawDate ? new Date(rawDate).toLocaleString() : "Unknown Checkin Time";
+              return `
+                <div class="timeline-item">
+                  <div class="timeline-date">${formattedDate}</div>
+                  <div class="timeline-body">${entry.entry || entry.text || JSON.stringify(entry)}</div>
+                </div>
+              `;
+            }).join("")}
+          </div>
+        `;
+      }
+
+      mainPanel.innerHTML = `
+        <div class="details-grid">
+          <!-- Left Dossier Card (HD & Journal) -->
+          <div style="display: flex; flex-direction: column; gap: 32px;">
+            <div class="details-card">
+              <h3 class="card-heading">Somatic Configuration</h3>
+              ${hdListHtml}
+            </div>
+            
+            <div class="details-card">
+              <h3 class="card-heading">Journal Timeline (Last 15 Checkins)</h3>
+              ${journalHtml}
+            </div>
+          </div>
+
+          <!-- Right Dossier Card (Homework Portal) -->
+          <div class="details-card">
+            <h3 class="card-heading">Active Deconditioning Experiments</h3>
+            <p style="font-size: 0.85rem; color: var(--text-secondary); margin-bottom: 20px; line-height: 1.4;">
+              Assign specific, actionable somatic experiments. The client's Telegram bot will reference these next steps in conversations.
+            </p>
+            
+            <div id="taskListContainer">
+              <!-- Tasks rendered here -->
+            </div>
+            
+            <button class="add-task-btn" onclick="addNewTaskInput()">+ Add New Experiment</button>
+            <button class="save-btn" onclick="saveHomeworkTasks()">Publish Design Experiment</button>
+          </div>
+        </div>
+      `;
+
+      // Render Task Inputs
+      renderTaskInputs(tasks);
+    }
+
+    function renderTaskInputs(tasks) {
+      const container = document.getElementById("taskListContainer");
+      container.innerHTML = "";
+      
+      if (tasks.length === 0) {
+        addNewTaskInput();
+      } else {
+        tasks.forEach(task => addNewTaskInput(task));
+      }
+    }
+
+    function addNewTaskInput(value = "") {
+      const container = document.getElementById("taskListContainer");
+      const wrapper = document.createElement("div");
+      wrapper.className = "task-item";
+      
+      wrapper.innerHTML = `
+        <input type="text" class="task-input" placeholder="e.g. Pause 3 seconds before responding" value="${value.replace(/"/g, '&quot;')}">
+        <button class="remove-task-btn" onclick="this.parentElement.remove()">×</button>
+      `;
+      container.appendChild(wrapper);
+    }
+
+    async function saveHomeworkTasks() {
+      const inputs = document.querySelectorAll(".task-input");
+      const steps = [];
+      inputs.forEach(input => {
+        const val = input.value.trim();
+        if (val) steps.push(val);
+      });
+
+      if (!activeClientId) return;
+
+      try {
+        const resp = await fetch("/api/coach/update_steps", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            client_user_id: activeClientId,
+            token: coachToken || "",
+            steps: steps
+          })
+        });
+
+        if (resp.ok) {
+          alert("Somatic homework tasks published successfully!");
+        } else {
+          alert("Failed to save tasks. Check access token.");
+        }
+      } catch (err) {
+        console.error(err);
+        alert("Network error updating somatic experiments.");
+      }
+    }
+  </script>
+</body>
+</html>

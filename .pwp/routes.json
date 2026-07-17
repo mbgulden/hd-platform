@@ -1,0 +1,13 @@
+{
+  "routes": [
+    { "name": "home", "path": "/", "requiredText": "Human Design Engine" },
+    { "name": "free-reading-generator", "path": "/free-human-design-reading-generator/", "requiredText": "Free Human Design Reading Generator" },
+    { "name": "buy-report", "path": "/buy-report/", "requiredText": "Your Human Design Blueprint" },
+    { "name": "gates-index", "path": "/human-design/gates/", "requiredText": "The 64 Gates of Human Design" },
+    { "name": "gate-1", "path": "/human-design/gates/gate-1.html", "requiredText": "Human Design Gate 1" },
+    { "name": "channel-1-8", "path": "/human-design/channels/1-8-inspiration.html", "requiredText": "Channel 1-8" },
+    { "name": "type-generator", "path": "/human-design/types/generator.html", "requiredText": "The Generator" },
+    { "name": "authority-emotional", "path": "/human-design/authorities/emotional.html", "requiredText": "Emotional Authority" },
+    { "name": "profile-1-3", "path": "/human-design/profiles/1-3.html", "requiredText": "Profile" }
+  ]
+}

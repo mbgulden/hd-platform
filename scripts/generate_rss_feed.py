@@ -15,8 +15,10 @@ Usage:
 
 Configuration (env vars):
     PODCAST_BASE_URL    — root URL where podcast files are hosted
+    PODCAST_FEED_URL    — public URL for the generated RSS feed
     PODCAST_DIR         — directory containing episode .md files
     RSS_OUTPUT_PATH     — where to write the RSS XML file
+    PODCAST_INCLUDE_DRAFTS — set to 1 to include script-only entries without audio
 """
 
 import os
@@ -33,6 +35,10 @@ from xml.dom import minidom
 PODCAST_BASE_URL = os.environ.get(
     "PODCAST_BASE_URL",
     "https://humandesignengine.com/podcast"
+)
+PODCAST_FEED_URL = os.environ.get(
+    "PODCAST_FEED_URL",
+    "https://humandesignengine.com/podcast.xml"
 )
 PODCAST_DIR = os.environ.get(
     "PODCAST_DIR",
@@ -58,10 +64,14 @@ PODCAST_CATEGORY = "Religion & Spirituality"
 PODCAST_SUBCATEGORY = "Spirituality"
 PODCAST_IMAGE_URL = f"{PODCAST_BASE_URL}/podcast-cover.jpg"
 PODCAST_EXPLICIT = "no"
+DEFAULT_AUDIO_LENGTH = "0"
+DEFAULT_AUDIO_DURATION = "15:00"
+INCLUDE_DRAFT_EPISODES = os.environ.get("PODCAST_INCLUDE_DRAFTS") == "1"
 
 # Namespaces
 NS_ITUNES = "http://www.itunes.com/dtds/podcast-1.0.dtd"
 NS_CONTENT = "http://purl.org/rss/1.0/modules/content/"
+NS_ATOM = "http://www.w3.org/2005/Atom"
 
 
 # ── XML Helpers ────────────────────────────────────────────────────────
@@ -73,6 +83,11 @@ def _itunes(tag: str) -> str:
 def _content(tag: str) -> str:
     """Return a content namespace qualified tag."""
     return f"{{{NS_CONTENT}}}{tag}"
+
+
+def _atom(tag: str) -> str:
+    """Return an Atom namespace qualified tag."""
+    return f"{{{NS_ATOM}}}{tag}"
 
 
 # ── Episode Parsing ────────────────────────────────────────────────────
@@ -102,6 +117,10 @@ def parse_episode_markdown(filepath: str) -> dict | None:
     else:
         pub_date = date_match.group(1)
 
+    audio_url_match = re.search(r"^\*\*Audio URL:\*\*\s*(\S+)", content, re.MULTILINE)
+    audio_length_match = re.search(r"^\*\*Audio Length:\*\*\s*(\d+)", content, re.MULTILINE)
+    duration_match = re.search(r"^\*\*Duration:\*\*\s*([0-9:]+)", content, re.MULTILINE)
+
     # Extract intro paragraph as summary
     intro_match = re.search(r"## Intro\n(.+?)(?:\n##|\Z)", content, re.DOTALL)
     summary = ""
@@ -120,9 +139,13 @@ def parse_episode_markdown(filepath: str) -> dict | None:
     # URL slug
     slug = f"{pub_date}-{re.sub(r'[^a-z0-9]+', '-', title.lower()).strip('-')}"
 
-    # Convert markdown to plain text description
+    # Convert markdown to plain text description. Keep audio metadata available
+    # for RSS enclosure tags, but remove it from the human-readable summary.
     desc = content
     desc = re.sub(r"^#\s+.+\n+", "", desc)
+    desc = re.sub(r"^\*\*Audio URL:\*\*.*\n", "", desc, flags=re.MULTILINE)
+    desc = re.sub(r"^\*\*Audio Length:\*\*.*\n", "", desc, flags=re.MULTILINE)
+    desc = re.sub(r"^\*\*Duration:\*\*.*\n", "", desc, flags=re.MULTILINE)
     desc = re.sub(r"\*\*(.+?)\*\*", r"\1", desc)
     desc = re.sub(r"\*(.+?)\*", r"\1", desc)
     desc = re.sub(r"\[([^\]]+)\]\([^)]+\)", r"\1", desc)
@@ -138,9 +161,10 @@ def parse_episode_markdown(filepath: str) -> dict | None:
         "guid": guid,
         "slug": slug,
         "description": desc,
-        "audio_url": f"{PODCAST_BASE_URL}/episodes/{slug}.mp3",
+        "audio_url": audio_url_match.group(1).strip() if audio_url_match else f"{PODCAST_BASE_URL}/episodes/{slug}.mp3",
+        "audio_length": audio_length_match.group(1).strip() if audio_length_match else DEFAULT_AUDIO_LENGTH,
         "episode_url": f"{PODCAST_BASE_URL}/episodes/{slug}",
-        "duration": "15:00",
+        "duration": duration_match.group(1).strip() if duration_match else DEFAULT_AUDIO_DURATION,
     }
 
 
@@ -154,6 +178,9 @@ def discover_episodes(podcast_dir: str) -> list[dict]:
     for md_file in sorted(p.glob("*-episode.md"), reverse=True):
         episode = parse_episode_markdown(str(md_file))
         if episode:
+            if not INCLUDE_DRAFT_EPISODES and episode.get("audio_length") == DEFAULT_AUDIO_LENGTH:
+                print(f"[warn] Skipping unpublished episode without audio metadata: {md_file.name}", file=sys.stderr)
+                continue
             episodes.append(episode)
     return episodes
 
@@ -167,6 +194,11 @@ def generate_rss(episodes: list[dict]) -> str:
     # ── Channel metadata ──
     ET.SubElement(channel, "title").text = PODCAST_TITLE
     ET.SubElement(channel, "link").text = PODCAST_BASE_URL
+    ET.SubElement(channel, _atom("link"), {
+        "href": PODCAST_FEED_URL,
+        "rel": "self",
+        "type": "application/rss+xml",
+    })
     ET.SubElement(channel, "language").text = PODCAST_LANGUAGE
     ET.SubElement(channel, "description").text = PODCAST_DESCRIPTION
     ET.SubElement(channel, _itunes("author")).text = PODCAST_AUTHOR
@@ -205,7 +237,7 @@ def generate_rss(episodes: list[dict]) -> str:
             ET.SubElement(item, _itunes("keywords")).text = ep["keywords"]
         ET.SubElement(item, "enclosure", {
             "url": ep["audio_url"],
-            "length": "0",
+            "length": ep.get("audio_length", DEFAULT_AUDIO_LENGTH),
             "type": "audio/mpeg",
         })
 
@@ -213,6 +245,7 @@ def generate_rss(episodes: list[dict]) -> str:
     # Register namespaces with clean prefixes
     ET.register_namespace("itunes", NS_ITUNES)
     ET.register_namespace("content", NS_CONTENT)
+    ET.register_namespace("atom", NS_ATOM)
 
     xml_str = ET.tostring(rss, encoding="unicode")
 
@@ -316,6 +349,7 @@ def main():
             "slug": "sample-episode",
             "description": "Placeholder episode for RSS feed validation.",
             "audio_url": f"{PODCAST_BASE_URL}/episodes/sample.mp3",
+            "audio_length": DEFAULT_AUDIO_LENGTH,
             "episode_url": f"{PODCAST_BASE_URL}/episodes/sample",
             "duration": "00:30",
         }]
@@ -332,7 +366,7 @@ def main():
         print(f"\n[info] Submit this URL to podcast directories:")
         print(f"    Apple:  https://podcastsconnect.apple.com/")
         print(f"    Spotify: https://podcasters.spotify.com/")
-        print(f"    Feed URL: {PODCAST_BASE_URL}/podcast.xml")
+        print(f"    Feed URL: {PODCAST_FEED_URL}")
     else:
         print(rss_xml)
         print(f"\n[info] {len(episodes)} episodes discovered")

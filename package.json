@@ -1,0 +1,32 @@
+{
+  "name": "hd-platform-frontend",
+  "type": "module",
+  "version": "0.1.0",
+  "scripts": {
+    "dev": "astro dev --host 0.0.0.0 --port 3000",
+    "build": "astro build",
+    "postbuild": "node scripts/route-complete-build.mjs",
+    "preview": "astro preview --host 0.0.0.0 --port 3000",
+    "astro": "astro",
+    "qa:visual": "playwright test tests/visual",
+    "qa:a11y": "playwright test tests/a11y",
+    "qa:flows": "playwright test tests/flows",
+    "qa:lighthouse": "lhci autorun",
+    "qa:links": "node scripts/pwp-link-check.mjs",
+    "qa:update-screenshots": "playwright test tests/visual --update-snapshots",
+    "pwp:verify": "node scripts/pwp-verify.mjs"
+  },
+  "dependencies": {
+    "astro": "^6.4.4"
+  },
+  "devDependencies": {
+    "@axe-core/playwright": "^4.12.1",
+    "@lhci/cli": "^0.15.1",
+    "@playwright/test": "^1.61.1",
+    "http-server": "^14.1.1",
+    "lighthouse": "^13.4.0",
+    "linkinator": "^7.6.1",
+    "start-server-and-test": "^3.0.11",
+    "wait-on": "^9.0.10"
+  }
+}

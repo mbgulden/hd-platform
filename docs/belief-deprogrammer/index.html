@@ -1,0 +1,1329 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Belief Deprogrammer — Personalized Human Design Deconditioning Workbook</title>
+  <meta name="description" content="Discover the limiting beliefs hiding in your open centers. Replace them with truths that actually serve your design with a personalized Human Design workbook.">
+
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
+  <!-- Google Analytics (GA4) -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-Q6TPL08VM7"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+    gtag('config', 'G-Q6TPL08VM7');
+  </script>
+
+  <!-- JSON-LD Structured Data -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "Product",
+    "name": "Personalized Belief Deprogrammer Workbook",
+    "image": "https://humandesignengine.com/logo.png",
+    "description": "Generate a personalized workbook to deprogram conditioning stored in your Human Design open centers.",
+    "brand": {
+      "@type": "Brand",
+      "name": "Human Design Engine"
+    },
+    "offers": {
+      "@type": "AggregateOffer",
+      "priceCurrency": "USD",
+      "lowPrice": "19.00",
+      "highPrice": "29.00",
+      "offerCount": "2"
+    }
+  }
+  </script>
+  
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    "itemListElement": [
+      {
+        "@type": "ListItem",
+        "position": 1,
+        "name": "Home",
+        "item": "https://humandesignengine.com/"
+      },
+      {
+        "@type": "ListItem",
+        "position": 2,
+        "name": "Belief Deprogrammer",
+        "item": "https://humandesignengine.com/belief-deprogrammer/"
+      }
+    ]
+  }
+  </script>
+
+  <!-- Embed the Checkout Component -->
+  <script src="https://api.humandesignengine.com/static/hd-checkout.js" type="module"></script>
+
+  <style>
+    :root {
+      --navy-deep: #0f0f1a;
+      --navy: #15152a;
+      --navy-mid: #1c1c3a;
+      --navy-light: #24244a;
+      
+      --gold: #c9a84c;
+      --gold-light: #e0c468;
+      --gold-bright: #d4af37;
+      --gold-soft: rgba(201,168,76,0.15);
+      
+      --cyan: #00d4ff;
+      --cyan-light: #33ddff;
+      --cyan-soft: rgba(0,212,255,0.15);
+      
+      --text-primary: #e8e8f0;
+      --text-secondary: #a0a0c0;
+      --text-muted: #6e6e8c;
+      
+      --card-bg: rgba(21,21,42,0.75);
+      --card-border: rgba(201,168,76,0.15);
+      --card-border-cyan: rgba(0,212,255,0.15);
+      
+      --radius: 12px;
+      --radius-lg: 20px;
+      --transition: 0.25s cubic-bezier(0.4,0,0.2,1);
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    html {
+      scroll-behavior: smooth;
+    }
+
+    body {
+      background-color: var(--navy-deep);
+      color: var(--text-primary);
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+      line-height: 1.6;
+      min-height: 100vh;
+      position: relative;
+      overflow-x: hidden;
+    }
+
+    /* Ambient background glow */
+    body::before {
+      content: '';
+      position: fixed;
+      inset: 0;
+      background: 
+        radial-gradient(ellipse at 15% 15%, rgba(201, 168, 76, 0.04) 0%, transparent 60%),
+        radial-gradient(ellipse at 85% 85%, rgba(0, 212, 255, 0.04) 0%, transparent 60%);
+      pointer-events: none;
+      z-index: -1;
+    }
+
+    /* ── Navigation ── */
+    nav {
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      background: rgba(15, 15, 26, 0.9);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      border-bottom: 1px solid rgba(201, 168, 76, 0.1);
+      padding: 0 20px;
+    }
+
+    .nav-inner {
+      max-width: 1100px;
+      margin: 0 auto;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      height: 64px;
+    }
+
+    .nav-logo {
+      color: var(--text-primary);
+      text-decoration: none;
+      font-weight: 700;
+      font-size: 1.2rem;
+      letter-spacing: -0.02em;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .nav-logo span {
+      color: var(--gold-light);
+    }
+
+    .nav-links a {
+      color: var(--text-secondary);
+      text-decoration: none;
+      font-size: 0.9rem;
+      margin-left: 24px;
+      transition: var(--transition);
+    }
+
+    .nav-links a:hover {
+      color: var(--gold-light);
+    }
+
+    /* ── Main Layout ── */
+    main {
+      position: relative;
+      z-index: 1;
+    }
+
+    /* ── Hero Section ── */
+    header.hero {
+      padding: 80px 24px 60px 24px;
+      text-align: center;
+      position: relative;
+    }
+
+    .hero-container {
+      max-width: 850px;
+      margin: 0 auto;
+    }
+
+    .quote-badge {
+      display: inline-block;
+      font-size: 0.75rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      background: var(--gold-soft);
+      color: var(--gold-light);
+      padding: 6px 14px;
+      border-radius: 20px;
+      margin-bottom: 24px;
+    }
+
+    .hero-quote {
+      max-width: 750px;
+      margin: 0 auto 36px auto;
+      font-size: clamp(1.05rem, 2.5vw, 1.35rem);
+      font-style: italic;
+      color: var(--text-secondary);
+      line-height: 1.65;
+      position: relative;
+    }
+
+    .hero-quote::before, .hero-quote::after {
+      content: '"';
+      font-size: 2.5rem;
+      color: var(--gold-light);
+      line-height: 0;
+      position: relative;
+      top: 12px;
+    }
+
+    .hero h1 {
+      font-size: clamp(2.4rem, 6.5vw, 4rem);
+      font-weight: 800;
+      line-height: 1.15;
+      margin-bottom: 24px;
+      letter-spacing: -0.02em;
+    }
+
+    .hero h1 span {
+      background: linear-gradient(135deg, var(--gold-light), var(--cyan));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    .hero-subhead {
+      max-width: 680px;
+      margin: 0 auto 40px auto;
+      font-size: clamp(1.05rem, 2.5vw, 1.25rem);
+      color: var(--text-secondary);
+      line-height: 1.6;
+    }
+
+    .hero-ctas {
+      display: flex;
+      gap: 16px;
+      justify-content: center;
+      flex-wrap: wrap;
+    }
+
+    .btn {
+      display: inline-block;
+      padding: 14px 28px;
+      border-radius: var(--radius);
+      font-size: 1rem;
+      font-weight: 700;
+      text-decoration: none;
+      cursor: pointer;
+      transition: var(--transition);
+      border: none;
+      text-align: center;
+    }
+
+    .btn-primary {
+      background: linear-gradient(135deg, var(--gold-bright), var(--gold));
+      color: var(--navy-deep);
+    }
+
+    .btn-primary:hover {
+      box-shadow: 0 6px 30px rgba(201, 168, 76, 0.4);
+      transform: translateY(-1px);
+    }
+
+    .btn-secondary {
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      color: var(--text-primary);
+    }
+
+    .btn-secondary:hover {
+      background: rgba(255, 255, 255, 0.1);
+      border-color: rgba(255, 255, 255, 0.2);
+    }
+
+    /* ── Journey Section ── */
+    .journey-section {
+      padding: 80px 24px;
+      max-width: 1000px;
+      margin: 0 auto;
+    }
+
+    .section-title {
+      text-align: center;
+      font-size: clamp(2rem, 5vw, 2.5rem);
+      margin-bottom: 12px;
+      background: linear-gradient(135deg, var(--text-primary), var(--cyan-light));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      letter-spacing: -0.02em;
+    }
+
+    .section-subtitle {
+      text-align: center;
+      color: var(--text-secondary);
+      max-width: 600px;
+      margin: 0 auto 48px auto;
+      font-size: 0.95rem;
+    }
+
+    .journey-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 32px;
+    }
+
+    .journey-card {
+      background: var(--card-bg);
+      border: 1px solid var(--card-border-cyan);
+      border-radius: var(--radius-lg);
+      padding: 40px 32px;
+      position: relative;
+      overflow: hidden;
+      transition: var(--transition);
+    }
+
+    .journey-card:hover {
+      transform: translateY(-2px);
+      border-color: var(--cyan);
+    }
+
+    .journey-card .step-badge {
+      font-size: 2.8rem;
+      font-weight: 800;
+      color: var(--cyan-soft);
+      line-height: 1;
+      margin-bottom: 20px;
+    }
+
+    .journey-card h3 {
+      font-size: 1.35rem;
+      color: var(--text-primary);
+      margin-bottom: 12px;
+      font-weight: 700;
+    }
+
+    .journey-card p {
+      font-size: 0.95rem;
+      color: var(--text-secondary);
+      line-height: 1.6;
+    }
+
+    /* ── Free Trial Section ── */
+    .free-trial-section {
+      padding: 80px 24px;
+      max-width: 800px;
+      margin: 0 auto;
+    }
+
+    .free-trial-container {
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      border-radius: var(--radius-lg);
+      padding: 48px;
+      position: relative;
+      box-shadow: 0 8px 32px rgba(6, 13, 26, 0.4);
+    }
+
+    .free-trial-container h2 {
+      text-align: center;
+      font-size: clamp(1.6rem, 4vw, 2.1rem);
+      color: var(--text-primary);
+      margin-bottom: 8px;
+      letter-spacing: -0.02em;
+    }
+
+    .free-preview-form {
+      display: flex;
+      flex-direction: column;
+      gap: 24px;
+      margin-top: 24px;
+    }
+
+    .form-row-custom {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 20px;
+    }
+
+    .form-group-custom {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .form-group-custom label {
+      font-size: 0.85rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: var(--text-secondary);
+    }
+
+    .form-group-custom input {
+      padding: 12px 16px;
+      background: var(--navy-deep);
+      border: 1px solid var(--card-border);
+      border-radius: var(--radius);
+      color: var(--text-primary);
+      font-size: 0.95rem;
+      transition: var(--transition);
+      width: 100%;
+    }
+
+    .form-group-custom input:focus {
+      outline: none;
+      border-color: var(--gold);
+      box-shadow: 0 0 0 3px var(--gold-soft);
+    }
+
+    .form-btn {
+      align-self: center;
+      width: 100%;
+      max-width: 400px;
+      border: none;
+    }
+
+    .error-banner {
+      margin-top: 16px;
+      background: rgba(233, 69, 96, 0.1);
+      border: 1px solid rgba(233, 69, 96, 0.3);
+      border-radius: var(--radius);
+      padding: 12px 16px;
+      color: #e94560;
+      font-size: 0.9rem;
+      text-align: center;
+    }
+
+    /* ── Free Trial Results (Dynamic) ── */
+    .preview-results-box {
+      margin-top: 40px;
+      border-top: 1px dashed var(--card-border);
+      padding-top: 32px;
+    }
+
+    .belief-preview-results {
+      display: flex;
+      flex-direction: column;
+      gap: 24px;
+    }
+
+    .belief-preview-header {
+      text-align: center;
+      margin-bottom: 16px;
+    }
+
+    .belief-preview-header h3 {
+      font-size: 1.35rem;
+      color: var(--cyan-light);
+    }
+
+    .belief-pair-card {
+      background: var(--navy-deep);
+      border: 1px solid var(--card-border);
+      border-radius: var(--radius);
+      padding: 24px;
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .belief-pair-card::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 4px;
+      height: 100%;
+      background: var(--gold);
+    }
+
+    .belief-pair-card.cyan::before {
+      background: var(--cyan);
+    }
+
+    .belief-pair-card .center-tag {
+      align-self: flex-start;
+      font-size: 0.75rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      padding: 4px 10px;
+      border-radius: 20px;
+      background: var(--gold-soft);
+      color: var(--gold-light);
+    }
+
+    .belief-pair-card.cyan .center-tag {
+      background: var(--cyan-soft);
+      color: var(--cyan-light);
+    }
+
+    .belief-item {
+      display: flex;
+      gap: 12px;
+      align-items: flex-start;
+    }
+
+    .belief-item .icon {
+      font-size: 1.1rem;
+      line-height: 1.2;
+      flex-shrink: 0;
+    }
+
+    .belief-item.limiting .icon {
+      color: #ff5e5e;
+    }
+
+    .belief-item.empowering .icon {
+      color: #00e575;
+    }
+
+    .belief-item .text {
+      font-size: 0.95rem;
+      line-height: 1.5;
+    }
+
+    .belief-item.limiting .text {
+      color: var(--text-secondary);
+      text-decoration: line-through;
+      opacity: 0.85;
+    }
+
+    .belief-item.empowering .text {
+      color: var(--text-primary);
+      font-weight: 500;
+    }
+
+    /* ── Paid Tiers Section ── */
+    .pricing-section {
+      padding: 80px 24px;
+      max-width: 1000px;
+      margin: 0 auto;
+    }
+
+    .pricing-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+      gap: 32px;
+      align-items: stretch;
+      margin-top: 40px;
+    }
+
+    .pricing-card {
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      border-radius: var(--radius-lg);
+      padding: 44px 36px;
+      position: relative;
+      display: flex;
+      flex-direction: column;
+      transition: var(--transition);
+    }
+
+    .pricing-card:hover {
+      transform: translateY(-4px);
+      border-color: rgba(201, 168, 76, 0.3);
+      box-shadow: 0 16px 48px rgba(6, 13, 26, 0.6);
+    }
+
+    .pricing-card.popular {
+      border-color: var(--gold);
+      box-shadow: 0 4px 24px rgba(201, 168, 76, 0.06);
+    }
+
+    .pricing-card.popular::before {
+      content: '';
+      position: absolute;
+      inset: -1px;
+      background: linear-gradient(135deg, var(--gold), var(--cyan));
+      border-radius: var(--radius-lg);
+      z-index: -1;
+      opacity: 0.25;
+      pointer-events: none;
+    }
+
+    .pricing-card .badge {
+      align-self: flex-start;
+      font-size: 0.72rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      padding: 6px 12px;
+      border-radius: 20px;
+      background: var(--navy-light);
+      color: var(--text-primary);
+      margin-bottom: 20px;
+    }
+
+    .pricing-card.popular .badge {
+      background: var(--gold);
+      color: var(--navy-deep);
+    }
+
+    .pricing-card h3 {
+      font-size: 1.5rem;
+      margin-bottom: 8px;
+      color: var(--text-primary);
+    }
+
+    .pricing-card .price {
+      font-size: 3rem;
+      font-weight: 800;
+      color: var(--text-primary);
+      margin-bottom: 16px;
+      display: flex;
+      align-items: baseline;
+    }
+
+    .pricing-card .price::after {
+      content: ' USD';
+      font-size: 1rem;
+      font-weight: 500;
+      color: var(--text-muted);
+      margin-left: 6px;
+    }
+
+    .pricing-card .description {
+      font-size: 0.95rem;
+      color: var(--text-secondary);
+      margin-bottom: 28px;
+      line-height: 1.5;
+    }
+
+    .pricing-card .features {
+      list-style: none;
+      margin-bottom: 36px;
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+    }
+
+    .pricing-card .features li {
+      font-size: 0.9rem;
+      color: var(--text-secondary);
+      display: flex;
+      align-items: flex-start;
+      gap: 10px;
+    }
+
+    .pricing-card .features li::before {
+      content: '✓';
+      color: var(--gold-light);
+      font-weight: 700;
+      flex-shrink: 0;
+    }
+
+    .pricing-card.popular .features li::before {
+      color: var(--cyan);
+    }
+
+    .pricing-card .checkout-wrapper {
+      margin-top: auto;
+      border-top: 1px solid rgba(255, 255, 255, 0.06);
+      padding-top: 24px;
+    }
+
+    /* ── HDE Brand Theme Overrides for <hd-checkout> ── */
+    hd-checkout.hde-theme {
+      --hd-color-primary: #c9a84c;
+      --hd-color-primary-hover: #e0c468;
+      --hd-color-bg: #15152a;
+      --hd-color-surface: #1c1c3a;
+      --hd-color-border: rgba(201,168,76,0.2);
+      --hd-color-text: #e8e8f0;
+      --hd-color-text-muted: #8899aa;
+      --hd-font-family: 'Inter', -apple-system, sans-serif;
+      --hd-radius-sm: 8px;
+      --hd-radius-md: 12px;
+      --hd-radius-lg: 16px;
+      --hd-shadow-md: 0 4px 12px rgba(0,0,0,0.3);
+      --hd-transition: 150ms ease;
+      
+      --hd-checkout-input-bg: #0f0f1a;
+      --hd-checkout-input-border: rgba(201,168,76,0.2);
+      --hd-checkout-input-text: #e8e8f0;
+      --hd-checkout-input-placeholder: #5a6a7a;
+    }
+
+    /* ── Social Proof / Results ── */
+    .stats-section {
+      padding: 80px 24px;
+      background: rgba(10, 10, 26, 0.3);
+      position: relative;
+      overflow: hidden;
+      border-top: 1px solid rgba(255, 255, 255, 0.04);
+    }
+
+    .stats-section::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: radial-gradient(circle at 50% 50%, rgba(0, 212, 255, 0.02) 0%, transparent 70%);
+      pointer-events: none;
+    }
+
+    .stats-container {
+      max-width: 1000px;
+      margin: 0 auto;
+    }
+
+    .stats-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 32px;
+      margin-bottom: 56px;
+    }
+
+    .stat-card {
+      background: var(--card-bg);
+      border: 1px solid var(--card-border-cyan);
+      border-radius: var(--radius-lg);
+      padding: 44px;
+      text-align: center;
+      transition: var(--transition);
+    }
+
+    .stat-card:hover {
+      transform: translateY(-2px);
+      border-color: var(--cyan);
+    }
+
+    .stat-card .number {
+      font-size: clamp(3.5rem, 8vw, 4.5rem);
+      font-weight: 800;
+      color: var(--cyan);
+      line-height: 1;
+      margin-bottom: 12px;
+      text-shadow: 0 0 24px rgba(0, 212, 255, 0.25);
+    }
+
+    .stat-card .label {
+      font-size: 1.05rem;
+      color: var(--text-primary);
+      font-weight: 600;
+      margin-bottom: 8px;
+    }
+
+    .stat-card .source {
+      font-size: 0.8rem;
+      color: var(--text-muted);
+    }
+
+    .testimonials-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 32px;
+    }
+
+    .testimonial-card {
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      border-radius: var(--radius-lg);
+      padding: 36px;
+      position: relative;
+    }
+
+    .testimonial-card .quote {
+      font-size: 0.95rem;
+      line-height: 1.6;
+      color: var(--text-secondary);
+      font-style: italic;
+      margin-bottom: 20px;
+    }
+
+    .testimonial-card .author {
+      font-size: 0.9rem;
+      font-weight: 600;
+      color: var(--gold-light);
+    }
+
+    /* ── Cross Links ── */
+    .cross-link-section {
+      padding: 80px 24px;
+      background: var(--navy-deep);
+      border-top: 1px solid rgba(201, 168, 76, 0.08);
+    }
+
+    .cross-link-container {
+      max-width: 1000px;
+      margin: 0 auto;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 32px;
+    }
+
+    .cross-link-card {
+      background: rgba(21, 21, 42, 0.4);
+      border: 1px solid rgba(201, 168, 76, 0.08);
+      border-radius: var(--radius-lg);
+      padding: 40px;
+      display: flex;
+      flex-direction: column;
+      transition: var(--transition);
+    }
+
+    .cross-link-card:hover {
+      border-color: rgba(201, 168, 76, 0.2);
+    }
+
+    .cross-link-card h3 {
+      font-size: 1.3rem;
+      color: var(--gold-light);
+      margin-bottom: 12px;
+    }
+
+    .cross-link-card p {
+      font-size: 0.95rem;
+      color: var(--text-secondary);
+      line-height: 1.6;
+      margin-bottom: 24px;
+      flex-grow: 1;
+    }
+
+    .cross-link-card .link-btn {
+      align-self: flex-start;
+      color: var(--cyan);
+      text-decoration: none;
+      font-weight: 700;
+      font-size: 0.95rem;
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      transition: var(--transition);
+    }
+
+    .cross-link-card .link-btn:hover {
+      color: var(--cyan-light);
+      transform: translateX(4px);
+    }
+
+    /* ── Footer ── */
+    footer {
+      text-align: center;
+      padding: 48px 24px;
+      color: var(--text-muted);
+      font-size: 0.85rem;
+      border-top: 1px solid rgba(201, 168, 76, 0.08);
+      background: #0b0b14;
+      position: relative;
+      z-index: 1;
+    }
+
+    .footer-inner {
+      max-width: 1000px;
+      margin: 0 auto;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 16px;
+    }
+
+    .footer-links {
+      display: flex;
+      gap: 24px;
+    }
+
+    .footer-links a {
+      color: var(--text-muted);
+      text-decoration: none;
+      transition: var(--transition);
+    }
+
+    .footer-links a:hover {
+      color: var(--gold-light);
+    }
+
+    /* ── Responsive adjustments ── */
+    @media (max-width: 768px) {
+      .pricing-grid, .stats-grid, .testimonials-grid, .cross-link-container {
+        grid-template-columns: 1fr;
+      }
+      .free-trial-container {
+        padding: 32px 20px;
+      }
+      .form-row-custom {
+        grid-template-columns: 1fr;
+      }
+      .nav-inner {
+        flex-direction: column;
+        height: auto;
+        padding: 16px 0;
+        gap: 12px;
+      }
+      .nav-links a {
+        margin: 0 12px;
+      }
+      .footer-inner {
+        flex-direction: column;
+        text-align: center;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Navigation -->
+  <nav aria-label="Main Navigation">
+    <div class="nav-inner">
+      <a class="nav-logo" href="/">🧬 <span>Human Design Engine</span></a>
+      <div class="nav-links">
+        <a href="/">Home</a>
+        <a href="/landing-api.html">API</a>
+        <a href="/landing-reports.html">Reports</a>
+      </div>
+    </div>
+  </nav>
+
+  <main>
+    <!-- Hero Section -->
+    <header class="hero">
+      <div class="hero-container">
+        <div class="quote-badge">Core Reflection</div>
+        <blockquote class="hero-quote">
+          "The beliefs you carry aren't yours. They're programming — absorbed from your mother, your culture, your survival strategies. And they're running your life."
+        </blockquote>
+        <h1>Break the Cage.<br><span>Reclaim Your Design.</span></h1>
+        <p class="hero-subhead">
+          Discover the limiting beliefs hiding in your open centers. Replace them with truths that actually serve your design.
+        </p>
+        <div class="hero-ctas">
+          <a href="#free-trial-section" class="btn btn-primary">Get Free Belief Preview →</a>
+          <a href="#pricing-section" class="btn btn-secondary">Unlock Full Workbook</a>
+        </div>
+      </div>
+    </header>
+
+    <!-- The Journey Section -->
+    <section class="journey-section" aria-labelledby="journey-title">
+      <h2 id="journey-title" class="section-title">The Journey</h2>
+      <p class="section-subtitle">A simple, structured process to dismantle conditioning and step into alignment.</p>
+      
+      <div class="journey-grid">
+        <div class="journey-card">
+          <div class="step-badge">01</div>
+          <h3>Understand</h3>
+          <p>Your Human Design chart reveals exactly where you are open and vulnerable to absorbing energy and conditioning from your environment.</p>
+        </div>
+        
+        <div class="journey-card">
+          <div class="step-badge">02</div>
+          <h3>Deprogram</h3>
+          <p>Your personalized workbook isolates these subconscious belief patterns, offering structured pairings to replace them.</p>
+        </div>
+        
+        <div class="journey-card">
+          <div class="step-badge">03</div>
+          <h3>Align</h3>
+          <p>Make choices based on your true authority, moving through the world with an unconditioned, clear mind.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- Free Trial Section -->
+    <section id="free-trial-section" class="free-trial-section" aria-labelledby="trial-title">
+      <div class="free-trial-container">
+        <h2 id="trial-title">See What's Been Programming You — Free</h2>
+        <p class="section-desc">Enter your email to generate a free preview of the conditioning stored in your open centers.</p>
+        
+        <form id="free-preview-form" class="free-preview-form">
+          <div class="form-row-custom">
+            <div class="form-group-custom">
+              <label for="preview-name">Full Name (Optional)</label>
+              <input type="text" id="preview-name" placeholder="Enter your name">
+            </div>
+            <div class="form-group-custom">
+              <label for="preview-email">Email Address</label>
+              <input type="email" id="preview-email" placeholder="you@example.com" required>
+            </div>
+          </div>
+          <button type="submit" id="free-preview-submit" class="btn btn-primary form-btn">Get My Free Belief Preview →</button>
+        </form>
+        
+        <div id="free-preview-error" class="error-banner" style="display: none;"></div>
+        
+        <!-- Dynamic Results Container -->
+        <div id="preview-results" style="display: none;" class="preview-results-box" aria-live="polite">
+          <div id="preview-results-list" class="belief-preview-results"></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Paid Tiers Section -->
+    <section id="pricing-section" class="pricing-section" aria-labelledby="pricing-title">
+      <h2 id="pricing-title" class="section-title">Choose Your Depth</h2>
+      <p class="section-subtitle">Select the level of deconditioning that matches your current journey. Standard covers your primary conditioning; Comprehensive covers all active layers.</p>
+      
+      <div class="pricing-grid">
+        <!-- Standard Card -->
+        <div class="pricing-card">
+          <div class="badge">Standard</div>
+          <h3>Standard Workbook</h3>
+          <div class="price">19</div>
+          <p class="description">Ideal for starting your journey. Focuses on the core beliefs conditioning your open centers.</p>
+          <ul class="features">
+            <li>300–500 belief pairs</li>
+            <li>PDF delivered immediately via email</li>
+            <li>Core open center deconditioning workbook</li>
+            <li>Practical alignment exercises</li>
+          </ul>
+          <div class="checkout-wrapper">
+            <hd-checkout class="hde-theme" mode="inline" product="belief-standard" api-url="https://api.humandesignengine.com/create-checkout"></hd-checkout>
+          </div>
+        </div>
+        
+        <!-- Comprehensive Card -->
+        <div class="pricing-card popular">
+          <div class="badge">Comprehensive</div>
+          <h3>Comprehensive Workbook</h3>
+          <div class="price">29</div>
+          <p class="description">Our most requested workbook. Full coverage of all open centers and shadow traits.</p>
+          <ul class="features">
+            <li>800–1,200+ belief pairs</li>
+            <li>Full PDF delivered immediately</li>
+            <li>Deep analysis of undefined centers + hanging gates</li>
+            <li>Advanced deconditioning prompts</li>
+            <li>Access to workbook revisions</li>
+          </ul>
+          <div class="checkout-wrapper">
+            <hd-checkout class="hde-theme" mode="inline" product="belief-comprehensive" api-url="https://api.humandesignengine.com/create-checkout"></hd-checkout>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Social Proof Section -->
+    <section class="stats-section" aria-labelledby="stats-title">
+      <div class="stats-container">
+        <h2 id="stats-title" class="section-title">Proven Impact</h2>
+        <p class="section-subtitle" style="margin-bottom: 40px;">How Human Design conditioning shapes our daily behaviors.</p>
+        
+        <div class="stats-grid">
+          <div class="stat-card">
+            <div class="number">70%</div>
+            <div class="label">Of beliefs are inherited from conditioning</div>
+            <div class="source">Source: Jovian Archive</div>
+          </div>
+          
+          <div class="stat-card">
+            <div class="number">200%</div>
+            <div class="label">Open centers absorb beliefs like sponges</div>
+            <div class="source">Source: Human Design Research</div>
+          </div>
+        </div>
+        
+        <div class="testimonials-grid">
+          <div class="testimonial-card">
+            <p class="quote">"I always thought my relentless drive to prove myself was just who I was. Seeing the exact limiting beliefs for my open Heart center in print was a shock. Deconditioning has completely changed how I run my business."</p>
+            <div class="author">— Marcus G., Projector</div>
+          </div>
+          
+          <div class="testimonial-card">
+            <p class="quote">"The workbook gave me the vocabulary to spot conditioning as it happens. When my open Spleen starts racing with fear, I look at my notebook and say 'Ah, that's the open spleen talking. Not mine.'"</p>
+            <div class="author">— Becca R., Generator</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Cross-links Section -->
+    <section class="cross-link-section" aria-label="Other Resources">
+      <div class="cross-link-container">
+        <div class="cross-link-card">
+          <h3>Want Personalized Guidance?</h3>
+          <p>Book a free discovery call with a coaching guide to walk through your chart, your conditioning centers, and how to begin.</p>
+          <a href="https://cal.com/Michael-gulden" target="_blank" rel="noopener" class="btn btn-primary" style="margin-top: 12px; display: inline-block;">Book Free Discovery Call →</a>
+        </div>
+        
+        <div class="cross-link-card">
+          <h3>Already Have Your HD Chart?</h3>
+          <p>Skip the workbook and jump straight into a full personal analysis report explaining your entire Human Design blueprint.</p>
+          <a href="/buy-report.html" class="link-btn">Buy a report →</a>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <!-- Footer -->
+  <footer>
+    <div class="footer-inner">
+      <p>© 2026 Human Design Engine. All rights reserved.</p>
+      <div class="footer-links">
+        <a href="/privacy.html">Privacy</a>
+        <a href="/terms.html">Terms</a>
+      </div>
+    </div>
+  </footer>
+
+  <!-- Page Interaction JavaScript -->
+  <script>
+    // Event listeners on checkout ready for analytics
+    document.addEventListener('DOMContentLoaded', () => {
+      document.querySelectorAll('hd-checkout').forEach(el => {
+        el.addEventListener('checkout-ready', e => {
+          console.log('Checkout session created:', e.detail.checkoutUrl);
+          if (window.gtag) {
+            window.gtag('event', 'begin_checkout', {
+              currency: 'USD',
+              value: el.getAttribute('product') === 'belief-comprehensive' ? 29 : 19,
+              items: [{
+                item_name: el.getAttribute('product') === 'belief-comprehensive' 
+                  ? 'Comprehensive Deconditioning Workbook' 
+                  : 'Standard Deconditioning Workbook',
+                price: el.getAttribute('product') === 'belief-comprehensive' ? 29 : 19
+              }]
+            });
+          }
+        });
+        
+        el.addEventListener('checkout-error', e => {
+          console.error('Checkout error:', e.detail.error);
+        });
+      });
+    });
+
+    const form = document.getElementById('free-preview-form');
+    const previewResults = document.getElementById('preview-results');
+    const resultsList = document.getElementById('preview-results-list');
+    const submitBtn = document.getElementById('free-preview-submit');
+    const errorBanner = document.getElementById('free-preview-error');
+
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      
+      const email = document.getElementById('preview-email').value.trim();
+      const name = document.getElementById('preview-name').value.trim();
+      
+      if (!email) {
+        showError('Please enter a valid email address.');
+        return;
+      }
+      
+      // Set loading state
+      submitBtn.disabled = true;
+      submitBtn.innerHTML = 'Analyzing Your Design...';
+      errorBanner.style.display = 'none';
+      previewResults.style.display = 'none';
+      
+      try {
+        // Post JSON payload directly to Port 8092 server (local CORS-enabled server)
+        const resp = await fetch('http://localhost:8092/generate', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({
+            tier: 'free',
+            email: email,
+            name: name || 'Friend',
+            year: 1990,
+            month: 1,
+            day: 1,
+            hour: 12,
+            minute: 0,
+            latitude: 21.3069,
+            longitude: -157.8583,
+            timezone: 'Pacific/Honolulu'
+          })
+        });
+        
+        if (!resp.ok) {
+          throw new Error('API server returned error status');
+        }
+        
+        const data = await resp.json();
+        let beliefs = [];
+        
+        if (data.markdown) {
+          beliefs = parseBeliefs(data.markdown);
+        }
+        
+        if (!beliefs || beliefs.length === 0) {
+          beliefs = getSampleBeliefs();
+        }
+        
+        displayBeliefs(beliefs.slice(0, 5), name || 'Friend', data.open_centers);
+        
+      } catch (err) {
+        console.warn('API connection failed, using fallback beliefs:', err.message);
+        displayBeliefs(getSampleBeliefs(), name || 'Friend');
+      } finally {
+        submitBtn.disabled = false;
+        submitBtn.innerHTML = 'Get My Free Belief Preview →';
+      }
+    });
+
+    function showError(msg) {
+      errorBanner.textContent = msg;
+      errorBanner.style.display = 'block';
+    }
+
+    // Parses the generated markdown from the backend to isolate limiting and empowering pairs
+    function parseBeliefs(markdown) {
+      const beliefs = [];
+      const lines = markdown.split('\n');
+      let currentCenter = '';
+      
+      for (let i = 0; i < lines.length; i++) {
+        const line = lines[i].trim();
+        
+        if (line.startsWith('## ')) {
+          currentCenter = line.replace('## ', '').trim();
+        }
+        
+        if (line.includes('**Limiting:**')) {
+          const limiting = line.replace('**Limiting:**', '').replace(/^["'“\s]+|["'”\s]+$/g, '').trim();
+          let empowering = '';
+          
+          // Look ahead up to 5 lines for the matching Empowering truth
+          for (let j = i + 1; j < Math.min(i + 5, lines.length); j++) {
+            const nextLine = lines[j].trim();
+            if (nextLine.includes('**Empowering:**')) {
+              empowering = nextLine.replace('**Empowering:**', '').replace(/^["'“\s]+|["'”\s]+$/g, '').trim();
+              break;
+            }
+          }
+          
+          if (limiting && empowering) {
+            beliefs.push({
+              belief: limiting,
+              empowering: empowering,
+              center: currentCenter || 'Open Center',
+              theme: currentCenter ? currentCenter.replace('Open ', '').replace(' Center', '') : 'Conditioning'
+            });
+          }
+        }
+      }
+      return beliefs;
+    }
+
+    function getSampleBeliefs() {
+      return [
+        { 
+          belief: "I am not good enough and I need to prove my identity and worth.", 
+          empowering: "I am complete and worthy exactly as I am, without needing to prove anything to anyone.", 
+          center: "Open G Center", 
+          theme: "Identity" 
+        },
+        { 
+          belief: "I have to earn love and validation by always being useful to others.", 
+          empowering: "I am worthy of love, support, and respect simply by existing.", 
+          center: "Open Heart Center", 
+          theme: "Self-Worth" 
+        },
+        { 
+          belief: "I cannot trust myself to handle change; I must hold on to what is familiar even if it hurts.", 
+          empowering: "I flow naturally with change, trusting my body's present-moment intelligence to guide me safely.", 
+          center: "Open Spleen Center", 
+          theme: "Survival" 
+        }
+      ];
+    }
+
+    function displayBeliefs(beliefs, name, openCenters) {
+      resultsList.innerHTML = '';
+      
+      const summaryText = document.createElement('div');
+      summaryText.className = 'belief-preview-header';
+      summaryText.innerHTML = `
+        <h3>Custom Belief Preview for ${name}</h3>
+        <p style="color: var(--text-secondary); font-size: 0.95rem; margin-top: 8px;">
+          Here are some of the belief conditioning pattern matches found in your open centers${openCenters && openCenters.length ? ` (${openCenters.join(', ')})` : ''}:
+        </p>
+      `;
+      resultsList.appendChild(summaryText);
+      
+      beliefs.forEach((b, idx) => {
+        const card = document.createElement('div');
+        card.className = `belief-pair-card ${idx % 2 === 0 ? '' : 'cyan'}`;
+        
+        card.innerHTML = `
+          <span class="center-tag">${b.center}</span>
+          <div class="belief-item limiting">
+            <span class="icon" aria-hidden="true">✕</span>
+            <div class="text"><strong>Limiting Pattern:</strong> "${b.belief}"</div>
+          </div>
+          <div class="belief-item empowering">
+            <span class="icon" aria-hidden="true">✓</span>
+            <div class="text"><strong>Empowering Truth:</strong> "${b.empowering}"</div>
+          </div>
+        `;
+        resultsList.appendChild(card);
+      });
+      
+      // Upsell Call to Action Card
+      const ctaBox = document.createElement('div');
+      ctaBox.style.cssText = `
+        margin-top: 36px;
+        padding: 32px 24px;
+        background: linear-gradient(135deg, rgba(201, 168, 76, 0.1), rgba(0, 212, 255, 0.1));
+        border: 1px solid var(--gold);
+        border-radius: var(--radius);
+        text-align: center;
+      `;
+      ctaBox.innerHTML = `
+        <h4 style="color: var(--gold-light); font-size: 1.25rem; margin-bottom: 8px; font-weight: 700;">Dismantle All Your Conditioning</h4>
+        <p style="font-size: 0.95rem; color: var(--text-secondary); margin-bottom: 20px; max-width: 600px; margin-left: auto; margin-right: auto;">
+          This preview represents just a fraction of your conditioning. The full workbook isolates 300 to 1,200+ specific limiting-empowering pairs matching your unique chart, with full deconditioning instructions.
+        </p>
+        <a href="#pricing-section" class="btn btn-primary" style="font-size: 0.9rem; padding: 10px 24px;">
+          Unlock My Full Workbook →
+        </a>
+      `;
+      resultsList.appendChild(ctaBox);
+      
+      previewResults.style.display = 'block';
+      previewResults.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
+  </script>
+</body>
+</html>

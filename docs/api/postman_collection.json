@@ -1,0 +1,447 @@
+{
+  "info": {
+    "name": "Human Design Engine API",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "description": "Comprehensive Postman Collection for the Human Design Engine REST API. Includes endpoints for API key management, chart calculation, transit overlays, relationship synastry, and interactive SVG bodygraph generation.",
+    "_postman_id": "4b68e9f5-1919-4a21-9988-751234bc5def"
+  },
+  "variable": [
+    {
+      "key": "apiBaseUrl",
+      "value": "https://api.humandesignengine.com/v1",
+      "type": "string",
+      "description": "Base URL for the Core API (port 8000 in development)"
+    },
+    {
+      "key": "reportsBaseUrl",
+      "value": "https://reports.humandesignengine.com",
+      "type": "string",
+      "description": "Base URL for the Reports and Public API Service (port 8081 in development)"
+    },
+    {
+      "key": "apiKey",
+      "value": "your_api_key_here",
+      "type": "string",
+      "description": "Your Human Design Engine API key (passed as X-API-Key header)"
+    },
+    {
+      "key": "jwtToken",
+      "value": "your_jwt_token_here",
+      "type": "string",
+      "description": "Your JWT Access Token (passed as Bearer token in Authorization header)"
+    }
+  ],
+  "item": [
+    {
+      "name": "API Key Management",
+      "description": "Endpoints for registering, checking status, and revoking API keys.",
+      "item": [
+        {
+          "name": "Register API Key",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"developer@example.com\",\n  \"name\": \"Production Key\",\n  \"tier\": \"free\"\n}"
+            },
+            "url": {
+              "raw": "{{apiBaseUrl}}/keys/register",
+              "host": [
+                "{{apiBaseUrl}}"
+              ],
+              "path": [
+                "keys",
+                "register"
+              ]
+            },
+            "description": "Register a new API key. Provide email, and optional name and tier (free, pro, or enterprise). Returns the full API key — **save it immediately**, as it will not be shown again."
+          }
+        },
+        {
+          "name": "Check API Key Status",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "X-API-Key",
+                "value": "{{apiKey}}",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{apiBaseUrl}}/keys/status",
+              "host": [
+                "{{apiBaseUrl}}"
+              ],
+              "path": [
+                "keys",
+                "status"
+              ]
+            },
+            "description": "Get the status of the API key passed in the X-API-Key header. Returns the tier, rate limit, creation date, and usage count."
+          }
+        },
+        {
+          "name": "Revoke API Key",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "X-API-Key",
+                "value": "{{apiKey}}",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{apiBaseUrl}}/keys/revoke",
+              "host": [
+                "{{apiBaseUrl}}"
+              ],
+              "path": [
+                "keys",
+                "revoke"
+              ]
+            },
+            "description": "Revoke the API key passed in the X-API-Key header. Once revoked, the key can no longer be used. This action is permanent."
+          }
+        }
+      ]
+    },
+    {
+      "name": "Core Calculation API (Authenticated)",
+      "description": "Endpoints on the main API server that require API Key or JWT authentication.",
+      "item": [
+        {
+          "name": "Compute Natal Chart",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "X-API-Key",
+                "value": "{{apiKey}}",
+                "type": "text",
+                "description": "API Key authentication"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{jwtToken}}",
+                "type": "text",
+                "description": "JWT authentication (Alternative)",
+                "disabled": true
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Jane Doe\",\n  \"year\": 1990,\n  \"month\": 6,\n  \"day\": 1,\n  \"hour\": 8,\n  \"minute\": 0,\n  \"lat\": 40.7128,\n  \"lon\": -74.0060,\n  \"timezone\": \"America/New_York\",\n  \"location\": \"New York, NY\"\n}"
+            },
+            "url": {
+              "raw": "{{apiBaseUrl}}/natal",
+              "host": [
+                "{{apiBaseUrl}}"
+              ],
+              "path": [
+                "natal"
+              ]
+            },
+            "description": "Calculate a full Human Design natal chart from birth data. Returns type, profile, authority, strategy, defined/undefined centers, defined channels, active gates, and variables."
+          }
+        },
+        {
+          "name": "Compute Transit Overlay",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "X-API-Key",
+                "value": "{{apiKey}}",
+                "type": "text",
+                "description": "API Key authentication"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{jwtToken}}",
+                "type": "text",
+                "description": "JWT authentication (Alternative)",
+                "disabled": true
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Jane Doe\",\n  \"year\": 1990,\n  \"month\": 6,\n  \"day\": 1,\n  \"hour\": 8,\n  \"minute\": 0,\n  \"lat\": 40.7128,\n  \"lon\": -74.0060,\n  \"timezone\": \"America/New_York\",\n  \"location\": \"New York, NY\",\n  \"target_date\": \"2026-06-17\"\n}"
+            },
+            "url": {
+              "raw": "{{apiBaseUrl}}/transits",
+              "host": [
+                "{{apiBaseUrl}}"
+              ],
+              "path": [
+                "transits"
+              ]
+            },
+            "description": "Compute a transit overlay for a natal chart on a given date (YYYY-MM-DD format). If target_date is omitted, current date is used. Returns active planetary transits, temporarily completed channels, conditioned centers, and interpretation hints."
+          }
+        },
+        {
+          "name": "Compute Relationship Synastry",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "X-API-Key",
+                "value": "{{apiKey}}",
+                "type": "text",
+                "description": "API Key authentication"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{jwtToken}}",
+                "type": "text",
+                "description": "JWT authentication (Alternative)",
+                "disabled": true
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"person_a\": {\n    \"name\": \"Alice\",\n    \"year\": 1988,\n    \"month\": 4,\n    \"day\": 12,\n    \"hour\": 14,\n    \"minute\": 30,\n    \"lat\": 34.0522,\n    \"lon\": -118.2437,\n    \"timezone\": \"America/Los_Angeles\",\n    \"location\": \"Los Angeles, CA\"\n  },\n  \"person_b\": {\n    \"name\": \"Bob\",\n    \"year\": 1985,\n    \"month\": 9,\n    \"day\": 23,\n    \"hour\": 22,\n    \"minute\": 15,\n    \"lat\": 51.5074,\n    \"lon\": -0.1278,\n    \"timezone\": \"Europe/London\",\n    \"location\": \"London, UK\"\n  }\n}"
+            },
+            "url": {
+              "raw": "{{apiBaseUrl}}/synastry",
+              "host": [
+                "{{apiBaseUrl}}"
+              ],
+              "path": [
+                "synastry"
+              ]
+            },
+            "description": "Calculate synastry (relationship composite) between two birth charts. Returns individual charts, composite channels, electromagnetic channels, compromise gates, shared gates, and centers defined together."
+          }
+        },
+        {
+          "name": "Generate Bodygraph (SVG & Metadata)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "X-API-Key",
+                "value": "{{apiKey}}",
+                "type": "text",
+                "description": "API Key authentication"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{jwtToken}}",
+                "type": "text",
+                "description": "JWT authentication (Alternative)",
+                "disabled": true
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Jane Doe\",\n  \"year\": 1990,\n  \"month\": 6,\n  \"day\": 1,\n  \"hour\": 8,\n  \"minute\": 0,\n  \"lat\": 40.7128,\n  \"lon\": -74.0060,\n  \"timezone\": \"America/New_York\",\n  \"location\": \"New York, NY\",\n  \"theme\": \"canonical\"\n}"
+            },
+            "url": {
+              "raw": "{{apiBaseUrl}}/bodygraph/generate",
+              "host": [
+                "{{apiBaseUrl}}"
+              ],
+              "path": [
+                "bodygraph",
+                "generate"
+              ]
+            },
+            "description": "Generate an interactive SVG bodygraph along with complete JSON metadata and AI narrative interpretation. Accepts theme options like canonical, default, minimal, dark, or light. Rate limits are applied per-tier: free (100/min), pro (1k/min), enterprise (10k/min)."
+          }
+        }
+      ]
+    },
+    {
+      "name": "Reports & Public Service (No Auth / Rate-Limited)",
+      "description": "Endpoints on the reports server that do not require authentication but may be rate-limited.",
+      "item": [
+        {
+          "name": "Health Check (Ping)",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{reportsBaseUrl}}/ping",
+              "host": [
+                "{{reportsBaseUrl}}"
+              ],
+              "path": [
+                "ping"
+              ]
+            },
+            "description": "Verify that the Reports API service is active."
+          }
+        },
+        {
+          "name": "Get Product Catalog",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{reportsBaseUrl}}/api/public/catalog",
+              "host": [
+                "{{reportsBaseUrl}}"
+              ],
+              "path": [
+                "api",
+                "public",
+                "catalog"
+              ]
+            },
+            "description": "Retrieve the list of available verified deep-dive reports with pricing and Stripe price IDs."
+          }
+        },
+        {
+          "name": "Public Compute Chart (Rate-Limited)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Jane Doe\",\n  \"year\": 1990,\n  \"month\": 6,\n  \"day\": 1,\n  \"hour\": 8,\n  \"minute\": 0,\n  \"lat\": 40.7128,\n  \"lon\": -74.0060,\n  \"timezone\": \"America/New_York\",\n  \"location\": \"New York, NY\"\n}"
+            },
+            "url": {
+              "raw": "{{reportsBaseUrl}}/api/public/compute-chart",
+              "host": [
+                "{{reportsBaseUrl}}"
+              ],
+              "path": [
+                "api",
+                "public",
+                "compute-chart"
+              ]
+            },
+            "description": "Calculate a simplified natal chart containing core attributes (type, profile, authority, centers). Rate-limited to 10 calls/minute per IP. Designed for public-facing widgets."
+          }
+        },
+        {
+          "name": "Generate SVG Bodygraph",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{reportsBaseUrl}}/api/public/bodygraph?name=Jane%20Doe&year=1990&month=6&day=1&hour=8&minute=0&lat=40.71&lon=-74.0&timezone=America/New_York&format=svg",
+              "host": [
+                "{{reportsBaseUrl}}"
+              ],
+              "path": [
+                "api",
+                "public",
+                "bodygraph"
+              ],
+              "query": [
+                {
+                  "key": "name",
+                  "value": "Jane Doe"
+                },
+                {
+                  "key": "year",
+                  "value": "1990"
+                },
+                {
+                  "key": "month",
+                  "value": "6"
+                },
+                {
+                  "key": "day",
+                  "value": "1"
+                },
+                {
+                  "key": "hour",
+                  "value": "8"
+                },
+                {
+                  "key": "minute",
+                  "value": "0"
+                },
+                {
+                  "key": "lat",
+                  "value": "40.71"
+                },
+                {
+                  "key": "lon",
+                  "value": "-74.0"
+                },
+                {
+                  "key": "timezone",
+                  "value": "America/New_York"
+                },
+                {
+                  "key": "format",
+                  "value": "svg",
+                  "description": "Set to svg for vector image, or omit for PDF document"
+                }
+              ]
+            },
+            "description": "Generate and render a crisp SVG bodygraph image representing the Human Design chart directly from query parameters."
+          }
+        },
+        {
+          "name": "Capture Lead Email",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"developer@example.com\",\n  \"name\": \"Jane Doe\",\n  \"birth_date\": \"1990-06-01\",\n  \"birth_time\": \"08:00\",\n  \"location\": \"New York, NY\",\n  \"source\": \"dev-portal-widget\"\n}"
+            },
+            "url": {
+              "raw": "{{reportsBaseUrl}}/api/public/capture-lead",
+              "host": [
+                "{{reportsBaseUrl}}"
+              ],
+              "path": [
+                "api",
+                "public",
+                "capture-lead"
+              ]
+            },
+            "description": "Record a lead's email address and birth metadata from a widget submission."
+          }
+        }
+      ]
+    }
+  ]
+}

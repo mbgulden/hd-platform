@@ -1,0 +1,79 @@
+---
+interface Props {
+  title: string;
+  description?: string;
+}
+
+const { title, description = "Access verifiable Human Design calculations, download premium reports, and explore somatic tools built to return you to your true body signature." } = Astro.props;
+const canonicalUrl = new URL(Astro.url.pathname, Astro.site ?? 'https://humandesignengine.com').toString();
+---
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8"/>
+  <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+  <title>{title}</title>
+  <meta content={description} name="description"/>
+  <link rel="canonical" href={canonicalUrl}/>
+  <meta property="og:title" content={title}/>
+  <meta property="og:description" content={description}/>
+  <meta property="og:url" content={canonicalUrl}/>
+  <meta property="og:type" content="website"/>
+  <meta name="twitter:card" content="summary_large_image"/>
+  
+  <!-- Modern Typography -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/hde-light-theme.css">
+  
+  <style is:global>
+    :root {
+      /* Calming Sage Green Theme Palette */
+      --sage-deep: #2F3631;
+      --sage-dark: #3F4741;
+      --sage-mid: #5F7261;
+      --sage-light: #8E9E90;
+      --sage-glow: rgba(95, 114, 97, 0.12);
+      
+      --cream-bg: #FAF7F0;
+      --cream-light: #FDFBF7;
+      
+      --taupe-muted: #8C8275;
+      --taupe-light: #C7BFB5;
+      
+      --text-primary: #2F3631;
+      --text-secondary: #5C625E;
+      --text-muted: #808682;
+      --white: #ffffff;
+      
+      --card-border: rgba(95, 114, 97, 0.15);
+      --radius: 12px;
+      --radius-lg: 24px;
+      --shadow: 0 8px 30px rgba(47, 54, 49, 0.03);
+      --transition: 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
+
+    body {
+      font-family: 'Outfit', -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
+      background-color: var(--cream-bg);
+      color: var(--text-primary);
+      line-height: 1.6;
+      overflow-x: hidden;
+    }
+
+    /* Focus States */
+    a:focus-visible, button:focus-visible, input:focus-visible {
+      outline: 2px solid var(--sage-mid) !important;
+      outline-offset: 4px !important;
+    }
+  </style>
+</head>
+<body>
+  <slot />
+</body>
+</html>

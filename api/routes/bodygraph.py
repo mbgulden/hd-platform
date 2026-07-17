@@ -240,25 +240,3 @@ async def bodygraph(
     return BodygraphResponse(success=True, data=payload)
 
 
-# ── No-auth test endpoint ─────────────────────────────────────────────
-
-
-@router.post("/noauth", response_model=BodygraphResponse, status_code=status.HTTP_200_OK)
-async def bodygraph_noauth(body: BodygraphRequest) -> BodygraphResponse:
-    try:
-        result = await compute_natal_chart(
-            name=body.name, year=body.year, month=body.month, day=body.day,
-            hour=body.hour, minute=body.minute,
-            lat=body.lat or 0.0, lon=body.lon or 0.0,
-            location=body.location, timezone=body.timezone,
-        )
-    except Exception as exc:
-        logger.exception("Bodygraph (noauth) failed")
-        raise HTTPException(status_code=status.HTTP_502_BAD_GATEWAY,
-                           detail=f"Engine unavailable: {exc}") from exc
-
-    if result.get("error"):
-        return BodygraphResponse(success=False, error=result.get("detail", "Unknown error"))
-
-    payload = _build_bodygraph_payload(result)
-    return BodygraphResponse(success=True, data=payload)

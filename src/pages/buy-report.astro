@@ -1,0 +1,583 @@
+---
+import Layout from '../layouts/Layout.astro';
+import Nav from '../components/Nav.astro';
+import Footer from '../components/Footer.astro';
+---
+
+<Layout title="Get Your Human Design Blueprint | Human Design Engine" description="Enter your birth details, choose a report, and get a customized PDF blueprint of your somatic design delivered instantly.">
+  <Nav />
+  
+  <main class="checkout-wrapper">
+    <div class="container">
+      <div class="checkout-header">
+        <h1>Your Human Design <span>Blueprint</span></h1>
+        <p class="section-sub">Enter your birth details, choose your somatic report, and receive a beautifully formatted PDF instantly.</p>
+      </div>
+
+      <div class="step-row" aria-label="Progress steps">
+        <div class="step active"><span class="step-num">1</span><span class="step-label">Birth Data</span></div>
+        <div class="step"><span class="step-num">2</span><span class="step-label">Select Report</span></div>
+        <div class="step"><span class="step-num">3</span><span class="step-label">Instant PDF</span></div>
+      </div>
+
+      <div class="form-section">
+        <div class="card birth-data-card">
+          <h2>📋 1. Enter Your Birth Details</h2>
+          <div class="form-grid">
+            <div class="form-group">
+              <label for="name">Full Name</label>
+              <input id="name" placeholder="Your name" required type="text"/>
+            </div>
+            <div class="form-group">
+              <label for="email">Email Address (for delivery)</label>
+              <input id="email" placeholder="you@email.com" required type="email"/>
+            </div>
+            <div class="form-group">
+              <label for="birthdate">Birth Date</label>
+              <input id="birthdate" required type="date"/>
+            </div>
+            <div class="form-group">
+              <label for="birthtime">Birth Time</label>
+              <input id="birthtime" required type="time"/>
+            </div>
+            <div class="form-group full-width">
+              <label for="location">Birth Location</label>
+              <input id="location" placeholder="City, State/Country" required type="text"/>
+            </div>
+            <div class="form-group full-width">
+              <label for="partner">Partner's Info (Required for Relationship Synastry)</label>
+              <input disabled id="partner" placeholder="Partner's full name, birth date, time, and city" type="text"/>
+            </div>
+          </div>
+        </div>
+
+        <div class="card pricing-card-section">
+          <h2>📊 2. Choose Your Report</h2>
+          <div class="report-cards" id="reportCards" role="radiogroup" aria-label="Select report type">
+            <!-- Natal Report -->
+            <div class="report-card selected" data-report="natal" tabindex="0" role="radio" aria-checked="true" id="card-natal">
+              <div class="card-glow"></div>
+              <span class="badge-icon">🌱</span>
+              <h3>Natal Report</h3>
+              <div class="price">$19</div>
+              <p class="desc">Complete somatic analysis of your Type, Authority, profile, centers, and gates in plain English.</p>
+            </div>
+
+            <!-- Transit Report -->
+            <div class="report-card" data-report="transit" tabindex="0" role="radio" aria-checked="false" id="card-transit">
+              <div class="card-glow"></div>
+              <span class="badge-icon">🌙</span>
+              <h3>Transit Forecast</h3>
+              <div class="price">$29</div>
+              <p class="desc">12-Month planetary cycle analysis mapping how daily transits interact with your natal center activations.</p>
+            </div>
+
+            <!-- Synastry Report -->
+            <div class="report-card" data-report="synastry" tabindex="0" role="radio" aria-checked="false" id="card-synastry">
+              <div class="card-glow"></div>
+              <span class="badge-icon">💫</span>
+              <h3>Relationship Synastry</h3>
+              <div class="price">$29</div>
+              <p class="desc">A detailed blueprint of two charts interacting: electromagnetics, compromises, and partnership themes.</p>
+            </div>
+
+            <!-- Bundle -->
+            <div class="report-card featured-card" data-report="bundle" tabindex="0" role="radio" aria-checked="false" id="card-bundle">
+              <div class="card-badge">Best Value</div>
+              <span class="badge-icon">✨</span>
+              <h3>Complete Blueprint Bundle</h3>
+              <div class="price">$59</div>
+              <p class="desc">All three custom reports in one complete package. Save $18 compared to individual orders.</p>
+            </div>
+          </div>
+
+          <input id="refCode" type="hidden" value=""/>
+          <div id="refNotice" style="display:none;text-align:center;margin-top:16px;padding:12px;background:var(--sage-glow);border:1px solid var(--card-border);border-radius:8px;font-size:0.85rem;color:var(--sage-deep);font-weight:500;"></div>
+          
+          <button class="btn btn-primary" id="buyBtn">🔒 Secure Checkout with Stripe →</button>
+          <div class="error-box" id="error" style="display: none;"></div>
+
+          <div class="trust-row">
+            <div class="trust-item"><svg viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M2.166 4.9L10 1.554 17.833 4.9c.563.24.917.8.917 1.41v4.358c0 5.485-3.327 9.539-8.52 10.963-.15.041-.309.041-.459 0-5.193-1.424-8.52-5.478-8.52-10.963V6.31c0-.61.354-1.17.917-1.411zm7.834 2.1c.368 0 .667.298.667.667v4.666c0 .369-.299.667-.667.667s-.667-.298-.667-.667V7.667c0-.369.299-.667.667-.667zm0 8.001c.46 0 .833-.373.833-.834V14c0-.46-.373-.833-.833-.833s-.834.373-.834.833v.334c0 .461.374.834.834.834z" clip-rule="evenodd"/></svg> Verified computations</div>
+            <div class="trust-item"><svg viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M12.316 3.051a1 1 0 01.033 1.41l-5.6 5.6a1 1 0 01-1.414 0l-3.5-3.5a1 1 0 111.414-1.414L6 7.828l4.9-4.9a1 1 0 011.416-.077z" clip-rule="evenodd"/></svg> Delivered instantly via email</div>
+            <div class="trust-item"><svg viewBox="0 0 20 20" fill="currentColor"><path d="M10 2a6 6 0 00-6 6v3.586l-.707.707A1 1 0 004 14h12a1 1 0 00.707-1.707L16 11.586V8a6 6 0 00-6-6zM10 18a3 3 0 01-3-3h6a3 3 0 01-3 3z"/></svg> Secure SSL encryption</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </main>
+  
+  <Footer />
+</Layout>
+
+<style>
+  .checkout-wrapper {
+    background-color: var(--cream-bg);
+    min-height: 80vh;
+    padding: 60px 0 100px;
+  }
+  .container {
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 0 24px;
+  }
+  .checkout-header {
+    text-align: center;
+    margin-bottom: 48px;
+  }
+  .checkout-header h1 {
+    font-family: 'Playfair Display', serif;
+    font-size: 2.75rem;
+    font-weight: 700;
+    color: var(--sage-deep);
+    margin-bottom: 12px;
+  }
+  .checkout-header h1 span {
+    font-style: italic;
+    font-weight: 400;
+    color: var(--sage-mid);
+  }
+  .section-sub {
+    font-size: 1.1rem;
+    color: var(--text-secondary);
+    max-width: 600px;
+    margin: 0 auto;
+  }
+  
+  /* Progress steps */
+  .step-row {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 16px;
+    margin-bottom: 48px;
+  }
+  .step {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    color: var(--text-muted);
+    font-size: 0.95rem;
+    font-weight: 500;
+  }
+  .step.active {
+    color: var(--sage-deep);
+  }
+  .step-num {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    border: 2px solid var(--taupe-light);
+    font-size: 0.85rem;
+    font-weight: 600;
+  }
+  .step.active .step-num {
+    border-color: var(--sage-mid);
+    background-color: var(--sage-mid);
+    color: var(--white);
+  }
+  
+  /* Form Section Layout */
+  .form-section {
+    display: grid;
+    grid-template-columns: 1.1fr 1fr;
+    gap: 40px;
+    align-items: start;
+  }
+  @media (max-width: 968px) {
+    .form-section {
+      grid-template-columns: 1fr;
+    }
+  }
+
+  .card {
+    background-color: var(--cream-light);
+    border: 1px solid var(--card-border);
+    border-radius: var(--radius-lg);
+    padding: 36px;
+    box-shadow: var(--shadow);
+  }
+  .card h2 {
+    font-size: 1.45rem;
+    font-weight: 600;
+    color: var(--sage-deep);
+    margin-bottom: 24px;
+    border-bottom: 1px solid var(--card-border);
+    padding-bottom: 12px;
+  }
+  
+  /* Form fields styling */
+  .form-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+  }
+  .form-group {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+  .form-group.full-width {
+    grid-column: span 2;
+  }
+  .form-group label {
+    font-size: 0.9rem;
+    font-weight: 600;
+    color: var(--text-primary);
+  }
+  .form-group input {
+    width: 100%;
+    padding: 12px 16px;
+    border: 1px solid var(--taupe-light);
+    border-radius: 8px;
+    background-color: var(--white);
+    font-family: inherit;
+    font-size: 0.95rem;
+    color: var(--text-primary);
+    transition: var(--transition);
+  }
+  .form-group input:focus {
+    outline: none;
+    border-color: var(--sage-mid);
+    box-shadow: 0 0 0 3px var(--sage-glow);
+  }
+  .form-group input:disabled {
+    background-color: #f1ede4;
+    cursor: not-allowed;
+    border-color: #e5ded2;
+  }
+  
+  /* Pricing selection cards */
+  .report-cards {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    margin-bottom: 28px;
+  }
+  .report-card {
+    position: relative;
+    border: 1px solid var(--card-border);
+    border-radius: var(--radius);
+    padding: 20px 24px;
+    cursor: pointer;
+    background-color: var(--cream-light);
+    transition: var(--transition);
+    outline: none;
+    overflow: hidden;
+  }
+  .report-card:hover {
+    border-color: var(--sage-mid);
+    box-shadow: 0 4px 20px rgba(95, 114, 97, 0.06);
+    transform: translateY(-1px);
+  }
+  .report-card.selected {
+    border-color: var(--sage-mid);
+    background-color: var(--white);
+    box-shadow: 0 4px 20px rgba(95, 114, 97, 0.08);
+  }
+  .report-card.selected::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    bottom: 0;
+    width: 4px;
+    background-color: var(--sage-mid);
+  }
+  
+  .card-glow {
+    position: absolute;
+    top: -50%;
+    left: -50%;
+    width: 200%;
+    height: 200%;
+    background: radial-gradient(circle, rgba(95, 114, 97, 0.03) 0%, transparent 70%);
+    opacity: 0;
+    transition: opacity var(--transition);
+    pointer-events: none;
+  }
+  .report-card:hover .card-glow, .report-card.selected .card-glow {
+    opacity: 1;
+  }
+  
+  .badge-icon {
+    font-size: 1.5rem;
+    display: inline-block;
+    margin-bottom: 6px;
+  }
+  .report-card h3 {
+    font-size: 1.15rem;
+    font-weight: 600;
+    color: var(--sage-deep);
+    margin-bottom: 4px;
+  }
+  .report-card .price {
+    position: absolute;
+    top: 20px;
+    right: 24px;
+    font-size: 1.45rem;
+    font-weight: 700;
+    color: var(--sage-deep);
+  }
+  .report-card .desc {
+    font-size: 0.88rem;
+    color: var(--text-secondary);
+    line-height: 1.45;
+    padding-right: 48px;
+  }
+  
+  /* Featured card styling */
+  .featured-card {
+    border-color: rgba(95, 114, 97, 0.3);
+  }
+  .card-badge {
+    position: absolute;
+    top: 0;
+    right: 0;
+    background-color: var(--sage-mid);
+    color: var(--white);
+    font-size: 0.72rem;
+    font-weight: 600;
+    padding: 3px 10px;
+    border-bottom-left-radius: 8px;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+  }
+  .featured-card.selected {
+    border-color: var(--sage-mid);
+  }
+  
+  /* Purchase Button */
+  .btn-primary {
+    width: 100%;
+    padding: 16px;
+    border-radius: 30px;
+    background-color: var(--sage-deep);
+    color: var(--white);
+    font-weight: 600;
+    font-size: 1.05rem;
+    border: none;
+    cursor: pointer;
+    transition: var(--transition);
+  }
+  .btn-primary:hover {
+    background-color: var(--sage-mid);
+    transform: translateY(-1px);
+  }
+  .btn-primary:focus-visible {
+    outline: 2px solid var(--sage-mid) !important;
+    outline-offset: 4px !important;
+  }
+  .btn-primary:disabled {
+    background-color: var(--text-muted);
+    cursor: not-allowed;
+    transform: none;
+  }
+  
+  .error-box {
+    margin-top: 16px;
+    padding: 12px;
+    background-color: #fce8e6;
+    border: 1px solid #f5b0ab;
+    border-radius: 8px;
+    color: #a51b24;
+    font-size: 0.9rem;
+    text-align: center;
+    font-weight: 500;
+  }
+  
+  /* Trust badges */
+  .trust-row {
+    display: flex;
+    justify-content: center;
+    gap: 20px;
+    margin-top: 24px;
+    border-top: 1px solid var(--card-border);
+    padding-top: 20px;
+  }
+  .trust-item {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 0.78rem;
+    font-weight: 500;
+    color: var(--text-secondary);
+  }
+  .trust-item svg {
+    width: 14px;
+    height: 14px;
+    color: var(--sage-mid);
+  }
+</style>
+
+<script>
+  let selectedReport = 'natal';
+
+  const refInput = document.getElementById('refCode') as HTMLInputElement;
+  const refNotice = document.getElementById('refNotice') as HTMLElement;
+  const partnerInput = document.getElementById('partner') as HTMLInputElement;
+  const errorBox = document.getElementById('error') as HTMLElement;
+  const buyBtn = document.getElementById('buyBtn') as HTMLButtonElement;
+
+  // Auto-fill from query parameters
+  const urlParams = new URLSearchParams(window.location.search);
+  const refCode = urlParams.get('ref') || '';
+  if (refInput) refInput.value = refCode;
+
+  if (refCode && refNotice) {
+    refNotice.style.display = 'block';
+    refNotice.textContent = '🔗 Referred by affiliate partner';
+  }
+
+  // Prepopulate form fields
+  if (urlParams.get('name')) (document.getElementById('name') as HTMLInputElement).value = urlParams.get('name')!;
+  if (urlParams.get('email')) (document.getElementById('email') as HTMLInputElement).value = urlParams.get('email')!;
+  
+  // Birth Date
+  const m = urlParams.get('month'), d = urlParams.get('day'), y = urlParams.get('year');
+  if (m && d && y) {
+    const mon = m.padStart(2, '0'), day = d.padStart(2, '0');
+    (document.getElementById('birthdate') as HTMLInputElement).value = `${y}-${mon}-${day}`;
+  }
+  if (urlParams.get('time')) (document.getElementById('birthtime') as HTMLInputElement).value = urlParams.get('time')!;
+  if (urlParams.get('loc')) (document.getElementById('location') as HTMLInputElement).value = decodeURIComponent(urlParams.get('loc')!);
+
+  // Selector logic for report cards
+  const cards = document.querySelectorAll('.report-card');
+  cards.forEach(card => {
+    card.addEventListener('click', () => {
+      selectReport(card.getAttribute('data-report')!);
+    });
+    card.addEventListener('keydown', (e: any) => {
+      if (e.key === ' ' || e.key === 'Enter') {
+        e.preventDefault();
+        selectReport(card.getAttribute('data-report')!);
+      }
+    });
+  });
+
+  function selectReport(report: string) {
+    selectedReport = report;
+    cards.forEach(c => {
+      c.classList.remove('selected');
+      c.setAttribute('aria-checked', 'false');
+    });
+    const selectedEl = document.getElementById(`card-${report}`);
+    if (selectedEl) {
+      selectedEl.classList.add('selected');
+      selectedEl.setAttribute('aria-checked', 'true');
+    }
+
+    if (partnerInput) {
+      if (report === 'synastry') {
+        partnerInput.disabled = false;
+        partnerInput.required = true;
+        partnerInput.focus();
+      } else {
+        partnerInput.disabled = true;
+        partnerInput.required = false;
+        partnerInput.value = '';
+      }
+    }
+  }
+
+  if (buyBtn) {
+    buyBtn.addEventListener('click', handleCheckout);
+  }
+
+  async function handleCheckout() {
+    buyBtn.disabled = true;
+    buyBtn.textContent = 'Processing Secure Checkout...';
+    if (errorBox) errorBox.style.display = 'none';
+
+    const name = (document.getElementById('name') as HTMLInputElement).value.trim();
+    const email = (document.getElementById('email') as HTMLInputElement).value.trim();
+    const birthdate = (document.getElementById('birthdate') as HTMLInputElement).value;
+    const birthtime = (document.getElementById('birthtime') as HTMLInputElement).value;
+    const location = (document.getElementById('location') as HTMLInputElement).value.trim();
+    const partner = partnerInput ? partnerInput.value.trim() : '';
+    const ref = refInput ? refInput.value : '';
+
+    if (!name || !email || !birthdate || !birthtime || !location) {
+      showError('Please fill in all required birth detail fields.');
+      return;
+    }
+    if (selectedReport === 'synastry' && !partner) {
+      showError("Please enter your partner's details for a synastry report.");
+      return;
+    }
+
+    // Determine prices, names, and Stripe Price IDs from Stripe dashboard
+    const prices = { natal: 1900, synastry: 2900, transit: 2900, bundle: 5900 };
+    const names = {
+      natal: 'Human Design Natal Report',
+      synastry: 'Human Design Synastry Report',
+      transit: 'Human Design Transit Forecast',
+      bundle: 'Human Design Complete Blueprint Bundle'
+    };
+    const priceIds = {
+      natal: 'price_1TjZKVKfvDG04zCAZkiCFrnL',
+      synastry: 'price_1TjZKXKfvDG04zCAZjq1c8hZ',
+      transit: 'price_1TjZKYKfvDG04zCAdAZVIJXw',
+      bundle: 'price_1TjZKZKfvDG04zCAPKttOFgK'
+    };
+
+    const metadata = {
+      name,
+      email,
+      report: selectedReport,
+      birthdate,
+      birthtime,
+      location,
+      partner: partner || "",
+      ref: ref || ""
+    };
+
+    const payload = {
+      email,
+      product_name: names[selectedReport],
+      product_description: `Personalized report for ${name}`,
+      price_cents: prices[selectedReport],
+      price_id: priceIds[selectedReport],
+      is_subscription: false,
+      metadata,
+      success_url: window.location.origin + '/success?session_id={CHECKOUT_SESSION_ID}',
+      cancel_url: window.location.href
+    };
+
+    try {
+      const response = await fetch('/api/checkout/create-session', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload)
+      });
+
+      if (!response.ok) {
+        throw new Error('Checkout API request failed.');
+      }
+
+      const result = await response.json();
+      if (result.url) {
+        window.location.href = result.url;
+      } else {
+        throw new Error('No redirection URL returned by checkout API.');
+      }
+    } catch (e: any) {
+      showError(e.message || 'Payment server is temporarily unavailable. Please try again or contact support.');
+    }
+  }
+
+  function showError(msg: string) {
+    if (errorBox) {
+      errorBox.textContent = msg;
+      errorBox.style.display = 'block';
+    }
+    if (buyBtn) {
+      buyBtn.disabled = false;
+      buyBtn.textContent = '🔒 Secure Checkout with Stripe →';
+    }
+  }
+</script>

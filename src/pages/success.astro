@@ -1,0 +1,465 @@
+---
+import Layout from '../layouts/Layout.astro';
+import Nav from '../components/Nav.astro';
+import Footer from '../components/Footer.astro';
+import emdash from '../content/emdash.json';
+
+const calLink = emdash.global.coachingCalLink || 'becca-gulden/coaching';
+---
+
+<Layout title="Registration Successful | Human Design Engine">
+  <Nav />
+  
+  <main class="container">
+    <div class="success-card" data-cal-link={calLink}>
+      <div class="icon-wrap">✨</div>
+      <h1>You’re in.</h1>
+      <p class="subtitle">Nothing else to figure out right now. We’ll show you one step at a time.</p>
+      <div class="test-consent-note">
+        <strong>Family/staging test note:</strong> Michael and Ned may review test conversations, generated chart artifacts, stuck states, and feedback to improve the Sanctuary bot experience. This applies to this staging test round and is separate from production customer privacy.
+      </div>
+      
+      <!-- Somatic Breathing Mandala -->
+      <div class="breathing-container">
+        <img src="/somatic_mandala.png?v=box-breathing-transparent-20260716" class="breathing-mandala" id="breathingMandala" alt="Somatic breathing mandala" />
+        <p class="breathing-instruction" id="breathingText">Inhale...</p>
+      </div>
+
+      <div class="onboarding-action" id="onboardingAction" aria-live="polite">
+        <p class="step-label">Next step</p>
+        <p class="status-text">We’re finding your personal Telegram link.</p>
+        <p class="helper-text">You can breathe. If this takes a moment, nothing is wrong.</p>
+        <div class="spinner" aria-hidden="true"></div>
+      </div>
+
+      <!-- Cal.com Scheduling Widget (Conditional) -->
+      <div id="calContainer" style="display: none; margin-top: 36px; border-top: 1px solid var(--card-border); padding-top: 36px; text-align: left;">
+        <h2 style="font-family: 'Playfair Display', serif; font-size: 1.45rem; color: var(--sage-deep); margin-bottom: 12px; display: flex; align-items: center; gap: 8px;">📅 Book Your Coaching Integration</h2>
+        <p style="font-size: 0.92rem; color: var(--text-secondary); margin-bottom: 24px; line-height: 1.5;">Welcome, Sovereign client. Please schedule your first 1-on-1 nervous system coaching session with Becca Gulden using the calendar below:</p>
+        
+        <!-- Cal element-embed start -->
+        <div style="width:100%;height:650px;overflow:scroll;border: 1px solid var(--card-border);border-radius:12px;background-color: var(--white);" id="my-cal-inline"></div>
+      </div>
+
+      <!-- Fallback Email Form -->
+      <div class="fallback-form" id="fallbackForm">
+        <p class="step-label">Next step</p>
+        <h3>Enter your purchase email</h3>
+        <p>We’ll find your Telegram link. No timer. No pressure. Use the same email you used at checkout.</p>
+        <form id="emailForm">
+          <input type="email" id="emailInput" placeholder="you@email.com" autocomplete="email" required />
+          <button type="submit">Find my link</button>
+        </form>
+        <p class="error-msg" id="onboardingError"></p>
+      </div>
+    </div>
+  </main>
+
+  <Footer />
+</Layout>
+
+<style>
+  .container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 80px 24px;
+    display: flex;
+    justify-content: center;
+  }
+  .success-card {
+    background: var(--white);
+    border: 1px solid var(--card-border);
+    border-radius: var(--radius-lg);
+    padding: 60px 40px;
+    max-width: 720px;
+    width: 100%;
+    text-align: center;
+    box-shadow: var(--shadow);
+  }
+  .icon-wrap {
+    font-size: 3rem;
+    margin-bottom: 20px;
+  }
+  h1 {
+    font-family: 'Playfair Display', serif;
+    color: var(--sage-deep);
+    font-size: 2.2rem;
+    margin-bottom: 12px;
+  }
+  .subtitle {
+    color: var(--text-secondary);
+    font-style: italic;
+    font-size: 1.05rem;
+    margin-bottom: 18px;
+    line-height: 1.5;
+  }
+  .test-consent-note {
+    background: #FDFBF7;
+    border: 1px solid var(--card-border);
+    border-left: 4px solid var(--sage-deep);
+    border-radius: var(--radius);
+    color: var(--text-secondary);
+    font-size: 0.9rem;
+    line-height: 1.5;
+    margin: 0 auto 36px;
+    max-width: 560px;
+    padding: 14px 16px;
+    text-align: left;
+  }
+  .test-consent-note strong {
+    color: var(--sage-deep);
+  }
+
+  /* Real 4-4-4-4 box breathing animation */
+  .breathing-container {
+    margin-bottom: 40px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+  .breathing-mandala {
+    width: 140px;
+    height: 140px;
+    object-fit: contain;
+    background: transparent;
+    mix-blend-mode: normal;
+    transform: scale(0.82) rotate(0deg);
+    opacity: 0.68;
+    filter: drop-shadow(0 4px 12px var(--sage-glow));
+    will-change: transform, opacity;
+    transition:
+      transform 4s cubic-bezier(0.45, 0, 0.20, 1),
+      opacity 4s cubic-bezier(0.45, 0, 0.20, 1);
+  }
+  .breathing-mandala.phase-inhale,
+  .breathing-mandala.phase-hold-full {
+    transform: scale(1.14) rotate(8deg);
+    opacity: 1;
+  }
+  .breathing-mandala.phase-exhale,
+  .breathing-mandala.phase-hold-empty {
+    transform: scale(0.82) rotate(0deg);
+    opacity: 0.68;
+  }
+  .breathing-instruction {
+    margin-top: 16px;
+    font-weight: 500;
+    color: var(--sage-mid);
+    font-size: 0.95rem;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .breathing-mandala {
+      transition: opacity 400ms ease;
+      transform: scale(1);
+    }
+  }
+
+  .onboarding-action {
+    background: var(--cream-bg);
+    border: 1px solid var(--card-border);
+    border-radius: var(--radius);
+    padding: 24px;
+    margin-bottom: 30px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 16px;
+  }
+  .status-text {
+    font-size: 1.05rem;
+    color: var(--text-primary);
+    font-weight: 650;
+    margin: 0;
+  }
+  .step-label {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    align-self: center;
+    padding: 5px 12px;
+    border-radius: 999px;
+    background: rgba(95, 114, 97, 0.12);
+    color: var(--sage-deep);
+    font-size: 0.72rem;
+    font-weight: 800;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    margin: 0 0 2px;
+  }
+  .helper-text {
+    margin: 0;
+    max-width: 460px;
+    color: var(--text-secondary);
+    font-size: 0.92rem;
+    line-height: 1.55;
+  }
+  .spinner {
+    width: 24px;
+    height: 24px;
+    border: 2.5px solid var(--sage-glow);
+    border-top-color: var(--sage-mid);
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+  }
+  
+  .btn-launch {
+    display: inline-block;
+    width: min(100%, 360px);
+    padding: 16px 28px;
+    background: var(--sage-deep);
+    color: var(--cream-bg);
+    text-decoration: none;
+    font-weight: 700;
+    border-radius: 30px;
+    transition: var(--transition);
+    font-size: 1.02rem;
+  }
+  .btn-launch:hover {
+    background: var(--sage-mid);
+    transform: translateY(-1px);
+  }
+  .btn-secondary {
+    border: 1px solid var(--card-border);
+    background: var(--white);
+    color: var(--sage-deep);
+    border-radius: 999px;
+    padding: 11px 18px;
+    font-weight: 700;
+    cursor: pointer;
+    font-family: inherit;
+  }
+  .btn-secondary:hover {
+    border-color: var(--sage-mid);
+  }
+
+  .fallback-form {
+    border-top: 1px solid var(--card-border);
+    padding-top: 30px;
+    text-align: left;
+    display: none;
+  }
+  .fallback-form h3 {
+    font-size: 1.05rem;
+    color: var(--sage-deep);
+    margin-bottom: 8px;
+  }
+  .fallback-form p {
+    font-size: 0.85rem;
+    color: var(--text-secondary);
+    margin-bottom: 16px;
+  }
+  .fallback-form form {
+    display: flex;
+    gap: 10px;
+  }
+  .fallback-form input {
+    flex: 1;
+    padding: 10px 14px;
+    border: 1px solid var(--card-border);
+    border-radius: 8px;
+    background: var(--cream-bg);
+    font-family: inherit;
+    font-size: 0.9rem;
+  }
+  .fallback-form input:focus {
+    outline: 2px solid var(--sage-mid);
+  }
+  .fallback-form button {
+    padding: 10px 20px;
+    background: var(--sage-deep);
+    color: var(--cream-bg);
+    border: none;
+    border-radius: 8px;
+    font-weight: 600;
+    cursor: pointer;
+    font-size: 0.9rem;
+  }
+  .fallback-form button:hover {
+    background: var(--sage-mid);
+  }
+  .error-msg {
+    color: #cc3333;
+    font-size: 0.85rem;
+    margin-top: 10px;
+    display: none;
+  }
+
+  @keyframes spin {
+    to { transform: rotate(360deg); }
+  }
+</style>
+
+<script>
+  // Real box breathing loop: inhale 4s, hold 4s, exhale 4s, hold 4s.
+  const mandala = document.getElementById('breathingMandala');
+  const text = document.getElementById('breathingText');
+  const breathingPhases = [
+    { className: 'phase-inhale', label: 'Inhale — 4' },
+    { className: 'phase-hold-full', label: 'Hold — 4' },
+    { className: 'phase-exhale', label: 'Exhale — 4' },
+    { className: 'phase-hold-empty', label: 'Hold — 4' }
+  ];
+  let breathingPhaseIndex = 0;
+
+  const applyBreathingPhase = () => {
+    if (!mandala || !text) return;
+    const phase = breathingPhases[breathingPhaseIndex];
+    mandala.classList.remove(...breathingPhases.map((item) => item.className));
+    mandala.classList.add(phase.className);
+    text.textContent = phase.label;
+    breathingPhaseIndex = (breathingPhaseIndex + 1) % breathingPhases.length;
+  };
+
+  if (mandala && text) {
+    applyBreathingPhase();
+    setInterval(applyBreathingPhase, 4000);
+  }
+
+  // Stripe Session Fetching and Redirect
+  const onboardingContainer = document.getElementById('onboardingAction');
+  const fallback = document.getElementById('fallbackForm');
+  const errorMsg = document.getElementById('onboardingError');
+  const emailForm = document.getElementById('emailForm');
+  
+  const card = document.querySelector('.success-card');
+  const calLink = card ? (card.getAttribute('data-cal-link') || 'becca-gulden/coaching') : 'becca-gulden/coaching';
+
+  const urlParams = new URLSearchParams(window.location.search);
+  const sessionId = urlParams.get('session_id');
+  const emailParam = urlParams.get('email');
+
+  const loadCalWidget = (calendarPath: string, clientName: string, clientEmail: string) => {
+    const w = window as any;
+    if (!w.Cal) {
+      const s = document.createElement('script');
+      s.type = 'text/javascript';
+      s.innerHTML = `
+        (function (C, A, L) { let p = function (a, ar) { a.q.push(ar); }; C.Cal = C.Cal || function () { let a = C.Cal; if (!a.q) { a.q = []; } p(a, arguments); }; })(window, window.Cal, "init");
+        Cal("init", {origin:"https://cal.com"});
+      `;
+      document.head.appendChild(s);
+    }
+    
+    const interval = setInterval(() => {
+      if (w.Cal) {
+        clearInterval(interval);
+        w.Cal("inline", {
+          elementOrSelector: "#my-cal-inline",
+          calLink: calendarPath,
+          layout: "month_view",
+          config: {
+            name: clientName,
+            email: clientEmail
+          }
+        });
+        w.Cal("ui", {
+          "styles": { "branding": { "brandColor": "#2F3631" } },
+          "hideEventTypeDetails": false,
+          "layout": "month_view"
+        });
+      }
+    }, 100);
+  };
+
+  const fetchOnboardingLink = async (queryParam: string, isSessionId = true) => {
+    try {
+      const url = isSessionId 
+        ? `/api/checkout/session?session_id=${queryParam}`
+        : `/api/checkout/session?email=${encodeURIComponent(queryParam)}`;
+        
+      const response = await fetch(url);
+      if (!response.ok) throw new Error('Session not found');
+      
+      const data = await response.json();
+      
+      // Sovereign users schedule after the Telegram sanctuary is active.
+      // Do not show the calendar alongside the first onboarding step.
+
+      if (data.deep_link) {
+        if (onboardingContainer) {
+          onboardingContainer.innerHTML = `
+            <p class="step-label">Next step</p>
+            <p class="status-text" style="color: var(--sage-mid);">Open your private Telegram sanctuary</p>
+            <a class="btn-launch" id="telegramLaunch" href="${data.deep_link}" target="_blank" rel="noopener">
+              Open Telegram
+            </a>
+            <p class="helper-text">
+              That is the only thing to do right now. The link does not expire; come back whenever you need. We’ll also email this step for reference.
+            </p>
+            ${data.is_premium ? '<div id="calendarReveal" style="display:none;"><p class="helper-text">When Telegram is open, your next step is optional: schedule your first coaching integration.</p><button class="btn-secondary" id="showCalendarStep" type="button">Show my coaching calendar</button></div>' : ''}
+          `;
+          if (data.is_premium) {
+            const telegramLaunch = document.getElementById('telegramLaunch');
+            const calendarReveal = document.getElementById('calendarReveal');
+            telegramLaunch?.addEventListener('click', () => {
+              if (calendarReveal) calendarReveal.style.display = 'block';
+            });
+            const showCalendar = document.getElementById('showCalendarStep');
+            showCalendar?.addEventListener('click', () => {
+              const calContainer = document.getElementById('calContainer');
+              if (calContainer) {
+                calContainer.style.display = 'block';
+                loadCalWidget(calLink, data.name || 'Friend', data.email);
+                calContainer.scrollIntoView({ behavior: 'smooth', block: 'start' });
+              }
+            });
+          }
+        }
+        if (fallback) fallback.style.display = 'none';
+      } else {
+        // Report purchase successful
+        if (onboardingContainer) {
+          onboardingContainer.innerHTML = `
+            <p class="step-label">Next step</p>
+            <p class="status-text" style="color: var(--sage-mid);">Check your email</p>
+            <p class="helper-text">
+              Your Human Design report is being sent to <strong>${data.email}</strong>. If you do not see it, check spam or come back here later.
+            </p>
+          `;
+        }
+        if (fallback) fallback.style.display = 'none';
+      }
+    } catch (err) {
+      if (onboardingContainer) {
+        onboardingContainer.innerHTML = `
+          <p class="step-label">Next step</p>
+          <p class="status-text">Enter your purchase email below</p>
+          <p class="helper-text">
+            Your payment may still be finalizing. Nothing is lost. Use the same email from checkout and we’ll find your link.
+          </p>
+        `;
+      }
+      if (fallback) fallback.style.display = 'block';
+    }
+  };
+
+  if (sessionId) {
+    fetchOnboardingLink(sessionId, true);
+  } else if (emailParam) {
+    fetchOnboardingLink(emailParam, false);
+  } else {
+    if (onboardingContainer) onboardingContainer.style.display = 'none';
+    if (fallback) fallback.style.display = 'block';
+  }
+
+  if (emailForm) {
+    emailForm.addEventListener('submit', (e) => {
+      e.preventDefault();
+      const email = (document.getElementById('emailInput') as HTMLInputElement).value.trim();
+      if (email) {
+        if (errorMsg) errorMsg.style.display = 'none';
+        if (onboardingContainer) {
+          onboardingContainer.style.display = 'flex';
+          onboardingContainer.innerHTML = `
+            <p class="step-label">Next step</p>
+            <p class="status-text">Finding your Telegram link</p>
+            <p class="helper-text">Stay on this page if you want, or come back later. Nothing expires.</p>
+            <div class="spinner" aria-hidden="true"></div>
+          `;
+        }
+        fetchOnboardingLink(email, false);
+      }
+    });
+  }
+</script>

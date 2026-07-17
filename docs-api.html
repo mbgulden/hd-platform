@@ -1,0 +1,520 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>HD Platform API — Developer Portal | Human Design Engine</title>
+<meta name="description" content="REST API for Human Design natal charts, transits, bodygraphs, and AI-powered interpretations. Built for developers, app builders, and practitioners.">
+<meta name="keywords" content="human design api, bodygraph api, natal chart api, human design developer, hd engine api">
+<meta property="og:title" content="HD Platform API — Developer Portal">
+<meta property="og:description" content="Build with the most comprehensive Human Design API. Natal charts, transits, bodygraphs, and AI interpretations via simple REST.">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://humandesignengine.com/docs-api.html">
+<link rel="canonical" href="https://humandesignengine.com/docs-api.html">
+<style>
+    :root {
+    --bg: #FAF7F0;
+    --bg-elev: #FDFBF7;
+    --bg-card: #FFFFFF;
+    --border: rgba(95, 114, 97, 0.15);
+    --text: #2F3631;
+    --text-dim: #5C625E;
+    --accent: #5F7261;
+    --accent-glow: rgba(95, 114, 97, 0.12);
+    --success: #4A6E56;
+    --warning: #B59B56;
+    --code-bg: #EAECEB;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font-family: 'Outfit', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    line-height: 1.6;
+    overflow-x: hidden;
+  }
+  .nav {
+    position: sticky; top: 0; z-index: 100;
+    background: rgba(10, 10, 15, 0.85);
+    backdrop-filter: blur(12px);
+    border-bottom: 1px solid var(--border);
+    padding: 16px 0;
+  }
+  .nav-inner {
+    max-width: 1200px; margin: 0 auto; padding: 0 24px;
+    display: flex; justify-content: space-between; align-items: center;
+  }
+  .logo {
+    font-size: 18px; font-weight: 700; color: var(--text);
+    display: flex; align-items: center; gap: 8px;
+  }
+  .logo-dot {
+    width: 10px; height: 10px; border-radius: 50%;
+    background: var(--accent);
+    box-shadow: 0 0 12px var(--accent-glow);
+  }
+  .nav-links { display: flex; gap: 24px; }
+  .nav-links a {
+    color: var(--text-dim); text-decoration: none; font-size: 14px;
+    transition: color 0.2s;
+  }
+  .nav-links a:hover { color: var(--text); }
+  .container { max-width: 1200px; margin: 0 auto; padding: 0 24px; }
+  .hero {
+    padding: 80px 0 60px;
+    text-align: center;
+    background: radial-gradient(ellipse at top, rgba(108, 92, 231, 0.15), transparent 60%);
+  }
+  .hero h1 {
+    font-size: 56px; font-weight: 800; margin-bottom: 20px;
+    background: linear-gradient(135deg, var(--text) 0%, var(--accent) 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+  .hero p {
+    font-size: 20px; color: var(--text-dim); max-width: 700px;
+    margin: 0 auto 32px;
+  }
+  .hero-cta {
+    display: inline-flex; gap: 16px; flex-wrap: wrap; justify-content: center;
+  }
+  .btn {
+    display: inline-flex; align-items: center; gap: 8px;
+    padding: 14px 28px; border-radius: 8px; font-weight: 600;
+    text-decoration: none; font-size: 15px;
+    transition: all 0.2s;
+  }
+  .btn-primary {
+    background: var(--accent); color: white;
+    box-shadow: 0 4px 20px var(--accent-glow);
+  }
+  .btn-primary:hover { transform: translateY(-1px); box-shadow: 0 6px 28px var(--accent-glow); }
+  .btn-secondary {
+    background: var(--bg-card); color: var(--text);
+    border: 1px solid var(--border);
+  }
+  .btn-secondary:hover { border-color: var(--accent); }
+  .section { padding: 60px 0; }
+  .section h2 {
+    font-size: 36px; font-weight: 700; margin-bottom: 16px;
+    text-align: center;
+  }
+  .section-sub {
+    font-size: 18px; color: var(--text-dim); text-align: center;
+    max-width: 700px; margin: 0 auto 48px;
+  }
+  .endpoint-grid {
+    display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 20px;
+  }
+  .endpoint-card {
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 24px;
+    transition: all 0.2s;
+  }
+  .endpoint-card:hover {
+    border-color: var(--accent);
+    transform: translateY(-2px);
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
+  }
+  .endpoint-method {
+    display: inline-block;
+    padding: 4px 10px; border-radius: 4px;
+    font-size: 12px; font-weight: 700;
+    margin-bottom: 12px;
+  }
+  .method-post { background: rgba(0, 214, 143, 0.15); color: var(--success); }
+  .method-get { background: rgba(108, 92, 231, 0.15); color: var(--accent); }
+  .endpoint-path {
+    font-family: "SF Mono", Monaco, Consolas, monospace;
+    font-size: 14px; font-weight: 600;
+    margin-bottom: 8px;
+    word-break: break-all;
+  }
+  .endpoint-desc { font-size: 14px; color: var(--text-dim); }
+  .code-block {
+    background: var(--code-bg);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 20px;
+    margin: 16px 0;
+    overflow-x: auto;
+    font-family: "SF Mono", Monaco, Consolas, monospace;
+    font-size: 13px;
+    line-height: 1.7;
+  }
+  .code-block .key { color: #ff79c6; }
+  .code-block .str { color: #f1fa8c; }
+  .code-block .num { color: #bd93f9; }
+  .code-block .com { color: #6272a4; }
+  .code-block .fn { color: #50fa7b; }
+  .tier-grid {
+    display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+    gap: 16px; margin-top: 32px;
+  }
+  .tier-card {
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 28px 24px;
+    text-align: center;
+  }
+  .tier-card.featured {
+    border-color: var(--accent);
+    box-shadow: 0 4px 24px var(--accent-glow);
+  }
+  .tier-name {
+    font-size: 14px; font-weight: 700;
+    color: var(--accent); margin-bottom: 8px;
+    text-transform: uppercase; letter-spacing: 1px;
+  }
+  .tier-price {
+    font-size: 36px; font-weight: 800; margin-bottom: 4px;
+  }
+  .tier-price span { font-size: 16px; color: var(--text-dim); font-weight: 400; }
+  .tier-rate {
+    color: var(--text-dim); font-size: 14px; margin-bottom: 20px;
+  }
+  .tier-features {
+    list-style: none; text-align: left;
+    font-size: 14px;
+  }
+  .tier-features li {
+    padding: 6px 0;
+    color: var(--text-dim);
+    display: flex; align-items: center; gap: 8px;
+  }
+  .tier-features li::before {
+    content: "✓"; color: var(--success); font-weight: 700;
+  }
+  .tier-features li.no::before { content: "✗"; color: #6272a4; }
+  .tier-features li.no { color: #555568; text-decoration: line-through; }
+  .stats-bar {
+    display: flex; justify-content: center; gap: 48px;
+    flex-wrap: wrap; margin: 32px 0;
+  }
+  .stat { text-align: center; }
+  .stat-num {
+    font-size: 32px; font-weight: 800; color: var(--accent);
+    margin-bottom: 4px;
+  }
+  .stat-label { font-size: 13px; color: var(--text-dim); text-transform: uppercase; letter-spacing: 1px; }
+  .try-section {
+    background: var(--bg-elev);
+    border-top: 1px solid var(--border);
+    border-bottom: 1px solid var(--border);
+    padding: 60px 0;
+  }
+  .try-grid {
+    display: grid; grid-template-columns: 1fr 1fr; gap: 32px;
+    align-items: start;
+  }
+  @media (max-width: 768px) { .try-grid { grid-template-columns: 1fr; } }
+  .try-form { display: flex; flex-direction: column; gap: 12px; }
+  .try-form label {
+    font-size: 13px; color: var(--text-dim); font-weight: 600;
+    text-transform: uppercase; letter-spacing: 0.5px;
+  }
+  .try-form input {
+    background: var(--code-bg);
+    border: 1px solid var(--border);
+    color: var(--text);
+    padding: 10px 14px; border-radius: 6px;
+    font-family: inherit; font-size: 14px;
+  }
+  .try-form input:focus {
+    outline: none; border-color: var(--accent);
+  }
+  .try-form button {
+    background: var(--accent); color: white;
+    border: none; padding: 14px;
+    border-radius: 8px; font-weight: 600;
+    cursor: pointer; font-size: 15px;
+    margin-top: 8px;
+    transition: all 0.2s;
+  }
+  .try-form button:hover { box-shadow: 0 4px 20px var(--accent-glow); }
+  .try-form button:disabled { opacity: 0.5; cursor: not-allowed; }
+  .response-box {
+    background: var(--code-bg);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 20px;
+    min-height: 300px;
+    max-height: 500px;
+    overflow: auto;
+    font-family: "SF Mono", Monaco, Consolas, monospace;
+    font-size: 12px; line-height: 1.6;
+    white-space: pre-wrap;
+    color: var(--text-dim);
+  }
+  .response-box.loading { color: var(--warning); }
+  .response-box.success { color: var(--success); }
+  .response-box.error { color: #ff5555; }
+  .footer {
+    padding: 40px 0;
+    text-align: center;
+    border-top: 1px solid var(--border);
+    color: var(--text-dim);
+    font-size: 14px;
+  }
+  .footer a { color: var(--accent); text-decoration: none; }
+</style>
+</head>
+<body>
+
+<nav class="nav">
+  <div class="nav-inner">
+    <div class="logo">
+      <span class="logo-dot"></span>
+      Human Design Engine
+    </div>
+    <div class="nav-links">
+      <a href="#endpoints">Endpoints</a>
+      <a href="#auth">Auth</a>
+      <a href="#pricing">Pricing</a>
+      <a href="#try">Try It</a>
+      <a href="https://dashboard.humandesignengine.com">Dashboard</a>
+    </div>
+  </div>
+</nav>
+
+<header class="hero">
+  <div class="container">
+    <h1>The Human Design API for Developers</h1>
+    <p>Natal charts, bodygraphs, transits, and AI-powered interpretations via simple REST. Production-ready, AGPL-3.0 licensed, used by practitioners worldwide.</p>
+    <div class="hero-cta">
+      <a href="#try" class="btn btn-primary">Try it free →</a>
+      <a href="https://github.com/mbgulden/OpenHumanDesignMCP" class="btn btn-secondary">View source</a>
+    </div>
+  </div>
+</header>
+
+<section class="section">
+  <div class="container">
+    <div class="stats-bar">
+      <div class="stat"><div class="stat-num">6</div><div class="stat-label">Endpoints</div></div>
+      <div class="stat"><div class="stat-num">3</div><div class="stat-label">Tiers</div></div>
+      <div class="stat"><div class="stat-num">10K</div><div class="stat-label">req/min (Enterprise)</div></div>
+      <div class="stat"><div class="stat-num">v1.0</div><div class="stat-label">Stable</div></div>
+    </div>
+  </div>
+</section>
+
+<section class="section" id="endpoints">
+  <div class="container">
+    <h2>Endpoints</h2>
+    <p class="section-sub">All endpoints accept JSON. Authentication is required — pass your API key via the <code>X-API-Key</code> header.</p>
+    <div class="endpoint-grid">
+      <div class="endpoint-card">
+        <span class="endpoint-method method-post">POST</span>
+        <div class="endpoint-path">/v1/natal</div>
+        <div class="endpoint-desc">Calculate a complete natal chart from birth data. Returns type, strategy, authority, profile, incarnation cross, defined channels, active gates, and centers.</div>
+      </div>
+      <div class="endpoint-card">
+        <span class="endpoint-method method-post">POST</span>
+        <div class="endpoint-path">/v1/bodygraph</div>
+        <div class="endpoint-desc">Generate a rendered SVG bodygraph visualization from birth data. Returns SVG markup ready to embed.</div>
+      </div>
+      <div class="endpoint-card">
+        <span class="endpoint-method method-post">POST</span>
+        <div class="endpoint-path">/v1/transits</div>
+        <div class="endpoint-desc">Calculate current planetary transits through the gates. Returns activated channels and gates for any moment.</div>
+      </div>
+      <div class="endpoint-card">
+        <span class="endpoint-method method-get">GET</span>
+        <div class="endpoint-path">/ping</div>
+        <div class="endpoint-desc">Health check. Returns API status, version, and license. No auth required.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="section" id="auth">
+  <div class="container">
+    <h2>Authentication</h2>
+    <p class="section-sub">All <code>/v1/*</code> chart endpoints require an API key. Register a key below to get started.</p>
+
+    <h3 style="margin-top: 32px; font-size: 20px;">API Key (Production)</h3>
+    <div class="code-block"><span class="com"># Register a key via dashboard</span>
+<span class="fn">curl</span> -X POST https://api.humandesignengine.com/v1/keys/register \
+  -H <span class="str">"Content-Type: application/json"</span> \
+  -d <span class="str">'{"email":"you@example.com","name":"production"}'</span>
+
+<span class="com"># Use the key in subsequent requests</span>
+<span class="fn">curl</span> -X POST https://api.humandesignengine.com/v1/natal \
+  -H <span class="str">"X-API-Key: hd_live_4vC9kM2pR7xL1nQ8wY3j..."</span> \
+  -H <span class="str">"Content-Type: application/json"</span> \
+  -d <span class="str">'{"name":"Jane","year":1990,"month":6,"day":15,"hour":12,"minute":30,"city":"New York"}'</span></div>
+
+    <h3 style="margin-top: 32px; font-size: 20px;">Try the API (Live Demo)</h3>
+    <p style="font-size:14px; color: var(--text-muted); margin: 8px 0 16px;">Enter your API key below — the form will POST to <code>/v1/natal</code> and render the response inline.</p>
+
+    <h3 style="margin-top: 32px; font-size: 20px;">Response Format</h3>
+    <div class="code-block">{
+  <span class="key">"success"</span>: <span class="num">true</span>,
+  <span class="key">"endpoint"</span>: <span class="str">"/v1/natal"</span>,
+  <span class="key">"data"</span>: {
+    <span class="key">"name"</span>: <span class="str">"Jane"</span>,
+    <span class="key">"hd_type"</span>: <span class="str">"Manifesting Generator"</span>,
+    <span class="key">"strategy"</span>: <span class="str">"To Respond"</span>,
+    <span class="key">"authority"</span>: <span class="str">"Sacral"</span>,
+    <span class="key">"profile"</span>: <span class="str">"2/4"</span>,
+    <span class="key">"incarnation_cross"</span>: { <span class="key">"name"</span>: <span class="str">"Right Angle Cross of Eden"</span> },
+    <span class="key">"defined_centers"</span>: [<span class="str">"G"</span>, <span class="str">"Sacral"</span>, <span class="str">"Throat"</span>],
+    <span class="key">"all_active_gates"</span>: [<span class="num">1</span>, <span class="num">2</span>, <span class="num">6</span>, <span class="num">7</span>, ...],
+    <span class="key">"personality_gates"</span>: [<span class="num">1</span>, <span class="num">2</span>, ...],
+    <span class="key">"design_gates"</span>: [<span class="num">6</span>, <span class="num">36</span>, ...]
+  },
+  <span class="key">"error"</span>: <span class="num">null</span>
+}</div>
+  </div>
+</section>
+
+<section class="section" id="pricing">
+  <div class="container">
+    <h2>Pricing</h2>
+    <p class="section-sub">Start free. Upgrade when you need higher rate limits, commercial use rights, or white-label capabilities.</p>
+    <div class="tier-grid">
+      <div class="tier-card">
+        <div class="tier-name">Free</div>
+        <div class="tier-price">$0<span>/mo</span></div>
+        <div class="tier-rate">100 req/min</div>
+        <ul class="tier-features">
+          <li>All chart endpoints</li>
+          <li>Personal projects</li>
+          <li>Community support</li>
+          <li class="no">Commercial use</li>
+          <li class="no">White-label</li>
+        </ul>
+      </div>
+      <div class="tier-card featured">
+        <div class="tier-name">Pro</div>
+        <div class="tier-price">$49<span>/mo</span></div>
+        <div class="tier-rate">1,000 req/min</div>
+        <ul class="tier-features">
+          <li>All chart endpoints</li>
+          <li>Commercial use</li>
+          <li>Email support</li>
+          <li>Uptime SLA: 99.5%</li>
+          <li class="no">White-label</li>
+        </ul>
+      </div>
+      <div class="tier-card">
+        <div class="tier-name">Enterprise</div>
+        <div class="tier-price">$499<span>/mo</span></div>
+        <div class="tier-rate">10,000 req/min</div>
+        <ul class="tier-features">
+          <li>All chart endpoints</li>
+          <li>Commercial use</li>
+          <li>Priority support</li>
+          <li>Uptime SLA: 99.9%</li>
+          <li>White-label rights</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="try-section" id="try">
+  <div class="container">
+    <h2 style="text-align:center; font-size:36px; font-weight:700; margin-bottom:16px;">Try It Live</h2>
+    <p class="section-sub">Enter your API key and birth details to get a real natal chart response from the production API.</p>
+    <div class="try-grid">
+      <form class="try-form" id="natal-form">
+        <label for="api-key">API Key</label>
+        <input type="text" id="api-key" name="api-key" placeholder="hd_live_4vC9kM2pR7xL1nQ8wY3j..." required>
+
+        <label for="name">Name</label>
+        <input type="text" id="name" name="name" value="Jane Doe" required>
+
+        <label for="year">Birth Year</label>
+        <input type="number" id="year" name="year" value="1990" min="1900" max="2100" required>
+
+        <label for="month">Birth Month</label>
+        <input type="number" id="month" name="month" value="6" min="1" max="12" required>
+
+        <label for="day">Birth Day</label>
+        <input type="number" id="day" name="day" value="15" min="1" max="31" required>
+
+        <label for="hour">Birth Hour (0-23)</label>
+        <input type="number" id="hour" name="hour" value="12" min="0" max="23" required>
+
+        <label for="minute">Birth Minute</label>
+        <input type="number" id="minute" name="minute" value="30" min="0" max="59" required>
+
+        <label for="city">Birth City</label>
+        <input type="text" id="city" name="city" value="New York" required>
+
+        <button type="submit" id="submit-btn">Calculate Natal Chart →</button>
+      </form>
+      <div class="response-box" id="response-box">Click "Calculate Natal Chart" to see a live API response...</div>
+    </div>
+  </div>
+</section>
+
+<footer class="footer">
+  <div class="container">
+    <p>Human Design Engine API · <a href="https://github.com/mbgulden/OpenHumanDesignMCP">Open source (AGPL-3.0)</a> · <a href="mailto:api@humandesignengine.com">Contact</a></p>
+    <p style="margin-top: 8px; font-size: 12px;">Base URL: <code>https://api.humandesignengine.com</code> · Status: <span style="color: var(--success);">●</span> Operational</p>
+  </div>
+</footer>
+
+<script>
+document.getElementById('natal-form').addEventListener('submit', async (e) => {
+  e.preventDefault();
+  const btn = document.getElementById('submit-btn');
+  const box = document.getElementById('response-box');
+  const apiKey = document.getElementById('api-key').value.trim();
+  if (!apiKey) {
+    box.className = 'response-box error';
+    box.textContent = 'API key required. Register a key at /v1/keys/register and paste it above.';
+    return;
+  }
+  btn.disabled = true;
+  btn.textContent = 'Calculating...';
+  box.className = 'response-box loading';
+  box.textContent = 'POST https://api.humandesignengine.com/v1/natal\nX-API-Key: ' + apiKey.slice(0, 12) + '...\n\nSending request...';
+
+  const payload = {
+    name: document.getElementById('name').value,
+    year: parseInt(document.getElementById('year').value),
+    month: parseInt(document.getElementById('month').value),
+    day: parseInt(document.getElementById('day').value),
+    hour: parseInt(document.getElementById('hour').value),
+    minute: parseInt(document.getElementById('minute').value),
+    city: document.getElementById('city').value
+  };
+
+  try {
+    const res = await fetch('https://api.humandesignengine.com/v1/natal', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', 'X-API-Key': apiKey },
+      body: JSON.stringify(payload)
+    });
+    const data = await res.json();
+    if (res.ok && data.success) {
+      box.className = 'response-box success';
+      box.textContent = 'HTTP ' + res.status + ' OK\n\n' + JSON.stringify(data, null, 2);
+    } else {
+      box.className = 'response-box error';
+      box.textContent = 'HTTP ' + res.status + '\n\n' + JSON.stringify(data, null, 2);
+    }
+  } catch (err) {
+    box.className = 'response-box error';
+    box.textContent = 'Network error: ' + err.message + '\n\n(CORS or network issue — see API docs for direct curl examples)';
+  } finally {
+    btn.disabled = false;
+    btn.textContent = 'Calculate Natal Chart →';
+  }
+});
+</script>
+
+</body>
+</html>

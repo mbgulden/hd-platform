@@ -1,0 +1,120 @@
+---
+import emdash from '../content/emdash.json';
+const { logo, navLinks, footer } = emdash.global;
+const footerGroups = [
+  {
+    title: 'Start',
+    links: [
+      { label: 'Free Reading Generator', url: '/free-human-design-reading-generator/' },
+      { label: 'Bodygraph Tool', url: '/bodygraph.html' },
+      { label: 'Gate Lookup', url: '/hd-engine/free-tools/gate-lookup.html' },
+      { label: 'Type Quiz', url: '/hd-engine/free-tools/type-quiz.html' },
+    ],
+  },
+  {
+    title: 'Products',
+    links: [
+      { label: 'Reports', url: '/buy-report/' },
+      { label: 'Somatic Sanctuary', url: '/deconditioning/' },
+      { label: 'Developer API', url: '/docs/' },
+      { label: 'Coaching', url: '/landing-sheplantedatree/' },
+    ],
+  },
+  {
+    title: 'Learn',
+    links: [
+      { label: 'Gates', url: '/human-design/gates/' },
+      { label: 'Channels', url: '/human-design/channels/' },
+      { label: 'Centers', url: '/human-design/centers/' },
+      { label: 'Authorities', url: '/human-design/authorities/' },
+      { label: 'Types', url: '/human-design/types/' },
+      { label: 'Profiles', url: '/human-design/profiles/' },
+    ],
+  },
+];
+---
+
+<footer>
+  <div class="footer-inner">
+    <div class="footer-logo">{logo.text} Engine</div>
+    <div class="footer-groups" aria-label="Footer navigation">
+      {footerGroups.map(group => (
+        <section class="footer-group" aria-labelledby={`footer-${group.title.toLowerCase()}`}>
+          <h2 id={`footer-${group.title.toLowerCase()}`}>{group.title}</h2>
+          <ul>
+            {group.links.map(link => (
+              <li><a href={link.url}>{link.label}</a></li>
+            ))}
+          </ul>
+        </section>
+      ))}
+    </div>
+    <div class="footer-copy">{footer.copy}</div>
+  </div>
+</footer>
+
+<style>
+  footer {
+    background: #F6F1E7;
+    color: #4B514E;
+    padding: 60px 24px;
+    border-top: 1px solid rgba(95, 114, 97, 0.14);
+  }
+  .footer-inner {
+    max-width: 1200px;
+    margin: 0 auto;
+    display: grid;
+    grid-template-columns: 0.8fr 2fr;
+    align-items: start;
+    gap: 36px;
+  }
+  .footer-logo {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.3rem;
+    font-weight: 700;
+    color: #2F3631;
+  }
+  .footer-groups {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 28px;
+  }
+  .footer-group h2 {
+    color: #2F3631;
+    font-size: 0.78rem;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    margin: 0 0 14px;
+    opacity: 1;
+  }
+  .footer-group ul {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: grid;
+    gap: 10px;
+  }
+  .footer-group a {
+    color: #2F3631;
+    text-decoration: underline;
+    text-underline-offset: 0.18em;
+    font-size: 0.9rem;
+    opacity: 1;
+    transition: var(--transition);
+  }
+  .footer-group a:hover {
+    opacity: 1;
+  }
+  .footer-copy {
+    grid-column: 1 / -1;
+    font-size: 0.85rem;
+    color: #4B514E;
+    opacity: 1;
+  }
+  @media (max-width: 800px) {
+    .footer-inner,
+    .footer-groups {
+      grid-template-columns: 1fr;
+    }
+  }
+</style>

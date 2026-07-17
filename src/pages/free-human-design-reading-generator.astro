@@ -1,0 +1,25 @@
+---
+import Layout from '../layouts/Layout.astro';
+---
+<Layout title="Free Human Design Reading Generator — Human Design Engine" description="Generate a free Human Design chart reading with verified Human Design Engine calculations.">
+  <main class="free-reading-page">
+    <section class="hero-section">
+      <p class="eyebrow">Free Tool</p>
+      <h1>Free Human Design Reading Generator</h1>
+      <p class="hero-subtitle">Calculate your Human Design Type, Strategy, Authority, Profile, and defined centers from birth data using the Human Design Engine.</p>
+    </section>
+    <section class="widget-panel" aria-label="Free Human Design chart calculator">
+      <div class="hde-chart-widget" data-api="https://api-staging.humandesignengine.com"></div>
+    </section>
+  </main>
+  <script src="/widget.js" is:inline></script>
+</Layout>
+
+<style>
+  .free-reading-page { padding: 72px 24px; max-width: 980px; margin: 0 auto; }
+  .hero-section { text-align: center; margin-bottom: 36px; }
+  .eyebrow { color: #5F7261; text-transform: uppercase; letter-spacing: .14em; font-weight: 700; font-size: .78rem; }
+  h1 { font-family: 'Playfair Display', Georgia, serif; color: #2F3631; font-size: clamp(2.4rem, 7vw, 4.5rem); line-height: 1.04; margin: 12px 0 16px; }
+  .hero-subtitle { color: #5C625E; max-width: 720px; margin: 0 auto; font-size: 1.08rem; line-height: 1.7; }
+  .widget-panel { background: rgba(255,255,255,.72); border: 1px solid rgba(95,114,97,.16); border-radius: 28px; padding: clamp(20px, 5vw, 42px); box-shadow: 0 24px 70px rgba(47,54,49,.08); }
+</style>
