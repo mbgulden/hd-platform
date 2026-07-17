@@ -11,6 +11,7 @@ A tester can ask for a PDF report after providing birth details, but if the prio
 - If no profile is stored, scan recent user turns for a complete birth-detail sentence and persist/generate from that instead of asking the user to repeat themselves.
 - If a user pastes a complete one-shot birth-detail sentence (`name + date + time + place`) after the guide invited chart generation, generate the chart immediately before LLM fallback. Do not let the LLM summarize a chart without leaving PDF/image artifacts.
 - Accept natural one-shot phrasing such as `for Alicia Gulden ... birth place Provo, UT`; explicit names and `birth place` should not be rejected as loose profile phrases.
+- Accept terse family-test shorthand such as `August 2 1952 6:46pm Glendale California`; once date and clock are parsed, trailing city/state text should become the birth place and still generate artifacts.
 - Keep the reports API key in environment only; do not print or embed it.
 
 ## Coach dashboard route note

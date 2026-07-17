@@ -1199,6 +1199,13 @@ def extract_full_birth_details(text: str) -> dict | None:
         if place_match:
             location = place_match.group(1).strip(" .")
     if not location:
+        # Common family-test shorthand: "August 2 1952 6:46pm Glendale California".
+        # The clock is already parsed above; treat the trailing words after it as
+        # the birth place instead of sending the turn through the LLM with no artifacts.
+        trailing_place = re.search(r"\b\d{1,2}(?::\d{2})?\s*(?:a\.?m\.?|p\.?m\.?|am|pm)\s+([A-Za-z][A-Za-z .'-]+(?:,?\s+[A-Za-z]{2,})?)\s*$", raw, re.I)
+        if trailing_place:
+            location = trailing_place.group(1).strip(" .,")
+    if not location:
         return None
 
     name = None
@@ -1274,6 +1281,14 @@ def extract_partial_birth_slots(text: str) -> dict:
         location = in_matches[-1].group(1).strip(" .")
         if not re.search(r"\b(human design|chart|bodygraph|report|reading)\b", location, re.I):
             slots["location"] = location
+    if "location" not in slots:
+        place_match = re.search(r"\b(?:birth\s+place|birthplace|born\s+in|place)\s+([A-Za-z][A-Za-z .'-]+(?:,\s*[A-Za-z]{2,}|\s+[A-Za-z]{2,})?)", raw, re.I)
+        if place_match:
+            slots["location"] = place_match.group(1).strip(" .")
+    if "location" not in slots:
+        trailing_place = re.search(r"\b\d{1,2}(?::\d{2})?\s*(?:a\.?m\.?|p\.?m\.?|am|pm)\s+([A-Za-z][A-Za-z .'-]+(?:,?\s+[A-Za-z]{2,})?)\s*$", raw, re.I)
+        if trailing_place:
+            slots["location"] = trailing_place.group(1).strip(" .,")
     return slots
 
 
