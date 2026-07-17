@@ -9,6 +9,126 @@ const site = 'https://humandesignengine.com';
 const preserved = [];
 const skipped = [];
 
+
+const standardShellSections = [
+  'human-design/profiles/',
+  'human-design/types/',
+  'human-design/centers/',
+  'human-design/channels/',
+  'human-design/gates/',
+];
+
+const standardShellExact = new Set([
+  'hd-engine/free-tools/type-quiz.html',
+  'hd-engine/free-tools/gate-lookup.html',
+  'bodygraph.html',
+]);
+
+const standardHeaderHtml = `<header class="hde-standard-header">
+  <div class="hde-standard-nav-inner">
+    <a class="hde-standard-logo" href="/" aria-label="Human Design Engine Home">
+      <span class="hde-standard-logo-text">Human Design <span>Engine</span></span>
+    </a>
+    <nav class="hde-standard-nav" aria-label="Main Navigation">
+      <a href="/free-human-design-reading-generator/">Free Reading</a>
+      <a href="/buy-report/">Reports</a>
+      <a href="/deconditioning/">Sanctuary</a>
+      <a href="/docs/">API</a>
+      <a href="/human-design/gates/">Learn</a>
+      <a href="/landing-sheplantedatree/">Coaching</a>
+    </nav>
+    <a class="hde-standard-cta" href="/free-human-design-reading-generator/">Generate Free Reading</a>
+  </div>
+</header>`;
+
+const standardFooterHtml = `<footer class="hde-standard-footer">
+  <div class="hde-standard-footer-inner">
+    <div class="hde-standard-footer-logo">Human Design Engine</div>
+    <div class="hde-standard-footer-groups" aria-label="Footer navigation">
+      <section class="hde-standard-footer-group" aria-labelledby="footer-start">
+        <h2 id="footer-start">Start</h2>
+        <ul>
+          <li><a href="/free-human-design-reading-generator/">Free Reading Generator</a></li>
+          <li><a href="/bodygraph.html">Bodygraph Tool</a></li>
+          <li><a href="/hd-engine/free-tools/gate-lookup.html">Gate Lookup</a></li>
+          <li><a href="/hd-engine/free-tools/type-quiz.html">Type Quiz</a></li>
+        </ul>
+      </section>
+      <section class="hde-standard-footer-group" aria-labelledby="footer-products">
+        <h2 id="footer-products">Products</h2>
+        <ul>
+          <li><a href="/buy-report/">Reports</a></li>
+          <li><a href="/deconditioning/">Somatic Sanctuary</a></li>
+          <li><a href="/docs/">Developer API</a></li>
+          <li><a href="/landing-sheplantedatree/">Coaching</a></li>
+        </ul>
+      </section>
+      <section class="hde-standard-footer-group" aria-labelledby="footer-learn">
+        <h2 id="footer-learn">Learn</h2>
+        <ul>
+          <li><a href="/human-design/gates/">Gates</a></li>
+          <li><a href="/human-design/channels/">Channels</a></li>
+          <li><a href="/human-design/centers/">Centers</a></li>
+          <li><a href="/human-design/authorities/">Authorities</a></li>
+          <li><a href="/human-design/types/">Types</a></li>
+          <li><a href="/human-design/profiles/">Profiles</a></li>
+        </ul>
+      </section>
+    </div>
+    <div class="hde-standard-footer-copy">© 2026 Human Design Engine. All rights reserved.</div>
+  </div>
+</footer>`;
+
+const standardShellScriptHtml = `<script>
+(function () {
+  function labelLegacyFormControls() {
+    document.querySelectorAll('select:not([aria-label]):not([aria-labelledby])').forEach(function (select) {
+      var key = (select.getAttribute('name') || select.id || select.className || 'selection').toString().trim();
+      var labels = {
+        ampm: 'AM or PM',
+        month: 'Birth month',
+        day: 'Birth day',
+        hour: 'Birth hour',
+        minute: 'Birth minute',
+        timezone: 'Birth timezone',
+        type: 'Human Design type',
+        gate: 'Human Design gate',
+        center: 'Human Design center'
+      };
+      select.setAttribute('aria-label', labels[key] || key.replace(/[-_]/g, ' ') || 'Selection');
+    });
+  }
+  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', labelLegacyFormControls);
+  else labelLegacyFormControls();
+})();
+</script>`;
+
+function shouldUseStandardShell(rel) {
+  const normalized = rel.replaceAll(path.sep, '/');
+  return standardShellExact.has(normalized) || standardShellSections.some((prefix) => normalized.startsWith(prefix));
+}
+
+function injectStandardShell(contents, rel) {
+  if (!shouldUseStandardShell(rel)) return contents;
+  let out = contents;
+  if (!out.includes('hde-standard-header')) {
+    out = out.replace(/<nav\b[\s\S]*?<\/nav>/i, '');
+    out = out.replace(/<body([^>]*)>/i, `<body$1>\n${standardHeaderHtml}`);
+  }
+  if (!out.includes('hde-standard-footer')) {
+    out = out.replace(/<footer\b[\s\S]*?<\/footer>/i, '');
+    out = out.includes('</body>')
+      ? out.replace(/<\/body>/i, `${standardFooterHtml}\n${standardShellScriptHtml}\n</body>`)
+      : `${out}\n${standardFooterHtml}\n${standardShellScriptHtml}`;
+  }
+  if (out.includes('hde-standard-footer') && !out.includes('labelLegacyFormControls')) {
+    out = out.includes('</body>')
+      ? out.replace(/<\/body>/i, `${standardShellScriptHtml}\n</body>`)
+      : `${out}\n${standardShellScriptHtml}`;
+  }
+  return out;
+}
+
 function ensureDir(dir) {
   fs.mkdirSync(dir, { recursive: true });
 }
@@ -86,8 +206,8 @@ function replaceLegacyDarkInlineStyles(contents) {
   return out;
 }
 
-function normalizeLegacyHtmlLinks(contents) {
-  return replaceLegacyDarkInlineStyles(injectLegacyLightTheme(contents))
+function normalizeLegacyHtmlLinks(contents, rel = '') {
+  return injectStandardShell(replaceLegacyDarkInlineStyles(injectLegacyLightTheme(contents)), rel)
     .replaceAll('<div style="overflow-x: auto; -webkit-overflow-scrolling: touch;">', '<div style="overflow-x: auto; -webkit-overflow-scrolling: touch;" tabindex="0" role="region" aria-label="Scrollable data table">')
     .replaceAll('href="/reports"', 'href="/buy-report/"')
     .replaceAll("href='/reports'", "href='/buy-report/'")
@@ -137,7 +257,7 @@ function copyLegacyDocs() {
     }
     ensureDir(path.dirname(dest));
     if (src.endsWith('.html')) {
-      fs.writeFileSync(dest, normalizeLegacyHtmlLinks(fs.readFileSync(src, 'utf8')));
+      fs.writeFileSync(dest, normalizeLegacyHtmlLinks(fs.readFileSync(src, 'utf8'), rel));
     } else {
       fs.copyFileSync(src, dest);
     }
@@ -278,7 +398,8 @@ function normalizeBuiltHtml() {
   let normalized = 0;
   for (const file of walk(distDir).filter((f) => f.endsWith('.html'))) {
     const before = fs.readFileSync(file, 'utf8');
-    const after = normalizeLegacyHtmlLinks(before);
+    const rel = path.relative(distDir, file);
+    const after = normalizeLegacyHtmlLinks(before, rel);
     if (after !== before) {
       fs.writeFileSync(file, after);
       normalized += 1;

@@ -1,13 +1,89 @@
 {
   "routes": [
-    { "name": "home", "path": "/", "requiredText": "Human Design Engine" },
-    { "name": "free-reading-generator", "path": "/free-human-design-reading-generator/", "requiredText": "Free Human Design Reading Generator" },
-    { "name": "buy-report", "path": "/buy-report/", "requiredText": "Your Human Design Blueprint" },
-    { "name": "gates-index", "path": "/human-design/gates/", "requiredText": "The 64 Gates of Human Design" },
-    { "name": "gate-1", "path": "/human-design/gates/gate-1.html", "requiredText": "Human Design Gate 1" },
-    { "name": "channel-1-8", "path": "/human-design/channels/1-8-inspiration.html", "requiredText": "Channel 1-8" },
-    { "name": "type-generator", "path": "/human-design/types/generator.html", "requiredText": "The Generator" },
-    { "name": "authority-emotional", "path": "/human-design/authorities/emotional.html", "requiredText": "Emotional Authority" },
-    { "name": "profile-1-3", "path": "/human-design/profiles/1-3.html", "requiredText": "Profile" }
+    {
+      "name": "home",
+      "path": "/",
+      "requiredText": "Human Design Engine"
+    },
+    {
+      "name": "free-reading-generator",
+      "path": "/free-human-design-reading-generator/",
+      "requiredText": "Free Human Design Reading Generator"
+    },
+    {
+      "name": "buy-report",
+      "path": "/buy-report/",
+      "requiredText": "Your Human Design Blueprint"
+    },
+    {
+      "name": "gates-index",
+      "path": "/human-design/gates/",
+      "requiredText": "The 64 Gates of Human Design"
+    },
+    {
+      "name": "gate-1",
+      "path": "/human-design/gates/gate-1.html",
+      "requiredText": "Human Design Gate 1"
+    },
+    {
+      "name": "channel-1-8",
+      "path": "/human-design/channels/1-8-inspiration.html",
+      "requiredText": "Channel 1-8"
+    },
+    {
+      "name": "type-generator",
+      "path": "/human-design/types/generator.html",
+      "requiredText": "The Generator"
+    },
+    {
+      "name": "authority-emotional",
+      "path": "/human-design/authorities/emotional.html",
+      "requiredText": "Emotional Authority"
+    },
+    {
+      "name": "profile-1-3",
+      "path": "/human-design/profiles/1-3.html",
+      "requiredText": "Profile"
+    },
+    {
+      "name": "profiles-index",
+      "path": "/human-design/profiles/",
+      "requiredText": "The 12 Profiles of Human Design"
+    },
+    {
+      "name": "types-index",
+      "path": "/human-design/types/",
+      "requiredText": "The 5 Human Design Types"
+    },
+    {
+      "name": "centers-index",
+      "path": "/human-design/centers/",
+      "requiredText": "The 9 Centers of Human Design"
+    },
+    {
+      "name": "center-sacral",
+      "path": "/human-design/centers/sacral.html",
+      "requiredText": "Sacral Center"
+    },
+    {
+      "name": "channels-index",
+      "path": "/human-design/channels/",
+      "requiredText": "The 36 Channels"
+    },
+    {
+      "name": "type-quiz",
+      "path": "/hd-engine/free-tools/type-quiz.html",
+      "requiredText": "What's Your Human Design Type?"
+    },
+    {
+      "name": "gate-lookup",
+      "path": "/hd-engine/free-tools/gate-lookup.html",
+      "requiredText": "Gate & Gene Key Lookup"
+    },
+    {
+      "name": "bodygraph",
+      "path": "/bodygraph.html",
+      "requiredText": "Free Bodygraph"
+    }
   ]
 }
