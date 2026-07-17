@@ -37,7 +37,7 @@ sys.path.insert(0, ENGINE_PATH)
 
 from cosmic_calculator import calculate_natal_chart
 from synastry_engine import calculate_composite, calculate_penta
-from matrix_mapper import GATE_NAMES, GATE_CENTER, CHANNELS
+from matrix_mapper import GATE_NAMES, GATE_CENTER, CHANNELS, PENTA_GATES
 from ephemeris_engine import init_ephemeris, get_planet_position, SUN
 from geo_resolver import local_to_utc
 from transit_engine import (
@@ -215,7 +215,7 @@ def make_cover(name, report_type, date_str, branding: dict | None = None):
     """
 
 
-def _clean_text(value, fallback="Pending in engine"):
+def _clean_text(value, fallback="Not returned by current engine"):
     """Return display-safe text and repair common mojibake from copied rich text."""
     if value is None or value == "":
         return fallback
@@ -243,11 +243,11 @@ def _clean_text(value, fallback="Pending in engine"):
     return " ".join(text.split()) or fallback
 
 
-def _esc(value, fallback="Pending in engine"):
+def _esc(value, fallback="Not returned by current engine"):
     return html_lib.escape(_clean_text(value, fallback))
 
 
-def _chart_get(chart, *keys, fallback="Pending in engine"):
+def _chart_get(chart, *keys, fallback="Not returned by current engine"):
     for key in keys:
         if key in chart and chart.get(key) not in (None, "", [], {}):
             return chart.get(key)
@@ -258,7 +258,7 @@ def _var_code(chart):
     value = chart.get("variables") or chart.get("variable") or chart.get("variable_code")
     if isinstance(value, (list, tuple)):
         return "".join(str(v) for v in value) if len(value) >= 4 else ", ".join(str(v) for v in value)
-    return value or "Pending in engine"
+    return value or "Not returned by current engine"
 
 
 def _field_card(label, value, description):
@@ -283,13 +283,146 @@ def _field_section(title, intro, fields):
 
 def _count_label(value, singular, plural=None):
     if value in (None, "", [], {}):
-        return "Pending in engine"
+        return "Not returned by current engine"
     if isinstance(value, int):
         return f"{value} {singular if value == 1 else (plural or singular + 's')}"
     if isinstance(value, (list, tuple, set)):
         n = len(value)
         return f"{n} {singular if n == 1 else (plural or singular + 's')}"
     return value
+
+
+def _active_gate_numbers(chart: dict) -> set[int]:
+    """Return active gate numbers from every chart shape the report server receives."""
+    gates: set[int] = set()
+    for key in ("all_active_gates", "personality_gates", "design_gates"):
+        for item in chart.get(key) or []:
+            value = item.get("gate") if isinstance(item, dict) else item
+            try:
+                gates.add(int(value))
+            except Exception:
+                pass
+    for planets_key in ("personality_planets", "design_planets"):
+        planets = chart.get(planets_key) or {}
+        if isinstance(planets, dict):
+            for data in planets.values():
+                if isinstance(data, dict):
+                    try:
+                        gates.add(int(data.get("gate")))
+                    except Exception:
+                        pass
+    return gates
+
+
+def _format_gate_list(gates, empty_text: str) -> str:
+    items = []
+    for gate in sorted(gates or []):
+        try:
+            gate_int = int(gate)
+        except Exception:
+            continue
+        items.append(f"Gate {gate_int} — {GATE_NAMES.get(gate_int, 'Unknown')} ({GATE_CENTER.get(gate_int, 'Unknown')})")
+    return "; ".join(items) if items else empty_text
+
+
+def _variable_value(chart: dict, *keys, fallback: str = "Not separated by current engine") -> str:
+    variables = chart.get("variables") if isinstance(chart.get("variables"), dict) else {}
+    for key in keys:
+        if chart.get(key) not in (None, "", [], {}):
+            return chart.get(key)
+        if variables.get(key) not in (None, "", [], {}):
+            return variables.get(key)
+    return fallback
+
+
+def _derive_bridging_gates(active_gates: set[int]) -> list[int]:
+    """Gates present where the harmonic gate is absent; useful bridge/relationship connectors."""
+    bridges = set()
+    for pair in CHANNELS:
+        if not isinstance(pair, tuple) or len(pair) != 2:
+            continue
+        a, b = pair
+        if a in active_gates and b not in active_gates:
+            bridges.add(b)
+        if b in active_gates and a not in active_gates:
+            bridges.add(a)
+    return sorted(bridges)
+
+
+def _derive_melancholy_gates(active_gates: set[int]) -> list[int]:
+    individual_gates = set()
+    for (a, b), name in CHANNELS.items():
+        if "Individual" in str(name):
+            individual_gates.update([a, b])
+    return sorted(active_gates & individual_gates)
+
+
+def _derive_cycle_window(chart: dict, years: float) -> str:
+    source = chart.get("birth_date_utc") or chart.get("utc_birth_date") or chart.get("birth_date") or chart.get("local_birth_date")
+    if not source:
+        return "Requires exact birth date"
+    try:
+        dt = datetime.fromisoformat(str(source).replace("Z", "+00:00"))
+    except Exception:
+        try:
+            dt = datetime.strptime(str(source)[:10], "%Y-%m-%d")
+        except Exception:
+            return "Requires exact birth date"
+    target = dt + timedelta(days=round(years * 365.2425))
+    return target.strftime("%Y-%m-%d")
+
+
+def enrich_natal_chart_for_report(chart: dict) -> dict:
+    """Fill report display fields from existing engine data; never alter core mechanics."""
+    chart = dict(chart or {})
+    active = _active_gate_numbers(chart)
+    variables = chart.get("variables") if isinstance(chart.get("variables"), dict) else {}
+
+    if variables:
+        orientation = variables.get("orientation")
+        if isinstance(orientation, (list, tuple)):
+            orientation = " ".join(str(v) for v in orientation)
+        chart.setdefault("variable_code", orientation or ", ".join(f"{k}: {v}" for k, v in variables.items() if v))
+        chart.setdefault("environment", variables.get("environment"))
+        chart.setdefault("perspective", variables.get("perspective") or variables.get("view"))
+        chart.setdefault("motivation", variables.get("motivation"))
+        chart.setdefault("cognition", variables.get("cognition"))
+        chart.setdefault("sense", variables.get("sense"))
+        chart.setdefault("trajectory", variables.get("trajectory"))
+        chart.setdefault("determination", variables.get("digestion") or variables.get("determination"))
+
+    perspective = _variable_value(chart, "perspective", "view", fallback="Perspective field not separated")
+    motivation = _variable_value(chart, "motivation", fallback="Motivation field not separated")
+    chart.setdefault("distraction", f"Tracked through Perspective: {perspective}")
+    chart.setdefault("transference", f"Tracked through Motivation: {motivation}")
+
+    chart.setdefault("bridging_gates", _derive_bridging_gates(active))
+    chart.setdefault("melancholy_gates", _derive_melancholy_gates(active))
+    chart.setdefault("fear_gates", sorted(g for g in active if GATE_CENTER.get(g) == "Spleen"))
+    chart.setdefault("penta_qualities", sorted(g for g in active if g in PENTA_GATES))
+
+    if "genetic_trauma" not in chart:
+        earth = None
+        planets = chart.get("personality_planets") or {}
+        if isinstance(planets, dict) and isinstance(planets.get("Earth"), dict):
+            earth = planets["Earth"].get("gate")
+        chart["genetic_trauma"] = f"Primary wound lens: Gate {earth} — {GATE_NAMES.get(int(earth), 'Unknown')}" if earth else "Use Earth activation and open-center conditioning as the trauma lens"
+
+    if "star_archetype" not in chart:
+        sun = None
+        planets = chart.get("personality_planets") or {}
+        if isinstance(planets, dict) and isinstance(planets.get("Sun"), dict):
+            sun = planets["Sun"].get("gate")
+        chart["star_archetype"] = f"Solar archetype: Gate {sun} — {GATE_NAMES.get(int(sun), 'Unknown')}" if sun else "Solar gate archetype unavailable"
+
+    chart.setdefault("birth_date_utc", chart.get("birth_date"))
+    chart.setdefault("design_date_utc", chart.get("design_date"))
+    chart.setdefault("local_design_date", chart.get("design_date"))
+    chart.setdefault("saturn_return_utc", _derive_cycle_window(chart, 29.45))
+    chart.setdefault("second_saturn_return_utc", _derive_cycle_window(chart, 58.9))
+    chart.setdefault("uranus_opposition_utc", _derive_cycle_window(chart, 42.0))
+    chart.setdefault("chiron_return_utc", _derive_cycle_window(chart, 50.7))
+    return chart
 
 
 def _planet_rows(chart):
@@ -352,6 +485,7 @@ def _planet_activation_table(chart):
 
 def build_natal_report(chart: dict, branding: dict | None = None) -> str:
     """Generate a comprehensive natal chart report as HTML."""
+    chart = enrich_natal_chart_for_report(chart)
     name = chart.get("name", "Friend")
     date_str = datetime.now().strftime("%B %d, %Y")
 
@@ -363,7 +497,7 @@ def build_natal_report(chart: dict, branding: dict | None = None) -> str:
 
     # ── Section 1: Overview ──
     cross = chart.get('incarnation_cross', {})
-    cross_name = cross.get('name', 'Pending in engine') if isinstance(cross, dict) else cross
+    cross_name = cross.get('name', 'Not returned by current engine') if isinstance(cross, dict) else cross
     core_fields = [
         ("Profile", _chart_get(chart, 'profile'), "Your conscious/unconscious role pattern: how you learn, relate, and are projected on by others."),
         ("Type", _chart_get(chart, 'hd_type', 'type'), "Your aura mechanics and the broad way your energy engages with life."),
@@ -387,10 +521,10 @@ def build_natal_report(chart: dict, branding: dict | None = None) -> str:
         ("Determination", _chart_get(chart, 'determination', 'digestion'), "How your body best digests food, information, and experience."),
     ]
     coaching_fields = [
-        ("Bridging Gates", _count_label(_chart_get(chart, 'bridging_gates', fallback=[]), 'Gate'), "Gates that can bridge split definition or become important relational connectors."),
-        ("Melancholy", _count_label(_chart_get(chart, 'melancholy_gates', fallback=[]), 'Gate'), "Individual-circuit gates where mood, timing, and creative pulse may need space."),
-        ("Fears", _count_label(_chart_get(chart, 'fear_gates', 'fears', fallback=[]), 'Gate'), "Splenic fear themes that can become wisdom when named instead of obeyed blindly."),
-        ("Penta Qualities", _count_label(_chart_get(chart, 'penta_qualities', fallback=[]), 'Family & Business Quality', 'Family & Business Qualities'), "Group and business dynamics that become visible in family/team fields."),
+        ("Bridging Gates", _format_gate_list(_chart_get(chart, 'bridging_gates', fallback=[]), "No active hanging gates requiring bridge support"), "Gates that can bridge split definition or become important relational connectors."),
+        ("Melancholy", _format_gate_list(_chart_get(chart, 'melancholy_gates', fallback=[]), "No individual-circuit melancholy gates active"), "Individual-circuit gates where mood, timing, and creative pulse may need space."),
+        ("Fears", _format_gate_list(_chart_get(chart, 'fear_gates', 'fears', fallback=[]), "No active Spleen fear gates identified"), "Splenic fear themes that can become wisdom when named instead of obeyed blindly."),
+        ("Penta Qualities", _format_gate_list(_chart_get(chart, 'penta_qualities', fallback=[]), "No active Penta gates identified"), "Group and business dynamics that become visible in family/team fields."),
         ("Genetic Trauma", _chart_get(chart, 'genetic_trauma'), "A Gene Keys / trauma lens for the wound pattern asking for integration."),
         ("AstroHD Star Archetype", _chart_get(chart, 'star_archetype', 'astrohd_star_archetype'), "A star/archetype layer for mythic language, content themes, and coaching depth."),
     ]
@@ -1231,6 +1365,10 @@ def compute_and_render(metadata: dict) -> dict:
         lat=lat, lon=lon,
         timezone=timezone,
     )
+    chart.setdefault("local_birth_date", f"{birthdate} {birthtime}")
+    chart.setdefault("birth_location", location)
+    chart.setdefault("timezone", timezone)
+    chart = enrich_natal_chart_for_report(chart)
     # Chart results must come directly from the calculation engine. Do not
     # accept caller-provided field overrides for natal mechanics.
 
