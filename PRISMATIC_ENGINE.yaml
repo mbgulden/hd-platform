@@ -40,7 +40,9 @@ agents:
   ned:
     role: Code Execution & Infrastructure
     lanes:
-      owner: ["src/", "api/", "scripts/"]
+      # Temporary HDE checkpoint branch expansion authorized by Michael, 2026-07-17.
+      # Scope: ned/hde-phase1-phase2-staging-funnel-2026-07-15 only; revert/narrow before generalizing.
+      owner: ["src/", "api/", "scripts/", "docs/", "payment/", "public/", "shared/", "tests/", ".pwp/", "package.json", "package-lock.json", "playwright.config.ts", "lighthouserc.json", "PRISMATIC_ENGINE.yaml"]
       read_only: ["content/"]
     branch_prefix: "ned/"
 

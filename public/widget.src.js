@@ -19,18 +19,18 @@
   // ── Config ──────────────────────────────────────────────────────────────
   var DEFAULT_API = 'https://api.humandesignengine.com';
   var BRAND = {
-    gradient: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
-    primary: '#667eea',
-    accent: '#764ba2',
-    light: '#a78bfa',
-    bg: '#0f1428',
-    card: 'rgba(20,26,50,0.95)',
-    border: 'rgba(102,126,234,0.2)',
-    text: '#e8e6e3',
-    muted: '#8899aa',
-    dim: '#5a6a7a',
-    success: '#4ade80',
-    error: '#f87171',
+    gradient: 'linear-gradient(135deg, #2F3631 0%, #5F7261 100%)',
+    primary: '#2F3631',
+    accent: '#5F7261',
+    light: '#4B5C4E',
+    bg: '#FAF7F0',
+    card: 'rgba(255,255,255,0.86)',
+    border: 'rgba(95,114,97,0.18)',
+    text: '#2F3631',
+    muted: '#5C625E',
+    dim: '#4B514E',
+    success: '#5F7261',
+    error: '#B4534A',
   };
 
   // ── Type data ───────────────────────────────────────────────────────────
@@ -64,22 +64,22 @@
     if (CSS_INJECTED) return;
     CSS_INJECTED = true;
     var css =
-      prefix + ' * { box-sizing:border-box; margin:0; padding:0; font-family:"Inter",-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif; }\n' +
+      prefix + ' * { box-sizing:border-box; margin:0; padding:0; font-family:"Outfit",-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif; }\n' +
       prefix + ' { max-width:500px; width:100%; margin:0 auto; }\n' +
-      prefix + '-card { background:' + BRAND.card + '; border:1px solid ' + BRAND.border + '; border-radius:20px; overflow:hidden; box-shadow:0 8px 32px rgba(0,0,0,0.3); }\n' +
-      prefix + '-header { background:' + BRAND.gradient + '; padding:28px 24px; text-align:center; color:#fff; }\n' +
+      prefix + '-card { background:' + BRAND.card + '; border:1px solid ' + BRAND.border + '; border-radius:20px; overflow:hidden; box-shadow:0 14px 40px rgba(47,54,49,0.08); }\n' +
+      prefix + '-header { background:' + BRAND.gradient + '; padding:28px 24px; text-align:center; color:#FAF7F0; }\n' +
       prefix + '-header h2 { font-size:1.15rem; font-weight:700; letter-spacing:-0.02em; }\n' +
       prefix + '-header p { font-size:0.82rem; opacity:0.85; margin-top:4px; }\n' +
       prefix + '-body { padding:24px; }\n' +
       prefix + '-form-group { margin-bottom:16px; }\n' +
       prefix + '-form-group label { display:block; font-size:0.78rem; font-weight:600; color:' + BRAND.light + '; margin-bottom:6px; text-transform:uppercase; letter-spacing:0.05em; }\n' +
-      prefix + '-form-group input { width:100%; padding:12px 14px; background:rgba(255,255,255,0.05); border:1px solid ' + BRAND.border + '; border-radius:10px; color:' + BRAND.text + '; font-size:0.92rem; transition:border-color 0.2s; outline:none; }\n' +
-      prefix + '-form-group input:focus { border-color:' + BRAND.primary + '; box-shadow:0 0 0 3px rgba(102,126,234,0.15); }\n' +
+      prefix + '-form-group input { width:100%; padding:12px 14px; background:#FDFBF7; border:1px solid ' + BRAND.border + '; border-radius:10px; color:' + BRAND.text + '; font-size:0.92rem; transition:border-color 0.2s; outline:none; }\n' +
+      prefix + '-form-group input:focus { border-color:' + BRAND.primary + '; box-shadow:0 0 0 3px rgba(95,114,97,0.14); }\n' +
       prefix + '-form-group input::placeholder { color:' + BRAND.dim + '; }\n' +
       prefix + '-form-row { display:flex; gap:12px; }\n' +
       prefix + '-form-row > * { flex:1; }\n' +
-      prefix + '-btn { width:100%; padding:14px; background:' + BRAND.gradient + '; color:#fff; border:none; border-radius:12px; font-size:0.95rem; font-weight:700; cursor:pointer; letter-spacing:0.02em; transition:transform 0.15s,box-shadow 0.2s; }\n' +
-      prefix + '-btn:hover { transform:translateY(-1px); box-shadow:0 8px 24px rgba(102,126,234,0.35); }\n' +
+      prefix + '-btn { width:100%; padding:14px; background:' + BRAND.gradient + '; color:#FAF7F0; border:none; border-radius:12px; font-size:0.95rem; font-weight:700; cursor:pointer; letter-spacing:0.02em; transition:transform 0.15s,box-shadow 0.2s; }\n' +
+      prefix + '-btn:hover { transform:translateY(-1px); box-shadow:0 10px 26px rgba(47,54,49,0.16); }\n' +
       prefix + '-btn:active { transform:translateY(0); }\n' +
       prefix + '-btn:disabled { opacity:0.5; cursor:not-allowed; transform:none; box-shadow:none; }\n' +
       prefix + '-spinner { display:flex; flex-direction:column; align-items:center; justify-content:center; padding:48px 24px; }\n' +
@@ -91,29 +91,29 @@
       prefix + '-result-name span { color:' + BRAND.light + '; }\n' +
       prefix + '-type-badge { text-align:center; margin-bottom:20px; }\n' +
       prefix + '-type-icon { font-size:2.2rem; margin-bottom:4px; }\n' +
-      prefix + '-type-label { display:inline-block; padding:6px 20px; background:' + BRAND.gradient + '; color:#fff; border-radius:20px; font-size:0.95rem; font-weight:700; }\n' +
+      prefix + '-type-label { display:inline-block; padding:6px 20px; background:' + BRAND.gradient + '; color:#FAF7F0; border-radius:20px; font-size:0.95rem; font-weight:700; }\n' +
       prefix + '-grid { display:grid; grid-template-columns:1fr 1fr; gap:10px; margin-bottom:20px; }\n' +
-      prefix + '-stat { background:rgba(255,255,255,0.03); border:1px solid ' + BRAND.border + '; border-radius:12px; padding:14px; text-align:center; }\n' +
+      prefix + '-stat { background:rgba(253,251,247,0.74); border:1px solid ' + BRAND.border + '; border-radius:12px; padding:14px; text-align:center; }\n' +
       prefix + '-stat-label { font-size:0.7rem; text-transform:uppercase; letter-spacing:0.06em; color:' + BRAND.dim + '; margin-bottom:4px; }\n' +
       prefix + '-stat-value { font-size:0.92rem; font-weight:600; color:' + BRAND.text + '; }\n' +
       prefix + '-centers { margin-bottom:20px; }\n' +
       prefix + '-centers h4 { font-size:0.78rem; text-transform:uppercase; letter-spacing:0.06em; color:' + BRAND.primary + '; margin-bottom:10px; }\n' +
       prefix + '-center-badges { display:flex; flex-wrap:wrap; gap:8px; }\n' +
-      prefix + '-center-badge { display:inline-flex; align-items:center; gap:6px; padding:5px 12px; background:rgba(102,126,234,0.12); border:1px solid rgba(102,126,234,0.25); border-radius:20px; font-size:0.8rem; color:' + BRAND.light + '; }\n' +
-      prefix + '-signature { background:rgba(118,75,162,0.12); border:1px solid rgba(118,75,162,0.25); border-radius:14px; padding:18px; text-align:center; margin-bottom:20px; }\n' +
+      prefix + '-center-badge { display:inline-flex; align-items:center; gap:6px; padding:5px 12px; background:rgba(95,114,97,0.10); border:1px solid rgba(95,114,97,0.20); border-radius:20px; font-size:0.8rem; color:' + BRAND.light + '; }\n' +
+      prefix + '-signature { background:rgba(95,114,97,0.10); border:1px solid rgba(95,114,97,0.20); border-radius:14px; padding:18px; text-align:center; margin-bottom:20px; }\n' +
       prefix + '-signature-label { font-size:0.72rem; text-transform:uppercase; letter-spacing:0.07em; color:' + BRAND.accent + '; margin-bottom:4px; }\n' +
       prefix + '-signature-value { font-size:1rem; font-weight:700; color:' + BRAND.light + '; }\n' +
       prefix + '-signature-desc { font-size:0.78rem; color:' + BRAND.muted + '; margin-top:4px; }\n' +
       prefix + '-cta { text-align:center; padding:0 24px 24px; }\n' +
       prefix + '-cta-link { display:inline-block; padding:12px 28px; background:transparent; border:2px solid ' + BRAND.accent + '; color:' + BRAND.light + '; border-radius:12px; font-size:0.88rem; font-weight:600; text-decoration:none; transition:all 0.2s; }\n' +
-      prefix + '-cta-link:hover { background:rgba(118,75,162,0.15); border-color:' + BRAND.light + '; }\n' +
+      prefix + '-cta-link:hover { background:rgba(95,114,97,0.12); border-color:' + BRAND.light + '; }\n' +
       prefix + '-error { padding:32px 24px; text-align:center; color:' + BRAND.error + '; }\n' +
       prefix + '-error-title { font-size:1rem; font-weight:600; margin-bottom:8px; }\n' +
       prefix + '-error-msg { font-size:0.82rem; color:' + BRAND.muted + '; margin-bottom:16px; }\n' +
-      prefix + '-reset-btn { padding:10px 24px; background:rgba(255,255,255,0.05); border:1px solid ' + BRAND.border + '; color:' + BRAND.muted + '; border-radius:10px; cursor:pointer; font-size:0.82rem; }\n' +
+      prefix + '-reset-btn { padding:10px 24px; background:#FDFBF7; border:1px solid ' + BRAND.border + '; color:' + BRAND.muted + '; border-radius:10px; cursor:pointer; font-size:0.82rem; }\n' +
       prefix + '-reset-btn:hover { color:' + BRAND.text + '; border-color:' + BRAND.dim + '; }\n' +
       prefix + '-powered { text-align:center; padding:0 24px 16px; font-size:0.7rem; color:' + BRAND.dim + '; }\n' +
-      prefix + '-powered a { color:' + BRAND.primary + '; text-decoration:none; }\n' +
+      prefix + '-powered a { color:' + BRAND.light + '; text-decoration:none; }\n' +
       '@media (max-width:400px) { ' + prefix + '-grid { grid-template-columns:1fr; } ' + prefix + '-form-row { flex-direction:column; gap:0; } }\n';
     var style = document.createElement('style');
     style.textContent = css;
@@ -146,7 +146,7 @@
     var card = el('div', this.prefix.slice(1) + '-card');
     card.innerHTML =
       '<div class="' + this.prefix.slice(1) + '-header">' +
-        '<h2>🔮 Free Human Design Chart</h2>' +
+        '<h2>Free Human Design Chart</h2>' +
         '<p>Discover your Type, Strategy &amp; Authority</p>' +
       '</div>' +
       '<form class="' + this.prefix.slice(1) + '-body" novalidate></form>' +
@@ -158,27 +158,27 @@
 
     // Name
     var g1 = el('div', this.prefix.slice(1) + '-form-group');
-    g1.innerHTML = '<label>Your Name</label><input type="text" name="name" placeholder="e.g. Jane Doe" maxlength="100" required>';
+    g1.innerHTML = '<label for="hde-name">Your Name</label><input id="hde-name" type="text" name="name" placeholder="e.g. Jane Doe" maxlength="100" required>';
     form.appendChild(g1);
 
     // Birth date
     var g2 = el('div', this.prefix.slice(1) + '-form-group');
-    g2.innerHTML = '<label>Birth Date</label><input type="date" name="birthdate" required>';
+    g2.innerHTML = '<label for="hde-birthdate">Birth Date</label><input id="hde-birthdate" type="date" name="birthdate" required>';
     form.appendChild(g2);
 
     // Birth time + location row
     var row = el('div', this.prefix.slice(1) + '-form-row');
     var g3 = el('div', this.prefix.slice(1) + '-form-group');
-    g3.innerHTML = '<label>Birth Time</label><input type="time" name="birthtime" required>';
+    g3.innerHTML = '<label for="hde-birthtime">Birth Time</label><input id="hde-birthtime" type="time" name="birthtime" required>';
     row.appendChild(g3);
 
     var g4 = el('div', this.prefix.slice(1) + '-form-group');
-    g4.innerHTML = '<label>Location <span style="font-weight:400;font-size:0.7rem;color:' + BRAND.dim + '">(optional)</span></label><input type="text" name="location" placeholder="e.g. New York, USA" maxlength="200">';
+    g4.innerHTML = '<label for="hde-location">Location <span style="font-weight:400;font-size:0.7rem;color:' + BRAND.dim + '">(optional)</span></label><input id="hde-location" type="text" name="location" placeholder="e.g. New York, USA" maxlength="200">';
     row.appendChild(g4);
     form.appendChild(row);
 
     // Submit
-    var btn = el('button', this.prefix.slice(1) + '-btn', 'Compute My Chart ✨');
+    var btn = el('button', this.prefix.slice(1) + '-btn', 'Calculate My Chart');
     btn.type = 'submit';
     form.appendChild(btn);
 
@@ -311,6 +311,7 @@
     var centers = data.defined_centers || [];
 
     var result = el('div', this.prefix.slice(1) + '-result');
+    var prefix = this.prefix;
 
     var html = '';
 
@@ -346,7 +347,7 @@
     // Signature
     if (data.signature) {
       html += '<div class="' + this.prefix.slice(1) + '-signature">';
-      html += '<div class="' + this.prefix.slice(1) + '-signature-label">✨ Your Signature</div>';
+      html += '<div class="' + this.prefix.slice(1) + '-signature-label">Your Signature</div>';
       html += '<div class="' + this.prefix.slice(1) + '-signature-value">' + escHtml(data.signature) + '</div>';
       if (data.not_self_theme) {
         html += '<div class="' + this.prefix.slice(1) + '-signature-desc">Not-self theme: ' + escHtml(data.not_self_theme) + '</div>';
@@ -360,7 +361,7 @@
     // CTA
     var cta = el('div', this.prefix.slice(1) + '-cta');
     var reportUrl = this.options.reportUrl || 'buy-report.html';
-    cta.innerHTML = '<a class="' + this.prefix.slice(1) + '-cta-link" href="' + reportUrl + '" target="_blank" rel="noopener">📄 Want your full report?<br><small>Get the complete 20+ page PDF →</small></a>';
+    cta.innerHTML = '<a class="' + this.prefix.slice(1) + '-cta-link" href="' + reportUrl + '" target="_blank" rel="noopener">Want your full report?<br><small>Get the complete PDF →</small></a>';
     card.appendChild(cta);
 
     // Powered by
@@ -368,7 +369,6 @@
     pw.innerHTML = 'Powered by <a href="https://humandesignengine.com" target="_blank" rel="noopener">Human Design Engine</a>';
     card.appendChild(pw);
 
-    var prefix = this.prefix;
     function statCard(label, value) {
       return '<div class="' + prefix.slice(1) + '-stat">' +
         '<div class="' + prefix.slice(1) + '-stat-label">' + label + '</div>' +

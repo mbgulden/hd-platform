@@ -11,10 +11,10 @@ import Footer from '../components/Footer.astro';
     <!-- Hero Section -->
     <section class="hero">
       <h1>The <em>Calming Intelligence</em> of Human Design</h1>
-      <p class="hero-subtitle">An open, peer-reviewed calculation engine, premium PDF reports, and somatic tools built to guide you back to your body signature.</p>
+      <p class="hero-subtitle">Start with the Free Human Design Reading Generator: verified chart calculations, plain-English interpretation, premium PDF reports, and somatic tools built to guide you back to your body signature.</p>
       <div class="hero-ctas">
-        <a class="btn btn-primary" href="#calculator">Calculate Free Chart</a>
-        <a class="btn btn-secondary" href="/deconditioning">Explore Somatic Sanctuary</a>
+        <a class="btn btn-primary" href="/free-human-design-reading-generator/">Generate Free Reading</a>
+        <a class="btn btn-secondary" href="/deconditioning/">Explore Somatic Sanctuary</a>
       </div>
     </section>
 
@@ -57,12 +57,14 @@ import Footer from '../components/Footer.astro';
     <!-- Calculator Section -->
     <section class="section-container calculator-section" id="calculator">
       <div class="section-header">
-        <h2>Your Bodygraph</h2>
-        <p>Enter your birth data to calculate your active gates, defined centers, and basic somatic strategy.</p>
+        <span class="eyebrow">Free Human Design Reading Generator</span>
+        <h2>Your Bodygraph + Reading</h2>
+        <p>Enter your birth data to calculate your active gates, defined centers, Type, Strategy, Authority, Profile, and the first plain-English reading layer.</p>
+        <p class="section-link"><a href="/free-human-design-reading-generator/">Open the dedicated Free Reading Generator →</a></p>
       </div>
       <div class="calc-wrapper">
         <!-- Human Design Engine Widget mounting point -->
-        <hd-bodygraph data-interactive="true" data-theme="gold" data-api="" data-show-form="true"></hd-bodygraph>
+        <div class="hde-chart-widget" data-interactive="true" data-theme="gold" data-api="/" data-title="Free Human Design Reading" data-subtitle="Generate your verified chart and first reading layer." data-show-form="true"></div>
       </div>
     </section>
 
@@ -91,7 +93,7 @@ import Footer from '../components/Footer.astro';
               Delivered instantly via email
             </li>
           </ul>
-          <a class="price-btn price-btn-outline" href="/buy-report.html?report=natal">Order Report</a>
+          <a class="price-btn price-btn-outline" href="/buy-report/?report=natal">Order Report</a>
         </div>
 
         <!-- Bundle -->
@@ -113,7 +115,7 @@ import Footer from '../components/Footer.astro';
               Saves $18 compared to separate orders
             </li>
           </ul>
-          <a class="price-btn price-btn-filled" href="/buy-report.html?report=bundle">Order Bundle</a>
+          <a class="price-btn price-btn-filled" href="/buy-report/?report=bundle">Order Bundle</a>
         </div>
 
         <!-- Transit Report -->
@@ -134,7 +136,7 @@ import Footer from '../components/Footer.astro';
               Comprehensive daily activation mapping
             </li>
           </ul>
-          <a class="price-btn price-btn-outline" href="/buy-report.html?report=transit">Order Forecast</a>
+          <a class="price-btn price-btn-outline" href="/buy-report/?report=transit">Order Forecast</a>
         </div>
       </div>
     </section>
@@ -352,11 +354,22 @@ import Footer from '../components/Footer.astro';
     background: var(--cream-bg);
   }
   .calc-wrapper {
-    max-width: 600px;
+    max-width: 880px;
     margin: 0 auto;
   }
+  .section-link {
+    margin-top: 14px;
+  }
+  .section-link a {
+    color: var(--sage-deep);
+    font-weight: 700;
+    text-decoration: none;
+  }
+  .section-link a:hover {
+    text-decoration: underline;
+  }
   
-  /* Global Overrides for <hd-bodygraph> Widget to match Sage Green Theme */
+  /* Global Overrides for HDE chart widget to match Sage Green Theme */
   :global(.hde-card) {
     background-color: var(--white) !important;
     border: 1px solid var(--card-border) !important;
@@ -593,7 +606,7 @@ import Footer from '../components/Footer.astro';
 
   /* Include Widget Javascript to mount the chart component */
   script {
-    /* To handle the <hd-bodygraph> rendering script */
+    /* Widget script is loaded below and mounts .hde-chart-widget */
   }
 
   @media (max-width: 868px) {
@@ -614,4 +627,4 @@ import Footer from '../components/Footer.astro';
 </style>
 
 <!-- Load HD Widget scripts dynamically -->
-<script is:inline src="/widget.js"></script>
+<script is:inline src="/widget.js?v=fred-20260711-widget-render"></script>

@@ -4,7 +4,32 @@ import Nav from '../components/Nav.astro';
 import Footer from '../components/Footer.astro';
 import emdash from '../content/emdash.json';
 
-const { title, subtitle, description, packages } = emdash.somaticPage;
+const { title, subtitle, description, packages: contentPackages } = emdash.somaticPage;
+
+// Checkout values are aligned to the active Stripe live Price objects.
+// Keep this override in the page layer because `content/` is owned by the content lane.
+const stripePackageOverrides = {
+  solo: {
+    price: '29',
+    interval: 'month',
+    priceCents: 2900,
+    isSubscription: true,
+    priceId: 'price_1Ts8WQKfvDG04zCAK5PsM3vw'
+  },
+  sovereign: {
+    price: '1,500',
+    interval: '6-week container + 1 year included',
+    priceCents: 150000,
+    isSubscription: true,
+    priceId: 'price_1Ts8WRKfvDG04zCALk31iYVp',
+    recurringPriceId: 'price_1Ts8WRKfvDG04zCAH1jNTh8T',
+    subscriptionTrialDays: 365
+  }
+};
+const packages = contentPackages.map((pkg) => ({
+  ...pkg,
+  ...(stripePackageOverrides[pkg.id] ?? {})
+}));
 ---
 
 <Layout title="Somatic Sanctuary & Deconditioning Container | Human Design Engine" description={description}>
@@ -47,6 +72,9 @@ const { title, subtitle, description, packages } = emdash.somaticPage;
             data-pkg-desc={pkg.desc}
             data-price-cents={pkg.priceCents}
             data-is-sub={pkg.isSubscription ? "true" : "false"}
+            data-price-id={pkg.priceId ?? ""}
+            data-recurring-price-id={pkg.recurringPriceId ?? ""}
+            data-subscription-trial-days={pkg.subscriptionTrialDays ?? ""}
             data-id={pkg.id}
           >
             {pkg.id === 'sovereign' ? 'Apply for Sovereign Container' : 'Start Solo Experiment'}
@@ -64,6 +92,12 @@ const { title, subtitle, description, packages } = emdash.somaticPage;
           <div class="form-group">
             <label for="checkoutEmail">Email Address</label>
             <input type="email" id="checkoutEmail" required placeholder="you@example.com" />
+          </div>
+          <div class="form-group consent-group" id="coachConsentGroup" hidden>
+            <label class="consent-label">
+              <input type="checkbox" id="coachConsent" />
+              <span id="coachConsentText">I understand this staging/family test may be reviewed by Michael and Ned. I allow Human Design Engine to review my test conversations, generated chart artifacts, stuck states, and feedback to improve the Sanctuary bot experience. This is separate from production customer privacy, and I can revoke human review later.</span>
+            </label>
           </div>
           <div class="modal-actions">
             <button type="button" class="btn-cancel" id="cancelModalBtn">Cancel</button>
@@ -156,7 +190,7 @@ const { title, subtitle, description, packages } = emdash.somaticPage;
   }
   .price-int {
     font-size: 0.95rem;
-    color: var(--text-muted);
+    color: var(--text-secondary);
     margin-left: 8px;
   }
   .pkg-desc {
@@ -258,6 +292,22 @@ const { title, subtitle, description, packages } = emdash.somaticPage;
   .form-group input:focus {
     outline: 2px solid var(--sage-mid);
   }
+
+  .consent-label {
+    display: flex;
+    gap: 12px;
+    align-items: flex-start;
+    font-size: 0.9rem;
+    line-height: 1.45;
+    color: var(--text-secondary);
+    cursor: pointer;
+  }
+  .consent-label input {
+    margin-top: 4px;
+    width: auto;
+    flex: 0 0 auto;
+  }
+
   .modal-actions {
     display: flex;
     justify-content: flex-end;
@@ -294,13 +344,15 @@ const { title, subtitle, description, packages } = emdash.somaticPage;
 </style>
 
 <script>
-  let selectedPkg = { name: '', desc: '', priceCents: 0, isSub: false, id: '' };
+  let selectedPkg = { name: '', desc: '', priceCents: 0, isSub: false, id: '', priceId: '', recurringPriceId: '', subscriptionTrialDays: null };
   
   const modal = document.getElementById('emailModal');
   const cancelBtn = document.getElementById('cancelModalBtn');
   const form = document.getElementById('checkoutForm');
   const errorMsg = document.getElementById('modalError');
   const submitBtn = document.getElementById('submitModalBtn');
+  const coachConsentGroup = document.getElementById('coachConsentGroup');
+  const coachConsent = document.getElementById('coachConsent');
 
   document.querySelectorAll('.checkout-btn').forEach(btn => {
     btn.addEventListener('click', () => {
@@ -309,9 +361,20 @@ const { title, subtitle, description, packages } = emdash.somaticPage;
         desc: btn.getAttribute('data-pkg-desc') || '',
         priceCents: parseInt(btn.getAttribute('data-price-cents') || '0', 10),
         isSub: btn.getAttribute('data-is-sub') === 'true',
-        id: btn.getAttribute('data-id') || ''
+        id: btn.getAttribute('data-id') || '',
+        priceId: btn.getAttribute('data-price-id') || '',
+        recurringPriceId: btn.getAttribute('data-recurring-price-id') || '',
+        subscriptionTrialDays: parseInt(btn.getAttribute('data-subscription-trial-days') || '0', 10) || null
       };
+      const isStaging = window.location.hostname.startsWith('staging.');
+      if (coachConsentGroup && coachConsent) {
+        const requiresCoachConsent = selectedPkg.id === 'sovereign' || isStaging;
+        coachConsentGroup.hidden = !requiresCoachConsent;
+        coachConsent.required = requiresCoachConsent;
+        coachConsent.checked = false;
+      }
       if (modal) modal.classList.add('active');
+      if (errorMsg) errorMsg.style.display = 'none';
     });
   });
 
@@ -332,13 +395,39 @@ const { title, subtitle, description, packages } = emdash.somaticPage;
       if (errorMsg) errorMsg.style.display = 'none';
 
       const email = (document.getElementById('checkoutEmail') as HTMLInputElement).value.trim();
+      const isStaging = window.location.hostname.startsWith('staging.');
+      if (!email) {
+        if (errorMsg) {
+          errorMsg.textContent = 'Please enter a valid email address.';
+          errorMsg.style.display = 'block';
+        }
+        if (submitBtn) {
+          submitBtn.disabled = false;
+          submitBtn.textContent = 'Proceed to Stripe →';
+        }
+        return;
+      }
+      if ((selectedPkg.id === 'sovereign' || isStaging) && coachConsent && !coachConsent.checked) {
+        if (errorMsg) {
+          errorMsg.textContent = isStaging
+            ? 'Please explicitly allow family-test review so Michael/Ned can improve the staging bot from this test round.'
+            : 'Please explicitly allow coach review access to continue with the Sovereign Container. Choose Solo Sanctuary if you want a private bot-only sanctuary.';
+          errorMsg.style.display = 'block';
+        }
+        if (submitBtn) {
+          submitBtn.disabled = false;
+          submitBtn.textContent = 'Proceed to Stripe →';
+        }
+        return;
+      }
 
-      const priceIds = {
-        solo: 'price_1TjeSgKfvDG04zCAk7b36taY',
-        sovereign: 'price_1TjeSkKfvDG04zCA18ZU5S1a'
-      };
-      const priceId = priceIds[selectedPkg.id] || '';
+      const checkoutOrigin = window.location.origin;
+      const successUrl = `${checkoutOrigin}/success?session_id={CHECKOUT_SESSION_ID}`;
+      const cancelUrl = `${checkoutOrigin}/deconditioning/`;
+      const priceId = isStaging ? '' : (selectedPkg.priceId || '');
+      const recurringPriceId = isStaging ? '' : (selectedPkg.recurringPriceId || '');
 
+      const consentChecked = !!(coachConsent && coachConsent.checked);
       try {
         const response = await fetch('/api/checkout/create-session', {
           method: 'POST',
@@ -348,17 +437,27 @@ const { title, subtitle, description, packages } = emdash.somaticPage;
             product_name: selectedPkg.name,
             product_description: selectedPkg.desc,
             price_cents: selectedPkg.priceCents,
-            price_id: priceId,
+            price_id: priceId || undefined,
+            recurring_price_id: recurringPriceId || undefined,
+            subscription_trial_days: selectedPkg.subscriptionTrialDays || undefined,
             is_subscription: selectedPkg.isSub,
+            success_url: successUrl,
+            cancel_url: cancelUrl,
             metadata: {
               tier: selectedPkg.id,
-              product: selectedPkg.id
+              product: selectedPkg.id,
+              checkout_source: 'staging_deconditioning',
+              coach_review_consent: String((selectedPkg.id === 'sovereign' || isStaging) && consentChecked),
+              coach_review_consent_source: isStaging ? 'staging_family_test_checkout' : 'deconditioning_checkout',
+              family_test_review_consent: String(isStaging && consentChecked)
             }
           })
         });
 
-        if (!response.ok) throw new Error('Checkout API failed');
-        const data = await response.json();
+        const data = await response.json().catch(() => ({}));
+        if (!response.ok) {
+          throw new Error(data.detail || data.error || 'Checkout API failed');
+        }
         if (data.url) {
           window.location.href = data.url;
         } else {
@@ -366,7 +465,9 @@ const { title, subtitle, description, packages } = emdash.somaticPage;
         }
       } catch (err) {
         if (errorMsg) {
-          errorMsg.textContent = 'Failed to initiate checkout. Please try again.';
+          errorMsg.textContent = err instanceof Error && err.message
+            ? `Failed to initiate checkout: ${err.message}`
+            : 'Failed to initiate checkout. Please try again.';
           errorMsg.style.display = 'block';
         }
         if (submitBtn) {

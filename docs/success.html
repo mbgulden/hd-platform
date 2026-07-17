@@ -210,10 +210,13 @@
         const resp = await fetch(`/api/checkout/session?email=${encodeURIComponent(email)}`);
         if (resp.ok) {
           const data = await resp.json();
-          if (data.success && data.deep_link) {
+          if (data.deep_link) {
             launchBtn.href = data.deep_link;
             launchBtn.classList.add('ready');
             statusText.innerText = "Sanctuary link ready. Open Telegram to begin.";
+          } else if (data.email) {
+            statusText.innerHTML = "Your Human Design report is being sent to <strong>" + data.email + "</strong>. Please check your inbox.";
+            launchBtn.style.display = "none";
           } else {
             statusText.innerText = "No active invitation found. Contact support.";
           }

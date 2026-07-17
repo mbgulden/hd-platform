@@ -5,6 +5,7 @@ interface Props {
 }
 
 const { title, description = "Access verifiable Human Design calculations, download premium reports, and explore somatic tools built to return you to your true body signature." } = Astro.props;
+const canonicalUrl = new URL(Astro.url.pathname, Astro.site ?? 'https://humandesignengine.com').toString();
 ---
 
 <!DOCTYPE html>
@@ -14,11 +15,18 @@ const { title, description = "Access verifiable Human Design calculations, downl
   <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
   <title>{title}</title>
   <meta content={description} name="description"/>
+  <link rel="canonical" href={canonicalUrl}/>
+  <meta property="og:title" content={title}/>
+  <meta property="og:description" content={description}/>
+  <meta property="og:url" content={canonicalUrl}/>
+  <meta property="og:type" content="website"/>
+  <meta name="twitter:card" content="summary_large_image"/>
   
   <!-- Modern Typography -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/hde-light-theme.css">
   
   <style is:global>
     :root {

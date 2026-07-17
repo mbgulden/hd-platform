@@ -1,0 +1,28 @@
+{
+  "ci": {
+    "collect": {
+      "staticDistDir": "./dist",
+      "url": [
+        "http://localhost/",
+        "http://localhost/free-human-design-reading-generator/",
+        "http://localhost/buy-report/",
+        "http://localhost/human-design/gates/",
+        "http://localhost/human-design/gates/gate-1.html"
+      ],
+      "numberOfRuns": 1,
+      "settings": { "chromeFlags": "--no-sandbox" }
+    },
+    "assert": {
+      "assertions": {
+        "categories:performance": "off",
+        "categories:accessibility": ["warn", { "minScore": 0.8 }],
+        "categories:best-practices": "off",
+        "categories:seo": "off"
+      }
+    },
+    "upload": {
+      "target": "filesystem",
+      "outputDir": "okf/output/pwp-visual-qa/lighthouse"
+    }
+  }
+}

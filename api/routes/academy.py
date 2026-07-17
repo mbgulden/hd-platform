@@ -36,6 +36,7 @@ class AcademyCourse(BaseModel):
     outcome: str
     modules: List[LessonModule]
     status: str
+    checkout_url: Optional[str] = None
 
 
 class AcademyTrack(BaseModel):

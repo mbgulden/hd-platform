@@ -5,7 +5,7 @@
  */
 class HdCheckout extends HTMLElement {
   static get observedAttributes() {
-    return ['mode', 'product', 'api-url', 'debug'];
+    return ['mode', 'product', 'api-url', 'debug', 'poster-image-url', 'print-file-url', 'mockup-url'];
   }
 
   constructor() {
@@ -89,6 +89,18 @@ class HdCheckout extends HTMLElement {
     return this.getAttribute('api-url') || '';
   }
 
+  get _isPosterProduct() {
+    return ['poster', 'print-poster', 'poster-print'].includes(this._product);
+  }
+
+  get _posterImageUrl() {
+    return this.getAttribute('poster-image-url') || this.getAttribute('mockup-url') || '';
+  }
+
+  get _printFileUrl() {
+    return this.getAttribute('print-file-url') || this._posterImageUrl;
+  }
+
   get _productData() {
     const map = {
       natal:    { name: 'Natal Report',           price: 19, priceId: 'price_1TjZKVKfvDG04zCAZkiCFrnL', requiresBirthData: true },
@@ -122,9 +134,16 @@ class HdCheckout extends HTMLElement {
         price: 5997,
         priceId: "price_1TjeZLKfvDG04zCAspTyCRZd",
         requiresBirthData: false
+      },
+      poster: {
+        name: "Premium Matte Poster",
+        description: "Premium matte Human Design poster printed and shipped by Printful",
+        price: 59,
+        sizes: { '12x18': 39, '18x24': 59, '24x36': 79 },
+        requiresBirthData: true
       }
     };
-    return map[this._product] || map.natal;
+    return map[this._product] || (this._isPosterProduct ? map.poster : map.natal);
   }
 
   _log(...args) {
@@ -274,6 +293,33 @@ class HdCheckout extends HTMLElement {
       .tax-notice.show { display: flex; }
       .tax-notice svg { flex-shrink: 0; }
 
+      /* ── Poster Preview ── */
+      .poster-preview {
+        display: grid;
+        grid-template-columns: 120px 1fr;
+        gap: var(--hd-space-md, 16px);
+        align-items: center;
+        border: 1px solid var(--hd-color-border);
+        border-radius: var(--hd-radius-md);
+        padding: var(--hd-space-md, 16px);
+        background: var(--hd-color-surface);
+      }
+
+      .poster-preview img {
+        width: 120px;
+        aspect-ratio: 2 / 3;
+        object-fit: cover;
+        border-radius: var(--hd-radius-sm);
+        box-shadow: var(--hd-shadow-md);
+        background: #fff;
+      }
+
+      .poster-preview p {
+        color: var(--hd-color-text-muted);
+        font-size: var(--hd-font-size-sm, 14px);
+        line-height: 1.45;
+      }
+
       /* ── Submit Button ── */
       .btn-submit {
         width: 100%;
@@ -394,9 +440,10 @@ class HdCheckout extends HTMLElement {
       }
 
       /* ── Responsive ── */
-      @media (max-width: 480px) {
+      @media (max-width: 520px) {
         .form-row { grid-template-columns: 1fr; }
         .checkout-card, .modal-card { padding: var(--hd-space-lg, 24px); }
+        .poster-preview { grid-template-columns: 1fr; }
       }
     `;
   }
@@ -421,6 +468,23 @@ class HdCheckout extends HTMLElement {
 
   _formHTML() {
     const p = this._productData;
+    const posterPreview = this._isPosterProduct ? `
+          <div class="poster-preview">
+            ${this._posterImageUrl ? `<img src="${this._posterImageUrl}" alt="Poster mockup preview">` : '<div aria-hidden="true"></div>'}
+            <div>
+              <div class="form-group">
+                <label for="hd-poster-size">Poster Size <span class="req" aria-hidden="true">*</span></label>
+                <select id="hd-poster-size" name="poster_size" required aria-required="true" aria-describedby="hd-poster-size-error">
+                  <option value="12x18">12×18 — $39</option>
+                  <option value="18x24" selected>18×24 — $59</option>
+                  <option value="24x36">24×36 — $79</option>
+                </select>
+                <span class="field-error" id="hd-poster-size-error" aria-live="polite"></span>
+              </div>
+              <p>Printed on premium matte paper and shipped directly by Printful after Stripe checkout.</p>
+            </div>
+          </div>
+    ` : '';
     return `
       <h3>Checkout</h3>
       <p class="product-label"><strong>$${p.price}</strong> — ${p.name}</p>
@@ -442,6 +506,8 @@ class HdCheckout extends HTMLElement {
               <span class="field-error" id="hd-email-error" aria-live="polite"></span>
             </div>
           </div>
+
+          ${posterPreview}
 
           <!-- Birth Date + Time + City (only if required) -->
           ${p.requiresBirthData ? `
@@ -560,6 +626,11 @@ class HdCheckout extends HTMLElement {
       });
     }
 
+    const posterSize = this._shadow.querySelector('#hd-poster-size');
+    if (posterSize) {
+      posterSize.addEventListener('change', () => this._updateTaxPrice());
+    }
+
     // Real-time validation, saving state, and input-change event dispatching
     form.querySelectorAll('input, select').forEach(field => {
       field.addEventListener('blur', () => this._validateField(field));
@@ -655,11 +726,13 @@ class HdCheckout extends HTMLElement {
     const btn = this._shadow.querySelector('.btn-submit .btn-text');
     if (!btn) return;
     const p = this._productData;
+    const posterSize = this._shadow.querySelector('#hd-poster-size');
+    const displayPrice = posterSize && p.sizes ? p.sizes[posterSize.value] || p.price : p.price;
     if (stateSelect && stateSelect.value === 'HI') {
-      const tax = (p.price * 0.04725).toFixed(2);
-      btn.textContent = `Continue to Payment — $${p.price} + $${tax} tax`;
+      const tax = (displayPrice * 0.04725).toFixed(2);
+      btn.textContent = `Continue to Payment — $${displayPrice} + $${tax} tax`;
     } else {
-      btn.textContent = `Continue to Payment — $${p.price}`;
+      btn.textContent = `Continue to Payment — $${displayPrice}`;
     }
   }
 
@@ -740,6 +813,12 @@ class HdCheckout extends HTMLElement {
       birth_city: formData.get('birth_city'),
       state: formData.get('state'),
     });
+    if (this._isPosterProduct) {
+      payload.append('poster_size', formData.get('poster_size') || '18x24');
+      if (this._posterImageUrl) payload.append('poster_image_url', this._posterImageUrl);
+      if (this._printFileUrl) payload.append('print_file_url', this._printFileUrl);
+      if (this.getAttribute('mockup-url')) payload.append('mockup_url', this.getAttribute('mockup-url'));
+    }
 
     // Add tax_line for Hawaii
     if (formData.get('state') === 'HI') {
