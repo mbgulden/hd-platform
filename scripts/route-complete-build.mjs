@@ -30,8 +30,65 @@ function routeForHtml(file) {
   return rel;
 }
 
+function injectLegacyLightTheme(contents) {
+  if (!contents.includes('<html') || contents.includes('/hde-light-theme.css')) return contents;
+  const link = '<link rel="stylesheet" href="/hde-light-theme.css">';
+  if (contents.includes('</head>')) return contents.replace('</head>', `${link}\n</head>`);
+  return link + '\n' + contents;
+}
+
+function replaceLegacyDarkInlineStyles(contents) {
+  const replacements = new Map([
+    ['#060d1a', '#FAF7F0'],
+    ['#0a1628', '#FDFBF7'],
+    ['#0f1d36', '#F6F1E7'],
+    ['#0f1428', '#FAF7F0'],
+    ['#111827', '#2F3631'],
+    ['#1f2937', '#4B514E'],
+    ['#c9a84c', '#5F7261'],
+    ['#e8e6e3', '#2F3631'],
+    ['#667eea', '#5F7261'],
+    ['#764ba2', '#2F3631'],
+    ['#a78bfa', '#5F7261'],
+    ['#8899aa', '#4B514E'],
+    ['rgba(10, 22, 40, 0.6)', 'rgba(255, 255, 255, 0.76)'],
+    ['rgba(15, 29, 54, 0.4)', 'rgba(255, 255, 255, 0.76)'],
+    ['rgba(201, 168, 76, 0.25)', 'rgba(95, 114, 97, 0.18)'],
+    ['rgba(201, 168, 76, 0.15)', 'rgba(95, 114, 97, 0.15)'],
+    ['rgba(201, 168, 76, 0.1)', 'rgba(95, 114, 97, 0.12)'],
+    ['rgba(102,126,234,0.2)', 'rgba(95,114,97,0.18)'],
+    ['rgba(102,126,234,0.12)', 'rgba(95,114,97,0.10)'],
+    ['rgba(118,75,162,0.12)', 'rgba(95,114,97,0.10)'],
+    ['rgba(118,75,162,0.25)', 'rgba(95,114,97,0.20)'],
+  ]);
+  let out = contents;
+  for (const [from, to] of replacements) {
+    out = out.replaceAll(from, to).replaceAll(from.toUpperCase(), to);
+  }
+  out = out
+    .replace(/#060d1a/gi, '#FAF7F0')
+    .replace(/#0a1628/gi, '#FDFBF7')
+    .replace(/#0f1d36/gi, '#F6F1E7')
+    .replace(/#0f1428/gi, '#FAF7F0')
+    .replace(/#111827/gi, '#2F3631')
+    .replace(/#1f2937/gi, '#4B514E')
+    .replace(/#c9a84c/gi, '#5F7261')
+    .replace(/#e8e6e3/gi, '#2F3631')
+    .replace(/#667eea/gi, '#5F7261')
+    .replace(/#764ba2/gi, '#2F3631')
+    .replace(/#a78bfa/gi, '#5F7261')
+    .replace(/#8899aa/gi, '#4B514E')
+    .replace(/rgba\(\s*10\s*,\s*22\s*,\s*40\s*,\s*[^)]+\)/gi, 'rgba(255, 255, 255, 0.76)')
+    .replace(/rgba\(\s*15\s*,\s*29\s*,\s*54\s*,\s*[^)]+\)/gi, 'rgba(255, 255, 255, 0.76)')
+    .replace(/rgba\(\s*201\s*,\s*168\s*,\s*76\s*,\s*[^)]+\)/gi, 'rgba(95, 114, 97, 0.16)')
+    .replace(/rgba\(\s*102\s*,\s*126\s*,\s*234\s*,\s*[^)]+\)/gi, 'rgba(95, 114, 97, 0.14)')
+    .replace(/rgba\(\s*118\s*,\s*75\s*,\s*162\s*,\s*[^)]+\)/gi, 'rgba(95, 114, 97, 0.14)');
+  return out;
+}
+
 function normalizeLegacyHtmlLinks(contents) {
-  return contents
+  return replaceLegacyDarkInlineStyles(injectLegacyLightTheme(contents))
+    .replaceAll('<div style="overflow-x: auto; -webkit-overflow-scrolling: touch;">', '<div style="overflow-x: auto; -webkit-overflow-scrolling: touch;" tabindex="0" role="region" aria-label="Scrollable data table">')
     .replaceAll('href="/reports"', 'href="/buy-report/"')
     .replaceAll("href='/reports'", "href='/buy-report/'")
     .replaceAll('href="/api"', 'href="/docs/"')
@@ -84,6 +141,7 @@ function copyLegacyDocs() {
     } else {
       fs.copyFileSync(src, dest);
     }
+    fs.chmodSync(dest, 0o644);
     preserved.push(rel.replaceAll(path.sep, '/'));
   }
 }
@@ -216,6 +274,19 @@ function syncFirstClassHtmlAliases() {
   return synced;
 }
 
+function normalizeBuiltHtml() {
+  let normalized = 0;
+  for (const file of walk(distDir).filter((f) => f.endsWith('.html'))) {
+    const before = fs.readFileSync(file, 'utf8');
+    const after = normalizeLegacyHtmlLinks(before);
+    if (after !== before) {
+      fs.writeFileSync(file, after);
+      normalized += 1;
+    }
+  }
+  return normalized;
+}
+
 function escapeXml(value) {
   return value
     .replaceAll('&', '&amp;')
@@ -229,6 +300,7 @@ copyLegacyDocs();
 const routeCount = writeSitemap();
 const { redirectCount, materializedRedirectCount } = writeRedirects();
 const syncedAliasCount = syncFirstClassHtmlAliases();
+const normalizedHtmlCount = normalizeBuiltHtml();
 const summary = {
   preserved_files: preserved.length,
   skipped_files: skipped.length,
@@ -236,8 +308,9 @@ const summary = {
   redirect_count: redirectCount,
   materialized_redirect_count: materializedRedirectCount,
   synced_alias_count: syncedAliasCount,
+  normalized_html_count: normalizedHtmlCount,
   dist: distDir,
 };
 fs.writeFileSync(path.join(distDir, 'route-complete-summary.json'), JSON.stringify(summary, null, 2));
-console.log(`[route-complete] preserved ${preserved.length} legacy files, generated ${routeCount} sitemap routes, ${redirectCount} redirects, ${materializedRedirectCount} redirect pages, and synced ${syncedAliasCount} first-class aliases`);
+console.log(`[route-complete] preserved ${preserved.length} legacy files, generated ${routeCount} sitemap routes, ${redirectCount} redirects, ${materializedRedirectCount} redirect pages, and synced ${syncedAliasCount} first-class aliases; normalized ${normalizedHtmlCount} built HTML files`);
 if (skipped.length) console.log(`[route-complete] skipped ${skipped.length} directory collisions`);
