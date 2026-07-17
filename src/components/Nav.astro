@@ -196,8 +196,6 @@ const launchCta = { label: 'Generate Free Reading', url: '/free-human-design-rea
       trigger.setAttribute('aria-expanded', open ? 'true' : 'false');
       if (open) {
         document.body.classList.add('drawer-open');
-        container.style.setProperty('visibility', 'visible', 'important');
-        container.style.setProperty('opacity', '1', 'important');
         if (hamburgerIcon) hamburgerIcon.style.display = 'none';
         if (closeIcon) closeIcon.style.display = 'block';
         // Focus first link inside drawer
@@ -206,8 +204,6 @@ const launchCta = { label: 'Generate Free Reading', url: '/free-human-design-rea
         }
       } else {
         document.body.classList.remove('drawer-open');
-        container.style.visibility = '';
-        container.style.opacity = '';
         if (hamburgerIcon) hamburgerIcon.style.display = 'block';
         if (closeIcon) closeIcon.style.display = 'none';
         // Return focus to trigger
