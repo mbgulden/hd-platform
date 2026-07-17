@@ -9,176 +9,6 @@ const site = 'https://humandesignengine.com';
 const preserved = [];
 const skipped = [];
 
-
-const standardShellSections = [
-  'human-design/profiles/',
-  'human-design/types/',
-  'human-design/centers/',
-  'human-design/channels/',
-  'human-design/gates/',
-  'human-design/authorities/',
-];
-
-const standardShellExact = new Set([
-  'hd-engine/free-tools/type-quiz.html',
-  'hd-engine/free-tools/gate-lookup.html',
-  'bodygraph.html',
-]);
-
-const standardHeaderHtml = `<header>
-  <div class="nav-inner">
-    <a class="nav-logo" href="/" aria-label="Human Design Engine Home">
-      <span class="nav-logo-text">Human Design<span>Engine</span></span>
-    </a>
-    <button
-      class="menu-toggle"
-      aria-expanded="false"
-      aria-controls="menu-container"
-      aria-label="Toggle menu"
-      id="menuTrigger"
-    >
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
-        <path d="M4 6h16M4 12h16M4 18h16" class="hamburger-icon"></path>
-        <path d="M6 18L18 6M6 6l12 12" class="close-icon" style="display: none;"></path>
-      </svg>
-    </button>
-    <nav aria-label="Main Navigation" id="menu-container">
-      <ul class="nav-links" id="menuLinks">
-        <li><a href="/free-human-design-reading-generator/">Free Reading</a></li>
-        <li><a href="/buy-report/">Reports</a></li>
-        <li><a href="/deconditioning/">Sanctuary</a></li>
-        <li><a href="/docs/">API</a></li>
-        <li><a href="/human-design/gates/">Learn</a></li>
-        <li><a href="/landing-sheplantedatree/">Coaching</a></li>
-      </ul>
-    </nav>
-    <a class="nav-cta" href="/free-human-design-reading-generator/">Generate Free Reading</a>
-  </div>
-</header>`;
-
-const standardFooterHtml = `<footer>
-  <div class="footer-inner">
-    <div class="footer-logo">Human Design Engine</div>
-    <div class="footer-groups" aria-label="Footer navigation">
-      <section class="footer-group" aria-labelledby="footer-start">
-        <h2 id="footer-start">Start</h2>
-        <ul>
-          <li><a href="/free-human-design-reading-generator/">Free Reading Generator</a></li>
-          <li><a href="/bodygraph.html">Bodygraph Tool</a></li>
-          <li><a href="/hd-engine/free-tools/gate-lookup.html">Gate Lookup</a></li>
-          <li><a href="/hd-engine/free-tools/type-quiz.html">Type Quiz</a></li>
-        </ul>
-      </section>
-      <section class="footer-group" aria-labelledby="footer-products">
-        <h2 id="footer-products">Products</h2>
-        <ul>
-          <li><a href="/buy-report/">Reports</a></li>
-          <li><a href="/deconditioning/">Somatic Sanctuary</a></li>
-          <li><a href="/docs/">Developer API</a></li>
-          <li><a href="/landing-sheplantedatree/">Coaching</a></li>
-        </ul>
-      </section>
-      <section class="footer-group" aria-labelledby="footer-learn">
-        <h2 id="footer-learn">Learn</h2>
-        <ul>
-          <li><a href="/human-design/gates/">Gates</a></li>
-          <li><a href="/human-design/channels/">Channels</a></li>
-          <li><a href="/human-design/centers/">Centers</a></li>
-          <li><a href="/human-design/authorities/">Authorities</a></li>
-          <li><a href="/human-design/types/">Types</a></li>
-          <li><a href="/human-design/profiles/">Profiles</a></li>
-        </ul>
-      </section>
-    </div>
-    <div class="footer-copy">© 2026 Human Design Engine. All calculations verified.</div>
-  </div>
-</footer>`;
-
-const standardShellScriptHtml = `<script>
-(function () {
-  function labelLegacyFormControls() {
-    document.querySelectorAll('select:not([aria-label]):not([aria-labelledby])').forEach(function (select) {
-      var key = (select.getAttribute('name') || select.id || select.className || 'selection').toString().trim();
-      var labels = {
-        ampm: 'AM or PM',
-        month: 'Birth month',
-        day: 'Birth day',
-        hour: 'Birth hour',
-        minute: 'Birth minute',
-        timezone: 'Birth timezone',
-        type: 'Human Design type',
-        gate: 'Human Design gate',
-        center: 'Human Design center'
-      };
-      select.setAttribute('aria-label', labels[key] || key.replace(/[-_]/g, ' ') || 'Selection');
-    });
-  }
-
-  function wireStandardMenu() {
-    document.querySelectorAll('body > header').forEach(function (header) {
-      var trigger = header.querySelector('.menu-toggle');
-      var container = header.querySelector('nav');
-      var links = header.querySelectorAll('.nav-links a');
-      if (!trigger || !container || trigger.dataset.hdeMenuReady === 'true') return;
-      trigger.dataset.hdeMenuReady = 'true';
-      var hamburgerIcon = trigger.querySelector('.hamburger-icon');
-      var closeIcon = trigger.querySelector('.close-icon');
-      function toggleMenu(open) {
-        trigger.setAttribute('aria-expanded', open ? 'true' : 'false');
-        document.body.classList.toggle('drawer-open', open);
-        container.style.setProperty('visibility', open ? 'visible' : '', open ? 'important' : '');
-        container.style.setProperty('opacity', open ? '1' : '', open ? 'important' : '');
-        if (hamburgerIcon) hamburgerIcon.style.display = open ? 'none' : 'block';
-        if (closeIcon) closeIcon.style.display = open ? 'block' : 'none';
-        if (open && links.length) links[0].focus();
-      }
-      trigger.addEventListener('click', function () {
-        toggleMenu(trigger.getAttribute('aria-expanded') !== 'true');
-      });
-      links.forEach(function (link) {
-        link.addEventListener('click', function () { toggleMenu(false); });
-      });
-      window.addEventListener('keydown', function (event) {
-        if (event.key === 'Escape' && trigger.getAttribute('aria-expanded') === 'true') toggleMenu(false);
-      });
-    });
-  }
-
-  function init() {
-    labelLegacyFormControls();
-    wireStandardMenu();
-  }
-  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', init);
-  else init();
-})();
-</script>`;
-
-function shouldUseStandardShell(rel) {
-  const normalized = rel.replaceAll(path.sep, '/');
-  return standardShellExact.has(normalized) || standardShellSections.some((prefix) => normalized.startsWith(prefix));
-}
-
-function injectStandardShell(contents, rel) {
-  if (!shouldUseStandardShell(rel)) return contents;
-  let out = contents;
-  if (!out.includes('nav-inner') || !out.includes('menuTrigger')) {
-    out = out.replace(/<nav\b[\s\S]*?<\/nav>/i, '');
-    out = out.replace(/<body([^>]*)>/i, `<body$1>\n${standardHeaderHtml}`);
-  }
-  if (!out.includes('footer-inner') || !out.includes('footer-groups')) {
-    out = out.replace(/<footer\b[\s\S]*?<\/footer>/i, '');
-    out = out.includes('</body>')
-      ? out.replace(/<\/body>/i, `${standardFooterHtml}\n${standardShellScriptHtml}\n</body>`)
-      : `${out}\n${standardFooterHtml}\n${standardShellScriptHtml}`;
-  }
-  if (out.includes('footer-inner') && !out.includes('labelLegacyFormControls')) {
-    out = out.includes('</body>')
-      ? out.replace(/<\/body>/i, `${standardShellScriptHtml}\n</body>`)
-      : `${out}\n${standardShellScriptHtml}`;
-  }
-  return out;
-}
-
 function ensureDir(dir) {
   fs.mkdirSync(dir, { recursive: true });
 }
@@ -256,8 +86,8 @@ function replaceLegacyDarkInlineStyles(contents) {
   return out;
 }
 
-function normalizeLegacyHtmlLinks(contents, rel = '') {
-  return injectStandardShell(replaceLegacyDarkInlineStyles(injectLegacyLightTheme(contents)), rel)
+function normalizeLegacyHtmlLinks(contents) {
+  return replaceLegacyDarkInlineStyles(injectLegacyLightTheme(contents))
     .replaceAll('<div style="overflow-x: auto; -webkit-overflow-scrolling: touch;">', '<div style="overflow-x: auto; -webkit-overflow-scrolling: touch;" tabindex="0" role="region" aria-label="Scrollable data table">')
     .replaceAll('href="/reports"', 'href="/buy-report/"')
     .replaceAll("href='/reports'", "href='/buy-report/'")
@@ -307,7 +137,7 @@ function copyLegacyDocs() {
     }
     ensureDir(path.dirname(dest));
     if (src.endsWith('.html')) {
-      fs.writeFileSync(dest, normalizeLegacyHtmlLinks(fs.readFileSync(src, 'utf8'), rel));
+      fs.writeFileSync(dest, normalizeLegacyHtmlLinks(fs.readFileSync(src, 'utf8')));
     } else {
       fs.copyFileSync(src, dest);
     }
@@ -448,8 +278,7 @@ function normalizeBuiltHtml() {
   let normalized = 0;
   for (const file of walk(distDir).filter((f) => f.endsWith('.html'))) {
     const before = fs.readFileSync(file, 'utf8');
-    const rel = path.relative(distDir, file);
-    const after = normalizeLegacyHtmlLinks(before, rel);
+    const after = normalizeLegacyHtmlLinks(before);
     if (after !== before) {
       fs.writeFileSync(file, after);
       normalized += 1;

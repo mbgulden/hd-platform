@@ -27,48 +27,6 @@ test.describe('HDE core page visual smoke', () => {
       if (styles.h1Bg) expect(styles.h1Bg).toBe('none');
       expect(JSON.stringify(styles)).not.toContain('rgb(102, 126, 234)');
       expect(JSON.stringify(styles)).not.toContain('rgb(118, 75, 162)');
-
-      const shell = await page.evaluate(() => {
-        const text = (el: Element | null) => el?.textContent?.replace(/\s+/g, ' ').trim() ?? '';
-        const headers = [...document.querySelectorAll('body > header')];
-        const footers = [...document.querySelectorAll('body > footer')];
-        const header = headers[0] ?? null;
-        const footer = footers[0] ?? null;
-        const menuButton = header?.querySelector<HTMLButtonElement>('.menu-toggle') ?? null;
-        const nav = header?.querySelector('nav') ?? null;
-        return {
-          headerCount: headers.length,
-          footerCount: footers.length,
-          headerText: text(header),
-          footerText: text(footer),
-          navLinkTexts: [...(header?.querySelectorAll('nav a') ?? [])].map(text),
-          footerGroupTexts: [...(footer?.querySelectorAll('.footer-group h2') ?? [])].map(text),
-          hasLegacyStandardClass: Boolean(document.querySelector('.hde-standard-header, .hde-standard-footer')),
-          hasMenuButton: Boolean(menuButton),
-          menuExpanded: menuButton?.getAttribute('aria-expanded') ?? null,
-          menuVisible: nav ? getComputedStyle(nav).visibility : null,
-        };
-      });
-      expect(shell.headerCount).toBe(1);
-      expect(shell.footerCount).toBe(1);
-      expect(shell.headerText).toContain('Human Design');
-      expect(shell.headerText).toContain('Free Reading');
-      expect(shell.navLinkTexts).toEqual(['Free Reading', 'Reports', 'Sanctuary', 'API', 'Learn', 'Coaching']);
-      expect(shell.footerText).toContain('Human Design Engine');
-      expect(shell.footerGroupTexts).toEqual(['Start', 'Products', 'Learn']);
-      expect(shell.hasLegacyStandardClass).toBe(false);
-
-      if ((page.viewportSize()?.width ?? 9999) <= 868) {
-        const button = page.locator('body > header .menu-toggle');
-        await expect(button).toBeVisible();
-        await expect(button).toHaveAttribute('aria-expanded', 'false');
-        await button.click();
-        await expect(button).toHaveAttribute('aria-expanded', 'true');
-        await expect(page.locator('body')).toHaveClass(/drawer-open/);
-        await expect(page.locator('body > header nav')).toBeVisible();
-        await page.keyboard.press('Escape');
-        await expect(button).toHaveAttribute('aria-expanded', 'false');
-      }
     });
   }
 });

@@ -1,10 +1,7 @@
 ---
 import Layout from '../layouts/Layout.astro';
-import Nav from '../components/Nav.astro';
-import Footer from '../components/Footer.astro';
 ---
 <Layout title="Free Human Design Reading Generator — Human Design Engine" description="Generate a free Human Design chart reading with verified Human Design Engine calculations.">
-  <Nav />
   <main class="free-reading-page">
     <section class="hero-section">
       <p class="eyebrow">Free Tool</p>
@@ -15,7 +12,6 @@ import Footer from '../components/Footer.astro';
       <div class="hde-chart-widget" data-api="https://api-staging.humandesignengine.com"></div>
     </section>
   </main>
-  <Footer />
   <script src="/widget.js" is:inline></script>
 </Layout>
 
