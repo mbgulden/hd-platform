@@ -16,6 +16,7 @@ const standardShellSections = [
   'human-design/centers/',
   'human-design/channels/',
   'human-design/gates/',
+  'human-design/authorities/',
 ];
 
 const standardShellExact = new Set([
@@ -24,28 +25,42 @@ const standardShellExact = new Set([
   'bodygraph.html',
 ]);
 
-const standardHeaderHtml = `<header class="hde-standard-header">
-  <div class="hde-standard-nav-inner">
-    <a class="hde-standard-logo" href="/" aria-label="Human Design Engine Home">
-      <span class="hde-standard-logo-text">Human Design <span>Engine</span></span>
+const standardHeaderHtml = `<header>
+  <div class="nav-inner">
+    <a class="nav-logo" href="/" aria-label="Human Design Engine Home">
+      <span class="nav-logo-text">Human Design<span>Engine</span></span>
     </a>
-    <nav class="hde-standard-nav" aria-label="Main Navigation">
-      <a href="/free-human-design-reading-generator/">Free Reading</a>
-      <a href="/buy-report/">Reports</a>
-      <a href="/deconditioning/">Sanctuary</a>
-      <a href="/docs/">API</a>
-      <a href="/human-design/gates/">Learn</a>
-      <a href="/landing-sheplantedatree/">Coaching</a>
+    <button
+      class="menu-toggle"
+      aria-expanded="false"
+      aria-controls="menu-container"
+      aria-label="Toggle menu"
+      id="menuTrigger"
+    >
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+        <path d="M4 6h16M4 12h16M4 18h16" class="hamburger-icon"></path>
+        <path d="M6 18L18 6M6 6l12 12" class="close-icon" style="display: none;"></path>
+      </svg>
+    </button>
+    <nav aria-label="Main Navigation" id="menu-container">
+      <ul class="nav-links" id="menuLinks">
+        <li><a href="/free-human-design-reading-generator/">Free Reading</a></li>
+        <li><a href="/buy-report/">Reports</a></li>
+        <li><a href="/deconditioning/">Sanctuary</a></li>
+        <li><a href="/docs/">API</a></li>
+        <li><a href="/human-design/gates/">Learn</a></li>
+        <li><a href="/landing-sheplantedatree/">Coaching</a></li>
+      </ul>
     </nav>
-    <a class="hde-standard-cta" href="/free-human-design-reading-generator/">Generate Free Reading</a>
+    <a class="nav-cta" href="/free-human-design-reading-generator/">Generate Free Reading</a>
   </div>
 </header>`;
 
-const standardFooterHtml = `<footer class="hde-standard-footer">
-  <div class="hde-standard-footer-inner">
-    <div class="hde-standard-footer-logo">Human Design Engine</div>
-    <div class="hde-standard-footer-groups" aria-label="Footer navigation">
-      <section class="hde-standard-footer-group" aria-labelledby="footer-start">
+const standardFooterHtml = `<footer>
+  <div class="footer-inner">
+    <div class="footer-logo">Human Design Engine</div>
+    <div class="footer-groups" aria-label="Footer navigation">
+      <section class="footer-group" aria-labelledby="footer-start">
         <h2 id="footer-start">Start</h2>
         <ul>
           <li><a href="/free-human-design-reading-generator/">Free Reading Generator</a></li>
@@ -54,7 +69,7 @@ const standardFooterHtml = `<footer class="hde-standard-footer">
           <li><a href="/hd-engine/free-tools/type-quiz.html">Type Quiz</a></li>
         </ul>
       </section>
-      <section class="hde-standard-footer-group" aria-labelledby="footer-products">
+      <section class="footer-group" aria-labelledby="footer-products">
         <h2 id="footer-products">Products</h2>
         <ul>
           <li><a href="/buy-report/">Reports</a></li>
@@ -63,7 +78,7 @@ const standardFooterHtml = `<footer class="hde-standard-footer">
           <li><a href="/landing-sheplantedatree/">Coaching</a></li>
         </ul>
       </section>
-      <section class="hde-standard-footer-group" aria-labelledby="footer-learn">
+      <section class="footer-group" aria-labelledby="footer-learn">
         <h2 id="footer-learn">Learn</h2>
         <ul>
           <li><a href="/human-design/gates/">Gates</a></li>
@@ -75,7 +90,7 @@ const standardFooterHtml = `<footer class="hde-standard-footer">
         </ul>
       </section>
     </div>
-    <div class="hde-standard-footer-copy">© 2026 Human Design Engine. All rights reserved.</div>
+    <div class="footer-copy">© 2026 Human Design Engine. All calculations verified.</div>
   </div>
 </footer>`;
 
@@ -98,8 +113,43 @@ const standardShellScriptHtml = `<script>
       select.setAttribute('aria-label', labels[key] || key.replace(/[-_]/g, ' ') || 'Selection');
     });
   }
-  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', labelLegacyFormControls);
-  else labelLegacyFormControls();
+
+  function wireStandardMenu() {
+    document.querySelectorAll('body > header').forEach(function (header) {
+      var trigger = header.querySelector('.menu-toggle');
+      var container = header.querySelector('nav');
+      var links = header.querySelectorAll('.nav-links a');
+      if (!trigger || !container || trigger.dataset.hdeMenuReady === 'true') return;
+      trigger.dataset.hdeMenuReady = 'true';
+      var hamburgerIcon = trigger.querySelector('.hamburger-icon');
+      var closeIcon = trigger.querySelector('.close-icon');
+      function toggleMenu(open) {
+        trigger.setAttribute('aria-expanded', open ? 'true' : 'false');
+        document.body.classList.toggle('drawer-open', open);
+        container.style.setProperty('visibility', open ? 'visible' : '', open ? 'important' : '');
+        container.style.setProperty('opacity', open ? '1' : '', open ? 'important' : '');
+        if (hamburgerIcon) hamburgerIcon.style.display = open ? 'none' : 'block';
+        if (closeIcon) closeIcon.style.display = open ? 'block' : 'none';
+        if (open && links.length) links[0].focus();
+      }
+      trigger.addEventListener('click', function () {
+        toggleMenu(trigger.getAttribute('aria-expanded') !== 'true');
+      });
+      links.forEach(function (link) {
+        link.addEventListener('click', function () { toggleMenu(false); });
+      });
+      window.addEventListener('keydown', function (event) {
+        if (event.key === 'Escape' && trigger.getAttribute('aria-expanded') === 'true') toggleMenu(false);
+      });
+    });
+  }
+
+  function init() {
+    labelLegacyFormControls();
+    wireStandardMenu();
+  }
+  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', init);
+  else init();
 })();
 </script>`;
 
@@ -111,17 +161,17 @@ function shouldUseStandardShell(rel) {
 function injectStandardShell(contents, rel) {
   if (!shouldUseStandardShell(rel)) return contents;
   let out = contents;
-  if (!out.includes('hde-standard-header')) {
+  if (!out.includes('nav-inner') || !out.includes('menuTrigger')) {
     out = out.replace(/<nav\b[\s\S]*?<\/nav>/i, '');
     out = out.replace(/<body([^>]*)>/i, `<body$1>\n${standardHeaderHtml}`);
   }
-  if (!out.includes('hde-standard-footer')) {
+  if (!out.includes('footer-inner') || !out.includes('footer-groups')) {
     out = out.replace(/<footer\b[\s\S]*?<\/footer>/i, '');
     out = out.includes('</body>')
       ? out.replace(/<\/body>/i, `${standardFooterHtml}\n${standardShellScriptHtml}\n</body>`)
       : `${out}\n${standardFooterHtml}\n${standardShellScriptHtml}`;
   }
-  if (out.includes('hde-standard-footer') && !out.includes('labelLegacyFormControls')) {
+  if (out.includes('footer-inner') && !out.includes('labelLegacyFormControls')) {
     out = out.includes('</body>')
       ? out.replace(/<\/body>/i, `${standardShellScriptHtml}\n</body>`)
       : `${out}\n${standardShellScriptHtml}`;
