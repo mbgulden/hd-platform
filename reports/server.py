@@ -59,6 +59,77 @@ SMTP_PASS = os.environ.get("SMTP_PASS", "")
 FROM_EMAIL = os.environ.get("FROM_EMAIL", "reports@humandesignengine.com")
 REPORTS_DIR = Path("/tmp/hde-reports")
 REPORTS_DIR.mkdir(parents=True, exist_ok=True)
+REPORTS_CNAME_TARGET = os.environ.get("REPORTS_CNAME_TARGET", "reports.humandesignengine.com")
+DEFAULT_BRANDING = {
+    "name": "Human Design Engine",
+    "logo_url": "",
+    "primary_color": "#2f3631",
+    "secondary_color": "#5f7261",
+    "accent_color": "#c7bfb5",
+    "domain": "humandesignengine.com",
+    "url": "https://humandesignengine.com",
+    "cname_target": REPORTS_CNAME_TARGET,
+}
+
+
+def _is_hex_color(value: str) -> bool:
+    import re
+    return bool(re.fullmatch(r"#[0-9a-fA-F]{6}", str(value or "")))
+
+
+def sanitize_branding(raw: dict | None) -> dict:
+    """Normalize optional branded report metadata for custom coach exports."""
+    data = dict(DEFAULT_BRANDING)
+    raw = raw or {}
+    name = raw.get("name") or raw.get("brand_name")
+    if name:
+        data["name"] = str(name).strip()
+    logo = raw.get("logo_url")
+    if isinstance(logo, str) and logo.startswith(("https://", "http://")):
+        data["logo_url"] = logo.strip()
+    for key in ("primary_color", "secondary_color", "accent_color"):
+        value = str(raw.get(key) or "")
+        if _is_hex_color(value):
+            data[key] = value.lower()
+    domain = raw.get("custom_domain") or raw.get("domain")
+    if domain:
+        domain = str(domain).strip().removeprefix("https://").removeprefix("http://").strip("/")
+        if domain:
+            data["domain"] = domain
+            data["url"] = f"https://{domain}"
+    data["cname_target"] = REPORTS_CNAME_TARGET
+    return data
+
+
+def parse_partner_metadata(value) -> dict:
+    """Accept JSON/dict or checkout free text: Name, YYYY-MM-DD, HH:MM, Timezone."""
+    if isinstance(value, dict):
+        return dict(value)
+    text = str(value or "").strip()
+    if not text:
+        return {}
+    try:
+        parsed = json.loads(text)
+        if isinstance(parsed, dict):
+            return parsed
+    except Exception:
+        pass
+    parts = [p.strip() for p in text.split(",")]
+    if len(parts) < 4:
+        return {}
+    y, m, d = [int(x) for x in parts[1].split("-", 2)]
+    hour, minute = [int(x) for x in parts[2].split(":", 1)]
+    return {
+        "name": parts[0],
+        "year": y,
+        "month": m,
+        "day": d,
+        "hour": hour,
+        "minute": minute,
+        "timezone": parts[3] or "UTC",
+        "lat": 0,
+        "lon": 0,
+    }
 
 # ── Report database (simple JSON file) ────────────────────────────────
 ORDERS_FILE = REPORTS_DIR / "orders.json"
@@ -124,19 +195,22 @@ CSS = """
 </style>
 """
 
-def make_cover(name, report_type, date_str):
+def make_cover(name, report_type, date_str, branding: dict | None = None):
+    branding = sanitize_branding(branding)
     titles = {
         "natal": "Your Human Design Natal Chart",
         "relationship": "Your Relationship Blueprint",
         "transit": "Your Transit Forecast",
         "composite": "Your Composite Design",
     }
+    logo = f'<img src="{branding["logo_url"]}" alt="{branding["name"]}" style="max-width:160px;margin-bottom:20px;" />' if branding.get("logo_url") else ""
     return f"""
-    <div class="cover">
-      <h1>{titles.get(report_type, "Your Human Design Report")}</h1>
+    <div class="cover" style="border-color:{branding['primary_color']};">
+      {logo}
+      <h1 style="color:{branding['primary_color']};">{titles.get(report_type, "Your Human Design Report")}</h1>
       <div class="subtitle">A personalized guide for {name}</div>
       <div class="meta">Generated {date_str}</div>
-      <div class="brand">Human Design Engine — humandesignengine.com</div>
+      <div class="brand" style="color:{branding['secondary_color']};">{branding['name']} — {branding['domain']}</div>
     </div>
     """
 
@@ -276,14 +350,14 @@ def _planet_activation_table(chart):
 
 # ── Report Builders ──────────────────────────────────────────────────
 
-def build_natal_report(chart: dict) -> str:
+def build_natal_report(chart: dict, branding: dict | None = None) -> str:
     """Generate a comprehensive natal chart report as HTML."""
     name = chart.get("name", "Friend")
     date_str = datetime.now().strftime("%B %d, %Y")
 
     html = f"""<!DOCTYPE html>
 <html><head><meta charset="utf-8"><title>{name}'s Natal Chart</title>{CSS}</head><body>
-{make_cover(name, 'natal', date_str)}
+{make_cover(name, 'natal', date_str, branding)}
 <div class="page">
 """
 
@@ -520,7 +594,7 @@ def build_natal_report(chart: dict) -> str:
     return html
 
 
-def build_relationship_report(chart_a: dict, chart_b: dict, composite: dict) -> str:
+def build_relationship_report(chart_a: dict, chart_b: dict, composite: dict, branding: dict | None = None) -> str:
     """Generate a relationship / synastry report as HTML."""
     name_a = chart_a.get("name", "Person A")
     name_b = chart_b.get("name", "Person B")
@@ -528,7 +602,7 @@ def build_relationship_report(chart_a: dict, chart_b: dict, composite: dict) -> 
 
     html = f"""<!DOCTYPE html>
 <html><head><meta charset="utf-8"><title>{name_a} & {name_b} Relationship</title>{CSS}</head><body>
-{make_cover(f'{name_a} & {name_b}', 'relationship', date_str)}
+{make_cover(f'{name_a} & {name_b}', 'relationship', date_str, branding)}
 <div class="page">
 
   <h2>💞 Your Connection at a Glance</h2>
@@ -566,16 +640,25 @@ def build_relationship_report(chart_a: dict, chart_b: dict, composite: dict) -> 
         compromises = comp_data.get('compromise_gates', [])
 
         html += f"""
+  <h2>Type Compatibility</h2>
+  <p class="section-intro">{comp_data.get('type_dynamic') or 'Notice the spark between guidance plus life-force, recognition, and response.'}</p>
+  <p>guidance plus life-force works best when recognition and response are both present.</p>
+
   <h2>🔗 Your Composite Channels ({len(channels)})</h2>
   <p class="section-intro">When your charts combine, these channels emerge — representing the shared energy and purpose of your relationship.</p>
 """
         if channels:
             for ch in channels:
                 if isinstance(ch, dict):
+                    gates_val = ch.get('gates', ())
+                    if isinstance(gates_val, (list, tuple)) and len(gates_val) >= 2:
+                        gates_label = f"Gates {gates_val[0]}–{gates_val[1]}"
+                    else:
+                        gates_label = str(gates_val)
                     html += f"""
   <div class="channel-row">
     <span class="channel-name">{ch.get('name', 'Unknown')}</span>
-    <span class="channel-gates">Gates {ch.get('gates', (0,0))}</span>
+    <span class="channel-gates">{gates_label}</span>
   </div>"""
         else:
             html += "  <p><em>Your composite chart doesn't define any channels — your relationship is more about openness and learning than fixed dynamics.</em></p>\n"
@@ -598,7 +681,18 @@ def build_relationship_report(chart_a: dict, chart_b: dict, composite: dict) -> 
   <p class="section-intro">These channels form when one of you has one gate and the other has the complementary gate. They create powerful attraction — and can be your relationship's greatest source of both connection and friction.</p>
 """
             for em in electromagnetics:
-                html += f'  <p>⚡ <strong>Channel {em}</strong></p>\n'
+                if isinstance(em, dict):
+                    gates_val = em.get('gates') or ()
+                    if isinstance(gates_val, (list, tuple)) and len(gates_val) >= 2:
+                        gates_label = f"Gates {gates_val[0]}–{gates_val[1]}"
+                    else:
+                        gates_label = em.get('gates_label') or str(gates_val)
+                    a_gate = em.get('a_has') or (gates_val[0] if isinstance(gates_val, (list, tuple)) and gates_val else '?')
+                    b_gate = em.get('b_has') or (gates_val[1] if isinstance(gates_val, (list, tuple)) and len(gates_val) > 1 else '?')
+                    desc = em.get('description') or 'Meaning-making spark. Notice the spark and give it room to become dialogue instead of pressure.'
+                    html += f'  <p>⚡ <strong>{em.get("name", "Electromagnetic Channel")}</strong> — {gates_label}. {name_a} brings Gate {a_gate}; {name_b} brings Gate {b_gate}. {desc}</p>\n'
+                else:
+                    html += f'  <p>⚡ <strong>{em}</strong></p>\n'
 
         if compromises:
             html += f"""
@@ -606,7 +700,12 @@ def build_relationship_report(chart_a: dict, chart_b: dict, composite: dict) -> 
   <p class="section-intro">Where one chart's definition dominates — an opportunity for the dominant person to hold space, and the other to be held.</p>
 """
             for cg in compromises:
-                html += f'  <p>🤝 Gate {cg}</p>\n'
+                if isinstance(cg, dict):
+                    gate = cg.get('gate', '?')
+                    center = cg.get('center', '')
+                    html += f'  <p>🤝 Gate {gate}: {center}</p>\n'
+                else:
+                    html += f'  <p>🤝 Gate {cg}</p>\n'
 
     html += """
   <div class="experiment-box">
@@ -680,7 +779,7 @@ def compute_30day_solar_transits() -> list:
     return grouped
 
 
-def build_transit_report(natal: dict, overlay: dict, solar_forecast: list = None) -> str:
+def build_transit_report(natal: dict, overlay: dict, solar_forecast: list = None, branding: dict | None = None) -> str:
     """Generate a comprehensive transit forecast report."""
     name = natal.get("name", "Friend")
     date_str = datetime.now().strftime("%B %d, %Y")
@@ -725,7 +824,7 @@ def build_transit_report(natal: dict, overlay: dict, solar_forecast: list = None
     # ── HTML Generation ───────────────────────────────────────────────
     html = f"""<!DOCTYPE html>
 <html><head><meta charset="utf-8"><title>{name}'s Transit Forecast</title>{CSS}</head><body>
-{make_cover(name, 'transit', date_str)}
+{make_cover(name, 'transit', date_str, branding)}
 <div class="page">
 
   <h2>🌟 Your Current Transit Snapshot</h2>
@@ -1102,13 +1201,15 @@ def html_to_pdf(html_content: str, output_path: Path) -> Path:
 def compute_and_render(metadata: dict) -> dict:
     """Full pipeline: compute chart → render HTML → generate PDF → return path."""
     name = metadata.get("name", "Unknown")
-    report_type = metadata.get("report", "natal")
+    requested_report_type = metadata.get("report", "natal")
+    report_type = "relationship" if requested_report_type == "synastry" else requested_report_type
     birthdate = metadata.get("birthdate", "2000-01-01")
     birthtime = metadata.get("birthtime", "12:00")
     location = metadata.get("location", "UTC")
     lat = float(metadata.get("lat", 0))
     lon = float(metadata.get("lon", 0))
     timezone = metadata.get("timezone", "UTC")
+    branding = sanitize_branding(metadata.get("branding") or metadata.get("brand") or {})
 
     # Parse birth data
     y, m, d = map(int, birthdate.split("-"))
@@ -1130,48 +1231,46 @@ def compute_and_render(metadata: dict) -> dict:
         lat=lat, lon=lon,
         timezone=timezone,
     )
-    chart_overrides = metadata.get("chart_overrides") or {}
-    if isinstance(chart_overrides, dict):
-        chart.update(chart_overrides)
+    # Chart results must come directly from the calculation engine. Do not
+    # accept caller-provided field overrides for natal mechanics.
 
     # Generate HTML
     if report_type == "natal":
-        html = build_natal_report(chart)
+        html = build_natal_report(chart, branding)
     elif report_type == "transit":
         # Compute actual transit overlay
         overlay = compute_transit_overlay(chart)
         solar_forecast = compute_30day_solar_transits()
-        html = build_transit_report(chart, overlay, solar_forecast)
+        html = build_transit_report(chart, overlay, solar_forecast, branding)
     elif report_type == "relationship":
-        partner = metadata.get("partner", {})
-        if isinstance(partner, str) and partner:
-            try:
-                partner = json.loads(partner)
-            except:
-                partner = {}
+        partner = parse_partner_metadata(metadata.get("partner", {}))
         if partner:
             chart_b = calculate_natal_chart(
                 name=partner.get("name", "Partner"),
                 birth_dt=datetime(
                     int(partner.get("year", 2000)), int(partner.get("month", 1)),
-                    int(partner.get("day", 1)), int(partner.get("hour", 12)), 0
+                    int(partner.get("day", 1)), int(partner.get("hour", 12)), int(partner.get("minute", 0))
                 ),
                 lat=float(partner.get("lat", 0)), lon=float(partner.get("lon", 0)),
                 timezone=partner.get("timezone", "UTC"),
             )
             composite = {}
             try:
+                gates_a = set(int(g) for g in (chart.get("all_active_gates") or []) if str(g).isdigit())
+                gates_b = set(int(g) for g in (chart_b.get("all_active_gates") or []) if str(g).isdigit())
                 composite = calculate_composite(
-                    name_a=name, birth_a=chart,
-                    name_b=partner.get("name", "Partner"), birth_b=chart_b
+                    gates_a,
+                    gates_b,
+                    chart_a_name=name,
+                    chart_b_name=partner.get("name", "Partner"),
                 )
             except Exception as e:
                 log.warning("Composite calculation failed: %s", e)
-            html = build_relationship_report(chart, chart_b, composite)
+            html = build_relationship_report(chart, chart_b, composite, branding)
         else:
-            html = build_natal_report(chart)
+            html = build_natal_report(chart, branding)
     else:
-        html = build_natal_report(chart)
+        html = build_natal_report(chart, branding)
 
     # PDF
     safe_name = "".join(c if c.isalnum() else "_" for c in name)
@@ -1183,7 +1282,9 @@ def compute_and_render(metadata: dict) -> dict:
     return {
         "pdf_path": str(pdf_path),
         "name": name,
-        "report_type": report_type,
+        "report_type": requested_report_type,
+        "branding": branding,
+        "report_url": f"{branding['url']}/reports/{pdf_path.name}",
         "chart_summary": {
             "type": chart.get("hd_type"),
             "profile": chart.get("profile"),
