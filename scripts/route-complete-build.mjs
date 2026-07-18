@@ -9,6 +9,97 @@ const site = 'https://humandesignengine.com';
 const preserved = [];
 const skipped = [];
 
+const emdashShellStyles = `
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/hde-light-theme.css">
+`;
+
+const emdashHeaderHtml = `<header class="emdash-site-header">
+  <div class="nav-inner">
+    <a class="nav-logo" href="/" aria-label="Human Design Engine Home">
+      <span class="nav-logo-text">Human Design<span>Engine</span></span>
+    </a>
+    <button class="menu-toggle" aria-expanded="false" aria-controls="menu-container" aria-label="Toggle menu" id="menuTrigger">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+        <path d="M4 6h16M4 12h16M4 18h16" class="hamburger-icon"></path>
+        <path d="M6 18L18 6M6 6l12 12" class="close-icon" style="display: none;"></path>
+      </svg>
+    </button>
+    <nav aria-label="Main Navigation" id="menu-container">
+      <ul class="nav-links" id="menuLinks">
+        <li><a href="/free-human-design-reading-generator/">Free Reading</a></li>
+        <li><a href="/buy-report/">Reports</a></li>
+        <li><a href="/deconditioning/">Sanctuary</a></li>
+        <li><a href="/docs/">API</a></li>
+        <li><a href="/human-design/gates/">Learn</a></li>
+        <li><a href="/landing-sheplantedatree/">Coaching</a></li>
+      </ul>
+    </nav>
+    <a class="nav-cta" href="/free-human-design-reading-generator/">Generate Free Reading</a>
+  </div>
+</header>`;
+
+const emdashFooterHtml = `<footer class="emdash-site-footer">
+  <div class="footer-inner">
+    <div class="footer-logo">Human Design Engine</div>
+    <div class="footer-groups" aria-label="Footer navigation">
+      <section class="footer-group" aria-labelledby="footer-start">
+        <h2 id="footer-start">Start</h2>
+        <ul>
+          <li><a href="/free-human-design-reading-generator/">Free Reading Generator</a></li>
+          <li><a href="/bodygraph.html">Bodygraph Tool</a></li>
+          <li><a href="/hd-engine/free-tools/gate-lookup.html">Gate Lookup</a></li>
+          <li><a href="/hd-engine/free-tools/type-quiz.html">Type Quiz</a></li>
+        </ul>
+      </section>
+      <section class="footer-group" aria-labelledby="footer-products">
+        <h2 id="footer-products">Products</h2>
+        <ul>
+          <li><a href="/buy-report/">Reports</a></li>
+          <li><a href="/deconditioning/">Somatic Sanctuary</a></li>
+          <li><a href="/docs/">Developer API</a></li>
+          <li><a href="/landing-sheplantedatree/">Coaching</a></li>
+        </ul>
+      </section>
+      <section class="footer-group" aria-labelledby="footer-learn">
+        <h2 id="footer-learn">Learn</h2>
+        <ul>
+          <li><a href="/human-design/gates/">Gates</a></li>
+          <li><a href="/human-design/channels/">Channels</a></li>
+          <li><a href="/human-design/centers/">Centers</a></li>
+          <li><a href="/human-design/authorities/">Authorities</a></li>
+          <li><a href="/human-design/types/">Types</a></li>
+          <li><a href="/human-design/profiles/">Profiles</a></li>
+        </ul>
+      </section>
+    </div>
+    <div class="footer-copy">© 2026 Human Design Engine. All calculations verified.</div>
+  </div>
+</footer>`;
+
+const emdashShellScriptHtml = `<script>
+(() => {
+  const trigger = document.getElementById('menuTrigger');
+  const links = document.querySelectorAll('#menuLinks a');
+  if (!trigger) return;
+  const hamburgerIcon = trigger.querySelector('.hamburger-icon');
+  const closeIcon = trigger.querySelector('.close-icon');
+  const toggleMenu = (open) => {
+    trigger.setAttribute('aria-expanded', open ? 'true' : 'false');
+    document.body.classList.toggle('drawer-open', open);
+    if (hamburgerIcon) hamburgerIcon.style.display = open ? 'none' : 'block';
+    if (closeIcon) closeIcon.style.display = open ? 'block' : 'none';
+  };
+  trigger.addEventListener('click', () => toggleMenu(trigger.getAttribute('aria-expanded') !== 'true'));
+  links.forEach((link) => link.addEventListener('click', () => toggleMenu(false)));
+  window.addEventListener('keydown', (event) => {
+    if (event.key === 'Escape') toggleMenu(false);
+  });
+})();
+</script>`;
+
 function ensureDir(dir) {
   fs.mkdirSync(dir, { recursive: true });
 }
@@ -87,7 +178,11 @@ function replaceLegacyDarkInlineStyles(contents) {
 }
 
 function normalizeLegacyHtmlLinks(contents) {
-  return replaceLegacyDarkInlineStyles(injectLegacyLightTheme(contents))
+  return applyEmdashLegacyShell(replaceLegacyDarkInlineStyles(injectLegacyLightTheme(contents)))
+    .replaceAll('<input id="agree" required type="checkbox"/>', '<input id="agree" required type="checkbox" aria-label="Agree to the Affiliate Terms"/>')
+    .replaceAll('<input id="agree" required="" type="checkbox">', '<input id="agree" required="" type="checkbox" aria-label="Agree to the Affiliate Terms">')
+    .replaceAll('<input id="agree" required="" type="checkbox"/>', '<input id="agree" required="" type="checkbox" aria-label="Agree to the Affiliate Terms"/>')
+    .replaceAll('<label>I agree to the <a href="#">Affiliate Terms</a>.', '<label for="agree">I agree to the <a href="#">Affiliate Terms</a>.')
     .replaceAll('<div style="overflow-x: auto; -webkit-overflow-scrolling: touch;">', '<div style="overflow-x: auto; -webkit-overflow-scrolling: touch;" tabindex="0" role="region" aria-label="Scrollable data table">')
     .replaceAll('href="/reports"', 'href="/buy-report/"')
     .replaceAll("href='/reports'", "href='/buy-report/'")
@@ -117,6 +212,29 @@ function normalizeLegacyHtmlLinks(contents) {
       if (route.endsWith('.html')) return match;
       return `href='${route}.html'`;
     });
+}
+
+function applyEmdashLegacyShell(contents) {
+  if (!contents.includes('<html') || !contents.includes('<body')) return contents;
+  let out = contents;
+  if (!out.includes('fonts.googleapis.com/css2?family=Outfit')) {
+    out = out.includes('</head>') ? out.replace('</head>', `${emdashShellStyles}</head>`) : `${emdashShellStyles}${out}`;
+  }
+  // Legacy copied HTML is not Astro, but it still uses the same generated shell contract.
+  // Remove each page's old navigation/footer block so one template controls the site chrome.
+  out = out.replace(/<!--\s*NAV\s*-->\s*<nav\b[\s\S]*?<\/nav>\s*/gi, '');
+  out = out.replace(/<body([^>]*)>\s*<nav\b[\s\S]*?<\/nav>\s*/i, '<body$1>');
+  out = out.replace(/<body([^>]*)>/i, '<body$1 class="emdash-legacy-shell">');
+  if (!out.includes('emdash-site-header')) {
+    out = out.replace(/<body([^>]*)>/i, `<body$1>\n${emdashHeaderHtml}\n`);
+  }
+  if (!out.includes('emdash-site-footer')) {
+    out = out.replace(/<footer\b[\s\S]*?<\/footer>\s*(?=<\/body>)/i, '');
+    out = out.includes('</body>')
+      ? out.replace(/<\/body>/i, `${emdashFooterHtml}\n${emdashShellScriptHtml}\n</body>`)
+      : `${out}\n${emdashFooterHtml}\n${emdashShellScriptHtml}`;
+  }
+  return out;
 }
 
 function copyLegacyDocs() {

@@ -1,4 +1,7 @@
 ---
+import Nav from '../components/Nav.astro';
+import Footer from '../components/Footer.astro';
+
 interface Props {
   title: string;
   description?: string;
@@ -73,7 +76,9 @@ const canonicalUrl = new URL(Astro.url.pathname, Astro.site ?? 'https://humandes
     }
   </style>
 </head>
-<body>
+<body class="emdash-site-shell">
+  <Nav />
   <slot />
+  <Footer />
 </body>
 </html>
