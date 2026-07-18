@@ -2,10 +2,34 @@
 interface Props {
   title: string;
   description?: string;
+  ogImage?: string;
+  ogImageAlt?: string;
+  ogType?: 'website' | 'article' | 'product';
+  section?: 'home' | 'free-reading' | 'reports' | 'sanctuary' | 'developers' | 'checkout';
 }
 
-const { title, description = "Access verifiable Human Design calculations, download premium reports, and explore somatic tools built to return you to your true body signature." } = Astro.props;
-const canonicalUrl = new URL(Astro.url.pathname, Astro.site ?? 'https://humandesignengine.com').toString();
+const defaultDescription = "Access verifiable Human Design calculations, download premium reports, and explore somatic tools built to return you to your true body signature.";
+const siteOrigin = Astro.site ?? 'https://humandesignengine.com';
+const sectionSocialImages = {
+  home: '/somatic_mandala.png',
+  'free-reading': '/somatic_mandala.png',
+  reports: '/somatic_mandala.png',
+  sanctuary: '/somatic_mandala.png',
+  developers: '/somatic_mandala.png',
+  checkout: '/somatic_mandala.png'
+} as const;
+
+const {
+  title,
+  description = defaultDescription,
+  ogImage,
+  ogImageAlt = 'Human Design Engine somatic mandala social preview',
+  ogType = 'website',
+  section = 'home'
+} = Astro.props;
+const canonicalUrl = new URL(Astro.url.pathname, siteOrigin).toString();
+const selectedOgImage = ogImage ?? sectionSocialImages[section] ?? sectionSocialImages.home;
+const socialImageUrl = new URL(selectedOgImage, siteOrigin).toString();
 ---
 
 <!DOCTYPE html>
@@ -19,8 +43,19 @@ const canonicalUrl = new URL(Astro.url.pathname, Astro.site ?? 'https://humandes
   <meta property="og:title" content={title}/>
   <meta property="og:description" content={description}/>
   <meta property="og:url" content={canonicalUrl}/>
-  <meta property="og:type" content="website"/>
+  <meta property="og:type" content={ogType}/>
+  <meta property="og:site_name" content="Human Design Engine"/>
+  <meta property="og:image" content={socialImageUrl}/>
+  <meta property="og:image:secure_url" content={socialImageUrl}/>
+  <meta property="og:image:alt" content={ogImageAlt}/>
+  <meta property="og:image:type" content="image/png"/>
+  <meta property="og:image:width" content="1024"/>
+  <meta property="og:image:height" content="1024"/>
   <meta name="twitter:card" content="summary_large_image"/>
+  <meta name="twitter:title" content={title}/>
+  <meta name="twitter:description" content={description}/>
+  <meta name="twitter:image" content={socialImageUrl}/>
+  <meta name="twitter:image:alt" content={ogImageAlt}/>
   
   <!-- Modern Typography -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
