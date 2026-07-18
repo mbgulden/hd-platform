@@ -41,8 +41,8 @@ const emdashHeaderHtml = `<header class="emdash-site-header">
   </div>
 </header>`;
 
-const emdashFooterHtml = `<footer class="emdash-site-footer">
-  <div class="footer-inner">
+const emdashFooterHtml = `<footer class="emdash-site-footer" style="text-align: left;">
+  <div class="footer-inner" style="text-align: left; justify-items: start;">
     <div class="footer-logo">Human Design Engine</div>
     <div class="footer-groups" aria-label="Footer navigation">
       <section class="footer-group" aria-labelledby="footer-start">
