@@ -29,9 +29,16 @@ test.describe('local route flows', () => {
       await route.fulfill({ status: 200, contentType: 'text/html', body: '<h1>Stripe checkout</h1>' });
     });
 
+    const events: Array<{ name: string; detail: Record<string, unknown> }> = [];
+    let sawRedirect: (value: void) => void;
+    const redirectEvent = new Promise<void>((resolve) => { sawRedirect = resolve; });
+    await page.exposeFunction('recordHdeCheckoutEvent', (event: { name: string; detail: Record<string, unknown> }) => {
+      events.push(event);
+      if (event.name === 'checkout_stripe_redirect') sawRedirect();
+    });
+
     await page.goto('/buy-report/');
     await page.evaluate(() => {
-      (window as any).__hdeEvents = [];
       for (const name of [
         'checkout_report_selected',
         'checkout_cta_clicked',
@@ -40,7 +47,7 @@ test.describe('local route flows', () => {
         'checkout_stripe_redirect',
       ]) {
         window.addEventListener(`hde:${name}`, (event) => {
-          (window as any).__hdeEvents.push({ name, detail: (event as CustomEvent).detail });
+          (window as any).recordHdeCheckoutEvent({ name, detail: (event as CustomEvent).detail });
         });
       }
     });
@@ -53,19 +60,18 @@ test.describe('local route flows', () => {
     await page.locator('#location').fill('London, UK');
 
     await Promise.all([
-      page.waitForFunction(() => (window as any).__hdeEvents?.some((event: any) => event.name === 'checkout_stripe_redirect')),
+      redirectEvent,
       page.locator('#buyBtn').click(),
     ]);
 
-    const events = await page.evaluate(() => (window as any).__hdeEvents);
-    expect(events.map((event: any) => event.name)).toEqual([
+    expect(events.map((event) => event.name)).toEqual([
       'checkout_report_selected',
       'checkout_cta_clicked',
       'checkout_session_create_started',
       'checkout_session_created',
       'checkout_stripe_redirect',
     ]);
-    expect(events.at(-1).detail).toMatchObject({
+    expect(events.at(-1)?.detail).toMatchObject({
       funnel: 'report_checkout',
       report: 'bundle',
       checkout_session_id: 'cs_test_funnel_123',
