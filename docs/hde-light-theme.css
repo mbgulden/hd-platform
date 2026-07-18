@@ -378,6 +378,15 @@ footer [class*="muted"] {
     align-items: center !important;
     z-index: 105 !important;
   }
+  body.drawer-open::before {
+    content: '' !important;
+    position: fixed !important;
+    inset: 0 !important;
+    z-index: 99 !important;
+    background: linear-gradient(180deg, #FAF7F0 0%, #F6F1E7 100%) !important;
+    opacity: 1 !important;
+    pointer-events: none !important;
+  }
   body.drawer-open .emdash-site-header nav {
     opacity: 1 !important;
     visibility: visible !important;
@@ -419,7 +428,7 @@ footer.emdash-site-footer * {
   gap: 10px !important;
   width: 100% !important;
   max-width: 1200px !important;
-  margin: 0 auto 28px !important;
+  margin: 24px auto 28px !important;
   padding: 12px 0 !important;
   text-align: left !important;
   color: #4B514E !important;
@@ -476,7 +485,7 @@ footer.emdash-site-footer * {
 }
 .option-btn,
 .quiz-container .option-btn {
-  background: rgba(255, 255, 255, 0.82) !important;
+  background: #FFFFFF !important;
   border-color: rgba(95, 114, 97, 0.24) !important;
   color: #2F3631 !important;
 }
