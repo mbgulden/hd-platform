@@ -79,10 +79,10 @@ Blocking before broad production launch:
 2. One real Telegram click-through from `/sanctuary-demo/` must prove the `hde_demo_` deep link is accepted by the router.
 3. One real container provisioning test must prove the demo account gets a private guide space and demo prompt context.
 4. One paid-upgrade continuity test must prove the same paused/demo space wakes instead of losing continuity. Do not complete live Stripe payment without explicit approval.
-5. Add Cloudflare/WAF or equivalent edge rate limiting before making the door public; in-process rate limiting is a seatbelt, not a roll cage.
-6. Reminder messaging must be implemented or explicitly deferred: day 7, day 12, expiry, and pre-deletion warning.
+5. Add Cloudflare/WAF or equivalent edge rate limiting before making the door public; in-process rate limiting is a seatbelt, not a roll cage. Staging evidence is recorded in `.runtime/demo_edge_rate_limit.json` after the Cloudflare rule is verified.
+6. Reminder messaging must be implemented or explicitly deferred: day 7, day 12, expiry, and pre-deletion warning. Staging uses `scripts/hde_demo_reminders.py` plus `hde_demo_reminders_staging.timer`.
 
-Run `scripts/hde_demo_production_gate.py` before production. It intentionally returns `BLOCKED` until those live/human proof artifacts are present.
+Run `scripts/hde_demo_production_gate.py` before production. It intentionally returns `BLOCKED` until live/human proof artifacts are present, while machine-checkable timer/rate-limit/reminder gates can pass from installed staging evidence.
 
 ## Nice-to-have management/governance checklist
 
