@@ -398,7 +398,11 @@ footer [class*="muted"] {
     width: 100% !important;
     text-align: center !important;
   }
-  .emdash-site-header .nav-links a { font-size: 1.25rem !important; }
+  .emdash-site-header .nav-links a {
+    font-size: 1.25rem !important;
+    color: #2F3631 !important;
+    -webkit-text-fill-color: #2F3631 !important;
+  }
   .emdash-site-header .nav-cta { display: none !important; }
   .emdash-site-footer .footer-inner,
   .emdash-site-footer .footer-groups { grid-template-columns: 1fr !important; }
