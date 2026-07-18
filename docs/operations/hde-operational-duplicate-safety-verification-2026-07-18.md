@@ -24,7 +24,14 @@ No manual delete list is maintained in this document. Cleanup must come from fre
 
 ## Verification evidence
 
-Fresh run evidence for GRO-3985 is recorded in the task result and can be regenerated with:
+Fresh GRO-3985 run from `/tmp/hd-platform-gro3985`:
+
+- `python3 -m py_compile scripts/operations/hde_operational_file_inventory.py` passed.
+- `python3 scripts/operations/hde_operational_file_inventory.py --limit 5000` returned `104` candidates across `{'git-bundle-or-checkpoint-archive': 11, 'legacy-hde-research-candidate-import': 11, 'review': 82}` with `0` safe-delete candidates.
+- `python3 scripts/operations/hde_operational_file_inventory.py --limit 5000 --delete-safe` returned `deleted=[]`; no runtime files were removed.
+- Secret-shaped token scan over the committed scanner/docs returned `secret_hits=[]`.
+
+Regenerate detailed JSON/Markdown evidence with:
 
 ```bash
 python3 scripts/operations/hde_operational_file_inventory.py --limit 5000 > /tmp/hde-operational-inventory.json
