@@ -53,10 +53,11 @@ const hasGlobalAnalytics = (html) => {
 };
 
 const hasAnyRequiredEvent = (html, eventNames) => {
+  const hasAnalyticsApi = /window\.gtag|gtag\(['"]event['"]|dataLayer\.push/.test(html);
+  if (!hasAnalyticsApi) return false;
   return eventNames.some((eventName) => {
     const quoted = eventName.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
-    return new RegExp(`gtag\\(\\s*['\"]event['\"]\\s*,\\s*['\"]${quoted}['\"]`).test(html)
-      || new RegExp(`dataLayer\\.push\\(\\s*\\{[^}]*event\\s*:\\s*['\"]${quoted}['\"]`, 's').test(html);
+    return new RegExp(`['\"]${quoted}['\"]`).test(html);
   });
 };
 
