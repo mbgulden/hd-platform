@@ -390,6 +390,16 @@ import Footer from '../../components/Footer.astro';
       payBtn.disabled = true;
       if (spinner) spinner.style.display = 'block';
       if (textNode) textNode.textContent = 'Processing payment...';
+
+      const analytics = (window as any).gtag;
+      if (typeof analytics === 'function') {
+        analytics('event', 'add_payment_info', {
+          currency: 'USD',
+          value: priceCents / 100,
+          payment_type: 'mock_card',
+          items: [{ item_name: product }]
+        });
+      }
       
       setTimeout(() => {
         // Redirect to resolved success_url
