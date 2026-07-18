@@ -12,9 +12,9 @@ import subprocess
 from pathlib import Path
 
 HEAD_RE = re.compile(r"<head[^>]*>(.*?)</head>", re.IGNORECASE | re.DOTALL)
-DESC_TAG_RE = re.compile(r"<meta\\b[^>]*>", re.IGNORECASE)
-CANONICAL_TAG_RE = re.compile(r"<link\\b[^>]*>", re.IGNORECASE)
-ATTR_RE = re.compile(r"([:\\w-]+)\\s*=\\s*(['\"])(.*?)\\2", re.IGNORECASE | re.DOTALL)
+DESC_TAG_RE = re.compile(r"<meta\b[^>]*>", re.IGNORECASE)
+CANONICAL_TAG_RE = re.compile(r"<link\b[^>]*>", re.IGNORECASE)
+ATTR_RE = re.compile(r"([:\w-]+)\s*=\s*(['\"])(.*?)\2", re.IGNORECASE | re.DOTALL)
 
 
 def attrs_for(tag: str) -> dict[str, str]:
