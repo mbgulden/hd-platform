@@ -74,22 +74,25 @@ async function linearRequest(query, variables) {
 
 async function fetchLiveStates() {
   const query = `
-    query($ids: [String!]!) {
-      issues(filter: { identifier: { in: $ids } }, first: 20) {
-        nodes {
-          identifier
-          title
-          state { name type }
-          updatedAt
-          url
-          labels { nodes { name } }
-        }
+    query($id: String!) {
+      issue(id: $id) {
+        identifier
+        title
+        state { name type }
+        updatedAt
+        url
+        labels { nodes { name } }
       }
     }
   `;
-  const data = await linearRequest(query, { ids: CHILDREN.map((child) => child.id) });
-  if (!data) return new Map();
-  return new Map(data.issues.nodes.map((issue) => [issue.identifier, issue]));
+  if (!process.env.LINEAR_API_KEY) return new Map();
+
+  const entries = [];
+  for (const child of CHILDREN) {
+    const data = await linearRequest(query, { id: child.id });
+    if (data?.issue) entries.push([data.issue.identifier, data.issue]);
+  }
+  return new Map(entries);
 }
 
 function summarize(child, live) {
