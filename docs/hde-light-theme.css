@@ -364,7 +364,12 @@ footer [class*="muted"] {
     left: 0 !important;
     right: 0 !important;
     bottom: 0 !important;
+    min-height: calc(100dvh - 72px) !important;
+    background: #FAF7F0 !important;
     background-color: #FAF7F0 !important;
+    background-image: linear-gradient(180deg, #FAF7F0 0%, #F6F1E7 100%) !important;
+    border-top: 1px solid rgba(95, 114, 97, 0.14) !important;
+    box-shadow: 0 24px 80px rgba(47, 54, 49, 0.18) !important;
     padding: 40px 24px !important;
     opacity: 0 !important;
     visibility: hidden !important;
@@ -376,6 +381,7 @@ footer [class*="muted"] {
   body.drawer-open .emdash-site-header nav {
     opacity: 1 !important;
     visibility: visible !important;
+    pointer-events: auto !important;
   }
   .emdash-site-header .nav-links {
     flex-direction: column !important;
@@ -387,6 +393,109 @@ footer [class*="muted"] {
   .emdash-site-header .nav-cta { display: none !important; }
   .emdash-site-footer .footer-inner,
   .emdash-site-footer .footer-groups { grid-template-columns: 1fr !important; }
+}
+
+/* Follow-up visual fixes for HDE library and tools pages. */
+.emdash-site-footer,
+.emdash-site-footer *,
+footer.emdash-site-footer,
+footer.emdash-site-footer * {
+  text-align: left !important;
+}
+.emdash-site-footer .footer-inner {
+  justify-items: start !important;
+}
+.breadcrumb,
+.breadcrumbs,
+.page-subnav,
+.subnav,
+.type-subnav,
+.type-nav,
+.container > nav.nav {
+  display: flex !important;
+  flex-wrap: wrap !important;
+  align-items: center !important;
+  justify-content: flex-start !important;
+  gap: 10px !important;
+  width: 100% !important;
+  max-width: 1200px !important;
+  margin: 0 auto 28px !important;
+  padding: 12px 0 !important;
+  text-align: left !important;
+  color: #4B514E !important;
+}
+.page-subnav,
+.subnav,
+.type-subnav,
+.type-nav,
+.container > nav.nav {
+  padding: 14px 16px !important;
+  background: rgba(255, 255, 255, 0.72) !important;
+  border: 1px solid rgba(95, 114, 97, 0.14) !important;
+  border-radius: 18px !important;
+  box-shadow: 0 8px 30px rgba(47, 54, 49, 0.04) !important;
+}
+.breadcrumb a,
+.breadcrumbs a,
+.page-subnav a,
+.subnav a,
+.type-subnav a,
+.type-nav a,
+.container > nav.nav a {
+  display: inline-flex !important;
+  align-items: center !important;
+  min-height: 34px !important;
+  padding: 7px 12px !important;
+  border-radius: 999px !important;
+  background: rgba(95, 114, 97, 0.10) !important;
+  border: 1px solid rgba(95, 114, 97, 0.16) !important;
+  color: #2F3631 !important;
+  text-decoration: none !important;
+  font-weight: 600 !important;
+}
+.question-card,
+.quiz-card,
+.result-card,
+.email-capture {
+  background: rgba(255, 255, 255, 0.86) !important;
+  color: #2F3631 !important;
+}
+.question-text,
+.question-card .question-text,
+.quiz-container .question-text,
+.quiz-header h1,
+.quiz-header h1 span,
+.quiz-badge {
+  color: #2F3631 !important;
+  -webkit-text-fill-color: #2F3631 !important;
+}
+.quiz-header p,
+.quiz-container p,
+.quiz-container .progress-text {
+  color: #4B514E !important;
+}
+.option-btn,
+.quiz-container .option-btn {
+  background: rgba(255, 255, 255, 0.82) !important;
+  border-color: rgba(95, 114, 97, 0.24) !important;
+  color: #2F3631 !important;
+}
+.option-btn:hover,
+.quiz-container .option-btn:hover {
+  background: #F6F1E7 !important;
+  border-color: rgba(95, 114, 97, 0.42) !important;
+}
+.option-btn .opt-icon {
+  background: rgba(95, 114, 97, 0.14) !important;
+  color: #2F3631 !important;
+}
+.quiz-footer a,
+.quiz-footer p a,
+.quiz-container .quiz-footer a {
+  color: #2F3631 !important;
+  text-decoration: underline !important;
+  text-decoration-thickness: 0.09em !important;
+  text-underline-offset: 0.18em !important;
 }
 
 strong,
