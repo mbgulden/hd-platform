@@ -12,8 +12,29 @@ import subprocess
 from pathlib import Path
 
 HEAD_RE = re.compile(r"<head[^>]*>(.*?)</head>", re.IGNORECASE | re.DOTALL)
-DESC_RE = re.compile(r'<meta\s+name=["\']description["\']\s+content=["\'][^"\']{40,}["\']', re.IGNORECASE)
-CANONICAL_RE = re.compile(r'<link\s+rel=["\']canonical["\']\s+href=["\']https://humandesignengine\.com/[^"\']*["\']', re.IGNORECASE)
+DESC_TAG_RE = re.compile(r"<meta\\b[^>]*>", re.IGNORECASE)
+CANONICAL_TAG_RE = re.compile(r"<link\\b[^>]*>", re.IGNORECASE)
+ATTR_RE = re.compile(r"([:\\w-]+)\\s*=\\s*(['\"])(.*?)\\2", re.IGNORECASE | re.DOTALL)
+
+
+def attrs_for(tag: str) -> dict[str, str]:
+    return {name.lower(): value for name, _quote, value in ATTR_RE.findall(tag)}
+
+
+def has_description(head: str) -> bool:
+    for tag in DESC_TAG_RE.findall(head):
+        attrs = attrs_for(tag)
+        if attrs.get("name", "").lower() == "description" and len(attrs.get("content", "").strip()) >= 40:
+            return True
+    return False
+
+
+def has_canonical(head: str) -> bool:
+    for tag in CANONICAL_TAG_RE.findall(head):
+        attrs = attrs_for(tag)
+        if attrs.get("rel", "").lower() == "canonical" and attrs.get("href", "").startswith("https://humandesignengine.com/"):
+            return True
+    return False
 
 
 def tracked_html(root: Path) -> list[Path]:
@@ -37,9 +58,9 @@ def missing_for(files: list[Path], root: Path) -> list[str]:
             continue
         head = match.group(1)
         problems: list[str] = []
-        if not DESC_RE.search(head):
+        if not has_description(head):
             problems.append("description")
-        if not CANONICAL_RE.search(head):
+        if not has_canonical(head):
             problems.append("canonical")
         if problems:
             missing.append(f"{path.relative_to(root)}: missing {', '.join(problems)}")
