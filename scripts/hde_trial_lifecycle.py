@@ -29,7 +29,7 @@ from sqlalchemy import select
 from sqlalchemy.orm import selectinload
 
 sys.path.append(str(Path(__file__).resolve().parents[1]))
-from shared.database import BotInstance, User, async_session_factory  # noqa: E402
+from shared.database import BotInstance, Invitation, User, async_session_factory  # noqa: E402
 
 logging.basicConfig(level=logging.INFO, format="%(asctime)s [%(levelname)s] %(message)s")
 logger = logging.getLogger("hde-trial-lifecycle")
@@ -38,6 +38,7 @@ ORCHESTRATOR_URL = os.getenv("ORCHESTRATOR_URL", "http://127.0.0.1:8001").rstrip
 ORCHESTRATOR_SHARED_SECRET = os.getenv("ORCHESTRATOR_SHARED_SECRET", "default_shared_secret")
 DEMO_RETENTION_DAYS = int(os.getenv("HDE_DEMO_RETENTION_DAYS", "30"))
 DRY_RUN = os.getenv("HDE_TRIAL_LIFECYCLE_DRY_RUN", "0").lower() in {"1", "true", "yes", "on"}
+ANONYMIZE_DEMO_PII = os.getenv("HDE_DEMO_ANONYMIZE_PII", "1").lower() in {"1", "true", "yes", "on"}
 
 
 def aware(value: datetime | None) -> datetime | None:
@@ -69,6 +70,29 @@ async def orchestrate(user_id: int, action: str, telegram_user_id: str | None = 
         else:
             logger.info("orchestrator action=%s user_id=%s ok", action, user_id)
 
+
+
+
+def anonymized_demo_email(user_id: int) -> str:
+    return f"deleted+demo+{user_id}@humandesignengine.local"
+
+
+async def anonymize_deleted_demo(session, user: User, now: datetime) -> None:
+    """Remove demo PII after workspace/container deprovisioning is requested."""
+    if ANONYMIZE_DEMO_PII:
+        user.email = anonymized_demo_email(user.id)
+        user.stripe_customer_id = None
+    user.access_status = "deleted_demo"
+    user.subscription_status = "inactive"
+    user.demo_deleted_at = now
+    user.deactivated_at = user.deactivated_at or now
+    if user.bot_instance:
+        user.bot_instance.status = "deprovisioned"
+        user.bot_instance.telegram_user_id = None
+    invite_result = await session.execute(select(Invitation).where(Invitation.user_id == user.id))
+    for invitation in invite_result.scalars().all():
+        invitation.is_used = True
+        invitation.expires_at = now
 
 async def run() -> int:
     now = datetime.now(timezone.utc)
@@ -107,11 +131,13 @@ async def run() -> int:
             deletion_scheduled_at = aware(user.deletion_scheduled_at)
             if not deletion_scheduled_at or deletion_scheduled_at > now:
                 continue
+            tg_id = user.bot_instance.telegram_user_id if user.bot_instance else None
             if user.bot_instance:
                 user.bot_instance.status = "deprovisioning"
             purged_count += 1
-            logger.info("retention elapsed; deprovisioning user_id=%s", user.id)
-            await orchestrate(user.id, "deprovision", user.bot_instance.telegram_user_id if user.bot_instance else None)
+            logger.info("retention elapsed; deprovisioning/anonymizing user_id=%s", user.id)
+            await orchestrate(user.id, "deprovision", tg_id)
+            await anonymize_deleted_demo(session, user, now)
 
         if not DRY_RUN:
             await session.commit()

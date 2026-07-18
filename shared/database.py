@@ -90,6 +90,10 @@ class User(Base):
     trial_expires_at: Mapped[Optional[datetime]] = mapped_column(DateTime(timezone=True), nullable=True)
     deactivated_at: Mapped[Optional[datetime]] = mapped_column(DateTime(timezone=True), nullable=True)
     deletion_scheduled_at: Mapped[Optional[datetime]] = mapped_column(DateTime(timezone=True), nullable=True)
+    demo_started_at: Mapped[Optional[datetime]] = mapped_column(DateTime(timezone=True), nullable=True)
+    demo_renewal_count: Mapped[int] = mapped_column(Integer, nullable=False, default=0)
+    demo_last_source: Mapped[Optional[str]] = mapped_column(String(100), nullable=True)
+    demo_deleted_at: Mapped[Optional[datetime]] = mapped_column(DateTime(timezone=True), nullable=True)
     is_premium: Mapped[bool] = mapped_column(Boolean, nullable=False, default=False)
     coaching_container_end: Mapped[Optional[datetime]] = mapped_column(DateTime(timezone=True), nullable=True)
     coach_review_consent: Mapped[bool] = mapped_column(Boolean, nullable=False, default=False)
@@ -222,6 +226,22 @@ async def init_db() -> None:
             pass
         try:
             await conn.execute(text("ALTER TABLE users ADD COLUMN deletion_scheduled_at TIMESTAMP WITH TIME ZONE"))
+        except Exception:
+            pass
+        try:
+            await conn.execute(text("ALTER TABLE users ADD COLUMN demo_started_at TIMESTAMP WITH TIME ZONE"))
+        except Exception:
+            pass
+        try:
+            await conn.execute(text("ALTER TABLE users ADD COLUMN demo_renewal_count INTEGER DEFAULT 0 NOT NULL"))
+        except Exception:
+            pass
+        try:
+            await conn.execute(text("ALTER TABLE users ADD COLUMN demo_last_source VARCHAR(100)"))
+        except Exception:
+            pass
+        try:
+            await conn.execute(text("ALTER TABLE users ADD COLUMN demo_deleted_at TIMESTAMP WITH TIME ZONE"))
         except Exception:
             pass
         try:
