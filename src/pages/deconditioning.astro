@@ -110,6 +110,7 @@ const packages = contentPackages.map((pkg) => ({
   </main>
 
   <Footer />
+  <script src="/widget.js" is:inline></script>
 </Layout>
 
 <style>
@@ -373,6 +374,11 @@ const packages = contentPackages.map((pkg) => ({
         coachConsent.required = requiresCoachConsent;
         coachConsent.checked = false;
       }
+      window.HDEWidget?.trackEvent?.('hde_daily_work_cta_clicked', {
+        cta_source: 'sanctuary_package_card',
+        package_id: selectedPkg.id,
+        package_name: selectedPkg.name
+      });
       if (modal) modal.classList.add('active');
       if (errorMsg) errorMsg.style.display = 'none';
     });
@@ -428,6 +434,11 @@ const packages = contentPackages.map((pkg) => ({
       const recurringPriceId = isStaging ? '' : (selectedPkg.recurringPriceId || '');
 
       const consentChecked = !!(coachConsent && coachConsent.checked);
+      window.HDEWidget?.trackEvent?.('hde_sanctuary_checkout_submitted', {
+        package_id: selectedPkg.id,
+        package_name: selectedPkg.name,
+        is_staging: isStaging
+      });
       try {
         const response = await fetch('/api/checkout/create-session', {
           method: 'POST',
