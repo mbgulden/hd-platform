@@ -1,0 +1,124 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="robots" content="noindex, nofollow">
+  <title>14-Day Sanctuary Demo | Human Design Engine</title>
+  <meta name="description" content="Semi-public 14-day Human Design Engine Sanctuary tester access.">
+  <link rel="canonical" href="https://humandesignengine.com/sanctuary-demo/">
+  <style>
+    :root{--ink:#14213d;--muted:#5f6b7a;--gold:#c9a84c;--cream:#fbf7ed;--paper:#fffdf8;--line:#eadfca;--green:#557c55;--rose:#8f4f4f}*{box-sizing:border-box}body{margin:0;font-family:Inter,ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;color:var(--ink);background:linear-gradient(135deg,#fffdf8,#f5ead5)}a{color:inherit}.wrap{max-width:1120px;margin:0 auto;padding:28px 20px 56px}.nav{display:flex;justify-content:space-between;align-items:center;margin-bottom:56px}.logo{font-weight:800;letter-spacing:.02em}.pill{display:inline-flex;gap:8px;align-items:center;padding:8px 12px;border:1px solid var(--line);border-radius:999px;background:rgba(255,255,255,.62);color:var(--muted);font-size:14px}.hero{display:grid;grid-template-columns:minmax(0,1.08fr) minmax(320px,.72fr);gap:32px;align-items:center}.eyebrow{color:var(--green);font-weight:800;text-transform:uppercase;letter-spacing:.12em;font-size:13px;margin-bottom:16px}h1{font-family:Georgia,serif;font-size:clamp(42px,7vw,76px);line-height:.94;margin:0 0 22px}p{font-size:18px;line-height:1.62;color:var(--muted)}.lead{font-size:21px;max-width:690px}.cards{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin:30px 0}.card,.signup,.section{background:rgba(255,255,255,.76);border:1px solid var(--line);border-radius:24px;padding:22px;box-shadow:0 20px 60px rgba(20,33,61,.08)}.card strong{display:block;margin-bottom:8px}.signup{position:sticky;top:20px}.signup h2{margin:0 0 8px;font-size:26px}.field{margin:14px 0}.field label{display:block;font-weight:700;margin-bottom:7px}.field input{width:100%;font:inherit;padding:14px 15px;border:1px solid var(--line);border-radius:14px;background:#fff;color:var(--ink)}button,.btn{display:inline-flex;justify-content:center;align-items:center;width:100%;border:0;border-radius:999px;padding:15px 20px;background:var(--ink);color:white;font-weight:800;font-size:16px;cursor:pointer;text-decoration:none}button:hover,.btn:hover{filter:brightness(1.05)}.btn.secondary{background:white;color:var(--ink);border:1px solid var(--line)}.fine{font-size:13px;line-height:1.45}.result{display:none;margin-top:18px;padding:16px;border-radius:18px;background:#f2f8f1;border:1px solid #c9e0c5}.error{display:none;margin-top:18px;padding:16px;border-radius:18px;background:#fff1f1;border:1px solid #f0c5c5;color:var(--rose)}.flow{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-top:22px}.step{padding:18px;border:1px dashed var(--line);border-radius:18px;background:rgba(255,255,255,.55)}.step b{display:block;color:var(--green);margin-bottom:8px}.sections{display:grid;gap:20px;margin-top:34px}.section h2{margin:0 0 10px}.bullets{display:grid;grid-template-columns:1fr 1fr;gap:14px}.bullets ul{margin:0;padding-left:20px;color:var(--muted);line-height:1.7}.countdown{font-weight:800;color:var(--green)}@media(max-width:850px){.hero{grid-template-columns:1fr}.signup{position:static}.cards,.flow,.bullets{grid-template-columns:1fr}.nav{margin-bottom:30px}}
+  </style>
+</head>
+<body>
+  <main class="wrap">
+    <nav class="nav" aria-label="Primary">
+      <div class="logo">Human Design<span style="color:var(--gold)">Engine</span></div>
+      <a class="pill" href="/deconditioning/">Paid Sanctuary page →</a>
+    </nav>
+
+    <section class="hero">
+      <div>
+        <div class="eyebrow">Semi-public tester access</div>
+        <h1>Try the Sanctuary for 14 days.</h1>
+        <p class="lead">This is a free tester door into the real Human Design Engine Sanctuary: a private Telegram-based practice room where your guide can help you reflect, generate Human Design chart artifacts when you ask, track small deconditioning experiments, and keep continuity between sessions.</p>
+        <div class="cards">
+          <div class="card"><strong>Private guide container</strong><span>Your own Sanctuary bot space, not a public group.</span></div>
+          <div class="card"><strong>Human Design tools</strong><span>Ask for chart, bodygraph/report, compatibility, or design context when useful.</span></div>
+          <div class="card"><strong>Graceful trial end</strong><span>After 14 days the account pauses. It is not deleted immediately.</span></div>
+        </div>
+      </div>
+
+      <aside class="signup" aria-labelledby="signup-title">
+        <h2 id="signup-title">Start free demo</h2>
+        <p class="fine">No payment required for this tester flow. If you upgrade before the demo ends, the same Sanctuary container continues.</p>
+        <form id="demoForm">
+          <div class="field"><label for="name">Name</label><input id="name" name="name" autocomplete="name" placeholder="Your name"></div>
+          <div class="field"><label for="email">Email</label><input id="email" name="email" type="email" autocomplete="email" required placeholder="you@example.com"></div>
+          <div class="field"><label for="invite">Invite code <span style="font-weight:400;color:var(--muted)">(if required)</span></label><input id="invite" name="invite_code" autocomplete="off" placeholder="Optional"></div>
+          <button type="submit" id="submitBtn">Open my 14-day demo</button>
+        </form>
+        <div class="result" id="resultBox">
+          <strong>Demo created.</strong>
+          <p class="fine">Your trial expires <span class="countdown" id="expiresText"></span>. Use the Telegram button below to choose your guide and open the container.</p>
+          <a class="btn" id="telegramLink" href="#" rel="nofollow">Continue in Telegram</a>
+        </div>
+        <div class="error" id="errorBox"></div>
+        <p class="fine">Tester access is for exploration and feedback. Paid members use the normal Sanctuary landing page for full paid access and billing.</p>
+      </aside>
+    </section>
+
+    <section class="sections">
+      <div class="section">
+        <h2>Clean funnel map</h2>
+        <div class="flow">
+          <div class="step"><b>1. Demo page</b>Hidden/semi-public tester URL: <code>/sanctuary-demo/</code>.</div>
+          <div class="step"><b>2. Demo account</b>User is tagged <code>access_status=demo</code> with a 14-day countdown.</div>
+          <div class="step"><b>3. Telegram Sanctuary</b>Bot receives demo status, trial expiry, and graceful upgrade/deactivation rules.</div>
+          <div class="step"><b>4. Upgrade or pause</b>Upgrade converts to paid. If not, container pauses and deletion waits ~30 days.</div>
+        </div>
+      </div>
+
+      <div class="section">
+        <h2>What testers can explore</h2>
+        <div class="bullets">
+          <ul>
+            <li>Choose a simple guide name for the Sanctuary space.</li>
+            <li>Have a grounded deconditioning conversation with nervous-system pacing.</li>
+            <li>Ask for personal Human Design chart generation when they are ready.</li>
+            <li>Ask for ordinary-language chart explanation, not jargon dumps.</li>
+          </ul>
+          <ul>
+            <li>Save small next-step experiments/homework.</li>
+            <li>Generate chart artifacts when supported by the current runtime.</li>
+            <li>Upgrade into the paid Sanctuary without losing the existing container.</li>
+            <li>Receive a clear pause message if the trial expires.</li>
+          </ul>
+        </div>
+      </div>
+    </section>
+  </main>
+
+<script>
+const form = document.getElementById('demoForm');
+const submitBtn = document.getElementById('submitBtn');
+const resultBox = document.getElementById('resultBox');
+const errorBox = document.getElementById('errorBox');
+const telegramLink = document.getElementById('telegramLink');
+const expiresText = document.getElementById('expiresText');
+
+function showError(message){ errorBox.textContent = message; errorBox.style.display = 'block'; resultBox.style.display = 'none'; }
+
+form.addEventListener('submit', async (event) => {
+  event.preventDefault();
+  errorBox.style.display = 'none';
+  submitBtn.disabled = true;
+  submitBtn.textContent = 'Creating demo…';
+  const payload = {
+    name: document.getElementById('name').value.trim(),
+    email: document.getElementById('email').value.trim(),
+    invite_code: document.getElementById('invite').value.trim(),
+    source: 'sanctuary-demo-page'
+  };
+  try {
+    const res = await fetch('/api/demo/start', {
+      method: 'POST',
+      headers: {'Content-Type': 'application/json'},
+      body: JSON.stringify(payload)
+    });
+    const data = await res.json().catch(() => ({}));
+    if (!res.ok || !data.deep_link) throw new Error(data.detail || 'Could not create demo access.');
+    telegramLink.href = data.deep_link;
+    expiresText.textContent = new Date(data.trial_expires_at).toLocaleString([], {dateStyle:'medium', timeStyle:'short'});
+    resultBox.style.display = 'block';
+  } catch (err) {
+    showError(err.message || 'Something went wrong. Please try again.');
+  } finally {
+    submitBtn.disabled = false;
+    submitBtn.textContent = 'Open my 14-day demo';
+  }
+});
+</script>
+</body>
+</html>

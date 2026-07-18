@@ -29,6 +29,37 @@ STRIPE_WEBHOOK_SECRET = os.environ.get("STRIPE_WEBHOOK_SECRET", "")
 ORCHESTRATOR_URL = os.environ.get("ORCHESTRATOR_URL", "http://localhost:8001")
 ORCHESTRATOR_SHARED_SECRET = os.environ.get("ORCHESTRATOR_SHARED_SECRET", "default_shared_secret")
 ONBOARDING_BOT_USERNAME = os.environ.get("HDE_ONBOARDING_BOT_USERNAME", "HDE_CoachBot").lstrip("@")
+DEMO_TRIAL_DAYS = int(os.environ.get("HDE_DEMO_TRIAL_DAYS", "14"))
+DEMO_RETENTION_DAYS = int(os.environ.get("HDE_DEMO_RETENTION_DAYS", "30"))
+DEMO_RATE_LIMIT_WINDOW_SECONDS = int(os.environ.get("HDE_DEMO_RATE_LIMIT_WINDOW_SECONDS", "3600"))
+DEMO_RATE_LIMIT_MAX_ATTEMPTS = int(os.environ.get("HDE_DEMO_RATE_LIMIT_MAX_ATTEMPTS", "5"))
+DEMO_SIGNUP_ATTEMPTS: Dict[str, list[float]] = {}
+
+
+def truthy(value: Any) -> bool:
+    return str(value or "").lower() in ("1", "true", "yes", "on")
+
+
+def is_demo_checkout(metadata: Dict[str, str]) -> bool:
+    return (
+        metadata.get("access_status") == "demo"
+        or metadata.get("product") in {"sanctuary-demo", "demo", "hde-sanctuary-demo"}
+        or truthy(metadata.get("demo_trial"))
+    )
+
+
+def check_demo_rate_limit(email: str, client_ip: str) -> None:
+    """Tiny in-process abuse guard for the semi-public demo endpoint."""
+    now = time.time()
+    keys = {f"email:{email}", f"ip:{client_ip}" if client_ip else "ip:unknown"}
+    cutoff = now - DEMO_RATE_LIMIT_WINDOW_SECONDS
+    for key in keys:
+        attempts = [ts for ts in DEMO_SIGNUP_ATTEMPTS.get(key, []) if ts >= cutoff]
+        if len(attempts) >= DEMO_RATE_LIMIT_MAX_ATTEMPTS:
+            raise HTTPException(status_code=429, detail="Too many demo signup attempts. Try again later.")
+        attempts.append(now)
+        DEMO_SIGNUP_ATTEMPTS[key] = attempts
+
 
 # In-memory session store for mock checkouts
 # session_id -> { "email": email, "name": name, "is_premium": is_premium }
@@ -57,7 +88,7 @@ def verify_stripe_signature(payload: bytes, sig_header: str, secret: str, tolera
         if abs(time.time() - int(timestamp)) > tolerance:
             logger.error("Stripe webhook timestamp older than tolerance threshold.")
             return False
-        
+
         signed_payload = f"{timestamp}.".encode('utf-8') + payload
         mac = hmac.new(secret.encode('utf-8'), signed_payload, hashlib.sha256)
         expected_sig = mac.hexdigest()
@@ -113,11 +144,11 @@ def send_premium_signup_notification(email: str, user_id: int, token: str):
     logger.info("SUBJECT: New Premium Signup: The Sovereign Container")
     logger.info("BODY: A new premium client (%s, User ID: %d) has signed up for the 6-Week Sovereign Container with Becca Gulden. The container has been initialized.", email, user_id)
     logger.info("==============================")
-    
+
     bot_token = os.environ.get("HDE_COACH_BOT_TOKEN")
     alert_ids_str = os.environ.get("ALERT_CHAT_IDS", "")
     alert_ids = [int(cid.strip()) for cid in alert_ids_str.split(",") if cid.strip().isdigit()]
-    
+
     if bot_token and alert_ids:
         text = f"🔔 *New Premium Client!*\n\n{email} has joined the 6-Week Sovereign Container.\n\nOnboarding token: `{token}`"
         for chat_id in alert_ids:
@@ -193,8 +224,11 @@ async def process_successful_checkout(
     and handles notification dispatch.
     """
     is_premium_tier = (metadata.get("tier") == "premium" or metadata.get("tier") == "sovereign" or metadata.get("product") == "sovereign")
-    family_test_consent = str(metadata.get("family_test_review_consent", "false")).lower() in ("1", "true", "yes", "on")
-    consent_value = str(metadata.get("coach_review_consent", "false")).lower() in ("1", "true", "yes", "on")
+    is_demo_tier = is_demo_checkout(metadata)
+    now = datetime.now(timezone.utc)
+    demo_trial_expires_at = now + timedelta(days=DEMO_TRIAL_DAYS) if is_demo_tier else None
+    family_test_consent = truthy(metadata.get("family_test_review_consent"))
+    consent_value = truthy(metadata.get("coach_review_consent"))
     # Sovereign/premium uses consent for coach access. Staging family tests also
     # capture explicit improvement-review consent even when the tester chose the
     # Solo package, so the monitor can distinguish consented test rows from
@@ -208,15 +242,19 @@ async def process_successful_checkout(
         user = result.scalar_one_or_none()
         if not user:
             user = User(
-                email=email, 
-                stripe_customer_id=stripe_customer_id, 
+                email=email,
+                stripe_customer_id=stripe_customer_id,
                 subscription_status="active",
+                access_status="demo" if is_demo_tier else "paid",
+                trial_expires_at=demo_trial_expires_at,
+                deactivated_at=None,
+                deletion_scheduled_at=None,
                 is_premium=is_premium_tier,
                 coach_review_consent=consent_granted,
-                coach_review_consent_at=datetime.now(timezone.utc) if consent_granted else None,
+                coach_review_consent_at=now if consent_granted else None,
                 coach_review_consent_source=consent_source if consent_granted else None,
                 coach_review_consent_revoked_at=None,
-                coaching_container_end=datetime.now(timezone.utc) + timedelta(weeks=6) if is_premium_tier else None
+                coaching_container_end=now + timedelta(weeks=6) if is_premium_tier else None
             )
             db_session.add(user)
             await db_session.commit()
@@ -224,22 +262,33 @@ async def process_successful_checkout(
             logger.info("Registered active user profile for: %s (Premium: %s)", email, is_premium_tier)
         else:
             user.subscription_status = "active"
+            user.access_status = "demo" if is_demo_tier else "paid"
+            user.trial_expires_at = demo_trial_expires_at if is_demo_tier else None
+            user.deactivated_at = None
+            user.deletion_scheduled_at = None
             if stripe_customer_id:
                 user.stripe_customer_id = stripe_customer_id
             if is_premium_tier:
                 user.is_premium = True
-                user.coaching_container_end = datetime.now(timezone.utc) + timedelta(weeks=6)
+                user.coaching_container_end = now + timedelta(weeks=6)
                 if consent_granted:
                     user.coach_review_consent = True
-                    user.coach_review_consent_at = datetime.now(timezone.utc)
+                    user.coach_review_consent_at = now
                     user.coach_review_consent_source = consent_source
                     user.coach_review_consent_revoked_at = None
-            
+
             bot_instance_res = await db_session.execute(select(BotInstance).where(BotInstance.user_id == user.id))
             bot_instance = bot_instance_res.scalar_one_or_none()
             if bot_instance:
-                bot_instance.status = "active"
-                
+                if is_demo_tier:
+                    bot_instance.status = "active"
+                else:
+                    # Paid upgrade should preserve the existing space. If the
+                    # demo/inactive container was paused, leave it in a wakeable
+                    # stopped state instead of pretending the Docker container is
+                    # already active; the router will start it on the next chat.
+                    bot_instance.status = "stopped" if bot_instance.status in {"suspended", "stopped", "deprovisioning", "error"} else "active"
+
             await db_session.commit()
             logger.info("Activated existing user profile for: %s (Premium: %s)", email, is_premium_tier)
 
@@ -250,7 +299,7 @@ async def process_successful_checkout(
         invitation = Invitation(user_id=user.id, token=token, expires_at=expires_at)
         db_session.add(invitation)
         await db_session.commit()
-        
+
         deep_link = f"https://t.me/{ONBOARDING_BOT_USERNAME}?start={token}"
         logger.info("Generated durable onboarding token: %s", token)
         print(f"[ONBOARDING DEEP LINK]: {deep_link}")
@@ -321,19 +370,22 @@ async def stripe_webhook(
             result = await db_session.execute(select(User).where(User.stripe_customer_id == stripe_customer_id))
             user = result.scalar_one_or_none()
             if user:
+                now = datetime.now(timezone.utc)
                 user.subscription_status = "inactive"
+                user.deactivated_at = now
+                user.deletion_scheduled_at = now + timedelta(days=DEMO_RETENTION_DAYS)
                 await db_session.commit()
-                logger.info("Deactivated user subscription for stripe customer: %s", stripe_customer_id)
+                logger.info("Deactivated user subscription for stripe customer: %s; deletion scheduled after retention window", stripe_customer_id)
 
                 bot_instance_res = await db_session.execute(select(BotInstance).where(BotInstance.user_id == user.id))
                 bot_instance = bot_instance_res.scalar_one_or_none()
                 tg_id = bot_instance.telegram_user_id if bot_instance else None
-                
+
                 if bot_instance:
                     bot_instance.status = "suspended"
                     await db_session.commit()
                     logger.info("Suspended bot instance status in DB for user %d.", user.id)
-                
+
                 background_tasks.add_task(dispatch_vm_orchestration, user.id, "stop", tg_id)
             else:
                 logger.warning("No user found with customer ID: %s", stripe_customer_id)
@@ -361,20 +413,22 @@ async def create_stripe_session(
     background_tasks: BackgroundTasks
 ) -> Dict[str, Any]:
     stripe_key = os.environ.get("STRIPE_SECRET_KEY", "")
-    
+
     # Intercept placeholder credentials for development/testing
     if not stripe_key or stripe_key.startswith("__SET_IN_") or stripe_key.startswith("sk_live_REPLACE"):
         logger.warning("Stripe key is placeholder. Running in Mock Checkout Mode.")
         session_id = "cs_test_mock_" + secrets.token_urlsafe(16)
-        
+
         is_premium_tier = (body.metadata or {}).get("tier") == "premium" or (body.metadata or {}).get("tier") == "sovereign" or (body.metadata or {}).get("product") == "sovereign"
-        
+        is_demo_tier = is_demo_checkout(body.metadata or {})
+
         MOCK_SESSIONS[session_id] = {
             "email": body.email,
             "name": (body.metadata or {}).get("name") or "Friend",
-            "is_premium": is_premium_tier
+            "is_premium": is_premium_tier,
+            "is_demo": is_demo_tier,
         }
-        
+
         # Check if this is a report purchase
         report_type = (body.metadata or {}).get("report")
         if report_type in ("natal", "synastry", "transit", "bundle", "belief-standard", "belief-comprehensive", "poster"):
@@ -395,7 +449,7 @@ async def create_stripe_session(
                 body.metadata or {},
                 background_tasks
             )
-        
+
         import urllib.parse
         success_target = body.success_url or "/success?session_id={CHECKOUT_SESSION_ID}"
         checkout_pay_url = (
@@ -407,9 +461,9 @@ async def create_stripe_session(
             f"&success_url={urllib.parse.quote(success_target)}"
         )
         return {"url": checkout_pay_url}
-    
+
     stripe.api_key = stripe_key
-    
+
     # Use configured Stripe Price IDs only with live-mode keys. Staging runs
     # against Stripe test keys, so live Price IDs would produce a 400 and break
     # the deconditioning checkout smoke. In test mode, build price_data instead.
@@ -441,9 +495,9 @@ async def create_stripe_session(
             "customer_email": body.email,
             "metadata": body.metadata or {},
         }
-        if body.is_subscription and body.subscription_trial_days:
+        if body.is_subscription and (body.subscription_trial_days or is_demo_checkout(body.metadata or {})):
             session_kwargs["subscription_data"] = {
-                "trial_period_days": body.subscription_trial_days,
+                "trial_period_days": body.subscription_trial_days or DEMO_TRIAL_DAYS,
                 "metadata": body.metadata or {},
             }
         session = stripe.checkout.Session.create(**session_kwargs)
@@ -451,6 +505,90 @@ async def create_stripe_session(
     except Exception as e:
         logger.exception("Failed to create Stripe session")
         raise HTTPException(status_code=502, detail=str(e))
+
+
+# ── Semi-public Sanctuary Demo Signup ─────────────────────────────────
+class CreateDemoRequest(BaseModel):
+    email: str
+    name: Optional[str] = None
+    invite_code: Optional[str] = None
+    source: Optional[str] = None
+
+
+@router.post("/demo/start")
+async def create_demo_access(
+    body: CreateDemoRequest,
+    request: Request,
+    background_tasks: BackgroundTasks,
+) -> Dict[str, Any]:
+    """Create or refresh a 14-day semi-public Sanctuary demo account."""
+    required_code = os.environ.get("HDE_DEMO_INVITE_CODE", "").strip()
+    if required_code and not hmac.compare_digest(str(body.invite_code or ""), required_code):
+        raise HTTPException(status_code=403, detail="Invalid demo invite code.")
+
+    email = (body.email or "").strip().lower()
+    if not email or "@" not in email or len(email) > 255:
+        raise HTTPException(status_code=400, detail="Valid email is required.")
+    client_ip = (request.headers.get("x-forwarded-for") or (request.client.host if request.client else "")).split(",")[0].strip()
+    check_demo_rate_limit(email, client_ip)
+
+    now = datetime.now(timezone.utc)
+    requested_trial_expires_at = now + timedelta(days=DEMO_TRIAL_DAYS)
+
+    async with async_session_factory() as db_session:
+        db_session: AsyncSession
+        result = await db_session.execute(select(User).where(User.email == email))
+        user = result.scalar_one_or_none()
+        if user and (user.access_status or "paid") == "paid" and user.subscription_status == "active":
+            raise HTTPException(status_code=409, detail="This email already has paid Sanctuary access. Use the normal onboarding link or contact support.")
+        if user and (user.access_status or "") == "demo" and user.trial_expires_at:
+            current_expiry = user.trial_expires_at
+            if current_expiry.tzinfo is None:
+                current_expiry = current_expiry.replace(tzinfo=timezone.utc)
+            if current_expiry > now:
+                trial_expires_at = current_expiry
+            else:
+                trial_expires_at = requested_trial_expires_at
+        else:
+            trial_expires_at = requested_trial_expires_at
+        if not user:
+            user = User(
+                email=email,
+                stripe_customer_id="demo_" + secrets.token_urlsafe(12),
+                subscription_status="active",
+                access_status="demo",
+                trial_expires_at=trial_expires_at,
+                deactivated_at=None,
+                deletion_scheduled_at=None,
+                is_premium=False,
+            )
+            db_session.add(user)
+            await db_session.commit()
+            await db_session.refresh(user)
+        else:
+            user.subscription_status = "active"
+            user.access_status = "demo"
+            user.trial_expires_at = trial_expires_at
+            user.deactivated_at = None
+            user.deletion_scheduled_at = None
+            await db_session.commit()
+            await db_session.refresh(user)
+
+        token = "hde_demo_" + secrets.token_urlsafe(16)
+        invitation = Invitation(user_id=user.id, token=token, expires_at=now + timedelta(days=DEMO_TRIAL_DAYS))
+        db_session.add(invitation)
+        await db_session.commit()
+
+    deep_link = f"https://t.me/{ONBOARDING_BOT_USERNAME}?start={token}"
+    background_tasks.add_task(send_customer_onboarding_email, email, deep_link, False)
+    return {
+        "success": True,
+        "access_status": "demo",
+        "trial_days": DEMO_TRIAL_DAYS,
+        "trial_expires_at": trial_expires_at.isoformat(),
+        "deletion_grace_days": DEMO_RETENTION_DAYS,
+        "deep_link": deep_link,
+    }
 
 
 # ── Onboarding Deep Link Endpoint ──────────────────────────────────────
@@ -466,7 +604,7 @@ async def get_onboarding_link(
     resolved_email = email
     resolved_name = "Friend"
     is_premium = False
-    
+
     if session_id:
         if session_id.startswith("cs_test_mock_"):
             mock_data = MOCK_SESSIONS.get(session_id) or {}
@@ -497,7 +635,7 @@ async def get_onboarding_link(
             except Exception as e:
                 logger.error("Failed to retrieve Stripe session: %s", e)
                 raise HTTPException(status_code=400, detail="Invalid checkout session.")
-            
+
     if not resolved_email:
         raise HTTPException(status_code=400, detail="Missing email or session_id parameter.")
 
@@ -517,7 +655,7 @@ async def get_onboarding_link(
             .order_by(Invitation.created_at.desc())
         )
         invitation = result_invite.scalars().first()
-        
+
         # If user is a standard PDF report purchaser and has no invitation, return success details without bot token
         if not invitation:
             return {
