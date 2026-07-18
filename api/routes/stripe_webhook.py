@@ -523,7 +523,9 @@ async def create_demo_access(
 ) -> Dict[str, Any]:
     """Create or refresh a 14-day semi-public Sanctuary demo account."""
     required_code = os.environ.get("HDE_DEMO_INVITE_CODE", "").strip()
-    if required_code and not hmac.compare_digest(str(body.invite_code or ""), required_code):
+    supplied_code = str(body.invite_code or "")
+    invite_code_valid = bool(required_code and hmac.compare_digest(supplied_code, required_code))
+    if required_code and not invite_code_valid:
         raise HTTPException(status_code=403, detail="Invalid demo invite code.")
 
     email = (body.email or "").strip().lower()
@@ -541,6 +543,11 @@ async def create_demo_access(
         user = result.scalar_one_or_none()
         if user and (user.access_status or "paid") == "paid" and user.subscription_status == "active":
             raise HTTPException(status_code=409, detail="This email already has paid Sanctuary access. Use the normal onboarding link or contact support.")
+        if user and (user.access_status or "") in {"expired_demo", "deleted_demo"} and not invite_code_valid:
+            raise HTTPException(
+                status_code=409,
+                detail="This email has already used a demo. Ask for a renewal invite code or use the paid Sanctuary path.",
+            )
         if user and (user.access_status or "") == "demo" and user.trial_expires_at:
             current_expiry = user.trial_expires_at
             if current_expiry.tzinfo is None:
@@ -560,17 +567,27 @@ async def create_demo_access(
                 trial_expires_at=trial_expires_at,
                 deactivated_at=None,
                 deletion_scheduled_at=None,
+                demo_started_at=now,
+                demo_renewal_count=0,
+                demo_last_source=(body.source or "sanctuary-demo-page")[:100],
+                demo_deleted_at=None,
                 is_premium=False,
             )
             db_session.add(user)
             await db_session.commit()
             await db_session.refresh(user)
         else:
+            was_expired_or_deleted = (user.access_status or "") in {"expired_demo", "deleted_demo"}
             user.subscription_status = "active"
             user.access_status = "demo"
             user.trial_expires_at = trial_expires_at
             user.deactivated_at = None
             user.deletion_scheduled_at = None
+            user.demo_started_at = user.demo_started_at or now
+            user.demo_last_source = (body.source or "sanctuary-demo-page")[:100]
+            user.demo_deleted_at = None
+            if was_expired_or_deleted:
+                user.demo_renewal_count = int(user.demo_renewal_count or 0) + 1
             await db_session.commit()
             await db_session.refresh(user)
 
