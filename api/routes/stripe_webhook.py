@@ -7,7 +7,6 @@ import os
 import secrets
 import smtplib
 import stripe
-from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
 from pydantic import BaseModel
 import time
@@ -30,6 +29,37 @@ STRIPE_WEBHOOK_SECRET = os.environ.get("STRIPE_WEBHOOK_SECRET", "")
 ORCHESTRATOR_URL = os.environ.get("ORCHESTRATOR_URL", "http://localhost:8001")
 ORCHESTRATOR_SHARED_SECRET = os.environ.get("ORCHESTRATOR_SHARED_SECRET", "default_shared_secret")
 ONBOARDING_BOT_USERNAME = os.environ.get("HDE_ONBOARDING_BOT_USERNAME", "HDE_CoachBot").lstrip("@")
+DEMO_TRIAL_DAYS = int(os.environ.get("HDE_DEMO_TRIAL_DAYS", "14"))
+DEMO_RETENTION_DAYS = int(os.environ.get("HDE_DEMO_RETENTION_DAYS", "30"))
+DEMO_RATE_LIMIT_WINDOW_SECONDS = int(os.environ.get("HDE_DEMO_RATE_LIMIT_WINDOW_SECONDS", "3600"))
+DEMO_RATE_LIMIT_MAX_ATTEMPTS = int(os.environ.get("HDE_DEMO_RATE_LIMIT_MAX_ATTEMPTS", "5"))
+DEMO_SIGNUP_ATTEMPTS: Dict[str, list[float]] = {}
+
+
+def truthy(value: Any) -> bool:
+    return str(value or "").lower() in ("1", "true", "yes", "on")
+
+
+def is_demo_checkout(metadata: Dict[str, str]) -> bool:
+    return (
+        metadata.get("access_status") == "demo"
+        or metadata.get("product") in {"sanctuary-demo", "demo", "hde-sanctuary-demo"}
+        or truthy(metadata.get("demo_trial"))
+    )
+
+
+def check_demo_rate_limit(email: str, client_ip: str) -> None:
+    """Tiny in-process abuse guard for the semi-public demo endpoint."""
+    now = time.time()
+    keys = {f"email:{email}", f"ip:{client_ip}" if client_ip else "ip:unknown"}
+    cutoff = now - DEMO_RATE_LIMIT_WINDOW_SECONDS
+    for key in keys:
+        attempts = [ts for ts in DEMO_SIGNUP_ATTEMPTS.get(key, []) if ts >= cutoff]
+        if len(attempts) >= DEMO_RATE_LIMIT_MAX_ATTEMPTS:
+            raise HTTPException(status_code=429, detail="Too many demo signup attempts. Try again later.")
+        attempts.append(now)
+        DEMO_SIGNUP_ATTEMPTS[key] = attempts
+
 
 # In-memory session store for mock checkouts
 # session_id -> { "email": email, "name": name, "is_premium": is_premium }
@@ -120,23 +150,18 @@ def send_premium_signup_notification(email: str, user_id: int, token: str):
     alert_ids = [int(cid.strip()) for cid in alert_ids_str.split(",") if cid.strip().isdigit()]
 
     if bot_token and alert_ids:
-        # Send as plain text. Onboarding tokens contain underscores/hyphens, which
-        # made Telegram Markdown reject otherwise valid premium alerts with 400.
-        text = (
-            "New Premium Client\n\n"
-            f"{email} has joined the 6-Week Sovereign Container.\n"
-            f"User ID: {user_id}\n"
-            f"Onboarding token: {token}"
-        )
+        text = f"🔔 *New Premium Client!*\n\n{email} has joined the 6-Week Sovereign Container.\n\nOnboarding token: `{token}`"
         for chat_id in alert_ids:
             try:
-                resp = httpx.post(
+                httpx.post(
                     f"https://api.telegram.org/bot{bot_token}/sendMessage",
-                    json={"chat_id": chat_id, "text": text},
+                    json={
+                        "chat_id": chat_id,
+                        "text": text,
+                        "parse_mode": "Markdown"
+                    },
                     timeout=5.0
                 )
-                if resp.status_code != 200:
-                    logger.error("Telegram signup alert to %d failed with %d: %s", chat_id, resp.status_code, resp.text)
             except Exception as e:
                 logger.error("Failed to send Telegram signup alert to %d: %s", chat_id, e)
 
@@ -153,60 +178,27 @@ def send_customer_onboarding_email(email: str, deep_link: str, is_premium: bool)
         return False
 
     subject = "Your next step: open your Human Design sanctuary"
-    premium_plain = "\nAfter Telegram opens, return to the success page to schedule your coaching integration." if is_premium else ""
-    premium_html = "<p class=\"note\">After Telegram opens, return to the success page to schedule your coaching integration.</p>" if is_premium else ""
+    premium_note = "\n\nAfter Telegram is open, you can come back to the success page to schedule your coaching integration."
     body = f"""You’re in.
 
 Nothing else to figure out right now.
 
-Your next step is simple: open your private Telegram sanctuary:
+Your next step is simple:
+
+Open your private Telegram sanctuary:
 {deep_link}
 
-This link does not expire. If you get interrupted, overwhelmed, distracted, or need to come back later, use this email and pick up right here.{premium_plain}
+This link does not expire. If you get interrupted, overwhelmed, distracted, or need to come back later, use this email and pick up right here.{premium_note if is_premium else ""}
 
 If anything feels confusing, reply to this email and we’ll help.
 
-—
 Human Design Engine
-Your private Human Design sanctuary
-https://humandesignengine.com
 """
-    html = f"""<!doctype html>
-<html>
-  <body style=\"margin:0;background:#FAF7F0;color:#2F3631;font-family:Outfit,-apple-system,BlinkMacSystemFont,'Segoe UI',system-ui,sans-serif;\">
-    <table role=\"presentation\" width=\"100%\" cellpadding=\"0\" cellspacing=\"0\" style=\"background:#FAF7F0;padding:32px 12px;\">
-      <tr><td align=\"center\">
-        <table role=\"presentation\" width=\"100%\" cellpadding=\"0\" cellspacing=\"0\" style=\"max-width:640px;background:#FFFFFF;border:1px solid rgba(95,114,97,.15);border-radius:24px;overflow:hidden;box-shadow:0 8px 30px rgba(47,54,49,.03);\">
-          <tr><td style=\"padding:30px 30px 12px;\">
-            <div style=\"letter-spacing:.16em;text-transform:uppercase;color:#5F7261;font-size:12px;font-weight:700;\">Somatic Experiment Station</div>
-            <h1 style=\"margin:14px 0 8px;font-family:'Playfair Display',Georgia,serif;font-size:32px;line-height:1.12;color:#2F3631;font-weight:600;\">You’re in.</h1>
-            <p style=\"margin:0;color:#5C625E;font-size:16px;line-height:1.65;\">Nothing else to figure out right now. Your next step is simple.</p>
-          </td></tr>
-          <tr><td style=\"padding:18px 30px;\">
-            <a href=\"{deep_link}\" style=\"display:inline-block;background:#2F3631;color:#FAF7F0;text-decoration:none;font-weight:600;border-radius:12px;padding:14px 22px;\">Open your private Telegram sanctuary</a>
-          </td></tr>
-          <tr><td style=\"padding:0 30px 24px;color:#5C625E;font-size:15px;line-height:1.7;\">
-            <p>This link does not expire. If you get interrupted, overwhelmed, distracted, or need to come back later, use this email and pick up right here.</p>
-            {premium_html}
-            <p>If anything feels confusing, reply to this email and we’ll help.</p>
-          </td></tr>
-          <tr><td style=\"background:#2F3631;border-top:1px solid rgba(95,114,97,.15);padding:20px 30px;color:#FAF7F0;font-size:13px;line-height:1.6;\">
-            <strong style=\"color:#FAF7F0;\">Human Design Engine</strong><br>
-            Your private Human Design sanctuary<br>
-            <a href=\"https://staging.humandesignengine.com/deconditioning/\" style=\"color:#C7BFB5;\">staging.humandesignengine.com/deconditioning</a>
-          </td></tr>
-        </table>
-      </td></tr>
-    </table>
-  </body>
-</html>"""
 
-    msg = MIMEMultipart("alternative")
+    msg = MIMEText(body, "plain", "utf-8")
     msg["From"] = from_email
     msg["To"] = email
     msg["Subject"] = subject
-    msg.attach(MIMEText(body, "plain", "utf-8"))
-    msg.attach(MIMEText(html, "html", "utf-8"))
 
     try:
         with smtplib.SMTP(smtp_host, smtp_port, timeout=15) as server:
@@ -232,8 +224,11 @@ async def process_successful_checkout(
     and handles notification dispatch.
     """
     is_premium_tier = (metadata.get("tier") == "premium" or metadata.get("tier") == "sovereign" or metadata.get("product") == "sovereign")
-    family_test_consent = str(metadata.get("family_test_review_consent", "false")).lower() in ("1", "true", "yes", "on")
-    consent_value = str(metadata.get("coach_review_consent", "false")).lower() in ("1", "true", "yes", "on")
+    is_demo_tier = is_demo_checkout(metadata)
+    now = datetime.now(timezone.utc)
+    demo_trial_expires_at = now + timedelta(days=DEMO_TRIAL_DAYS) if is_demo_tier else None
+    family_test_consent = truthy(metadata.get("family_test_review_consent"))
+    consent_value = truthy(metadata.get("coach_review_consent"))
     # Sovereign/premium uses consent for coach access. Staging family tests also
     # capture explicit improvement-review consent even when the tester chose the
     # Solo package, so the monitor can distinguish consented test rows from
@@ -250,12 +245,16 @@ async def process_successful_checkout(
                 email=email,
                 stripe_customer_id=stripe_customer_id,
                 subscription_status="active",
+                access_status="demo" if is_demo_tier else "paid",
+                trial_expires_at=demo_trial_expires_at,
+                deactivated_at=None,
+                deletion_scheduled_at=None,
                 is_premium=is_premium_tier,
                 coach_review_consent=consent_granted,
-                coach_review_consent_at=datetime.now(timezone.utc) if consent_granted else None,
+                coach_review_consent_at=now if consent_granted else None,
                 coach_review_consent_source=consent_source if consent_granted else None,
                 coach_review_consent_revoked_at=None,
-                coaching_container_end=datetime.now(timezone.utc) + timedelta(weeks=6) if is_premium_tier else None
+                coaching_container_end=now + timedelta(weeks=6) if is_premium_tier else None
             )
             db_session.add(user)
             await db_session.commit()
@@ -263,21 +262,32 @@ async def process_successful_checkout(
             logger.info("Registered active user profile for: %s (Premium: %s)", email, is_premium_tier)
         else:
             user.subscription_status = "active"
+            user.access_status = "demo" if is_demo_tier else "paid"
+            user.trial_expires_at = demo_trial_expires_at if is_demo_tier else None
+            user.deactivated_at = None
+            user.deletion_scheduled_at = None
             if stripe_customer_id:
                 user.stripe_customer_id = stripe_customer_id
             if is_premium_tier:
                 user.is_premium = True
-                user.coaching_container_end = datetime.now(timezone.utc) + timedelta(weeks=6)
+                user.coaching_container_end = now + timedelta(weeks=6)
                 if consent_granted:
                     user.coach_review_consent = True
-                    user.coach_review_consent_at = datetime.now(timezone.utc)
+                    user.coach_review_consent_at = now
                     user.coach_review_consent_source = consent_source
                     user.coach_review_consent_revoked_at = None
 
             bot_instance_res = await db_session.execute(select(BotInstance).where(BotInstance.user_id == user.id))
             bot_instance = bot_instance_res.scalar_one_or_none()
             if bot_instance:
-                bot_instance.status = "active"
+                if is_demo_tier:
+                    bot_instance.status = "active"
+                else:
+                    # Paid upgrade should preserve the existing space. If the
+                    # demo/inactive container was paused, leave it in a wakeable
+                    # stopped state instead of pretending the Docker container is
+                    # already active; the router will start it on the next chat.
+                    bot_instance.status = "stopped" if bot_instance.status in {"suspended", "stopped", "deprovisioning", "error"} else "active"
 
             await db_session.commit()
             logger.info("Activated existing user profile for: %s (Premium: %s)", email, is_premium_tier)
@@ -360,9 +370,12 @@ async def stripe_webhook(
             result = await db_session.execute(select(User).where(User.stripe_customer_id == stripe_customer_id))
             user = result.scalar_one_or_none()
             if user:
+                now = datetime.now(timezone.utc)
                 user.subscription_status = "inactive"
+                user.deactivated_at = now
+                user.deletion_scheduled_at = now + timedelta(days=DEMO_RETENTION_DAYS)
                 await db_session.commit()
-                logger.info("Deactivated user subscription for stripe customer: %s", stripe_customer_id)
+                logger.info("Deactivated user subscription for stripe customer: %s; deletion scheduled after retention window", stripe_customer_id)
 
                 bot_instance_res = await db_session.execute(select(BotInstance).where(BotInstance.user_id == user.id))
                 bot_instance = bot_instance_res.scalar_one_or_none()
@@ -407,11 +420,13 @@ async def create_stripe_session(
         session_id = "cs_test_mock_" + secrets.token_urlsafe(16)
 
         is_premium_tier = (body.metadata or {}).get("tier") == "premium" or (body.metadata or {}).get("tier") == "sovereign" or (body.metadata or {}).get("product") == "sovereign"
+        is_demo_tier = is_demo_checkout(body.metadata or {})
 
         MOCK_SESSIONS[session_id] = {
             "email": body.email,
             "name": (body.metadata or {}).get("name") or "Friend",
-            "is_premium": is_premium_tier
+            "is_premium": is_premium_tier,
+            "is_demo": is_demo_tier,
         }
 
         # Check if this is a report purchase
@@ -480,9 +495,9 @@ async def create_stripe_session(
             "customer_email": body.email,
             "metadata": body.metadata or {},
         }
-        if body.is_subscription and body.subscription_trial_days:
+        if body.is_subscription and (body.subscription_trial_days or is_demo_checkout(body.metadata or {})):
             session_kwargs["subscription_data"] = {
-                "trial_period_days": body.subscription_trial_days,
+                "trial_period_days": body.subscription_trial_days or DEMO_TRIAL_DAYS,
                 "metadata": body.metadata or {},
             }
         session = stripe.checkout.Session.create(**session_kwargs)
@@ -490,6 +505,90 @@ async def create_stripe_session(
     except Exception as e:
         logger.exception("Failed to create Stripe session")
         raise HTTPException(status_code=502, detail=str(e))
+
+
+# ── Semi-public Sanctuary Demo Signup ─────────────────────────────────
+class CreateDemoRequest(BaseModel):
+    email: str
+    name: Optional[str] = None
+    invite_code: Optional[str] = None
+    source: Optional[str] = None
+
+
+@router.post("/demo/start")
+async def create_demo_access(
+    body: CreateDemoRequest,
+    request: Request,
+    background_tasks: BackgroundTasks,
+) -> Dict[str, Any]:
+    """Create or refresh a 14-day semi-public Sanctuary demo account."""
+    required_code = os.environ.get("HDE_DEMO_INVITE_CODE", "").strip()
+    if required_code and not hmac.compare_digest(str(body.invite_code or ""), required_code):
+        raise HTTPException(status_code=403, detail="Invalid demo invite code.")
+
+    email = (body.email or "").strip().lower()
+    if not email or "@" not in email or len(email) > 255:
+        raise HTTPException(status_code=400, detail="Valid email is required.")
+    client_ip = (request.headers.get("x-forwarded-for") or (request.client.host if request.client else "")).split(",")[0].strip()
+    check_demo_rate_limit(email, client_ip)
+
+    now = datetime.now(timezone.utc)
+    requested_trial_expires_at = now + timedelta(days=DEMO_TRIAL_DAYS)
+
+    async with async_session_factory() as db_session:
+        db_session: AsyncSession
+        result = await db_session.execute(select(User).where(User.email == email))
+        user = result.scalar_one_or_none()
+        if user and (user.access_status or "paid") == "paid" and user.subscription_status == "active":
+            raise HTTPException(status_code=409, detail="This email already has paid Sanctuary access. Use the normal onboarding link or contact support.")
+        if user and (user.access_status or "") == "demo" and user.trial_expires_at:
+            current_expiry = user.trial_expires_at
+            if current_expiry.tzinfo is None:
+                current_expiry = current_expiry.replace(tzinfo=timezone.utc)
+            if current_expiry > now:
+                trial_expires_at = current_expiry
+            else:
+                trial_expires_at = requested_trial_expires_at
+        else:
+            trial_expires_at = requested_trial_expires_at
+        if not user:
+            user = User(
+                email=email,
+                stripe_customer_id="demo_" + secrets.token_urlsafe(12),
+                subscription_status="active",
+                access_status="demo",
+                trial_expires_at=trial_expires_at,
+                deactivated_at=None,
+                deletion_scheduled_at=None,
+                is_premium=False,
+            )
+            db_session.add(user)
+            await db_session.commit()
+            await db_session.refresh(user)
+        else:
+            user.subscription_status = "active"
+            user.access_status = "demo"
+            user.trial_expires_at = trial_expires_at
+            user.deactivated_at = None
+            user.deletion_scheduled_at = None
+            await db_session.commit()
+            await db_session.refresh(user)
+
+        token = "hde_demo_" + secrets.token_urlsafe(16)
+        invitation = Invitation(user_id=user.id, token=token, expires_at=now + timedelta(days=DEMO_TRIAL_DAYS))
+        db_session.add(invitation)
+        await db_session.commit()
+
+    deep_link = f"https://t.me/{ONBOARDING_BOT_USERNAME}?start={token}"
+    background_tasks.add_task(send_customer_onboarding_email, email, deep_link, False)
+    return {
+        "success": True,
+        "access_status": "demo",
+        "trial_days": DEMO_TRIAL_DAYS,
+        "trial_expires_at": trial_expires_at.isoformat(),
+        "deletion_grace_days": DEMO_RETENTION_DAYS,
+        "deep_link": deep_link,
+    }
 
 
 # ── Onboarding Deep Link Endpoint ──────────────────────────────────────

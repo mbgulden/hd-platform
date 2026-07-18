@@ -7,7 +7,7 @@ import os
 import re
 import sys
 import time
-from datetime import datetime, timezone
+from datetime import datetime, timedelta, timezone
 from typing import Any, Dict, Optional
 
 import httpx
@@ -118,7 +118,57 @@ def as_aware_utc(value: datetime) -> datetime:
     return value.astimezone(timezone.utc)
 
 
+def user_access_state(user: Optional[User]) -> dict:
+    """Return bot access status, including demo trial countdown handling."""
+    if not user:
+        return {"allowed": False, "kind": "missing", "message": "❌ *Error:* Account not found."}
+
+    now = datetime.now(timezone.utc)
+    access_status = (getattr(user, "access_status", None) or "paid").lower()
+    trial_expires_at = getattr(user, "trial_expires_at", None)
+
+    if access_status == "demo":
+        if trial_expires_at:
+            expires = as_aware_utc(trial_expires_at)
+            if expires <= now:
+                return {
+                    "allowed": False,
+                    "kind": "demo_expired",
+                    "message": "Your 14-day Sanctuary demo has ended. Your private space is paused, not deleted. Upgrade to keep going: https://humandesignengine.com/deconditioning/",
+                }
+            seconds_left = int((expires - now).total_seconds())
+            days_left = max(0, (seconds_left + 86399) // 86400)
+            return {"allowed": True, "kind": "demo", "days_left": days_left, "expires_at": expires}
+        return {"allowed": True, "kind": "demo", "days_left": None, "expires_at": None}
+
+    if getattr(user, "subscription_status", None) == "active":
+        return {"allowed": True, "kind": "paid"}
+
+    return {
+        "allowed": False,
+        "kind": "inactive",
+        "message": "Your Sanctuary access is currently inactive. Your space is paused, not deleted. Upgrade/reactivate here: https://humandesignengine.com/deconditioning/",
+    }
+
+
+async def mark_access_paused(bot_instance: BotInstance, kind: str) -> None:
+    async with async_session_factory() as pause_session:
+        res = await pause_session.execute(select(BotInstance).where(BotInstance.id == bot_instance.id).options(selectinload(BotInstance.user)))
+        db_bot = res.scalar_one_or_none()
+        if not db_bot:
+            return
+        db_bot.status = "suspended"
+        if db_bot.user:
+            now = datetime.now(timezone.utc)
+            db_bot.user.subscription_status = "inactive"
+            db_bot.user.access_status = "expired_demo" if kind == "demo_expired" else (db_bot.user.access_status or "inactive")
+            db_bot.user.deactivated_at = db_bot.user.deactivated_at or now
+            db_bot.user.deletion_scheduled_at = db_bot.user.deletion_scheduled_at or (now + timedelta(days=30))
+        await pause_session.commit()
+
+
 # ── HMAC Signature Helper ──────────────────────────────────────────────
+
 def generate_hmac_signature(payload: bytes, secret: str) -> str:
     """Generate SHA-256 HMAC signature of the payload bytes."""
     return hmac.new(secret.encode('utf-8'), payload, hashlib.sha256).hexdigest()
@@ -265,11 +315,14 @@ async def provision_bot_instance(client: httpx.AsyncClient, chat_id: int, user: 
     await send_telegram_message(client, chat_id, f"🔑 *Auth successful.* Opening {guide_name}. This takes about 10 seconds...")
 
     api_success = False
+    trial_expires_at = getattr(user, "trial_expires_at", None)
     payload_dict = {
         "user_id": user.id,
         "telegram_user_id": str(chat_id),
         "guide_name": user.guide_name or "Ember",
         "guide_name_source": user.guide_name_source or "default",
+        "access_status": getattr(user, "access_status", None) or "paid",
+        "trial_expires_at": trial_expires_at.isoformat() if trial_expires_at else None,
         "action": "provision"
     }
     payload_bytes = json.dumps(payload_dict).encode('utf-8')
@@ -329,8 +382,9 @@ async def process_start_token(client: httpx.AsyncClient, chat_id: int, token: st
             # the gate; overwhelmed users should be able to return whenever they can.
 
             user = invitation.user
-            if not user or user.subscription_status != "active":
-                await send_telegram_message(client, chat_id, "❌ *Error:* Your subscription is currently inactive.")
+            access = user_access_state(user)
+            if not access["allowed"]:
+                await send_telegram_message(client, chat_id, access["message"])
                 return
 
             chat_id_str = str(chat_id)
@@ -379,6 +433,15 @@ async def process_start_token(client: httpx.AsyncClient, chat_id: int, token: st
             await db_session.rollback()
             await send_telegram_message(client, chat_id, "❌ *Error:* Database connection issue. Please try again.")
             return
+
+        if access.get("kind") == "demo":
+            days_left = access.get("days_left")
+            countdown = f" You have {days_left} day{'s' if days_left != 1 else ''} left in the demo." if days_left is not None else ""
+            await send_telegram_message(
+                client,
+                chat_id,
+                "🌿 *Demo access active.* This is your 14-day Sanctuary test space." + countdown + " If you upgrade before it ends, this same container continues."
+            )
 
         await send_telegram_message(
             client,
@@ -479,6 +542,12 @@ async def handle_user_chat(client: httpx.AsyncClient, chat_id: int, text: str) -
 
     if not bot_instance:
         await send_telegram_message(client, chat_id, "Welcome! Please onboard using the link provided after your humandesignengine.com checkout.")
+        return
+
+    access = user_access_state(bot_instance.user)
+    if not access["allowed"]:
+        await mark_access_paused(bot_instance, access.get("kind", "inactive"))
+        await send_telegram_message(client, chat_id, access["message"])
         return
 
     if bot_instance.status == "awaiting_guide_choice":

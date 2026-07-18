@@ -86,6 +86,10 @@ class User(Base):
     subscription_status: Mapped[Optional[str]] = mapped_column(
         String(50), nullable=True, default="inactive"
     )
+    access_status: Mapped[str] = mapped_column(String(50), nullable=False, default="paid")
+    trial_expires_at: Mapped[Optional[datetime]] = mapped_column(DateTime(timezone=True), nullable=True)
+    deactivated_at: Mapped[Optional[datetime]] = mapped_column(DateTime(timezone=True), nullable=True)
+    deletion_scheduled_at: Mapped[Optional[datetime]] = mapped_column(DateTime(timezone=True), nullable=True)
     is_premium: Mapped[bool] = mapped_column(Boolean, nullable=False, default=False)
     coaching_container_end: Mapped[Optional[datetime]] = mapped_column(DateTime(timezone=True), nullable=True)
     coach_review_consent: Mapped[bool] = mapped_column(Boolean, nullable=False, default=False)
@@ -202,6 +206,22 @@ async def init_db() -> None:
     async with engine.begin() as conn:
         try:
             await conn.execute(text("ALTER TABLE users ADD COLUMN is_premium BOOLEAN DEFAULT FALSE"))
+        except Exception:
+            pass
+        try:
+            await conn.execute(text("ALTER TABLE users ADD COLUMN access_status VARCHAR(50) DEFAULT 'paid' NOT NULL"))
+        except Exception:
+            pass
+        try:
+            await conn.execute(text("ALTER TABLE users ADD COLUMN trial_expires_at TIMESTAMP WITH TIME ZONE"))
+        except Exception:
+            pass
+        try:
+            await conn.execute(text("ALTER TABLE users ADD COLUMN deactivated_at TIMESTAMP WITH TIME ZONE"))
+        except Exception:
+            pass
+        try:
+            await conn.execute(text("ALTER TABLE users ADD COLUMN deletion_scheduled_at TIMESTAMP WITH TIME ZONE"))
         except Exception:
             pass
         try:
