@@ -1,15 +1,11 @@
 ---
 import Layout from '../layouts/Layout.astro';
-import Nav from '../components/Nav.astro';
-import Footer from '../components/Footer.astro';
 import emdash from '../content/emdash.json';
 
 const { title, subtitle, description, readings } = emdash.shePlantedATreePage;
 ---
 
 <Layout title="She Planted A Tree — Somatic Human Design Readings & Coaching | Becca Gulden" description={description}>
-  <Nav />
-  
   <main class="container">
     <div class="header">
       <span class="badge">Somatic Coaching &amp; Readings</span>
@@ -88,7 +84,6 @@ const { title, subtitle, description, readings } = emdash.shePlantedATreePage;
     </div>
   </main>
 
-  <Footer />
 </Layout>
 
 <style>

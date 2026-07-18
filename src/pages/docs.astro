@@ -1,12 +1,8 @@
 ---
 import Layout from '../layouts/Layout.astro';
-import Nav from '../components/Nav.astro';
-import Footer from '../components/Footer.astro';
 ---
 
 <Layout title="Human Design API Documentation | Human Design Engine">
-  <Nav />
-  
   <div class="docs-body-wrapper">
     
 
@@ -69,7 +65,7 @@ import Footer from '../components/Footer.astro';
     <p class="section-sub">All <code>/v1/*</code> chart endpoints require an API key. Register a key below to get started.</p>
 
     <h3 style="margin-top: 32px; font-size: 20px;">API Key (Production)</h3>
-    <div class="code-block" is:raw><span class="com"># Register a key via dashboard</span>
+    <div class="code-block" tabindex="0" role="region" aria-label="API key command example" is:raw><span class="com"># Register a key via dashboard</span>
 <span class="fn">curl</span> -X POST https://api.humandesignengine.com/v1/keys/register \
   -H <span class="str">"Content-Type: application/json"</span> \
   -d <span class="str">'{"email":"you@example.com","name":"production"}'</span>
@@ -84,7 +80,7 @@ import Footer from '../components/Footer.astro';
     <p style="font-size:14px; color: var(--text-muted); margin: 8px 0 16px;">Enter your API key below — the form will POST to <code>/v1/natal</code> and render the response inline.</p>
 
     <h3 style="margin-top: 32px; font-size: 20px;">Response Format</h3>
-    <div class="code-block" is:raw>{
+    <div class="code-block" tabindex="0" role="region" aria-label="Natal API JSON response example" is:raw>{
   <span class="key">"success"</span>: <span class="num">true</span>,
   <span class="key">"endpoint"</span>: <span class="str">"/v1/natal"</span>,
   <span class="key">"data"</span>: {
@@ -186,7 +182,7 @@ import Footer from '../components/Footer.astro';
   </div>
 </section>
 
-<footer class="footer">
+<section class="docs-cta-footer">
   <div class="container">
     <p>Human Design Engine API · <a href="https://github.com/mbgulden/OpenHumanDesignMCP">Open source (AGPL-3.0)</a> · <a href="mailto:api@humandesignengine.com">Contact</a></p>
     <p style="margin-top: 8px; font-size: 12px;">Base URL: <code>https://api.humandesignengine.com</code> · Status: <span style="color: var(--success);">●</span> Operational</p>
@@ -246,7 +242,6 @@ document.getElementById('natal-form').addEventListener('submit', async (e) => {
 
   </div>
   
-  <Footer />
 </Layout>
 
 <style>
@@ -496,14 +491,14 @@ document.getElementById('natal-form').addEventListener('submit', async (e) => {
   .response-box.loading { color: var(--warning); }
   .response-box.success { color: var(--success); }
   .response-box.error { color: #ff5555; }
-  .footer {
+  .docs-cta-footer {
     padding: 40px 0;
     text-align: center;
     border-top: 1px solid var(--border);
     color: var(--text-dim);
     font-size: 14px;
   }
-  .footer a { color: var(--accent); text-decoration: none; }
+  .docs-cta-footer a { color: var(--accent); text-decoration: none; }
 
   /* Remove old nav/header overrides to align with Layout.astro */
   .nav { display: none !important; }
