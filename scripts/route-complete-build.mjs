@@ -184,6 +184,8 @@ function normalizeLegacyHtmlLinks(contents) {
     .replaceAll('<input id="agree" required="" type="checkbox"/>', '<input id="agree" required="" type="checkbox" aria-label="Agree to the Affiliate Terms"/>')
     .replaceAll('<label>I agree to the <a href="#">Affiliate Terms</a>.', '<label for="agree">I agree to the <a href="#">Affiliate Terms</a>.')
     .replaceAll('<nav class="nav">', '<nav class="page-subnav nav" style="display: flex; flex-wrap: wrap; align-items: center; justify-content: flex-start; gap: 10px; text-align: left;">')
+    .replaceAll('<div class="quiz-badge">', '<div class="quiz-badge" style="color: #2F3631;">')
+    .replaceAll('<div class="question-text">', '<div class="question-text" style="color: #2F3631; -webkit-text-fill-color: #2F3631;">')
     .replaceAll('<div style="overflow-x: auto; -webkit-overflow-scrolling: touch;">', '<div style="overflow-x: auto; -webkit-overflow-scrolling: touch;" tabindex="0" role="region" aria-label="Scrollable data table">')
     .replaceAll('href="/reports"', 'href="/buy-report/"')
     .replaceAll("href='/reports'", "href='/buy-report/'")
