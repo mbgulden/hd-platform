@@ -13,6 +13,95 @@ test.describe('local route flows', () => {
     await expect(page.locator('body')).toContainText('Your Human Design Blueprint');
   });
 
+
+  test('buy report checkout emits funnel analytics through Stripe redirect', async ({ page }) => {
+    await page.route('**/api/checkout/create-session', async (route) => {
+      await route.fulfill({
+        status: 200,
+        contentType: 'application/json',
+        body: JSON.stringify({
+          url: 'https://checkout.stripe.com/c/pay/cs_test_funnel_123',
+          session_id: 'cs_test_funnel_123',
+        }),
+      });
+    });
+    await page.route('https://checkout.stripe.com/**', async (route) => {
+      await route.fulfill({ status: 200, contentType: 'text/html', body: '<h1>Stripe checkout</h1>' });
+    });
+
+    await page.goto('/buy-report/');
+    await page.evaluate(() => {
+      (window as any).__hdeEvents = [];
+      for (const name of [
+        'checkout_report_selected',
+        'checkout_cta_clicked',
+        'checkout_session_create_started',
+        'checkout_session_created',
+        'checkout_stripe_redirect',
+      ]) {
+        window.addEventListener(`hde:${name}`, (event) => {
+          (window as any).__hdeEvents.push({ name, detail: (event as CustomEvent).detail });
+        });
+      }
+    });
+
+    await page.locator('#card-bundle').click();
+    await page.locator('#name').fill('Ada Lovelace');
+    await page.locator('#email').fill('ada@example.com');
+    await page.locator('#birthdate').fill('1815-12-10');
+    await page.locator('#birthtime').fill('08:30');
+    await page.locator('#location').fill('London, UK');
+
+    await Promise.all([
+      page.waitForFunction(() => (window as any).__hdeEvents?.some((event: any) => event.name === 'checkout_stripe_redirect')),
+      page.locator('#buyBtn').click(),
+    ]);
+
+    const events = await page.evaluate(() => (window as any).__hdeEvents);
+    expect(events.map((event: any) => event.name)).toEqual([
+      'checkout_report_selected',
+      'checkout_cta_clicked',
+      'checkout_session_create_started',
+      'checkout_session_created',
+      'checkout_stripe_redirect',
+    ]);
+    expect(events.at(-1).detail).toMatchObject({
+      funnel: 'report_checkout',
+      report: 'bundle',
+      checkout_session_id: 'cs_test_funnel_123',
+      stripe_redirect_host: 'checkout.stripe.com',
+    });
+  });
+
+  test('success page emits purchase confirmation analytics after session lookup', async ({ page }) => {
+    await page.route('**/api/checkout/session?session_id=cs_test_success', async (route) => {
+      await route.fulfill({
+        status: 200,
+        contentType: 'application/json',
+        body: JSON.stringify({
+          email: 'ada@example.com',
+          report: 'bundle',
+          is_premium: false,
+        }),
+      });
+    });
+
+    await page.goto('/success?session_id=cs_test_success');
+    await page.waitForFunction(() =>
+      (window as any).dataLayer?.some((event: any) => event.event === 'checkout_purchase_confirmed')
+    );
+
+    const purchaseEvent = await page.evaluate(() =>
+      (window as any).dataLayer.find((event: any) => event.event === 'checkout_purchase_confirmed')
+    );
+    expect(purchaseEvent).toMatchObject({
+      funnel: 'report_checkout',
+      checkout_session_id: 'cs_test_success',
+      lookup_type: 'session_id',
+      report: 'bundle',
+    });
+  });
+
   test('gate index links to gate 1', async ({ page }) => {
     await page.goto('/human-design/gates/');
     await expect(page.locator('a[href$="gate-1.html"]').first()).toBeVisible();

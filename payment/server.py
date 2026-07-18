@@ -310,7 +310,7 @@ class Handler(BaseHTTPRequestHandler):
             stripe_payload["phone_number_collection"] = {"enabled": True}
 
         session = self._stripe("POST", "/v1/checkout/sessions", stripe_payload)
-        self._json({"url": session.get("url", "")})
+        self._json({"url": session.get("url", ""), "session_id": session.get("id", "")})
 
     # ── Webhook (Stripe → Report generation) ──────────────────────
 
