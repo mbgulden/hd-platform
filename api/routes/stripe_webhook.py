@@ -178,21 +178,22 @@ def send_customer_onboarding_email(email: str, deep_link: str, is_premium: bool)
         return False
 
     subject = "Your next step: open your Human Design sanctuary"
-    premium_note = "\n\nAfter Telegram is open, you can come back to the success page to schedule your coaching integration."
-    body = f"""You’re in.
+    body = f"""SOMATIC EXPERIMENT STATION
 
-Nothing else to figure out right now.
+You’re in.
+Nothing else to figure out right now. Your next step is simple.
 
-Your next step is simple:
-
-Open your private Telegram sanctuary:
+Open your private Telegram sanctuary
 {deep_link}
 
-This link does not expire. If you get interrupted, overwhelmed, distracted, or need to come back later, use this email and pick up right here.{premium_note if is_premium else ""}
+This link does not expire. If you get interrupted, overwhelmed, distracted, or need to
+come back later, use this email and pick up right here.
 
 If anything feels confusing, reply to this email and we’ll help.
 
 Human Design Engine
+Your private Human Design sanctuary
+staging.humandesignengine.com/deconditioning
 """
 
     msg = MIMEText(body, "plain", "utf-8")
