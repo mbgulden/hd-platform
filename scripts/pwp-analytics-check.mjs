@@ -45,6 +45,17 @@ const htmlForRoute = (routePath) => {
   return found ? { path: found, html: readFileSync(found, 'utf8') } : { path: candidates[0], html: null };
 };
 
+const withLocalScriptBundles = (rendered) => {
+  if (!rendered.html) return '';
+  const scripts = [...rendered.html.matchAll(/<script[^>]+src=["']([^"']+\.js)["'][^>]*>/g)]
+    .map((match) => match[1])
+    .filter((src) => src.startsWith('/'))
+    .map((src) => join(distDir, src.slice(1)))
+    .filter((scriptPath) => existsSync(scriptPath))
+    .map((scriptPath) => readFileSync(scriptPath, 'utf8'));
+  return [rendered.html, ...scripts].join('\n');
+};
+
 const hasGlobalAnalytics = (html) => {
   const hasTagLoader = /googletagmanager\.com\/(gtag\/js|gtm\.js)/.test(html);
   const hasDataLayer = /window\.dataLayer\s*=\s*window\.dataLayer\s*\|\|\s*\[\]/.test(html);
@@ -83,7 +94,7 @@ const globalChecks = routes.map((route) => {
 
 const eventChecks = eventRequirements.map((requirement) => {
   const rendered = htmlForRoute(requirement.route);
-  const ok = Boolean(rendered.html && hasAnyRequiredEvent(rendered.html, requirement.requiredEvents));
+  const ok = Boolean(rendered.html && hasAnyRequiredEvent(withLocalScriptBundles(rendered), requirement.requiredEvents));
   return {
     name: requirement.name,
     route: requirement.route,
