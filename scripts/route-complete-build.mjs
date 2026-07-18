@@ -255,7 +255,9 @@ function materializeRedirectPage(from, to) {
   if (fs.existsSync(target) && !isLegacyFileRedirect) return false;
 
   ensureDir(path.dirname(target));
-  const html = `<!doctype html><html lang="en"><head><meta charset="utf-8"><meta http-equiv="refresh" content="0; url=${escapeXml(to)}"><link rel="canonical" href="${escapeXml(to)}"><title>Redirecting…</title></head><body><p>Redirecting to <a href="${escapeXml(to)}">${escapeXml(to)}</a>.</p></body></html>\n`;
+  const description = 'Redirecting to the canonical Human Design Engine page for this legacy URL.';
+  const canonicalTarget = to.startsWith('https://') ? to : `${site}${to.startsWith('/') ? to : `/${to}`}`;
+  const html = `<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="description" content="${description}"><meta http-equiv="refresh" content="0; url=${escapeXml(to)}"><link rel="canonical" href="${escapeXml(canonicalTarget)}"><title>Redirecting…</title></head><body><p>Redirecting to <a href="${escapeXml(to)}">${escapeXml(to)}</a>.</p></body></html>\n`;
   fs.writeFileSync(target, html);
   return true;
 }
