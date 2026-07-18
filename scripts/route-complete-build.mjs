@@ -6,6 +6,28 @@ const docsDir = path.join(repoRoot, 'docs');
 const distDir = path.join(repoRoot, 'dist');
 const site = 'https://humandesignengine.com';
 
+const redirectedPublicRoutes = new Set([
+  '/affiliates.html',
+  '/landing-index.html',
+  '/buy-report.html',
+  '/success.html',
+  '/privacy.html',
+  '/terms.html',
+]);
+
+const indexExcludedRoutes = new Set([
+  '/affiliates/dashboard.html',
+  '/cron-health',
+  '/cron-health/',
+  '/cron-health.html',
+  '/landing-',
+  ...redirectedPublicRoutes,
+]);
+
+function isIndexExcludedRoute(route) {
+  return indexExcludedRoutes.has(route) || route.startsWith('/cron-health/');
+}
+
 const preserved = [];
 const skipped = [];
 
@@ -119,6 +141,13 @@ function normalizeLegacyHtmlLinks(contents) {
     });
 }
 
+function injectNoindex(contents) {
+  if (!contents.includes('<html') || /<meta\s+name=["']robots["']/i.test(contents)) return contents;
+  const meta = '<meta name="robots" content="noindex, nofollow">';
+  if (contents.includes('</head>')) return contents.replace('</head>', `${meta}\n</head>`);
+  return meta + '\n' + contents;
+}
+
 function copyLegacyDocs() {
   if (!fs.existsSync(docsDir)) {
     console.warn('[route-complete] docs/ not found; skipping legacy preservation');
@@ -157,10 +186,10 @@ function writeSitemap() {
     if (route !== '/' && route.endsWith('/')) routes.add(route.slice(0, -1));
   }
 
-  // Filter routes: exclude redirected legacy paths and non-canonical trailing slash duplicates
+  // Filter routes: exclude redirected/public-duplicate paths, operational/private-ish
+  // pages, and non-canonical trailing slash duplicates.
   const filteredRoutes = [...routes].filter((route) => {
-    // Exclude explicitly redirected files
-    if (route === '/buy-report.html' || route === '/success.html' || route === '/privacy.html' || route === '/terms.html') {
+    if (isIndexExcludedRoute(route)) {
       return false;
     }
     // Exclude non-canonical duplicates (no trailing slash when trailing slash version exists)
@@ -191,6 +220,9 @@ function writeSitemap() {
 
 function writeRedirects() {
   const redirectMap = new Map([
+    ['/affiliates', ['/affiliates/signup.html', '301']],
+    ['/affiliates/', ['/affiliates/signup.html', '301']],
+    ['/affiliates.html', ['/affiliates/signup.html', '301']],
     ['/human-design/authorities', ['/human-design/authorities/', '301']],
     ['/human-design/centers', ['/human-design/centers/', '301']],
     ['/human-design/channels', ['/human-design/channels/', '301']],
@@ -201,6 +233,7 @@ function writeRedirects() {
     ['/reports', ['/buy-report/', '301']],
     ['/reports/', ['/buy-report/', '301']],
     ['/buy-report', ['/buy-report/', '301']],
+    ['/landing-index.html', ['/', '301']],
     ['/success', ['/success/', '301']],
   ]);
 
@@ -251,7 +284,8 @@ function materializeRedirectPage(from, to) {
   }
 
   // Overwrite if it is an explicit redirect of a legacy file to an Astro folder route
-  const isLegacyFileRedirect = (from === '/buy-report.html' || from === '/success.html' || from === '/privacy.html' || from === '/terms.html');
+  // or an intentionally retired static HTML entry point.
+  const isLegacyFileRedirect = redirectedPublicRoutes.has(from);
   if (fs.existsSync(target) && !isLegacyFileRedirect) return false;
 
   ensureDir(path.dirname(target));
@@ -278,7 +312,8 @@ function normalizeBuiltHtml() {
   let normalized = 0;
   for (const file of walk(distDir).filter((f) => f.endsWith('.html'))) {
     const before = fs.readFileSync(file, 'utf8');
-    const after = normalizeLegacyHtmlLinks(before);
+    let after = normalizeLegacyHtmlLinks(before);
+    if (isIndexExcludedRoute(routeForHtml(file))) after = injectNoindex(after);
     if (after !== before) {
       fs.writeFileSync(file, after);
       normalized += 1;

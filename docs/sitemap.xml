@@ -1,11 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url><loc>https://humandesignengine.com/</loc><lastmod>2026-06-03</lastmod><priority>1.0</priority></url>
-  <url><loc>https://humandesignengine.com/affiliates.html</loc><lastmod>2026-06-03</lastmod><priority>0.6</priority></url>
-  <url><loc>https://humandesignengine.com/affiliates/dashboard.html</loc><lastmod>2026-06-03</lastmod><priority>0.6</priority></url>
   <url><loc>https://humandesignengine.com/affiliates/signup.html</loc><lastmod>2026-06-03</lastmod><priority>0.6</priority></url>
   <url><loc>https://humandesignengine.com/bodygraph.html</loc><lastmod>2026-06-03</lastmod><priority>0.6</priority></url>
-  <url><loc>https://humandesignengine.com/buy-report.html</loc><lastmod>2026-06-03</lastmod><priority>0.6</priority></url>
   <url><loc>https://humandesignengine.com/hd-engine/free-tools/chart-calculator.html</loc><lastmod>2026-06-03</lastmod><priority>0.6</priority></url>
   <url><loc>https://humandesignengine.com/hd-engine/free-tools/gate-lookup.html</loc><lastmod>2026-06-03</lastmod><priority>0.6</priority></url>
   <url><loc>https://humandesignengine.com/hd-engine/free-tools/type-quiz.html</loc><lastmod>2026-06-03</lastmod><priority>0.6</priority></url>
@@ -148,10 +145,8 @@
   <url><loc>https://humandesignengine.com/human-design/types/manifestor.html</loc><lastmod>2026-06-03</lastmod><priority>0.8</priority></url>
   <url><loc>https://humandesignengine.com/human-design/types/projector.html</loc><lastmod>2026-06-03</lastmod><priority>0.8</priority></url>
   <url><loc>https://humandesignengine.com/human-design/types/reflector.html</loc><lastmod>2026-06-03</lastmod><priority>0.8</priority></url>
-  <url><loc>https://humandesignengine.com/landing-</loc><lastmod>2026-06-03</lastmod><priority>0.9</priority></url>
   <url><loc>https://humandesignengine.com/landing-api.html</loc><lastmod>2026-06-03</lastmod><priority>0.9</priority></url>
   <url><loc>https://humandesignengine.com/landing-reports.html</loc><lastmod>2026-06-03</lastmod><priority>0.9</priority></url>
   <url><loc>https://humandesignengine.com/landing-sheplantedatree.html</loc><lastmod>2026-06-03</lastmod><priority>0.9</priority></url>
-  <url><loc>https://humandesignengine.com/success.html</loc><lastmod>2026-06-03</lastmod><priority>0.6</priority></url>
   <url><loc>https://humandesignengine.com/widget-demo.html</loc><lastmod>2026-06-03</lastmod><priority>0.6</priority></url>
 </urlset>
