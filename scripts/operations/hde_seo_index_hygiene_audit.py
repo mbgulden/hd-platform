@@ -155,7 +155,11 @@ def audit(repo: Path) -> dict[str, object]:
     redirect_loops: list[dict[str, str]] = []
 
     for source, target in redirects.items():
-        if source.rstrip("/") == target.rstrip("/"):
+        # Only exact self-targeting is a loop. Slash-normalization redirects such
+        # as /buy-report -> /buy-report/ are intentional canonicalization; do not
+        # flatten them with rstrip('/') or every useful trailing-slash redirect
+        # becomes a false positive.
+        if source == target:
             redirect_loops.append({"source": source, "target": target})
 
     for html in walk_html(dist):
