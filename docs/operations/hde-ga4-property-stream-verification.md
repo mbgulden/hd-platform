@@ -69,13 +69,37 @@ Known Google auth evidence from `docs/operations/hde-google-auth-via-kai-2026-07
 - No reusable `gcloud` account or OAuth token with `analytics.edit` / `analytics.readonly` was found for Ned.
 - API-key-only access is insufficient for Analytics Admin.
 
+## Verifier result
+
+Fresh run after adding the verifier:
+
+```text
+python3 -m py_compile scripts/operations/verify_ga4_stream.py
+python3 scripts/operations/verify_ga4_stream.py --repo .
+```
+
+Summary:
+
+```text
+summary_status=partial
+repo_expected_measurement_file_count=146
+gtag_js_http=200 bytes=432086
+https://humandesignengine.com/                  200 expected_measurement_present=False gtag_loader_present=False
+https://humandesignengine.com/landing-reports.html 200 expected_measurement_present=True gtag_loader_present=True
+https://humandesignengine.com/buy-report.html   200 expected_measurement_present=False gtag_loader_present=False
+https://humandesignengine.com/widget-demo.html  200 expected_measurement_present=True gtag_loader_present=True
+https://humandesignengine.com/bodygraph.html    200 expected_measurement_present=True gtag_loader_present=True
+admin_verified=False
+admin_probe_status=401 UNAUTHENTICATED
+```
+
 ## Status
 
 🟡 Partial / blocked by Google OAuth scope.
 
 - `G-Q6TPL08VM7` is the current recorded GA4 measurement ID for HDE.
-- The tag is present on some live pages, so the stream/tag installation is not zero.
-- The live install is not site-wide: the homepage and `/buy-report.html` did not expose the expected snippet in the pre-commit probe.
+- The tag is present on 146 committed repo files and 3 of 5 sampled live pages, so the stream/tag installation is not zero.
+- The live install is not site-wide: the homepage and `/buy-report.html` did not expose the expected snippet in the fresh verifier probe.
 - GA4 property/data-stream ownership cannot be proven or mutated through Analytics Admin until a reusable OAuth credential with `analytics.readonly` and preferably `analytics.edit` is available.
 
 ## Required next step
