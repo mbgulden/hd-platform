@@ -7,7 +7,9 @@ import os
 import secrets
 import smtplib
 import stripe
+from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
+from html import escape
 from pydantic import BaseModel
 import time
 from datetime import datetime, timezone, timedelta
@@ -195,8 +197,55 @@ Human Design Engine
 Your private Human Design sanctuary
 staging.humandesignengine.com/deconditioning
 """
+    safe_deep_link = escape(deep_link, quote=True)
+    html = f"""<!doctype html>
+<html lang=\"en\">
+  <body style=\"margin:0;padding:0;background:#fbf7ed;color:#14213d;font-family:Inter, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;\">
+    <table role=\"presentation\" width=\"100%\" cellspacing=\"0\" cellpadding=\"0\" style=\"background:linear-gradient(135deg,#fffdf8,#f5ead5);padding:32px 16px;\">
+      <tr>
+        <td align=\"center\">
+          <table role=\"presentation\" width=\"100%\" cellspacing=\"0\" cellpadding=\"0\" style=\"max-width:640px;background:#fffdf8;border:1px solid #eadfca;border-radius:28px;overflow:hidden;box-shadow:0 24px 70px rgba(20,33,61,.10);\">
+            <tr>
+              <td style=\"padding:28px 32px 12px;\">
+                <div style=\"font-weight:800;letter-spacing:.02em;font-size:18px;color:#14213d;\">Human Design<span style=\"color:#c9a84c;\">Engine</span></div>
+                <div style=\"margin-top:24px;color:#557c55;font-weight:800;text-transform:uppercase;letter-spacing:.12em;font-size:12px;\">Somatic Experiment Station</div>
+                <h1 style=\"margin:14px 0 12px;font-family:Georgia, 'Times New Roman', serif;font-size:42px;line-height:.98;color:#14213d;font-weight:500;\">You’re in.</h1>
+                <p style=\"margin:0;color:#5f6b7a;font-size:18px;line-height:1.6;\">Nothing else to figure out right now. Your next step is simple.</p>
+              </td>
+            </tr>
+            <tr>
+              <td style=\"padding:16px 32px 8px;\">
+                <table role=\"presentation\" width=\"100%\" cellspacing=\"0\" cellpadding=\"0\" style=\"background:#ffffff;border:1px solid #eadfca;border-radius:22px;\">
+                  <tr>
+                    <td style=\"padding:24px;\">
+                      <p style=\"margin:0 0 16px;color:#14213d;font-size:17px;line-height:1.55;font-weight:700;\">Open your private Telegram sanctuary</p>
+                      <a href=\"{safe_deep_link}\" style=\"display:inline-block;background:#14213d;color:#ffffff;text-decoration:none;border-radius:999px;padding:15px 24px;font-weight:800;font-size:16px;\">Continue in Telegram</a>
+                      <p style=\"margin:18px 0 0;color:#5f6b7a;font-size:14px;line-height:1.55;word-break:break-word;\">If the button does not open, copy this link:<br><a href=\"{safe_deep_link}\" style=\"color:#557c55;\">{safe_deep_link}</a></p>
+                    </td>
+                  </tr>
+                </table>
+              </td>
+            </tr>
+            <tr>
+              <td style=\"padding:20px 32px 30px;\">
+                <p style=\"margin:0 0 16px;color:#5f6b7a;font-size:16px;line-height:1.65;\">This link does not expire. If you get interrupted, overwhelmed, distracted, or need to come back later, use this email and pick up right here.</p>
+                <p style=\"margin:0;color:#5f6b7a;font-size:16px;line-height:1.65;\">If anything feels confusing, reply to this email and we’ll help.</p>
+                <div style=\"height:1px;background:#eadfca;margin:26px 0 18px;\"></div>
+                <p style=\"margin:0;color:#14213d;font-weight:800;font-size:15px;\">Human Design Engine</p>
+                <p style=\"margin:5px 0 0;color:#5f6b7a;font-size:14px;\">Your private Human Design sanctuary</p>
+                <p style=\"margin:5px 0 0;color:#8f4f4f;font-size:13px;\">staging.humandesignengine.com/deconditioning</p>
+              </td>
+            </tr>
+          </table>
+        </td>
+      </tr>
+    </table>
+  </body>
+</html>"""
 
-    msg = MIMEText(body, "plain", "utf-8")
+    msg = MIMEMultipart("alternative")
+    msg.attach(MIMEText(body, "plain", "utf-8"))
+    msg.attach(MIMEText(html, "html", "utf-8"))
     msg["From"] = from_email
     msg["To"] = email
     msg["Subject"] = subject

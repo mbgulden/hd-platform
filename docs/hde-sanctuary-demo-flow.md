@@ -86,7 +86,7 @@ Run `scripts/hde_demo_production_gate.py` before production. It intentionally re
 
 ## Nice-to-have management/governance checklist
 
-- Customer onboarding email copy follows the “Somatic Experiment Station” style from the reference email/PDF: quiet “You’re in,” one simple next step, durable Telegram sanctuary link, and HDE sanctuary footer.
+- Customer onboarding email copy follows the “Somatic Experiment Station” style from the reference email/PDF and must send both plain-text fallback and HTML email styled like the HDE site theme: cream/paper background, ink text, sage eyebrow/link accents, gold Engine mark, rounded paper card, and dark ink CTA button.
 - Add admin dashboard filters for `demo`, `expired_demo`, `deletion_scheduled_at`, and `trial_expires_at`.
 - Send reminder emails/messages at day 7, day 12, expiry, and 7 days before deletion.
 - Add `HDE_DEMO_INVITE_CODE` in production if the page should be semi-public but gated.
