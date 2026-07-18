@@ -180,6 +180,15 @@ const launchCta = { label: 'Generate Free Reading', url: '/free-human-design-rea
       display: none; /* Hide standard CTA link on mobile in favor of drawer navigation */
     }
 
+    :global(body.drawer-open)::before {
+      content: '';
+      position: fixed;
+      inset: 0;
+      z-index: 99;
+      background: linear-gradient(180deg, #FAF7F0 0%, #F6F1E7 100%);
+      opacity: 1;
+    }
+
     /* Open State */
     :global(.drawer-open) nav {
       opacity: 1;
