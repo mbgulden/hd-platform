@@ -1,0 +1,10 @@
+[Unit]
+Description=Run HDE demo trial lifecycle daily
+
+[Timer]
+OnCalendar=*-*-* 09:15:00 UTC
+Persistent=true
+RandomizedDelaySec=10m
+
+[Install]
+WantedBy=timers.target
