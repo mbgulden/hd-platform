@@ -234,16 +234,27 @@ async function main() {
   const startedAt = new Date().toISOString();
 
   let checkout;
-  if (useDirectStripe) {
-    if (!stripeKey) throw new Error('HDE_SMOKE_DIRECT_STRIPE requires STRIPE_SECRET_KEY');
-    checkout = await createCheckoutViaStripe(baseUrl, stripeKey);
-  } else {
-    checkout = await createCheckoutViaPublicApi(baseUrl);
-  }
+  let stripe;
+  let reportDelivery;
+  let expiration;
+  try {
+    if (useDirectStripe) {
+      if (!stripeKey) throw new Error('HDE_SMOKE_DIRECT_STRIPE requires STRIPE_SECRET_KEY');
+      checkout = await createCheckoutViaStripe(baseUrl, stripeKey);
+    } else {
+      checkout = await createCheckoutViaPublicApi(baseUrl);
+    }
 
-  const stripe = await verifyStripeSession(checkout.sessionId, stripeKey);
-  const reportDelivery = await verifyReportDelivery(baseUrl);
-  const expiration = await expireStripeSession(checkout.sessionId, stripeKey);
+    stripe = await verifyStripeSession(checkout.sessionId, stripeKey);
+    reportDelivery = await verifyReportDelivery(baseUrl);
+    expiration = await expireStripeSession(checkout.sessionId, stripeKey);
+  } catch (error) {
+    if (checkout?.sessionId) {
+      error.cleanup = await expireStripeSession(checkout.sessionId, stripeKey);
+      error.checkout = { endpoint: checkout.endpoint, session_id: checkout.sessionId };
+    }
+    throw error;
+  }
 
   const result = {
     ok: true,
@@ -267,6 +278,6 @@ async function main() {
 }
 
 main().catch((error) => {
-  console.error(JSON.stringify({ ok: false, error: error.message }, null, 2));
+  console.error(JSON.stringify({ ok: false, error: error.message, checkout: error.checkout, cleanup: error.cleanup }, null, 2));
   process.exit(1);
 });
