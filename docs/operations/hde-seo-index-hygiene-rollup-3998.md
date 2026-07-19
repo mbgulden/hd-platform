@@ -53,11 +53,10 @@ npm run build
 python3 scripts/operations/hde_seo_index_hygiene_audit.py --repo . --json
 python3 scripts/operations/hde_seo_index_hygiene_audit.py --repo .
 git diff --check
-npx wrangler deploy --dry-run
 ```
 
 Attach the JSON/text output to the Linear finalization evidence or `/tmp/issue-batches/GRO-3998_RESULT.md`.
 
-## Workers build compatibility
+## Cloudflare check compatibility
 
-The parent audit branch also keeps `wrangler.jsonc` aligned with the static Astro build output by setting `assets.directory` to `./dist`. Cloudflare Pages already uses `pages_build_output_dir`, but the Workers Builds check invokes Wrangler directly and needs the assets directory declared explicitly after `npm run build` creates `dist/`.
+`wrangler.jsonc` intentionally stays Pages-compatible with `pages_build_output_dir: "dist"`. The duplicate `Workers Builds: hd-platform` GitHub check may ask for a Worker entry point or `assets.directory`, but adding root-level `assets.directory` breaks Cloudflare Pages validation for this Pages project. Treat a remaining red Workers check as an external Cloudflare project configuration decision unless Pages itself is failing.
