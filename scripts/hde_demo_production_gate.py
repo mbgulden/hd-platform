@@ -21,6 +21,7 @@ LIFECYCLE_TIMER = os.getenv("HDE_DEMO_LIFECYCLE_TIMER", "hde_demo_trial_lifecycl
 REMINDER_TIMER = os.getenv("HDE_DEMO_REMINDER_TIMER", "hde_demo_reminders.timer")
 LIFECYCLE_TEMPLATE_PREFIX = os.getenv("HDE_DEMO_LIFECYCLE_TEMPLATE_PREFIX", "hde_demo_trial_lifecycle")
 REMINDER_TEMPLATE_PREFIX = os.getenv("HDE_DEMO_REMINDER_TEMPLATE_PREFIX", "hde_demo_reminders")
+TEMPLATE_DIR = Path(os.getenv("HDE_DEMO_SYSTEMD_TEMPLATE_DIR", REPO_ROOT / "scripts" / "systemd"))
 
 REQUIRED_HUMAN_EVIDENCE = {
     "telegram_clickthrough": "HDE_DEMO_TELEGRAM_E2E_OK",
@@ -48,7 +49,7 @@ def truthy_env_or_artifact(name: str, env_name: str, artifacts: dict[str, Any]) 
 
 
 def template_pair_present(prefix: str) -> bool:
-    return (REPO_ROOT / "deploy" / "systemd" / f"{prefix}.service").exists() and (REPO_ROOT / "deploy" / "systemd" / f"{prefix}.timer").exists()
+    return (TEMPLATE_DIR / f"{prefix}.service").exists() and (TEMPLATE_DIR / f"{prefix}.timer").exists()
 
 
 def main() -> int:

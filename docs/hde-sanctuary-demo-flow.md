@@ -75,14 +75,14 @@ Important: `deprovision` deletes the container/workspace. User PII is anonymized
 
 Blocking before broad production launch:
 
-1. `scripts/hde_trial_lifecycle.py` must be scheduled at least daily with `HDE_TRIAL_LIFECYCLE_DRY_RUN=0`. Production templates live in `deploy/systemd/hde_demo_trial_lifecycle.service` and `.timer`; staging templates remain available as `*_staging.*` references.
+1. `scripts/hde_trial_lifecycle.py` must be scheduled at least daily with `HDE_TRIAL_LIFECYCLE_DRY_RUN=0`. Production templates live in `scripts/systemd/hde_demo_trial_lifecycle.service` and `.timer`; staging templates remain available as `*_staging.*` references under the same lane-safe directory.
 2. One real Telegram click-through from `/sanctuary-demo/` must prove the `hde_demo_` deep link is accepted by the router.
 3. One real container provisioning test must prove the demo account gets a private guide space and demo prompt context.
 4. One paid-upgrade continuity test must prove the same paused/demo space wakes instead of losing continuity. Do not complete live Stripe payment without explicit approval.
 5. Add Cloudflare/WAF or equivalent edge rate limiting before making the door public; in-process rate limiting is a seatbelt, not a roll cage. Evidence is recorded in `.runtime/demo_edge_rate_limit.json` after the Cloudflare rule is verified.
 6. Reminder messaging must be implemented: day 7, day 12, expiry, and pre-deletion warning. Production uses `scripts/hde_demo_reminders.py` plus `hde_demo_reminders.timer`; staging uses `hde_demo_reminders_staging.timer`.
 
-Run `scripts/hde_demo_production_gate.py` before production. The gate is environment-configurable through `HDE_REPO_ROOT`, `HDE_RUNTIME_DIR`, `HDE_DEMO_LIFECYCLE_TIMER`, `HDE_DEMO_REMINDER_TIMER`, `HDE_DEMO_*_TEMPLATE_PREFIX`, and evidence env vars/artifacts. It intentionally returns `BLOCKED` until live/human proof artifacts are present, while machine-checkable timer/rate-limit/reminder gates can pass from installed evidence.
+Run `scripts/hde_demo_production_gate.py` before production. The gate is environment-configurable through `HDE_REPO_ROOT`, `HDE_RUNTIME_DIR`, `HDE_DEMO_SYSTEMD_TEMPLATE_DIR`, `HDE_DEMO_LIFECYCLE_TIMER`, `HDE_DEMO_REMINDER_TIMER`, `HDE_DEMO_*_TEMPLATE_PREFIX`, and evidence env vars/artifacts. It intentionally returns `BLOCKED` until live/human proof artifacts are present, while machine-checkable timer/rate-limit/reminder gates can pass from installed evidence.
 
 ## Nice-to-have management/governance checklist
 
