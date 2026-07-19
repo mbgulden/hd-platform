@@ -13,6 +13,7 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
 from .routes import router as v1_router
+from .routes.access_policy import router as access_policy_router
 from .routes.stripe_webhook import router as stripe_webhook_router
 from .routes.public import router as public_router
 from shared.database import close_db, init_db
@@ -101,6 +102,7 @@ app.add_middleware(
 app.include_router(v1_router)
 app.include_router(stripe_webhook_router)
 app.include_router(public_router, prefix="/api")
+app.include_router(access_policy_router)
 
 
 # ---------------------------------------------------------------------------
