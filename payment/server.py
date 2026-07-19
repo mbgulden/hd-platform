@@ -90,9 +90,9 @@ class Handler(BaseHTTPRequestHandler):
         length = int(self.headers.get('Content-Length', 0))
         body = self.rfile.read(length) if length else b''
 
-        if self.path in ('/checkout', '/create-checkout', '/create-checkout-session'):
+        if self.path in ('/checkout', '/create-checkout', '/create-checkout-session', '/api/checkout/create-session'):
             self._handle_checkout(body)
-        elif self.path in ('/webhook', '/stripe-webhook'):
+        elif self.path in ('/webhook', '/stripe-webhook', '/api/webhooks/stripe'):
             self._handle_webhook(body)
         elif self.path == '/api/affiliate-signup':
             self._handle_affiliate_signup(body)
@@ -108,7 +108,7 @@ class Handler(BaseHTTPRequestHandler):
             self._json({"status": "ok", "service": "hde-payment-server"})
         elif parsed.path == '/api/affiliate-stats':
             self._handle_affiliate_stats(parsed)
-        elif parsed.path in ('/checkout', '/create-checkout', '/create-checkout-session'):
+        elif parsed.path in ('/checkout', '/create-checkout', '/create-checkout-session', '/api/checkout/session'):
             self._handle_get_checkout_session(parsed)
         elif parsed.path.startswith('/static/'):
             # Serve static component files
