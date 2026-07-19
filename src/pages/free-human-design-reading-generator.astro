@@ -9,7 +9,22 @@ import Layout from '../layouts/Layout.astro';
       <p class="hero-subtitle">Calculate your Human Design Type, Strategy, Authority, Profile, and defined centers from birth data using the Human Design Engine.</p>
     </section>
     <section class="widget-panel" aria-label="Free Human Design chart calculator">
-      <div class="hde-chart-widget" data-api="https://api-staging.humandesignengine.com"></div>
+      <div class="widget-reservation" aria-live="polite">
+        <div class="hde-chart-widget" data-api="https://api-staging.humandesignengine.com">
+          <div class="widget-skeleton" aria-hidden="true">
+            <div class="widget-skeleton-header">
+              <span class="skeleton-line skeleton-title"></span>
+              <span class="skeleton-line skeleton-subtitle"></span>
+            </div>
+            <div class="widget-skeleton-body">
+              <span class="skeleton-line"></span>
+              <span class="skeleton-line"></span>
+              <span class="skeleton-line skeleton-row"></span>
+              <span class="skeleton-line skeleton-button"></span>
+            </div>
+          </div>
+        </div>
+      </div>
     </section>
   </main>
   <script src="/widget.js" is:inline></script>
@@ -22,4 +37,17 @@ import Layout from '../layouts/Layout.astro';
   h1 { font-family: 'Playfair Display', Georgia, serif; color: #2F3631; font-size: clamp(2.4rem, 7vw, 4.5rem); line-height: 1.04; margin: 12px 0 16px; }
   .hero-subtitle { color: #5C625E; max-width: 720px; margin: 0 auto; font-size: 1.08rem; line-height: 1.7; }
   .widget-panel { background: rgba(255,255,255,.72); border: 1px solid rgba(95,114,97,.16); border-radius: 28px; padding: clamp(20px, 5vw, 42px); box-shadow: 0 24px 70px rgba(47,54,49,.08); }
+  .widget-reservation { min-height: 560px; display: flex; align-items: flex-start; justify-content: center; }
+  :global(.hde-chart-widget) { width: 100%; min-height: 560px; }
+  .widget-skeleton { max-width: 500px; width: 100%; margin: 0 auto; overflow: hidden; border: 1px solid rgba(95,114,97,.18); border-radius: 20px; background: rgba(255,255,255,.86); box-shadow: 0 14px 40px rgba(47,54,49,.08); }
+  .widget-skeleton-header { min-height: 104px; padding: 28px 24px; background: linear-gradient(135deg, #2F3631 0%, #5F7261 100%); }
+  .widget-skeleton-body { padding: 24px; }
+  .skeleton-line { display: block; height: 44px; margin-bottom: 16px; border-radius: 10px; background: linear-gradient(90deg, rgba(95,114,97,.10), rgba(95,114,97,.20), rgba(95,114,97,.10)); background-size: 220% 100%; animation: skeletonPulse 1.6s ease-in-out infinite; }
+  .skeleton-title { width: 58%; height: 22px; margin: 0 auto 10px; background: rgba(250,247,240,.72); }
+  .skeleton-subtitle { width: 72%; height: 14px; margin: 0 auto; background: rgba(250,247,240,.46); }
+  .skeleton-row { height: 84px; }
+  .skeleton-button { height: 48px; border-radius: 12px; background: rgba(47,54,49,.22); }
+  @keyframes skeletonPulse { 0% { background-position: 0% 50%; } 100% { background-position: -220% 50%; } }
+  @media (prefers-reduced-motion: reduce) { .skeleton-line { animation: none; } }
+  @media (max-width: 560px) { .widget-reservation, :global(.hde-chart-widget) { min-height: 600px; } }
 </style>

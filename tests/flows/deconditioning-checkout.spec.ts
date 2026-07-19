@@ -6,6 +6,18 @@ test.describe('local route flows', () => {
   test('free reading generator loads the embedded widget shell', async ({ page }) => {
     await page.goto('/free-human-design-reading-generator/');
     await expect(page.locator('body')).toContainText('Free Human Design Reading Generator');
+    await expect(page.locator('.hde-chart-widget')).toBeVisible();
+  });
+
+  test('free reading generator reserves widget space before JavaScript hydrates', async ({ page }) => {
+    await page.route('**/widget.js', (route) => route.abort());
+    await page.goto('/free-human-design-reading-generator/');
+
+    const panel = page.locator('.widget-panel');
+    await expect(page.locator('.widget-skeleton')).toBeVisible();
+
+    const box = await panel.boundingBox();
+    expect(box?.height ?? 0).toBeGreaterThanOrEqual(560);
   });
 
   test('buy report page exposes the Human Design blueprint CTA', async ({ page }) => {
