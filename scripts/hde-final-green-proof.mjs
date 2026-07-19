@@ -33,8 +33,8 @@ function run(name, command, args, env = process.env) {
     started_at: started,
     finished_at: new Date().toISOString(),
     exit_code: result.status ?? 1,
-    stdout_tail: tail(result.stdout),
-    stderr_tail: tail(result.stderr),
+    stdout_tail: redactSensitiveText(tail(result.stdout)),
+    stderr_tail: redactSensitiveText(tail(result.stderr)),
   };
 }
 
@@ -68,12 +68,24 @@ function hasGreenLighthouseArtifacts() {
   };
 }
 
+function redactSensitiveText(text = '') {
+  return text
+    .replace(/cs_(?:test|live)_[A-Za-z0-9_]+/g, (match) => `${match.slice(0, 13)}…redacted`)
+    .replace(/[A-Za-z0-9._%+-]+\+\d{8,}@[A-Za-z0-9.-]+/g, (match) => match.replace(/\+[^@]+@/, '+…@'));
+}
+
+function redactObject(value) {
+  if (typeof value === 'string') return redactSensitiveText(value);
+  if (Array.isArray(value)) return value.map(redactObject);
+  if (value && typeof value === 'object') {
+    return Object.fromEntries(Object.entries(value).map(([key, child]) => [key, redactObject(child)]));
+  }
+  return value;
+}
+
 function redactSmokeJson(raw) {
   try {
-    const parsed = JSON.parse(raw);
-    if (parsed?.checkout?.session_id) parsed.checkout.session_id = parsed.checkout.session_id.replace(/^(cs_(?:test|live)_).+$/, '$1…redacted');
-    if (parsed?.checkout?.smoke_email) parsed.checkout.smoke_email = parsed.checkout.smoke_email.replace(/\+[^@]+@/, '+…@');
-    return parsed;
+    return redactObject(JSON.parse(raw));
   } catch {
     return null;
   }
@@ -132,7 +144,8 @@ let smokeJson = {};
 if (commands.at(-1).exit_code === 0) {
   const smoke = run('production smoke', 'npm', ['run', 'smoke:production']);
   commands.push(smoke);
-  smokeJson = redactSmokeJson(smoke.stdout_tail) || { ok: false, error: smoke.stderr_tail || smoke.stdout_tail };
+  const smokeJsonRaw = redactSmokeJson(smoke.stdout_tail) || redactSmokeJson(smoke.stderr_tail);
+  smokeJson = smokeJsonRaw || { ok: false, error: redactSensitiveText(smoke.stderr_tail || smoke.stdout_tail) };
 }
 const pwpSummary = readJson(path.join(outputDir, 'summary.json'));
 const lighthouse = hasGreenLighthouseArtifacts();
