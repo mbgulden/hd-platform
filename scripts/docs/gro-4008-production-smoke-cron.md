@@ -29,7 +29,7 @@ Optional fixture mode:
 
 - `HDE_SMOKE_REPORT_URL=https://humandesignengine.com/api/reports/download/<known-smoke-fixture>.pdf`
 
-When `HDE_SMOKE_REPORT_URL` is set, the smoke checks that exact report download URL. Without a fixture, the default synthetic path may return 404; **404 is acceptable** because it proves the public delivery route is reachable and not trapped behind auth. 401/403 is always a failure.
+When `HDE_SMOKE_REPORT_URL` is set, the smoke checks that exact report download URL. Without a fixture, the default synthetic path may return 404; **404 is acceptable** because it proves the public delivery route is reachable and not trapped behind auth. 401/403 is always a failure. A 200 HTML response is also a failure for the synthetic PDF path because that is usually a static-site fallback, not report delivery.
 
 Direct Stripe fallback mode:
 

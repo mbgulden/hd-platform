@@ -213,15 +213,17 @@ async function verifyReportDelivery(baseUrl) {
   });
   const contentType = response.headers.get('content-type') || '';
   const publicRoute = ![401, 403].includes(response.status);
-  const acceptable = response.ok || response.status === 206 || (allow404 && response.status === 404);
-  if (!publicRoute || !acceptable) {
+  const expectedMissing = allow404 && response.status === 404;
+  const downloadContent = response.ok || response.status === 206;
+  const looksLikeReport = /application\/(pdf|octet-stream)|binary\/octet-stream/i.test(contentType);
+  if (!publicRoute || (!expectedMissing && !(downloadContent && looksLikeReport))) {
     throw new Error(`report delivery probe failed: HTTP ${response.status} content-type=${contentType || 'n/a'} url=${reportUrl}`);
   }
   return {
     url: reportUrl,
     status: response.status,
     content_type: contentType || 'n/a',
-    note: response.status === 404 ? 'public route reachable; no smoke PDF fixture configured' : 'download path returned content',
+    note: response.status === 404 ? 'public route reachable; no smoke PDF fixture configured' : 'download path returned report-like content',
   };
 }
 

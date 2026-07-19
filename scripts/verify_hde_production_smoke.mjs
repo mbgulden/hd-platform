@@ -34,6 +34,7 @@ for (const [needle, label] of [
   ['verifyReportDelivery', 'report delivery route probe'],
   ['HDE_SMOKE_ALLOW_REPORT_404', 'no-fixture report route mode'],
   ['HDE_SMOKE_REPORT_URL', 'configured report fixture mode'],
+  ['looksLikeReport', 'HTML fallback rejection'],
   ['STRIPE_SECRET_KEY', 'Stripe credential source'],
   ['redact(stripeKey)', 'redacted secret reporting'],
 ]) {
