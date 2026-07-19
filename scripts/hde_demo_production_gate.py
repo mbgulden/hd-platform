@@ -1,9 +1,9 @@
 #!/usr/bin/env python3
 """HDE demo production gate checklist.
 
-This is intentionally a blocker-oriented gate, not a deploy script. It collects the
-human/live proofs Michael asked for before production and checks machine proof
-that staging lifecycle/reminder/rate-limit guards are in place.
+This is intentionally a blocker-oriented gate, not a deploy script. It checks
+live/human proof artifacts plus machine-checkable lifecycle/reminder/rate-limit
+guards for the configured environment.
 """
 from __future__ import annotations
 
@@ -13,8 +13,14 @@ import subprocess
 from pathlib import Path
 from typing import Any
 
-EVIDENCE_FILE = Path(os.getenv("HDE_DEMO_PRODUCTION_EVIDENCE_FILE", "/home/ubuntu/work/hd-platform-staging/.runtime/demo_production_evidence.json"))
-EDGE_RATE_LIMIT_FILE = Path(os.getenv("HDE_DEMO_EDGE_RATE_LIMIT_FILE", "/home/ubuntu/work/hd-platform-staging/.runtime/demo_edge_rate_limit.json"))
+REPO_ROOT = Path(os.getenv("HDE_REPO_ROOT", Path(__file__).resolve().parents[1]))
+RUNTIME_DIR = Path(os.getenv("HDE_RUNTIME_DIR", REPO_ROOT / ".runtime"))
+EVIDENCE_FILE = Path(os.getenv("HDE_DEMO_PRODUCTION_EVIDENCE_FILE", RUNTIME_DIR / "demo_production_evidence.json"))
+EDGE_RATE_LIMIT_FILE = Path(os.getenv("HDE_DEMO_EDGE_RATE_LIMIT_FILE", RUNTIME_DIR / "demo_edge_rate_limit.json"))
+LIFECYCLE_TIMER = os.getenv("HDE_DEMO_LIFECYCLE_TIMER", "hde_demo_trial_lifecycle.timer")
+REMINDER_TIMER = os.getenv("HDE_DEMO_REMINDER_TIMER", "hde_demo_reminders.timer")
+LIFECYCLE_TEMPLATE_PREFIX = os.getenv("HDE_DEMO_LIFECYCLE_TEMPLATE_PREFIX", "hde_demo_trial_lifecycle")
+REMINDER_TEMPLATE_PREFIX = os.getenv("HDE_DEMO_REMINDER_TEMPLATE_PREFIX", "hde_demo_reminders")
 
 REQUIRED_HUMAN_EVIDENCE = {
     "telegram_clickthrough": "HDE_DEMO_TELEGRAM_E2E_OK",
@@ -41,10 +47,14 @@ def truthy_env_or_artifact(name: str, env_name: str, artifacts: dict[str, Any]) 
     return bool(artifacts.get(name))
 
 
+def template_pair_present(prefix: str) -> bool:
+    return (REPO_ROOT / "deploy" / "systemd" / f"{prefix}.service").exists() and (REPO_ROOT / "deploy" / "systemd" / f"{prefix}.timer").exists()
+
+
 def main() -> int:
     artifacts = load_json(EVIDENCE_FILE)
-    missing = []
-    evidence = {}
+    missing: list[dict[str, str]] = []
+    evidence: dict[str, bool] = {}
 
     for name, env in REQUIRED_HUMAN_EVIDENCE.items():
         value = truthy_env_or_artifact(name, env, artifacts)
@@ -52,16 +62,16 @@ def main() -> int:
         if not value:
             missing.append({"gate": name, "required_env_or_artifact": env})
 
-    lifecycle_timer_rc, lifecycle_timer_state = systemctl("is-active", "hde_demo_trial_lifecycle_staging.timer")
-    reminder_timer_rc, reminder_timer_state = systemctl("is-active", "hde_demo_reminders_staging.timer")
-    lifecycle_templates_present = Path("deploy/systemd/hde_demo_trial_lifecycle_staging.service").exists() and Path("deploy/systemd/hde_demo_trial_lifecycle_staging.timer").exists()
-    reminder_templates_present = Path("deploy/systemd/hde_demo_reminders_staging.service").exists() and Path("deploy/systemd/hde_demo_reminders_staging.timer").exists()
-    reminder_script_present = Path("scripts/hde_demo_reminders.py").exists()
+    lifecycle_timer_rc, lifecycle_timer_state = systemctl("is-active", LIFECYCLE_TIMER)
+    reminder_timer_rc, reminder_timer_state = systemctl("is-active", REMINDER_TIMER)
+    lifecycle_templates_present = template_pair_present(LIFECYCLE_TEMPLATE_PREFIX)
+    reminder_templates_present = template_pair_present(REMINDER_TEMPLATE_PREFIX)
+    reminder_script_present = (REPO_ROOT / "scripts" / "hde_demo_reminders.py").exists()
 
     reminders_ok = bool(os.getenv("HDE_DEMO_REMINDERS_OK", "").strip()) or (reminder_timer_rc == 0 and reminder_templates_present and reminder_script_present)
     evidence["reminder_messages"] = reminders_ok
     if not reminders_ok:
-        missing.append({"gate": "reminder_messages", "required_env_or_artifact": "HDE_DEMO_REMINDERS_OK or active hde_demo_reminders_staging.timer"})
+        missing.append({"gate": "reminder_messages", "required_env_or_artifact": f"HDE_DEMO_REMINDERS_OK or active {REMINDER_TIMER}"})
 
     edge_artifact = load_json(EDGE_RATE_LIMIT_FILE)
     edge_ok = bool(os.getenv("HDE_DEMO_EDGE_RATE_LIMIT_OK", "").strip()) or bool(edge_artifact.get("rule_id") and edge_artifact.get("host") and edge_artifact.get("path") == "/api/demo/start")
@@ -71,9 +81,12 @@ def main() -> int:
 
     result = {
         "status": "PASS" if not missing and lifecycle_timer_rc == 0 and lifecycle_templates_present else "BLOCKED",
+        "repo_root": str(REPO_ROOT),
+        "lifecycle_timer": LIFECYCLE_TIMER,
         "lifecycle_timer_active": lifecycle_timer_rc == 0,
         "lifecycle_timer_state": lifecycle_timer_state,
         "lifecycle_templates_present": lifecycle_templates_present,
+        "reminder_timer": REMINDER_TIMER,
         "reminder_timer_active": reminder_timer_rc == 0,
         "reminder_timer_state": reminder_timer_state,
         "reminder_templates_present": reminder_templates_present,

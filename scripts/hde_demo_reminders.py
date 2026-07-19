@@ -26,10 +26,11 @@ from shared.database import User, async_session_factory  # noqa: E402
 logging.basicConfig(level=logging.INFO, format="%(asctime)s [%(levelname)s] %(message)s")
 logger = logging.getLogger("hde-demo-reminders")
 
-STATE_FILE = Path(os.getenv("HDE_DEMO_REMINDER_STATE_FILE", "/home/ubuntu/work/hd-platform-staging/.runtime/demo_reminders_sent.json"))
+DEFAULT_REPO_ROOT = Path(__file__).resolve().parents[1]
+STATE_FILE = Path(os.getenv("HDE_DEMO_REMINDER_STATE_FILE", str(DEFAULT_REPO_ROOT / ".runtime" / "demo_reminders_sent.json")))
 BOT_TOKEN = os.getenv("HDE_COACH_BOT_TOKEN", "")
 DRY_RUN = os.getenv("HDE_DEMO_REMINDER_DRY_RUN", "0").lower() in {"1", "true", "yes", "on"}
-UPGRADE_URL = os.getenv("HDE_DEMO_UPGRADE_URL", "https://staging.humandesignengine.com/deconditioning/")
+UPGRADE_URL = os.getenv("HDE_DEMO_UPGRADE_URL", "https://humandesignengine.com/deconditioning/")
 
 
 def aware(value: datetime | None) -> datetime | None:

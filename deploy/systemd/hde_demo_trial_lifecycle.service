@@ -1,0 +1,14 @@
+[Unit]
+Description=Human Design Engine demo trial lifecycle
+After=network.target hde-payment.service hde-reports.service
+
+[Service]
+Type=oneshot
+User=ubuntu
+WorkingDirectory=/home/ubuntu/work/hd-platform
+Environment=PYTHONPATH=/home/ubuntu/work/hd-platform:/home/ubuntu/work/hd-platform/scripts
+Environment=ORCHESTRATOR_URL=http://localhost:8001
+Environment=HDE_TRIAL_LIFECYCLE_DRY_RUN=0
+Environment=HDE_DEMO_ANONYMIZE_PII=1
+EnvironmentFile=/home/ubuntu/work/hd-platform/.env
+ExecStart=/home/ubuntu/work/hd-platform/.venv/bin/python3 scripts/hde_trial_lifecycle.py

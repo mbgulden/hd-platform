@@ -38,8 +38,8 @@ HDE_EMAIL_THEME = {
 }
 
 BODY_FONT = "Outfit, -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif"
-DISPLAY_FONT = "'Playfair Display', Georgia, serif"
-SITE_URL = "https://staging.humandesignengine.com/deconditioning/"
+DISPLAY_FONT = "'Playfair Display', serif"
+SITE_URL = "https://humandesignengine.com/deconditioning/"
 
 
 def brand_logo_html() -> str:
@@ -94,7 +94,7 @@ def html_email_shell(*, eyebrow: str, title: str, intro: str, cta_label: str | N
                 <div style=\"height:1px;background:{t['card_border']};margin:26px 0 18px;\"></div>
                 <p style=\"margin:0;color:{t['sage_deep']};font-family:{DISPLAY_FONT};font-size:17px;font-weight:700;\">Human Design <span style=\"font-style:italic;font-weight:400;color:{t['sage_mid']};\">Engine</span></p>
                 <p style=\"margin:5px 0 0;color:{t['text_secondary']};font-size:14px;\">Your private Human Design sanctuary</p>
-                <p style=\"margin:5px 0 0;font-size:13px;\"><a href=\"{SITE_URL}\" style=\"color:{t['sage_mid']};text-decoration:none;\">staging.humandesignengine.com/deconditioning</a></p>
+                <p style=\"margin:5px 0 0;font-size:13px;\"><a href=\"{SITE_URL}\" style=\"color:{t['sage_mid']};text-decoration:none;\">humandesignengine.com/deconditioning</a></p>
               </td>
             </tr>
           </table>
@@ -126,7 +126,7 @@ If anything feels confusing, reply to this email and we’ll help.
 
 Human Design Engine
 Your private Human Design sanctuary
-staging.humandesignengine.com/deconditioning
+humandesignengine.com/deconditioning
 """
     html = html_email_shell(
         eyebrow="Somatic Experiment Station",
@@ -155,7 +155,7 @@ If anything feels confusing, reply to this email and we’ll help.
 
 Human Design Engine
 Your private Human Design sanctuary
-https://staging.humandesignengine.com/deconditioning/"""
+https://humandesignengine.com/deconditioning/"""
     html = html_email_shell(
         eyebrow="Human Design Report",
         title=f"Your {title_report} report is ready.",
