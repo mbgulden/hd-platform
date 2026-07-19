@@ -86,7 +86,10 @@ Run `scripts/hde_demo_production_gate.py` before production. It intentionally re
 
 ## Nice-to-have management/governance checklist
 
-- Customer onboarding email copy follows the “Somatic Experiment Station” style from the reference email/PDF and must send both plain-text fallback and HTML email styled like the HDE site theme: cream/paper background, ink text, sage eyebrow/link accents, gold Engine mark, rounded paper card, and dark ink CTA button.
+- Customer onboarding and report-delivery emails must use the shared helper in `shared/hde_email_theme.py`, not ad-hoc inline HTML. The helper is pinned to the current light/sage HDE site theme from `src/layouts/Layout.astro` and `src/components/Nav.astro`: Outfit body type, Playfair Display logo/headlines, `#FAF7F0` light cream background, `#FDFBF7` paper panels, `#2F3631` sage-deep/primary text, `#5F7261` sage-mid accents, `#8E9E90` sage-light supporting accents, `rgba(95,114,97,.15)` card borders, rounded white cards, and understated dark-sage CTAs.
+- Do **not** reintroduce the retired email palette (`#14213d`, `#557c55`, `#c9a84c`, `#fbf7ed`, navy/gold gradient cards, or generic `Inter`/`Georgia` branding). Verification should fail if those tokens appear in `api/routes/stripe_webhook.py` or `shared/hde_email_theme.py`.
+- Customer onboarding email copy follows the “Somatic Experiment Station” style from the reference email/PDF and must send both plain-text fallback and HTML email styled from the shared light/sage email helper.
+- Report-delivery email paths in `api/routes/payment.py`, `reports/server.py`, and the legacy `payment/server.py` should attach the same shared themed `multipart/alternative` part before PDF/workbook attachments.
 - Add admin dashboard filters for `demo`, `expired_demo`, `deletion_scheduled_at`, and `trial_expires_at`.
 - Send reminder emails/messages at day 7, day 12, expiry, and 7 days before deletion.
 - Add `HDE_DEMO_INVITE_CODE` in production if the page should be semi-public but gated.
