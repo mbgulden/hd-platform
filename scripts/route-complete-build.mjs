@@ -37,6 +37,13 @@ function injectLegacyLightTheme(contents) {
   return link + '\n' + contents;
 }
 
+function injectLegacyAnalytics(contents) {
+  if (!contents.includes('<html') || contents.includes('G-Q6TPL08VM7')) return contents;
+  const snippet = `<script async src="https://www.googletagmanager.com/gtag/js?id=G-Q6TPL08VM7"></script>\n<script>\n  window.dataLayer = window.dataLayer || [];\n  function gtag(){dataLayer.push(arguments);}\n  gtag('js', new Date());\n  gtag('config', 'G-Q6TPL08VM7');\n</script>`;
+  if (contents.includes('</head>')) return contents.replace('</head>', `${snippet}\n</head>`);
+  return snippet + '\n' + contents;
+}
+
 function replaceLegacyDarkInlineStyles(contents) {
   const replacements = new Map([
     ['#060d1a', '#FAF7F0'],
@@ -87,7 +94,7 @@ function replaceLegacyDarkInlineStyles(contents) {
 }
 
 function normalizeLegacyHtmlLinks(contents) {
-  return replaceLegacyDarkInlineStyles(injectLegacyLightTheme(contents))
+  return replaceLegacyDarkInlineStyles(injectLegacyAnalytics(injectLegacyLightTheme(contents)))
     .replaceAll('<div style="overflow-x: auto; -webkit-overflow-scrolling: touch;">', '<div style="overflow-x: auto; -webkit-overflow-scrolling: touch;" tabindex="0" role="region" aria-label="Scrollable data table">')
     .replaceAll('href="/reports"', 'href="/buy-report/"')
     .replaceAll("href='/reports'", "href='/buy-report/'")

@@ -372,6 +372,16 @@ const calLink = emdash.global.coachingCalLink || 'becca-gulden/coaching';
       if (!response.ok) throw new Error('Session not found');
       
       const data = await response.json();
+
+      const analytics = (window as any).gtag;
+      if (typeof analytics === 'function') {
+        analytics('event', 'purchase', {
+          transaction_id: data.session_id || sessionId || queryParam,
+          currency: 'USD',
+          value: Number(data.amount_total || data.price_cents || 0) / 100,
+          items: [{ item_name: data.product_name || 'Human Design report' }]
+        });
+      }
       
       // Sovereign users schedule after the Telegram sanctuary is active.
       // Do not show the calendar alongside the first onboarding step.

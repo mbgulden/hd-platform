@@ -7,6 +7,7 @@ mkdirSync(outputDir, { recursive: true });
 
 const steps = [
   ['build', 'npm', ['run', 'build']],
+  ['analytics', 'node', ['scripts/pwp-analytics-check.mjs']],
   ['visual', 'npm', ['run', 'qa:visual']],
   ['a11y', 'npm', ['run', 'qa:a11y']],
   ['flows', 'npm', ['run', 'qa:flows']],

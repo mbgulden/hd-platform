@@ -548,6 +548,15 @@ import Footer from '../components/Footer.astro';
       cancel_url: window.location.href
     };
 
+    const analytics = (window as any).gtag;
+    if (typeof analytics === 'function') {
+      analytics('event', 'begin_checkout', {
+        currency: 'USD',
+        value: prices[selectedReport] / 100,
+        items: [{ item_id: selectedReport, item_name: names[selectedReport] }]
+      });
+    }
+
     try {
       const response = await fetch('/api/checkout/create-session', {
         method: 'POST',
