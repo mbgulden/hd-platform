@@ -5,6 +5,8 @@ Affiliate tracking: signup, stats, and commission tracking
 Run: STRIPE_SECRET_KEY=sk_... STRIPE_WEBHOOK_SECRET=whsec_... python3 server.py
 """
 import os, json, smtplib, hashlib, hmac, time
+import sys
+from pathlib import Path
 from email.mime.text import MIMEText
 from email.mime.multipart import MIMEMultipart
 from email.mime.application import MIMEApplication
@@ -12,6 +14,10 @@ from http.server import HTTPServer, BaseHTTPRequestHandler
 from urllib.parse import urlparse, parse_qs
 import urllib.request
 import urllib.error
+
+ROOT = Path(__file__).resolve().parents[1]
+if str(ROOT) not in sys.path:
+    sys.path.insert(0, str(ROOT))
 
 from shared.hde_email_theme import attach_themed_alternative, build_report_email
 
