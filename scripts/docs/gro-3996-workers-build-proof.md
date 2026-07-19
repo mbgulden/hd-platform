@@ -1,17 +1,23 @@
-# GRO-3996 Workers build proof
+# GRO-3996 deployment-check follow-up
 
-GRO-3996 adds an analytics proof to the PWP verification pipeline and also keeps the pull-request deployment checks green.
+GRO-3996's analytics proof is implemented in the PWP verification pipeline. The canonical HD Engine Pages deployment requires the Pages-compatible Wrangler setting:
 
-The Cloudflare Pages check uses the existing Pages build output (`dist`). The branch also declares the same directory as Wrangler static assets so the repository-level Workers Builds trigger (`npx wrangler versions upload`) has an explicit upload target instead of failing with `Missing entry-point to Worker script or to assets directory`.
+```json
+{
+  "pages_build_output_dir": "dist"
+}
+```
 
-Verification commands for this change:
+Do **not** add `assets.directory` to the root `wrangler.jsonc` for this Pages project. Cloudflare Pages rejects that field during preview deployment validation with:
+
+```text
+Configuration file for Pages projects does not support "assets"
+```
+
+Local verification for the analytics proof remains:
 
 ```bash
 npm run pwp:verify
-npx wrangler versions upload --dry-run
 ```
 
-Expected evidence:
-
-- PWP proof writes analytics evidence to `okf/output/pwp-visual-qa/analytics.json`.
-- Wrangler dry-run accepts the static assets configuration for `./dist`.
+The repository-level `Workers Builds: hd-platform` GitHub check is a separate Cloudflare Workers Builds trigger configured to run `npx wrangler versions upload`. That trigger expects a Workers-style `main` or `assets.directory`, which conflicts with Pages config validation for this repo. Leave the issue In Review until the external Workers Builds trigger is disabled or pointed at a separate Worker config by the Cloudflare project owner.
