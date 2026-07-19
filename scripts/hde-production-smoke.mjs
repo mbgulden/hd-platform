@@ -228,7 +228,7 @@ async function verifyReportDelivery(baseUrl) {
 async function main() {
   const baseUrl = readEnv('HDE_SMOKE_BASE_URL', DEFAULT_BASE_URL);
   const stripeKey = readEnv('STRIPE_SECRET_KEY');
-  const useDirectStripe = boolEnv('HDE_SMOKE_DIRECT_STRIPE', !readEnv('HDE_SMOKE_CHECKOUT_ENDPOINT'));
+  const useDirectStripe = boolEnv('HDE_SMOKE_DIRECT_STRIPE', false);
   const startedAt = new Date().toISOString();
 
   let checkout;
