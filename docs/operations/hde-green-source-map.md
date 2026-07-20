@@ -2,6 +2,8 @@
 
 This file tells future agents where the evidence lives for HDE green-state work.
 
+Latest refresh: `2026-07-20T01:31:21Z`. GRO-3992 was redispatched from Backlog even though branch/PR evidence already exists; use this map to restore review state and keep the epic out of Done until production proof is green.
+
 ## Canonical repo and runtime surfaces
 
 | Surface | Path / URL | Use |
@@ -30,11 +32,11 @@ Parent epics created 2026-07-18 in HD Engine Core:
 
 | Child | Branch / PR | Purpose |
 |---|---|---|
-| GRO-3993 | `ned/GRO-3993` / PR #23 | Install canonical GA4/GTM loader |
-| GRO-3994 | `ned/GRO-3994` / PR #22 | Instrument checkout funnel events |
-| GRO-3995 | `ned/GRO-3995` / PR #21 | Instrument free-reading and Sanctuary daily-work events |
-| GRO-3996 | `feature/gro-3996` | Add analytics assertions to PWP proof |
-| GRO-3997 | `ned/GRO-3997` / PR #20 | Live production analytics coverage verifier |
+| GRO-3993 | `ned/GRO-3993` / PR #23 | Install canonical GA4/GTM loader; Linear currently Backlog/`dispatch:ready` |
+| GRO-3994 | `ned/GRO-3994` / PR #22 | Instrument checkout funnel events; Linear currently Backlog/`dispatch:ready` |
+| GRO-3995 | `ned/GRO-3995` / PR #21 | Instrument free-reading and Sanctuary daily-work events; Linear currently Backlog/`dispatch:ready` + human review |
+| GRO-3996 | `feature/gro-3996` | Add analytics assertions to PWP proof; Linear currently Backlog/`dispatch:ready` + human review |
+| GRO-3997 | `ned/GRO-3997` / PR #20 | Live production analytics coverage verifier; Linear currently Done while PR remains open |
 
 ## Local verification commands
 
