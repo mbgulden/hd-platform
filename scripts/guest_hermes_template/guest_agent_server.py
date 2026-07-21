@@ -1388,6 +1388,61 @@ def generate_one_shot_chart_from_details(text: str) -> dict | None:
     return {"response": "I generated the chart from the birth details you sent.\n" + generated.get("response", "")}
 
 
+def looks_like_birth_location_reply(text: str) -> bool:
+    """True for short city/state replies that should complete recent birth details.
+
+    A standalone place like "Provo, UT" is not an open conversation turn when
+    the recent thread contains a birth date/time. Route it to chart generation
+    instead of letting the LLM invent a chart with no PDF artifacts.
+    """
+    raw = (text or "").strip()
+    if not raw or len(raw) > 80:
+        return False
+    if parse_birth_date(raw):
+        return False
+    parsed_time = parse_birth_time(raw)
+    if parsed_time and parsed_time != "UNKNOWN":
+        return False
+    if re.search(r"\b(chart|report|pdf|compare|relationship|journal|help|what|why|how)\b", raw, re.I):
+        return False
+    return bool(re.search(r"^[A-Za-z][A-Za-z .'-]+,?\s+[A-Za-z]{2,}(?:,?\s+USA)?$", raw))
+
+
+def generate_chart_from_recent_birth_context(text: str) -> dict | None:
+    """Recover when the user supplies only the missing location.
+
+    Family testers often give birth details across multiple turns:
+    date/time first, then "Provo, UT". If transient pending state is missing or
+    the prior answer went through the LLM, combine recent user turns and operate
+    the chart/PDF system deterministically.
+    """
+    location = parse_name_and_location(text)
+    if not looks_like_birth_location_reply(location):
+        return None
+    recent_user_turns = [str(t.get("user") or "") for t in load_history()[-6:]]
+    if not any(re.search(r"\b(birth|born|birthdate|birthday|chart)\b", turn, re.I) for turn in recent_user_turns):
+        return None
+    combined = " ".join([*recent_user_turns, f"in {location}"])
+    details = extract_full_birth_details(combined)
+    if not details:
+        return None
+    # The current location is authoritative; the previous turn may have held a
+    # guessed/incorrect place in natural language.
+    details["location"] = location
+    existing_default = default_person_slug()
+    existing_profile = load_person_profile(existing_default) if existing_default else {}
+    fallback_name = existing_profile.get("name") if existing_profile and not is_generic_profile(existing_default, existing_profile) else os.getenv("GUEST_USER_NAME")
+    name = (details.get("name") or fallback_name or "Sanctuary Guest").strip()
+    slug = slugify_person_name(name)
+    index = normalize_people_index(preferred_slug=slug)
+    index["default_person"] = slug
+    index.setdefault("people", {}).setdefault(slug, {"name": name, "slug": slug})
+    save_people_index(index)
+    birth = {"birth_date": details["birth_date"], "birth_time": details["birth_time"], "location": details["location"]}
+    generated = generate_chart_for_birth_details(name, slug, birth, relationship_type="personal")
+    return {"response": f"I used {location} to finish the birth details and generated the chart/PDF.\n" + generated.get("response", "")}
+
+
 def extract_partial_birth_slots(text: str) -> dict:
     """Extract whatever birth slots are already present without forcing a wizard.
 
@@ -2405,6 +2460,14 @@ async def process_message(payload: dict = Body(...)):
         )
         usage = build_usage(text, response_text)
         return {"response": response_text, "image_path": None, "pdf_path": None, "pdf_paths": [], "usage": usage, "model_usage": usage}
+
+    recovered_chart = generate_chart_from_recent_birth_context(text)
+    if recovered_chart is not None:
+        response_text = recovered_chart.get("response", "").strip()
+        image_path, pdf_path, pdf_paths, response_text = extract_chart_file_paths(response_text)
+        usage = build_usage(text, response_text)
+        append_history(text, response_text)
+        return {"response": response_text, "image_path": image_path, "pdf_path": pdf_path, "pdf_paths": pdf_paths, "usage": usage, "model_usage": usage}
 
     name_result = handle_name_association_request(text)
     if name_result is not None:

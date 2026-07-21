@@ -309,9 +309,13 @@ mcp_servers:
                     except Exception as e:
                         logger.error("Failed to install skill %s into %s: %s", skill_file, target_dir, e)
 
-        # 8. Set folder permissions (run as UID 1000 inside container)
+        # 8. Set folder permissions (run as UID 1000 inside container).  The
+        # per-container base_dir files are bind-mounted into /home/pn/.hermes;
+        # active_soul.md must stay writable so chart generation can refresh the
+        # live Soul after producing PDFs/bodygraphs.
         try:
             subprocess.run(["sudo", "chown", "-R", "1000:1000", workspace_dir], check=True)
+            subprocess.run(["sudo", "chown", "-R", "1000:1000", base_dir], check=True)
             subprocess.run(["chmod", "+x", os.path.join(base_dir, "block_egress.sh")], check=True)
             logger.info("Permissions mapped successfully.")
         except subprocess.SubprocessError as e:
