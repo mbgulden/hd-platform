@@ -5,6 +5,15 @@ const repoRoot = process.cwd();
 const docsDir = path.join(repoRoot, 'docs');
 const distDir = path.join(repoRoot, 'dist');
 const site = 'https://humandesignengine.com';
+const analyticsMeasurementId = 'G-Q6TPL08VM7';
+const analyticsLoader = `<!-- Canonical GA4 loader: keep this in sync with src/layouts/Layout.astro. -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=${analyticsMeasurementId}"></script>
+<script data-hde-analytics="canonical">
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', '${analyticsMeasurementId}');
+</script>`;
 
 const preserved = [];
 const skipped = [];
@@ -35,6 +44,19 @@ function injectLegacyLightTheme(contents) {
   const link = '<link rel="stylesheet" href="/hde-light-theme.css">';
   if (contents.includes('</head>')) return contents.replace('</head>', `${link}\n</head>`);
   return link + '\n' + contents;
+}
+
+function stripLegacyAnalyticsLoaders(contents) {
+  return contents
+    .replace(/\s*<!--\s*Google Analytics \(GA4\)\s*-->\s*<script\b[^>]*src=["']https:\/\/www\.googletagmanager\.com\/gtag\/js\?id=G-[A-Z0-9]+["'][^>]*><\/script>\s*<script\b[^>]*>\s*window\.dataLayer\s*=\s*window\.dataLayer\s*\|\|\s*\[\];\s*function gtag\(\)\{dataLayer\.push\(arguments\);\}\s*gtag\('js', new Date\(\)\);\s*gtag\('config', 'G-[A-Z0-9]+'\);\s*<\/script>/gis, '')
+    .replace(/\s*<!--\s*Canonical GA4 loader:[\s\S]*?<script\b[^>]*data-hde-analytics=["']canonical["'][^>]*>[\s\S]*?<\/script>/gi, '');
+}
+
+function injectCanonicalAnalytics(contents) {
+  if (!contents.includes('<html')) return contents;
+  const stripped = stripLegacyAnalyticsLoaders(contents);
+  if (!stripped.includes('</head>')) return `${analyticsLoader}\n${stripped}`;
+  return stripped.replace('</head>', `${analyticsLoader}\n</head>`);
 }
 
 function replaceLegacyDarkInlineStyles(contents) {
@@ -87,7 +109,7 @@ function replaceLegacyDarkInlineStyles(contents) {
 }
 
 function normalizeLegacyHtmlLinks(contents) {
-  return replaceLegacyDarkInlineStyles(injectLegacyLightTheme(contents))
+  return replaceLegacyDarkInlineStyles(injectCanonicalAnalytics(injectLegacyLightTheme(contents)))
     .replaceAll('<div style="overflow-x: auto; -webkit-overflow-scrolling: touch;">', '<div style="overflow-x: auto; -webkit-overflow-scrolling: touch;" tabindex="0" role="region" aria-label="Scrollable data table">')
     .replaceAll('href="/reports"', 'href="/buy-report/"')
     .replaceAll("href='/reports'", "href='/buy-report/'")

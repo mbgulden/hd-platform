@@ -21,6 +21,15 @@ const canonicalUrl = new URL(Astro.url.pathname, Astro.site ?? 'https://humandes
   <meta property="og:url" content={canonicalUrl}/>
   <meta property="og:type" content="website"/>
   <meta name="twitter:card" content="summary_large_image"/>
+
+  <!-- Canonical GA4 loader: keep this in sync with scripts/route-complete-build.mjs. -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-Q6TPL08VM7"></script>
+  <script is:inline data-hde-analytics="canonical">
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+    gtag('config', 'G-Q6TPL08VM7');
+  </script>
   
   <!-- Modern Typography -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
