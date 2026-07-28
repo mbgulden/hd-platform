@@ -18,6 +18,7 @@ function countMatches(text, pattern) {
 }
 
 async function fetchText(url) {
+  console.error("[DEBUG fetchText]", url);
   const controller = new AbortController();
   const timer = setTimeout(() => controller.abort(), timeoutMs);
   try {
@@ -41,6 +42,45 @@ async function fetchText(url) {
 function parseSitemap(xml) {
   const urls = [...xml.matchAll(/<loc>\s*([^<]+?)\s*<\/loc>/g)].map((match) => match[1].trim());
   return [...new Set(urls)].sort();
+}
+
+
+// Scan body for referenced /_astro/*.js module URLs (Astro client hydration).
+function extractAstroModuleUrls(body) {
+  const re = /src=["\']([^"\']+?_astro\/[^"\']+\.js)["\']/g;
+  const out = [];
+  let m;
+  while ((m = re.exec(body)) !== null) out.push(m[1]);
+  return [...new Set(out)];
+}
+
+async function fetchModulesConcat(urls) {
+  const texts = await Promise.all(urls.map(async (u) => {
+    try {
+      const abs = u.startsWith('http') ? u : new URL(u, baseUrl).toString();
+      const r = await fetchText(abs);
+      return (r && r.body) || '';
+    } catch (err) {
+      return '';
+    }
+  }));
+  return texts.join('\n');
+}
+
+// Extract GA4-recommended event names from an arbitrary text (page body or module body).
+function extractGa4EventNames(text) {
+  if (!text) return [];
+  const fromGtag = [...text.matchAll(/gtag\(\s*['"]event['"]\s*,\s*['"]([^'"]+)['"]/g)].map((m) => m[1]);
+  const fromMap = [...text.matchAll(/['"](begin_checkout|add_payment_info|purchase|select_item|select_content|view_item|complete_registration)['"]/g)].map((m) => m[1]);
+  return [...new Set([...fromGtag, ...fromMap])];
+}
+
+// Augment an inspected page record by combining its body eventNames with module eventNames.
+async function augmentPageWithModules(page) {
+  const modules = extractAstroModuleUrls(page.body);
+  const moduleBody = modules.length ? await fetchModulesConcat(modules) : '';
+  const moduleEvents = extractGa4EventNames(moduleBody);
+  return { ...page, eventNames: [...new Set([...(page.eventNames || []), ...moduleEvents])] };
 }
 
 function inspectHtml(url, status, finalUrl, body, error) {
@@ -106,11 +146,13 @@ if (!sitemap.ok) {
 
 const sitemapUrls = parseSitemap(sitemap.body);
 const pageFetches = await mapLimit(sitemapUrls, concurrency, fetchText);
-const pages = pageFetches.map((page) => inspectHtml(page.url, page.status, page.finalUrl, page.body, page.error));
+const pagesInspected = pageFetches.map((page) => ({ body: page.body, ...inspectHtml(page.url, page.status, page.finalUrl, page.body, page.error) }));
+const pages = await mapLimit(pagesInspected, concurrency, augmentPageWithModules);
 const eventChecks = await mapLimit(eventRoutes, Math.min(concurrency, eventRoutes.length), async ({ route, expectedEvent }) => {
   const url = `${baseUrl}${route}`;
   const page = await fetchText(url);
-  const inspected = inspectHtml(url, page.status, page.finalUrl, page.body, page.error);
+  const inspected0 = { body: page.body, ...inspectHtml(url, page.status, page.finalUrl, page.body, page.error) };
+  const inspected = await augmentPageWithModules(inspected0);
   return {
     route,
     url,
