@@ -1,0 +1,73 @@
+{
+  "$schema": "https://prismatic.growthwebdev.com/schemas/kpi-fixtures.schema.json",
+  "comment": "Static data used by build-report.mjs when STRIPE_SECRET_KEY / HDE_GOOGLE_SERVICE_ACCOUNT_JSON are unset. Replace by re-pointing HDE_KPI_COLLECTION_PATH at a real collection and setting the env vars; the fixture path is for local dev + tests only.",
+  "stripe_events": [
+    {"event_id":"evt_demo_001","event_type":"checkout.session.completed","created_iso":"2026-07-28T05:12:00.000Z","amount_usd":19.00,"metadata":{"funnel":"report_checkout","report":"natal"},"metadata_funnel":"report_checkout","customer_email":"demo+1@example.test"},
+    {"event_id":"evt_demo_002","event_type":"checkout.session.completed","created_iso":"2026-07-28T13:44:11.000Z","amount_usd":59.00,"metadata":{"funnel":"report_checkout","report":"bundle"},"metadata_funnel":"report_checkout","customer_email":"demo+2@example.test"},
+    {"event_id":"evt_demo_003","event_type":"checkout.session.completed","created_iso":"2026-07-28T17:01:42.000Z","amount_usd":75.00,"metadata":{"funnel":"sanctuary","product":"sovereign"},"metadata_funnel":"sanctuary","customer_email":"demo+3@example.test"},
+    {"event_id":"evt_demo_004","event_type":"charge.refunded","created_iso":"2026-07-27T22:14:01.000Z","amount_usd":19.00,"metadata":{"funnel":"report_checkout","report":"natal"},"metadata_funnel":"report_checkout","customer_email":"demo+1@example.test"},
+    {"event_id":"evt_demo_005","event_type":"checkout.session.completed","created_iso":"2026-07-26T08:33:50.000Z","amount_usd":29.00,"metadata":{"funnel":"report_checkout","report":"synastry"},"metadata_funnel":"report_checkout","customer_email":"demo+4@example.test"}
+  ],
+  "stripe_events_prior_period": [
+    {"event_id":"evt_demo_p01","event_type":"checkout.session.completed","created_iso":"2026-07-21T11:11:00.000Z","amount_usd":19.00,"metadata":{"funnel":"report_checkout","report":"natal"},"metadata_funnel":"report_checkout","customer_email":"demo+5@example.test"},
+    {"event_id":"evt_demo_p02","event_type":"checkout.session.completed","created_iso":"2026-07-23T19:55:00.000Z","amount_usd":49.00,"metadata":{"funnel":"sanctuary","product":"solo"},"metadata_funnel":"sanctuary","customer_email":"demo+6@example.test"}
+  ],
+  "ga4_metrics": {
+    "funnel_top": {
+      "free_reading_page_view": 412,
+      "free_chart_generated_total": 298,
+      "practice_started_total": 273,
+      "practice_completed_total": 91
+    },
+    "funnel_sanctuary": {
+      "sanctuary_page_view": 188,
+      "sanctuary_cta_clicked_total": 71,
+      "sanctuary_checkout_started": 38
+    },
+    "funnel_buy_report": {
+      "buy_report_page_view": 412,
+      "buy_report_selected_total": 187,
+      "buy_report_cta_total": 187,
+      "buy_report_session_started": 142,
+      "buy_report_session_total": 142,
+      "buy_report_redirect_total": 142,
+      "buy_report_error_total": 1
+    },
+    "delivery_onboarding": {
+      "success_page_view_total": 117,
+      "purchase_confirmed_total": 91,
+      "lookup_error_total": 0
+    }
+  },
+  "ga4_metrics_prior": {
+    "funnel_top": {
+      "free_reading_page_view": 388,
+      "free_chart_generated_total": 261,
+      "practice_started_total": 246,
+      "practice_completed_total": 84
+    },
+    "funnel_sanctuary": {
+      "sanctuary_page_view": 184,
+      "sanctuary_cta_clicked_total": 74,
+      "sanctuary_checkout_started": 39
+    },
+    "funnel_buy_report": {
+      "buy_report_page_view": 388,
+      "buy_report_selected_total": 168,
+      "buy_report_cta_total": 168,
+      "buy_report_session_started": 130,
+      "buy_report_session_total": 130,
+      "buy_report_redirect_total": 130,
+      "buy_report_error_total": 2
+    },
+    "delivery_onboarding": {
+      "success_page_view_total": 104,
+      "purchase_confirmed_total": 73,
+      "lookup_error_total": 0
+    }
+  },
+  "telegram_metrics": {
+    "deep_link_clicked_total": 96,
+    "deep_link_to_pdf_total": 83
+  }
+}

@@ -1,0 +1,204 @@
+{
+  "schema_version": "1.0",
+  "owner": "ned",
+  "source": "scripts/kpis/kpi-collections.json",
+  "linear_project_owner": "GRO-4xxx",
+  "last_verified": "2026-07-28",
+  "collection_window": "rolling 24-month window; persistence: BigQuery via Stripe→BQ export + GA4 Data API",
+
+  "globally_required": {
+    "tracking_property": "G-Q6TPL08VM7",
+    "expected_loader_on_every_page": true,
+    "expected_dataLayer_event_set": [
+      "hde_chart_generated",
+      "hde_daily_work_cta_clicked",
+      "hde_sanctuary_checkout_submitted",
+      "hde_nervous_system_practice_started",
+      "hde_nervous_system_practice_completed",
+      "hde_transit_prompt_viewed",
+      "checkout_report_selected",
+      "checkout_cta_clicked",
+      "checkout_session_create_started",
+      "checkout_session_created",
+      "checkout_stripe_redirect",
+      "checkout_success_page_view",
+      "checkout_purchase_confirmed",
+      "checkout_success_lookup_error",
+      "checkout_error"
+    ],
+    "ga4_recommended_events": [
+      "select_item",
+      "select_content",
+      "begin_checkout",
+      "add_payment_info",
+      "purchase",
+      "view_item",
+      "complete_registration"
+    ]
+  },
+
+  "collections": [
+    {
+      "id": "funnel_top",
+      "title": "Top of funnel (free reading)",
+      "owner": "ned",
+      "lane": "scripts/",
+      "source_urls": [
+        "https://humandesignengine.com/free-human-design-reading-generator/"
+      ],
+      "metrics": [
+        {"id": "free_reading_page_view",      "label": "Free reading page views",     "source": "ga4",       "event": "page_view",                              "filter": "path == /free-human-design-reading-generator/"},
+        {"id": "free_chart_generated_total",  "label": "Charts generated",            "source": "ga4",       "event": "hde_chart_generated"},
+        {"id": "free_chart_generated_rate",   "label": "Generation rate",              "source": "derived",   "formula": "free_chart_generated_total / free_reading_page_view", "format": "percent"},
+        {"id": "practice_started_total",      "label": "Nervous-system practices started",   "source": "ga4",       "event": "hde_nervous_system_practice_started"},
+        {"id": "practice_completed_total",    "label": "Nervous-system practices completed", "source": "ga4",       "event": "hde_nervous_system_practice_completed"},
+        {"id": "practice_completion_rate",    "label": "Practice completion rate",    "source": "derived",   "formula": "practice_completed_total / practice_started_total", "format": "percent"}
+      ]
+    },
+
+    {
+      "id": "funnel_sanctuary",
+      "title": "Sanctuary (deconditioning → Stripe → Telegram)",
+      "owner": "ned",
+      "lane": "scripts/",
+      "source_urls": [
+        "https://humandesignengine.com/deconditioning/",
+        "https://humandesignengine.com/landing-sheplantedatree/"
+      ],
+      "metrics": [
+        {"id": "sanctuary_page_view",          "label": "Sanctuary page views",            "source": "ga4",      "filter": "path =~ /(deconditioning|landing-sheplantedatree)/"},
+        {"id": "sanctuary_cta_clicked_total",  "label": "Package card clicks",             "source": "ga4",      "event": "hde_daily_work_cta_clicked"},
+        {"id": "sanctuary_cta_conversion",     "label": "CTA click → modal page views",   "source": "derived",  "formula": "checkout_success_page_view (funnel=sanctuary) / sanctuary_cta_clicked_total", "format": "percent"},
+        {"id": "sanctuary_checkout_started",   "label": "Modal submitted (Stripe session)", "source": "ga4",      "event": "hde_sanctuary_checkout_submitted"},
+        {"id": "sanctuary_session_created",    "label": "Stripe checkout sessions created", "source": "stripe",   "event": "checkout.session.created", "filter": "metadata.funnel == sanctuary"},
+        {"id": "sanctuary_purchase_total",     "label": "Sanctuary purchases",             "source": "stripe",   "event": "checkout.session.completed", "filter": "metadata.funnel == sanctuary"},
+        {"id": "sanctuary_revenue_usd",        "label": "Sanctuary gross revenue (USD)",   "source": "stripe",   "field": "amount_total", "filter": "event == checkout.session.completed AND metadata.funnel == sanctuary"},
+        {"id": "sanctuary_arr_usd",            "label": "Sanctuary ARR (USD)",             "source": "derived",  "formula": "sanctuary_revenue_usd annualized for subscription components; report only when is_subscription"}
+      ]
+    },
+
+    {
+      "id": "funnel_buy_report",
+      "title": "Report purchase funnel (natal / synastry / transit / bundle)",
+      "owner": "ned",
+      "lane": "scripts/",
+      "source_urls": [
+        "https://humandesignengine.com/buy-report/",
+        "https://humandesignengine.com/checkout/pay/",
+        "https://humandesignengine.com/success/"
+      ],
+      "metrics": [
+        {"id": "buy_report_page_view",         "label": "Buy-report page views",       "source": "ga4",     "filter": "path == /buy-report/"},
+        {"id": "buy_report_selected_total",   "label": "Report selected",             "source": "ga4",     "event": "checkout_report_selected"},
+        {"id": "buy_report_cta_total",        "label": "CTA clicks",                  "source": "ga4",     "event": "checkout_cta_clicked"},
+        {"id": "buy_report_session_total",    "label": "Stripe checkout sessions",    "source": "ga4",     "event": "checkout_session_created"},
+        {"id": "buy_report_session_started",  "label": "Stripe session creation started", "source": "ga4", "event": "checkout_session_create_started"},
+        {"id": "buy_report_redirect_total",   "label": "Stripe redirects",            "source": "ga4",     "event": "checkout_stripe_redirect"},
+        {"id": "buy_report_purchase_total",   "label": "Stripe purchases (completed)", "source": "stripe", "event": "checkout.session.completed", "filter": "metadata.funnel == report_checkout"},
+        {"id": "buy_report_revenue_usd",      "label": "Gross revenue (USD)",         "source": "stripe", "field": "amount_total", "filter": "event == checkout.session.completed AND metadata.funnel == report_checkout"},
+        {"id": "buy_report_conversion_rate",  "label": "End-to-end conversion rate",   "source": "derived", "formula": "buy_report_purchase_total / buy_report_page_view", "format": "percent"},
+        {"id": "buy_report_refund_total",     "label": "Refunds",                     "source": "stripe", "event": "charge.refunded", "filter": "metadata.funnel == report_checkout"},
+        {"id": "buy_report_error_total",      "label": "Checkout errors (client-reported)", "source": "ga4", "event": "checkout_error"}
+      ]
+    },
+
+    {
+      "id": "delivery_onboarding",
+      "title": "Post-purchase: Telegram deep link → bot onboarding → PDF delivery",
+      "owner": "ned",
+      "lane": "scripts/",
+      "source_urls": [
+        "https://humandesignengine.com/success/"
+      ],
+      "metrics": [
+        {"id": "success_page_view_total",     "label": "Success page views",                  "source": "ga4",     "event": "checkout_success_page_view"},
+        {"id": "purchase_confirmed_total",    "label": "Purchase confirmed (lookup OK)",       "source": "ga4",     "event": "checkout_purchase_confirmed"},
+        {"id": "lookup_error_total",          "label": "Lookup errors on /success/",         "source": "ga4",     "event": "checkout_success_lookup_error"},
+        {"id": "deep_link_clicked_total",     "label": "Telegram deep-link clicks (parsed from bot)", "source": "telegram", "event": "/start <token>"},
+        {"id": "deep_link_to_pdf_total",      "label": "PDF delivered",                       "source": "internal", "event": "report.pdf.generated"}
+      ]
+    },
+
+    {
+      "id": "aggregates_growth",
+      "title": "Growth aggregates",
+      "owner": "ned",
+      "lane": "scripts/",
+      "source_urls": [],
+      "metrics": [
+        {"id": "weekly_visitors_total",       "label": "Weekly unique visitors",       "source": "ga4",       "metric": "activeUsers",  "filter": "all_pages"},
+        {"id": "weekly_engaged_visitors",     "label": "Weekly engaged sessions",       "source": "ga4",       "metric": "engagedSessions"},
+        {"id": "weekly_conversions_total",     "label": "Weekly conversions",           "source": "ga4",       "metric": "conversions"},
+        {"id": "weekly_revenue_usd",          "label": "Weekly gross revenue (USD)",    "source": "stripe",    "field": "amount_total"},
+        {"id": "weekly_refund_usd",           "label": "Weekly refunds (USD)",          "source": "stripe",    "event": "charge.refunded"},
+        {"id": "weekly_arr_usd",              "label": "Weekly ARR proxy (sum of recurring charges * 4.33)", "source": "derived", "formula": "weekly_subscription_revenue * 52 / 12"},
+        {"id": "weekly_churn_pct",            "label": "Subscription cancellations",    "source": "stripe",    "event": "customer.subscription.deleted"}
+      ]
+    },
+
+    {
+      "id": "site_hygiene",
+      "title": "Site hygiene (operational KPIs)",
+      "owner": "ned",
+      "lane": "scripts/",
+      "source_urls": [],
+      "metrics": [
+        {"id": "sitemap_coverage_pct",        "label": "Sitemap coverage of GA4 loader",   "source": "scripts/live-analytics-coverage.mjs", "metric": "expectedGaLoaded / crawled"},
+        {"id": "converting_pages_total",      "label": "Tracked pages (converting funnel events)", "source": "scripts/live-analytics-coverage.mjs", "metric": "pages with funnel event"},
+        {"id": "duplicate_snippet_pct",       "label": "Duplicate GA4/GTM snippets",        "source": "scripts/live-analytics-coverage.mjs", "metric": "pagesWithDuplicateGaSnippet / crawled"},
+        {"id": "build_status",                "label": "Last npm run build",                "source": "ci",         "event": "build"}
+      ]
+    }
+  ],
+
+  "share_targets": {
+    "google_sheet": {
+      "spreadsheet_id_env": "HDE_KPI_SHEET_ID",
+      "credential_file_env": "HDE_GOOGLE_SERVICE_ACCOUNT_JSON",
+      "tab_layout": [
+        {"tab": "Daily",       "rows_per_day": 1,  "data_columns": ["collection.metric"]},
+        {"tab": "Weekly",      "rows_per_week": 1},
+        {"tab": "Monthly",     "rows_per_month": 1},
+        {"tab": "Raw events",  "append-only":    true, "rows": ["stripe event_id, event_type, customer_email, amount_usd, funnel, created_at"]},
+        {"tab": "Targets",     "static": true, "rows": ["metric, target, owner"]}
+      ],
+      "render_as": "real-time append + LOOKUP pivots for executive summary"
+    },
+    "email": {
+      "sender":      "HDE BI Notifications <bi@humandesignengine.com>",
+      "to":          "mbgulden@gmail.com",
+      "cc":          [],
+      "smtp_relay":  "sendgrid",
+      "templates":   {
+        "daily":   {"format": "html",  "subject_prefix": "[HDE KPI] Daily —"},
+        "weekly":  {"format": "html",  "subject_prefix": "[HDE KPI] Weekly —"},
+        "monthly": {"format": "html",  "subject_prefix": "[HDE KPI] Monthly —"}
+      },
+      "send_grid_list_id": "HDE_KPI_LIST",
+      "lookalike_dimensions": {
+        "google_sheet_kpi_url": "${HDE_KPI_SHEET_URL}",
+        "live_dashboard_url":   "https://humandesignengine.com/pwp/kpi-dashboard.html"
+      }
+    }
+  },
+
+  "delivery_cadence": {
+    "daily":   {"run_at": "06:30 America/Los_Angeles", "skip_if_no_new_events": true,  "covers_window": "previous 24 hours UTC"},
+    "weekly":  {"run_at": "Mon 07:00 America/Los_Angeles", "covers_window": "previous 7 days UTC"},
+    "monthly": {"run_at": "first 07:00 of month", "covers_window": "previous calendar month UTC"}
+  },
+
+  "pwp_dashboard_surface": {
+    "path": "https://humandesignengine.com/pwp/kpi-dashboard.html",
+    "renders": [
+      "collection: funnel_buy_report",
+      "collection: funnel_sanctuary",
+      "collection: delivery_onboarding",
+      "collection: funnel_top",
+      "collection: aggregates_growth",
+      "collection: site_hygiene"
+    ],
+    "iframe_hosted_on_pwp_dashboard": true,
+    "section_label": "HDE KPI Section"
+  }
+}

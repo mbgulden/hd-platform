@@ -1,0 +1,74 @@
+<!--
+  scripts/kpis/kpi-dashboard-iframe.html
+  The iframe-friendly section that the existing PWP dashboard (`docs/pwp/dashboard.html`) embeds
+  via `<iframe src="/kpi-dashboard-iframe.html">`. It loads the rendered KPI dashboard HTML
+  and styles it for embedding inside a 720×480 dashboard card.
+-->
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <title>HDE — KPI Section</title>
+  <link rel="stylesheet" href="/pwp/pwp-dashboard.css" />
+  <style>
+    .kpi-section { display: grid; gap: 12px; padding: 12px; }
+    .kpi-section__header { display: flex; justify-content: space-between; align-items: baseline; }
+    .kpi-section__title { font-weight: 600; font-size: 18px; color: #2F3631; }
+    .kpi-section__window { color: #5C625E; font-size: 12px; }
+    .kpi-section__cards { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 12px; }
+    .kpi-card { background: rgba(255,255,255,0.86); border: 1px solid rgba(95,114,97,0.18); border-radius: 8px; padding: 12px; }
+    .kpi-card h3 { margin: 0 0 4px; font-size: 13px; color: #5C625E; text-transform: uppercase; letter-spacing: 0.05em; }
+    .kpi-card .num { font-size: 24px; font-weight: 600; color: #2F3631; font-variant-numeric: tabular-nums; }
+    .kpi-card .delta { font-size: 12px; color: #5C625E; }
+    .kpi-card .delta.up { color: #3F6B47; }
+    .kpi-card .delta.down { color: #B4534A; }
+    .kpi-section__link { font-size: 12px; }
+  </style>
+</head>
+<body>
+  <section class="kpi-section" aria-label="HDE KPI section">
+    <header class="kpi-section__header">
+      <h2 class="kpi-section__title">HDE KPI — live</h2>
+      <div class="kpi-section__window" data-bind="kpi-window">Loading…</div>
+    </header>
+    <div class="kpi-section__cards" data-bind="kpi-cards"></div>
+    <p class="kpi-section__link">
+      <a href="/pwp/kpi-dashboard.html">Open full dashboard ↗</a>
+      ·
+      <a href="https://docs.google.com/spreadsheets/d/HDE_KPI_SHEET_ID">Open Google Sheet ↗</a>
+    </p>
+  </section>
+  <script>
+    async function load() {
+      try {
+        const r = await fetch('/pwp/kpi-dashboard.json', { cache: 'no-store' });
+        if (!r.ok) throw new Error('no kpi snapshot');
+        const data = await r.json();
+        document.querySelector('[data-bind="kpi-window"]').textContent =
+          data.windowStartISO.slice(0,10) + ' → ' + data.windowEndISO.slice(0,10) + ' UTC';
+        const cards = document.querySelector('[data-bind="kpi-cards"]');
+        cards.innerHTML = '';
+        const top = [];
+        for (const coll of Object.values(data.collections)) {
+          for (const m of coll.metrics.slice(0, 4)) {
+            top.push({ coll: coll.title, ...m });
+          }
+        }
+        for (const m of top.slice(0, 12)) {
+          const card = document.createElement('div');
+          card.className = 'kpi-card';
+          const cls = m.delta_pct.startsWith('▲') ? 'up' : m.delta_pct.startsWith('▼') ? 'down' : '';
+          card.innerHTML =
+            '<h3>' + m.coll + ' — ' + m.label + '</h3>' +
+            '<div class="num">' + m.formatted + '</div>' +
+            '<div class="delta ' + cls + '">' + m.delta_pct + '</div>';
+          cards.appendChild(card);
+        }
+      } catch (err) {
+        document.querySelector('[data-bind="kpi-window"]').textContent = 'KPI snapshot unavailable: ' + err.message;
+      }
+    }
+    load();
+  </script>
+</body>
+</html>
