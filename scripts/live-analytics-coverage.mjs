@@ -18,8 +18,7 @@ function countMatches(text, pattern) {
 }
 
 async function fetchText(url) {
-  console.error("[DEBUG fetchText]", url);
-  const controller = new AbortController();
+    const controller = new AbortController();
   const timer = setTimeout(() => controller.abort(), timeoutMs);
   try {
     const response = await fetch(url, {
