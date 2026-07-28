@@ -58,6 +58,33 @@
 
   function clamp(v, min, max) { return Math.max(min, Math.min(max, v)); }
 
+  function pageContext() {
+    return {
+      page_path: window.location.pathname,
+      page_title: document.title || '',
+      widget_source: 'free_reading_widget'
+    };
+  }
+
+  function trackEvent(eventName, params) {
+    var detail = Object.assign({}, pageContext(), params || {});
+    try {
+      window.dispatchEvent(new CustomEvent('hde:analytics', {
+        detail: Object.assign({ event: eventName }, detail)
+      }));
+    } catch (e) {}
+
+    if (window.dataLayer && typeof window.dataLayer.push === 'function') {
+      window.dataLayer.push(Object.assign({ event: eventName }, detail));
+    }
+    if (typeof window.gtag === 'function') {
+      window.gtag('event', eventName, detail);
+    }
+    if (typeof window.hdeTrackEvent === 'function') {
+      window.hdeTrackEvent(eventName, detail);
+    }
+  }
+
   // ── Widget CSS injector ─────────────────────────────────────────────────
   var CSS_INJECTED = false;
   function injectCSS(prefix) {
@@ -107,6 +134,12 @@
       prefix + '-cta { text-align:center; padding:0 24px 24px; }\n' +
       prefix + '-cta-link { display:inline-block; padding:12px 28px; background:transparent; border:2px solid ' + BRAND.accent + '; color:' + BRAND.light + '; border-radius:12px; font-size:0.88rem; font-weight:600; text-decoration:none; transition:all 0.2s; }\n' +
       prefix + '-cta-link:hover { background:rgba(95,114,97,0.12); border-color:' + BRAND.light + '; }\n' +
+      prefix + '-daily-work { margin:0 24px 20px; padding:18px; border:1px solid ' + BRAND.border + '; border-radius:14px; background:rgba(95,114,97,0.08); }\n' +
+      prefix + '-daily-work h4 { color:' + BRAND.primary + '; font-size:0.92rem; margin-bottom:8px; }\n' +
+      prefix + '-daily-work p { color:' + BRAND.muted + '; font-size:0.82rem; line-height:1.45; margin-bottom:12px; }\n' +
+      prefix + '-practice-actions { display:flex; gap:10px; flex-wrap:wrap; }\n' +
+      prefix + '-practice-btn { flex:1 1 120px; padding:10px 12px; border:1px solid ' + BRAND.accent + '; border-radius:10px; background:#FDFBF7; color:' + BRAND.light + '; cursor:pointer; font-size:0.78rem; font-weight:700; }\n' +
+      prefix + '-practice-btn:hover { background:rgba(95,114,97,0.12); }\n' +
       prefix + '-error { padding:32px 24px; text-align:center; color:' + BRAND.error + '; }\n' +
       prefix + '-error-title { font-size:1rem; font-weight:600; margin-bottom:8px; }\n' +
       prefix + '-error-msg { font-size:0.82rem; color:' + BRAND.muted + '; margin-bottom:16px; }\n' +
@@ -277,6 +310,12 @@
           var resp = JSON.parse(xhr.responseText);
           if (resp.success && resp.data) {
             self._renderResult(resp.data);
+            trackEvent('hde_chart_generated', {
+              chart_type: resp.data.hd_type || 'Unknown',
+              authority: resp.data.authority || 'Unknown',
+              profile: resp.data.profile || 'Unknown',
+              defined_centers_count: (resp.data.defined_centers || []).length
+            });
             return;
           }
           self._renderError((resp.error || 'Unknown error from server'));
@@ -358,10 +397,36 @@
     result.innerHTML = html;
     card.appendChild(result);
 
+    // Daily work prompt
+    var dailyWork = el('div', this.prefix.slice(1) + '-daily-work');
+    dailyWork.innerHTML =
+      '<h4>Today&rsquo;s embodied experiment</h4>' +
+      '<p>Notice where your Strategy can become one concrete nervous-system practice today. Start with one slow breath before making the next decision.</p>' +
+      '<div class="' + this.prefix.slice(1) + '-practice-actions">' +
+        '<button type="button" class="' + this.prefix.slice(1) + '-practice-btn" data-hde-practice="start">Start practice</button>' +
+        '<button type="button" class="' + this.prefix.slice(1) + '-practice-btn" data-hde-practice="complete">Mark complete</button>' +
+      '</div>';
+    card.appendChild(dailyWork);
+    trackEvent('hde_transit_prompt_viewed', { prompt_source: 'free_reading_result' });
+    dailyWork.addEventListener('click', function (e) {
+      var target = e.target && e.target.closest ? e.target.closest('[data-hde-practice]') : null;
+      if (!target) return;
+      var action = target.getAttribute('data-hde-practice');
+      trackEvent(action === 'complete' ? 'hde_nervous_system_practice_completed' : 'hde_nervous_system_practice_started', {
+        practice_source: 'free_reading_result'
+      });
+    });
+
     // CTA
     var cta = el('div', this.prefix.slice(1) + '-cta');
     var reportUrl = this.options.reportUrl || 'buy-report.html';
     cta.innerHTML = '<a class="' + this.prefix.slice(1) + '-cta-link" href="' + reportUrl + '" target="_blank" rel="noopener">Want your full report?<br><small>Get the complete PDF →</small></a>';
+    var ctaLink = cta.querySelector('a');
+    if (ctaLink) {
+      ctaLink.addEventListener('click', function () {
+        trackEvent('hde_daily_work_cta_clicked', { cta_target: reportUrl, cta_source: 'free_reading_result' });
+      });
+    }
     card.appendChild(cta);
 
     // Powered by
@@ -435,6 +500,6 @@
   }
 
   // ── Expose global ───────────────────────────────────────────────────────
-  window.HDEWidget = { init: init, Widget: Widget };
+  window.HDEWidget = { init: init, Widget: Widget, trackEvent: trackEvent };
 
 })();
