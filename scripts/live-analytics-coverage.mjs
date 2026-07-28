@@ -49,7 +49,10 @@ function inspectHtml(url, status, finalUrl, body, error) {
   const gtmContainerIds = [...body.matchAll(/GTM-[A-Z0-9]+/g)].map((match) => match[0]);
   const gtmContainerCount = gtmContainerIds.length;
   const dataLayerInitCount = countMatches(body, /window\.dataLayer\s*=\s*window\.dataLayer\s*\|\|\s*\[\]/g);
-  const eventNames = [...body.matchAll(/gtag\(\s*['"]event['"]\s*,\s*['"]([^'"]+)['"]/g)].map((match) => match[1]);
+  const eventNamesFromGtag = [...body.matchAll(/gtag\(\s*['"]event['"]\s*,\s*['"]([^'"]+)['"]/g)].map((match) => match[1]);
+  // Also catch GA4-recommended event names that are emitted via a name->ga4 dispatcher table (e.g. checkout_report_selected: 'begin_checkout').
+  const eventNamesFromMap = [...body.matchAll(/['"](begin_checkout|add_payment_info|purchase|select_item|select_content|view_item|complete_registration)['"]/g)].map((match) => match[1]);
+  const eventNames = [...eventNamesFromGtag, ...eventNamesFromMap];
   const hasExpectedGa = gaScriptCount > 0 && gaConfigCount > 0;
   const hasDuplicateGaSnippet = gaScriptCount > 1 || gaConfigCount > 1;
   const hasDuplicateGtmSnippet = gtmContainerCount > 1;
