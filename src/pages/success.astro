@@ -329,6 +329,27 @@ const calLink = emdash.global.coachingCalLink || 'becca-gulden/coaching';
   const sessionId = urlParams.get('session_id');
   const emailParam = urlParams.get('email');
 
+  function trackCheckoutEvent(eventName: string, detail: Record<string, any> = {}) {
+    const eventDetail = {
+      funnel: 'report_checkout',
+      currency: 'USD',
+      checkout_session_id: sessionId || '',
+      ...detail
+    };
+    const w = window as any;
+    w.dataLayer = w.dataLayer || [];
+    w.dataLayer.push({ event: eventName, ...eventDetail });
+    if (typeof w.gtag === 'function') {
+      w.gtag('event', eventName, eventDetail);
+    }
+    window.dispatchEvent(new CustomEvent(`hde:${eventName}`, { detail: eventDetail }));
+  }
+
+  trackCheckoutEvent('checkout_success_page_view', {
+    lookup_type: sessionId ? 'session_id' : (emailParam ? 'email' : 'manual'),
+    has_session_id: Boolean(sessionId)
+  });
+
   const loadCalWidget = (calendarPath: string, clientName: string, clientEmail: string) => {
     const w = window as any;
     if (!w.Cal) {
@@ -372,6 +393,13 @@ const calLink = emdash.global.coachingCalLink || 'becca-gulden/coaching';
       if (!response.ok) throw new Error('Session not found');
       
       const data = await response.json();
+
+      trackCheckoutEvent('checkout_purchase_confirmed', {
+        lookup_type: isSessionId ? 'session_id' : 'email',
+        has_deep_link: Boolean(data.deep_link),
+        is_premium: Boolean(data.is_premium),
+        report: data.report || data.product || ''
+      });
       
       // Sovereign users schedule after the Telegram sanctuary is active.
       // Do not show the calendar alongside the first onboarding step.
@@ -421,6 +449,10 @@ const calLink = emdash.global.coachingCalLink || 'becca-gulden/coaching';
         if (fallback) fallback.style.display = 'none';
       }
     } catch (err) {
+      trackCheckoutEvent('checkout_success_lookup_error', {
+        lookup_type: isSessionId ? 'session_id' : 'email',
+        error_message: err instanceof Error ? err.message : 'Session lookup failed'
+      });
       if (onboardingContainer) {
         onboardingContainer.innerHTML = `
           <p class="step-label">Next step</p>
