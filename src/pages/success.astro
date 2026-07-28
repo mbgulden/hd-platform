@@ -342,6 +342,20 @@ const calLink = emdash.global.coachingCalLink || 'becca-gulden/coaching';
     if (typeof w.gtag === 'function') {
       w.gtag('event', eventName, eventDetail);
     }
+
+    const GA4_FUNNEL_EVENT_MAP: Record<string, string> = {
+      'checkout_report_selected': 'select_item',
+      'checkout_cta_clicked': 'begin_checkout',
+      'checkout_session_created': 'add_payment_info',
+      'checkout_purchase_confirmed': 'purchase',
+      'sanctuary_daily_work_cta_clicked': 'select_item',
+      'sanctuary_checkout_submitted': 'begin_checkout',
+    };
+    const ga4EventName = GA4_FUNNEL_EVENT_MAP[eventName];
+    if (ga4EventName && typeof w.gtag === 'function') {
+      w.gtag('event', ga4EventName, eventDetail);
+    }
+
     window.dispatchEvent(new CustomEvent(`hde:${eventName}`, { detail: eventDetail }));
   }
 

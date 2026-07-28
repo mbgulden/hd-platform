@@ -16,6 +16,20 @@
 (function () {
   'use strict';
 
+  var HDE_GA4_FUNNEL_EVENT_MAP = {
+    'hde_chart_generated': 'view_item',
+    'hde_transit_prompt_viewed': 'select_content',
+    'hde_nervous_system_practice_started': 'begin_checkout',
+    'hde_nervous_system_practice_completed': 'complete_registration'
+  };
+  function hdeDispatchGa4(eventName, params) {
+    var ga4 = HDE_GA4_FUNNEL_EVENT_MAP[eventName];
+    if (ga4 && typeof window.gtag === 'function') {
+      try { window.gtag('event', ga4, params || {}); } catch (e) {}
+    }
+  }
+
+
   // ── Config ──────────────────────────────────────────────────────────────
   var DEFAULT_API = 'https://api.humandesignengine.com';
   var BRAND = {
@@ -316,6 +330,13 @@
               profile: resp.data.profile || 'Unknown',
               defined_centers_count: (resp.data.defined_centers || []).length
             });
+           hdeDispatchGa4('hde_chart_generated', { chart_type: params.chart_type, authority: params.authority, profile: params.profile, defined_centers_count: params.defined_centers_count });;
+hdeDispatchGa4('hde_chart_generated', {
+              chart_type: resp.data.hd_type || 'Unknown',
+              authority: resp.data.authority || 'Unknown',
+              profile: resp.data.profile || 'Unknown',
+              defined_centers_count: (resp.data.defined_centers || []).length
+            });
             return;
           }
           self._renderError((resp.error || 'Unknown error from server'));
@@ -407,14 +428,13 @@
         '<button type="button" class="' + this.prefix.slice(1) + '-practice-btn" data-hde-practice="complete">Mark complete</button>' +
       '</div>';
     card.appendChild(dailyWork);
-    trackEvent('hde_transit_prompt_viewed', { prompt_source: 'free_reading_result' });
+    trackEvent('hde_transit_prompt_viewed', { prompt_source: 'free_reading_result' });;
+hdeDispatchGa4('hde_transit_prompt_viewed', { prompt_source: 'free_reading_result' });
     dailyWork.addEventListener('click', function (e) {
       var target = e.target && e.target.closest ? e.target.closest('[data-hde-practice]') : null;
       if (!target) return;
       var action = target.getAttribute('data-hde-practice');
-      trackEvent(action === 'complete' ? 'hde_nervous_system_practice_completed' : 'hde_nervous_system_practice_started', {
-        practice_source: 'free_reading_result'
-      });
+      var hdePracticeName = action === 'complete' ? 'hde_nervous_system_practice_completed' : 'hde_nervous_system_practice_started'; trackEvent(hdePracticeName, { practice_source: 'free_reading_result' }); hdeDispatchGa4(hdePracticeName, { practice_source: 'free_reading_result' });
     });
 
     // CTA

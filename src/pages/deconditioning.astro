@@ -352,6 +352,21 @@ const packages = contentPackages.map((pkg) => ({
   const form = document.getElementById('checkoutForm');
   const errorMsg = document.getElementById('modalError');
   const submitBtn = document.getElementById('submitModalBtn');
+
+  function hdeDispatchGa4(eventName, params) {
+    var map = {
+      'hde_daily_work_cta_clicked': 'select_content',
+      'hde_sanctuary_checkout_submitted': 'begin_checkout',
+      'hde_chart_generated': 'view_item',
+      'hde_nervous_system_practice_completed': 'complete_registration'
+    };
+    var ga4 = map[eventName];
+    if (ga4 && typeof window.gtag === 'function') {
+      window.gtag('event', ga4, params || {});
+    }
+  }
+  window.HDEWidget_track = window.HDEWidget_track || {};
+
   const coachConsentGroup = document.getElementById('coachConsentGroup');
   const coachConsent = document.getElementById('coachConsent');
 
@@ -375,6 +390,11 @@ const packages = contentPackages.map((pkg) => ({
         coachConsent.checked = false;
       }
       window.HDEWidget?.trackEvent?.('hde_daily_work_cta_clicked', {
+        cta_source: 'sanctuary_package_card',
+        package_id: selectedPkg.id,
+        package_name: selectedPkg.name
+      });
+      hdeDispatchGa4('hde_daily_work_cta_clicked', {
         cta_source: 'sanctuary_package_card',
         package_id: selectedPkg.id,
         package_name: selectedPkg.name
@@ -435,6 +455,11 @@ const packages = contentPackages.map((pkg) => ({
 
       const consentChecked = !!(coachConsent && coachConsent.checked);
       window.HDEWidget?.trackEvent?.('hde_sanctuary_checkout_submitted', {
+        package_id: selectedPkg.id,
+        package_name: selectedPkg.name,
+        is_staging: isStaging
+      });
+      hdeDispatchGa4('hde_sanctuary_checkout_submitted', {
         package_id: selectedPkg.id,
         package_name: selectedPkg.name,
         is_staging: isStaging
