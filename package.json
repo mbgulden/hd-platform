@@ -14,7 +14,9 @@
     "qa:lighthouse": "lhci autorun",
     "qa:links": "node scripts/pwp-link-check.mjs",
     "qa:update-screenshots": "playwright test tests/visual --update-snapshots",
-    "pwp:verify": "node scripts/pwp-verify.mjs"
+    "pwp:verify": "node scripts/pwp-verify.mjs",
+    "smoke:production": "node scripts/hde-production-smoke.mjs",
+    "verify:production-smoke": "node scripts/verify_hde_production_smoke.mjs"
   },
   "dependencies": {
     "astro": "^6.4.4"
