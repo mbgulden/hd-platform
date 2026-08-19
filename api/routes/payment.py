@@ -15,7 +15,6 @@ import smtplib
 import time
 from email.mime.application import MIMEApplication
 from email.mime.multipart import MIMEMultipart
-from email.mime.text import MIMEText
 from typing import Any, Dict, Optional
 
 import httpx
@@ -23,6 +22,7 @@ from fastapi import APIRouter, BackgroundTasks, HTTPException, Request, Response
 from sqlalchemy import select
 
 from shared.database import User, async_session_factory
+from shared.hde_email_theme import attach_themed_alternative, build_report_email
 
 logger = logging.getLogger(__name__)
 
@@ -41,20 +41,20 @@ SMTP_PASS = os.environ.get("SMTP_PASS", "")
 FROM_EMAIL = os.environ.get("FROM_EMAIL", "reports@humandesignengine.com")
 
 AFFILIATES_FILE = "/tmp/hde-reports/affiliates.json"
-COMMISSION_RATES = {"natal": 5.70, "synastry": 8.70, "transit": 8.70, "bundle": 17.70}
+COMMISSION_RATES = {"natal": 2.70, "synastry": 4.20, "transit": 4.20, "bundle": 8.70}
 
 
 # ── Webhook Signature Verification ─────────────────────────────────────
 def verify_stripe_signature(payload: bytes, sig_header: str, secret: str, tolerance: int = 300) -> bool:
     """
     Verify Stripe webhook signature manually without requiring the stripe library.
-    
+
     Returns True if valid or if secret is empty (bypassed for development), False otherwise.
     """
     if not secret:
         logger.warning("STRIPE_WEBHOOK_SECRET is not set. Bypassing signature check in dev mode.")
         return True
-        
+
     if not sig_header:
         logger.error("Missing Stripe-Signature header.")
         return False
@@ -63,33 +63,33 @@ def verify_stripe_signature(payload: bytes, sig_header: str, secret: str, tolera
         # Parse the Stripe-Signature header
         pairs = [pair.split('=') for pair in sig_header.split(',')]
         params = {k.strip(): v.strip() for k, v in pairs if len(v) > 0}
-        
+
         timestamp = params.get('t')
         signature = params.get('v1')
-        
+
         if not timestamp or not signature:
             logger.error("Invalid Stripe-Signature header format.")
             return False
-            
+
         # Check timestamp tolerance to prevent replay attacks
         try:
             ts_val = int(timestamp)
         except ValueError:
             logger.error("Invalid timestamp in Stripe-Signature header.")
             return False
-            
+
         if abs(time.time() - ts_val) > tolerance:
             logger.error(f"Stripe signature timestamp older than tolerance limit ({tolerance}s).")
             return False
-            
+
         # Compute HMAC-SHA256 signature
         signed_payload = f"{timestamp}.".encode('utf-8') + payload
         mac = hmac.new(secret.encode('utf-8'), signed_payload, hashlib.sha256)
         expected_signature = mac.hexdigest()
-        
+
         if hmac.compare_digest(signature, expected_signature):
             return True
-            
+
         logger.error("Stripe signature mismatch.")
         return False
     except Exception as exc:
@@ -136,24 +136,12 @@ def send_email_direct(to_email: str, name: str, report_type: str, pdf_path: str)
         logger.warning("SMTP credentials missing on API server, skipping local email sending.")
         return
 
-    msg = MIMEMultipart()
+    msg = MIMEMultipart('mixed')
     msg['From'] = FROM_EMAIL
     msg['To'] = to_email
-    msg['Subject'] = f"Your Human Design {report_type.title()} Report is Ready, {name}!"
-
-    body = f"""Hi {name},
-
-Your Human Design {report_type.title()} Report is attached as a PDF.
-
-This report was computed using verified, open-source calculations — the same engine trusted by developers and practitioners worldwide.
-
-If you have any questions about your chart, we're here to help. Just reply to this email.
-
-With gratitude,
-The Human Design Engine Team
-humandesignengine.com"""
-
-    msg.attach(MIMEText(body, 'plain'))
+    subject, body, html = build_report_email(name, report_type)
+    msg['Subject'] = subject
+    attach_themed_alternative(msg, body, html)
 
     with open(pdf_path, 'rb') as f:
         attachment = MIMEApplication(f.read(), _subtype='pdf')
@@ -253,7 +241,7 @@ async def process_checkout_session(session: Dict[str, Any]) -> None:
 
         max_retries = 5
         retry_delay = 2.0
-        
+
         async with httpx.AsyncClient(timeout=120.0) as client:
             for attempt in range(1, max_retries + 1):
                 try:
@@ -275,7 +263,7 @@ async def process_checkout_session(session: Dict[str, Any]) -> None:
                         logger.error("Reports server responded with code %d: %s", response.status_code, response.text[:200])
                 except Exception as exc:
                     logger.warning("Connection to reports server failed on attempt %d: %s", attempt, exc)
-                
+
                 if attempt < max_retries:
                     sleep_time = retry_delay * (2 ** (attempt - 1))
                     logger.info("Retrying in %.1f seconds...", sleep_time)
@@ -308,14 +296,14 @@ async def stripe_webhook(
     """
     sig_header = request.headers.get("Stripe-Signature", "")
     body = await request.body()
-    
+
     # Verify signature
     if not verify_stripe_signature(body, sig_header, STRIPE_WEBHOOK_SECRET):
         raise HTTPException(
             status_code=status.HTTP_400_BAD_REQUEST,
             detail="Signature verification failed."
         )
-        
+
     try:
         event = json.loads(body.decode("utf-8"))
     except (json.JSONDecodeError, UnicodeDecodeError):
@@ -349,15 +337,15 @@ async def create_checkout(request: Request) -> Dict[str, Any]:
     report = data.get('report')
     r_lower = (report or '').lower()
     if r_lower == 'natal':
-        price = 1900
+        price = 900
     elif r_lower == 'synastry':
-        price = 2900
+        price = 1400
     elif r_lower == 'transit':
-        price = 2900
+        price = 1400
     elif r_lower == 'bundle':
-        price = 5900
+        price = 2900
     else:
-        price = data.get('price', 1900)
+        price = data.get('price', 900)
 
     birthdate = data.get('birthdate')
     birthtime = data.get('birthtime')
@@ -381,7 +369,7 @@ async def create_checkout(request: Request) -> Dict[str, Any]:
     if ref:
         meta["ref"] = ref
 
-    bundle_price_id = os.environ.get("STRIPE_BUNDLE_PRICE_ID", "price_1Pbundleupsell59")
+    bundle_price_id = ""  # lowered bundle uses price_data so Stripe matches site price
 
     # Use Stripe price ID for bundle if custom one is provided, otherwise fall back to price_data
     if report == 'bundle' and bundle_price_id and not bundle_price_id.startswith('price_1Pbundleupsell59') and not bundle_price_id.startswith('${'):
@@ -476,7 +464,7 @@ async def create_checkout(request: Request) -> Dict[str, Any]:
             if response.status_code >= 400:
                 logger.error("Stripe error response: %d - %s", response.status_code, response.text)
                 raise HTTPException(status_code=502, detail=f"Stripe API error: {response.text[:200]}")
-            
+
             session_data = response.json()
             return {"url": session_data.get("url", "")}
         except Exception as e:
@@ -506,4 +494,3 @@ async def get_checkout_session(session_id: str) -> Dict[str, Any]:
         except Exception as e:
             logger.exception("Failed to retrieve Stripe checkout session")
             raise HTTPException(status_code=500, detail=str(e))
-

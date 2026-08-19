@@ -1,0 +1,16 @@
+[Unit]
+Description=Human Design Engine staging demo trial lifecycle
+After=network.target hde_api_staging.service hde_orchestrator_staging.service
+Wants=hde_orchestrator_staging.service
+
+[Service]
+Type=oneshot
+User=ubuntu
+WorkingDirectory=/home/ubuntu/work/hd-platform-staging
+Environment=PYTHONPATH=/home/ubuntu/work/hd-platform-staging:/home/ubuntu/work/hd-platform-staging/scripts
+Environment=DATABASE_URL=sqlite+aiosqlite:////home/ubuntu/work/hd-platform-staging/staging_database.db
+Environment=ORCHESTRATOR_URL=http://localhost:8011
+Environment=HDE_TRIAL_LIFECYCLE_DRY_RUN=0
+Environment=HDE_DEMO_ANONYMIZE_PII=1
+EnvironmentFile=/home/ubuntu/work/hd-platform-staging/.env
+ExecStart=/home/ubuntu/work/hd-platform/.venv/bin/python3 scripts/hde_trial_lifecycle.py

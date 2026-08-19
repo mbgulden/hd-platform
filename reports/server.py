@@ -49,6 +49,11 @@ from transit_engine import (
 init_ephemeris()
 log.info("Ephemeris initialized — engine ready.")
 
+REPO_ROOT = Path(__file__).resolve().parents[1]
+if str(REPO_ROOT) not in sys.path:
+    sys.path.insert(0, str(REPO_ROOT))
+from shared.hde_email_theme import attach_themed_alternative, build_report_email
+
 # ── Config ───────────────────────────────────────────────────────────
 PORT = int(os.environ.get("REPORTS_PORT", "8081"))
 API_KEY = os.environ.get("HDE_API_KEY", "hde-dev-key-change-me")
@@ -189,6 +194,9 @@ CSS = """
   tr:nth-child(even) td { background: #FDFBF7; }
   .footer { text-align: center; padding: 40px; color: #808682; font-size: 9pt; }
   .footer a { color: #5F7261; }
+  .next-step-cta { background:#FFFFFF; border:1px solid rgba(95,114,97,.18); border-radius:16px; padding:26px; margin:26px 0; box-shadow:0 8px 30px rgba(47,54,49,.03); }
+  .next-step-cta h2 { margin-top:0; border-bottom:none; padding-bottom:0; }
+  .next-step-cta ul { margin:12px 0 0 20px; }
   .badge { display: inline-block; background: #2F3631; color: #FAF7F0; padding: 2px 10px; border-radius: 12px; font-size: 9pt; margin-left: 8px; vertical-align: middle; }
   .cert-badge { text-align: center; margin: 30px 0; padding: 12px; background: #FFFFFF; border: 1px solid rgba(95,114,97,.15); border-radius: 12px; font-size: 9pt; color: #808682; }
   @media print { body { -webkit-print-color-adjust: exact; print-color-adjust: exact; } }
@@ -711,6 +719,17 @@ def build_natal_report(chart: dict, branding: dict | None = None) -> str:
   <div class="experiment-box">
     <h3>Experiment 3: Observe Your Open Centers</h3>
     <p>Notice when you're amplifying energy from others. Ask: is this mine, or am I picking it up?</p>
+  </div>
+
+  <div class="next-step-cta">
+    <h2>🌿 Your chart is a snapshot. Your life is moving.</h2>
+    <p>This report names the mechanics. The deeper answers come from applying them to your relationships, choices, emotional waves, transits, nervous system, and current-life context.</p>
+    <ul>
+      <li><strong>Human Design Sanctuary:</strong> daily support for living the experiment, not just reading the map.</li>
+      <li><strong>Coaching Container:</strong> guided deconditioning and integration over time.</li>
+      <li><strong>Human Design Consultations:</strong> focused help for the real situation in front of you.</li>
+    </ul>
+    <p><a href="https://humandesignengine.com/deconditioning/">Enter the Human Design Sanctuary</a> · <a href="https://humandesignengine.com/becca-coaching.html">Explore coaching</a> · <a href="mailto:team@humandesignengine.com?subject=Human%20Design%20Consultation">Book a consultation</a></p>
   </div>
 
   <div class="cert-badge">
@@ -1273,6 +1292,17 @@ def build_transit_report(natal: dict, overlay: dict, solar_forecast: list = None
     <p>Remember: transits are temporary. The energy you feel today will shift within days. Don't make permanent decisions based on temporary conditioning — especially if you're a <strong>Reflector</strong> (wait 28 days) or <strong>Projector</strong> (wait for the invitation). Use transits as a spotlight: they show you what's available to learn, not what you must become.</p>
   </div>
 
+  <div class="next-step-cta">
+    <h2>🌿 Your chart is a snapshot. Your life is moving.</h2>
+    <p>This report names the mechanics. The deeper answers come from applying them to your relationships, choices, emotional waves, transits, nervous system, and current-life context.</p>
+    <ul>
+      <li><strong>Human Design Sanctuary:</strong> daily support for living the experiment, not just reading the map.</li>
+      <li><strong>Coaching Container:</strong> guided deconditioning and integration over time.</li>
+      <li><strong>Human Design Consultations:</strong> focused help for the real situation in front of you.</li>
+    </ul>
+    <p><a href="https://humandesignengine.com/deconditioning/">Enter the Human Design Sanctuary</a> · <a href="https://humandesignengine.com/becca-coaching.html">Explore coaching</a> · <a href="mailto:team@humandesignengine.com?subject=Human%20Design%20Consultation">Book a consultation</a></p>
+  </div>
+
   <div class="cert-badge">
     🌿 Verified by OpenHumanDesignMCP — open-source calculations (AGPLv3) <span class="badge">Certified by Light Filled Human Design</span>
   </div>
@@ -1438,7 +1468,6 @@ def send_email(to_email: str, name: str, report_type: str, pdf_path: str):
         log.warning("SMTP not configured — skipping email to %s", to_email)
         return
 
-    from email.mime.text import MIMEText
     from email.mime.multipart import MIMEMultipart
     from email.mime.application import MIMEApplication
     import smtplib
@@ -1446,50 +1475,9 @@ def send_email(to_email: str, name: str, report_type: str, pdf_path: str):
     msg = MIMEMultipart('mixed')
     msg['From'] = FROM_EMAIL
     msg['To'] = to_email
-    msg['Subject'] = f"Your Human Design {report_type.title()} report is ready, {name}"
-
-    body = f"""Hi {name},
-
-Your Human Design {report_type.title()} report is attached as a PDF.
-
-Read it at your own pace. This is a private reference, not another task to perform.
-
-If anything feels confusing, reply to this email and we’ll help.
-
-—
-Human Design Engine
-Your private Human Design sanctuary
-https://staging.humandesignengine.com/deconditioning/"""
-    html = f"""<!doctype html>
-<html>
-  <body style=\"margin:0;background:#FAF7F0;color:#2F3631;font-family:Outfit,-apple-system,BlinkMacSystemFont,'Segoe UI',system-ui,sans-serif;\">
-    <table role=\"presentation\" width=\"100%\" cellpadding=\"0\" cellspacing=\"0\" style=\"background:#FAF7F0;padding:32px 12px;\">
-      <tr><td align=\"center\">
-        <table role=\"presentation\" width=\"100%\" cellpadding=\"0\" cellspacing=\"0\" style=\"max-width:640px;background:#FFFFFF;border:1px solid rgba(95,114,97,.15);border-radius:24px;overflow:hidden;box-shadow:0 8px 30px rgba(47,54,49,.03);\">
-          <tr><td style=\"padding:30px 30px 12px;\">
-            <div style=\"letter-spacing:.16em;text-transform:uppercase;color:#5F7261;font-size:12px;font-weight:700;\">Human Design Engine</div>
-            <h1 style=\"margin:14px 0 8px;font-family:'Playfair Display',Georgia,serif;font-size:32px;line-height:1.12;color:#2F3631;font-weight:600;\">Your {report_type.title()} report is ready.</h1>
-            <p style=\"margin:0;color:#5C625E;font-size:16px;line-height:1.65;\">Hi {name}, your PDF is attached. Read it at your own pace.</p>
-          </td></tr>
-          <tr><td style=\"padding:18px 30px;color:#5C625E;font-size:15px;line-height:1.7;\">
-            <p>This is a private reference, not another task to perform.</p>
-            <p>If anything feels confusing, reply to this email and we’ll help.</p>
-          </td></tr>
-          <tr><td style=\"background:#2F3631;border-top:1px solid rgba(95,114,97,.15);padding:20px 30px;color:#FAF7F0;font-size:13px;line-height:1.6;\">
-            <strong style=\"color:#FAF7F0;\">Human Design Engine</strong><br>
-            Your private Human Design sanctuary<br>
-            <a href=\"https://staging.humandesignengine.com/deconditioning/\" style=\"color:#C7BFB5;\">staging.humandesignengine.com/deconditioning</a>
-          </td></tr>
-        </table>
-      </td></tr>
-    </table>
-  </body>
-</html>"""
-
-    alternative = MIMEMultipart('alternative')
-    alternative.attach(MIMEText(body, 'plain', 'utf-8'))
-    alternative.attach(MIMEText(html, 'html', 'utf-8'))
-    msg.attach(alternative)
+    subject, body, html = build_report_email(name, report_type)
+    msg['Subject'] = subject
+    attach_themed_alternative(msg, body, html)
 
     with open(pdf_path, 'rb') as f:
         attachment = MIMEApplication(f.read(), _subtype='pdf')
