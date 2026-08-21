@@ -32,6 +32,29 @@ Invariant: **guest hermes cap (120) < router POST cap (180)**. If you lower the 
 - **Guide-ready message** now asks for a preferred name + optional birth details (date/time/place) to build the chart immediately.
 - **Beta testing note**: the staging test consent message names Michael (human) and Ned (AI) reviewers.
 
+## Rebind guard (GRO-4823)
+
+A Telegram chat binds to exactly one HDE account via `bot_instances.telegram_user_id`. The old claim path
+(`process_start_token`) *silently stole* that binding when a different account signed in from the same phone: it
+NULLed the prior row and rebound to the new user with no check on who the prior owner was. That left the owner's
+phone bound to a 14-day demo, so every reply came from the demo's seeded chart (GRO-4823).
+
+The decision now lives in `scripts/hde_rebind_guard.py` (stdlib-only, unit-tested in `tests/test_rebind_guard.py`):
+
+| Prior owner | New sign-in | Outcome |
+|---|---|---|
+| unbound (no prior row) | any | allow (first bind) |
+| same user | any | allow (self re-claim) |
+| **protected** (`access_status == "paid"`, or `is_premium`) | different user | **refuse** — ERROR log `REBIND REFUSED`, prior owner untouched, user told the phone is already linked |
+| non-protected (demo / expired_demo / inactive) | different user | allow, but WARNING log `REBIND ALERT` with before/after identity |
+
+Schema backstop: `ix_bot_instances_telegram_user_id` is a **unique** index (Postgres treats NULLs as distinct, so
+unbound rows never collide) — it enforces at-most-one *live* binding per chat. The guard covers the one case that
+constraint cannot catch: an *intentional* NULL-then-rebind sequence. No DDL was added for this fix; the index
+already exists on `main` and in prod (verified 2026-08-21).
+
+Log lines are PII-safe: they carry user ids + `access_status`/`is_premium` only — never email or phone.
+
 ## Dependencies
 
 `hde_tenant_router.py` imports (all land in this PR unless already on `main`):
