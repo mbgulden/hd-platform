@@ -1,15 +1,11 @@
 ---
 import Layout from '../layouts/Layout.astro';
-import Nav from '../components/Nav.astro';
-import Footer from '../components/Footer.astro';
 import emdash from '../content/emdash.json';
 
 const calLink = emdash.global.coachingCalLink || 'becca-gulden/coaching';
 ---
 
 <Layout title="Registration Successful | Human Design Engine">
-  <Nav />
-  
   <main class="container">
     <div class="success-card" data-cal-link={calLink}>
       <div class="icon-wrap">✨</div>
@@ -55,7 +51,6 @@ const calLink = emdash.global.coachingCalLink || 'becca-gulden/coaching';
     </div>
   </main>
 
-  <Footer />
 </Layout>
 
 <style>

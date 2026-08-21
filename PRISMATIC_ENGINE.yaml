@@ -40,9 +40,13 @@ agents:
   ned:
     role: Code Execution & Infrastructure
     lanes:
-      # Temporary HDE checkpoint branch expansion authorized by Michael, 2026-07-17.
-      # Scope: ned/hde-phase1-phase2-staging-funnel-2026-07-15 only; revert/narrow before generalizing.
-      owner: ["src/", "api/", "scripts/", "docs/", "payment/", "public/", "shared/", "tests/", ".pwp/", "package.json", "package-lock.json", "playwright.config.ts", "lighthouserc.json", "wrangler.jsonc", "PRISMATIC_ENGINE.yaml"]
+      # 2026-07-17: temporary HDE checkpoint branch expansion authorized by Michael
+      # (scope: ned/hde-phase1-phase2-staging-funnel-2026-07-15 only).
+      # 2026-08-19: Michael authorized HDE production deploy promotion
+      # ("do the deploy fix and go ahead") — deploy-fresh -> main merge requires
+      # functions/ (CF Pages API proxies) and reports/ (backend server) in lane.
+      # Scope: ned/hde-prod-deploy-promotion-2026-08-19 promotion only.
+      owner: ["src/", "api/", "scripts/", "docs/", "payment/", "public/", "shared/", "tests/", ".pwp/", "functions/", "reports/", "package.json", "package-lock.json", "playwright.config.ts", "lighthouserc.json", "wrangler.jsonc", "PRISMATIC_ENGINE.yaml"]
       read_only: ["content/"]
     branch_prefix: "ned/"
 

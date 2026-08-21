@@ -1,0 +1,13 @@
+[Unit]
+Description=Human Design Engine staging demo reminder sender
+After=network.target hde_api_staging.service hde_router.service
+Wants=hde_router.service
+
+[Service]
+Type=oneshot
+User=ubuntu
+WorkingDirectory=/home/ubuntu/work/hd-platform-staging
+Environment=PYTHONPATH=/home/ubuntu/work/hd-platform-staging:/home/ubuntu/work/hd-platform-staging/scripts
+Environment=HDE_DEMO_REMINDER_DRY_RUN=0
+EnvironmentFile=/home/ubuntu/work/hd-platform-staging/.env
+ExecStart=/home/ubuntu/work/hd-platform/.venv/bin/python3 scripts/hde_demo_reminders.py
