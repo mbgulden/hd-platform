@@ -21,6 +21,7 @@ from shared.database import User, Invitation, BotInstance, async_session_factory
 from hde_rate_limits import HeadBotRateLimiter, create_rate_limiter_from_env
 from hde_job_queue import JobKind, RedisJobQueueSet
 from hde_usage_budgets import UsageBudgetGuard, budget_exceeded_message
+from hde_rebind_guard import evaluate_rebind
 
 # Configure logger
 logging.basicConfig(level=logging.INFO, format="%(asctime)s [%(levelname)s] %(name)s: %(message)s")
@@ -119,6 +120,19 @@ def as_aware_utc(value: datetime) -> datetime:
     if value.tzinfo is None:
         return value.replace(tzinfo=timezone.utc)
     return value.astimezone(timezone.utc)
+
+
+def _describe_user(user: Optional[object]) -> str:
+    """Compact, log-safe identity for an account in rebind logs.
+
+    Never includes the email or phone (PII); access status + premium flag is
+    enough to tell the operator whether the prior owner was a real account.
+    """
+    if user is None:
+        return "<no prior owner>"
+    access = (getattr(user, "access_status", None) or "unknown")
+    premium = bool(getattr(user, "is_premium", False))
+    return f"access_status={access}, is_premium={premium}"
 
 
 def user_access_state(user: Optional[User]) -> dict:
@@ -433,19 +447,53 @@ async def process_start_token(client: httpx.AsyncClient, chat_id: int, token: st
 
             chat_id_str = str(chat_id)
             result_existing_chat = await db_session.execute(
-                select(BotInstance).where(BotInstance.telegram_user_id == chat_id_str)
+                select(BotInstance)
+                .where(BotInstance.telegram_user_id == chat_id_str)
+                .options(selectinload(BotInstance.user))
             )
             existing_chat_bot: Optional[BotInstance] = result_existing_chat.scalar_one_or_none()
 
             result_bot = await db_session.execute(select(BotInstance).where(BotInstance.user_id == user.id))
             bot_instance: Optional[BotInstance] = result_bot.scalar_one_or_none()
 
+            # GRO-4823 rebind guard: a chat may already be bound to ANOTHER account.
+            # Silently stripping that binding is how the owner's phone got hijacked
+            # by a demo sign-in (see scripts/hde_rebind_guard.py). Refuse to steal a
+            # protected (real/paid) account's chat; allow reclaiming a demo/expired
+            # binding but always log a REBIND ALERT.
             if existing_chat_bot and existing_chat_bot.user_id != user.id:
-                logger.info(
-                    "Reassigning Telegram chat_id %d from User ID %d to User ID %d.",
+                prior_owner = existing_chat_bot.user
+                decision = evaluate_rebind(prior_owner, user)
+                if not decision.allowed:
+                    logger.error(
+                        "REBIND REFUSED: chat_id %d is bound to protected account user_id %s "
+                        "(%s). New sign-in user_id %d (%s) was NOT granted the binding; "
+                        "prior owner untouched.",
+                        chat_id,
+                        existing_chat_bot.user_id,
+                        _describe_user(prior_owner),
+                        user.id,
+                        _describe_user(user),
+                    )
+                    await send_telegram_message(
+                        client,
+                        chat_id,
+                        (
+                            "❌ *Error:* This phone number is already linked to your Sanctuary "
+                            "account. Sign in with the link sent to your account email, or "
+                            "contact support — we will not overwrite an existing account's binding."
+                        ),
+                    )
+                    return
+                logger.warning(
+                    "REBIND ALERT: chat_id %d rebinding from non-protected account user_id %s "
+                    "(%s) to user_id %d (%s). Reason: %s. Prior binding cleared.",
                     chat_id,
                     existing_chat_bot.user_id,
+                    _describe_user(prior_owner),
                     user.id,
+                    _describe_user(user),
+                    decision.reason,
                 )
                 existing_chat_bot.telegram_user_id = None
 
