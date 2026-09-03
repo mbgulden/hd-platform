@@ -7,7 +7,7 @@ import subprocess
 import shutil
 import sqlite3
 import time
-from datetime import datetime, timezone
+from datetime import datetime, timezone, timedelta
 from pathlib import Path
 from typing import Optional
 from fastapi import FastAPI, Request, HTTPException, status
@@ -718,6 +718,100 @@ async def coach_update_steps(payload: UpdateStepsRequest, request: Request):
     except Exception as e:
         logger.error("Failed to write guest_next_steps.json: %s", e)
         raise HTTPException(status_code=500, detail=f"Failed to save homework: {str(e)}")
+
+
+# ── Population / Platform visibility ───────────────────────────────────
+# Read-only aggregate + roster view of the whole HDE customer base and the
+# coaching platform. Deliberately separate from /api/coach/clients so the
+# dashboard can grow (population trends, platform KPIs, per-container drill
+# down) without touching the per-client dossier endpoint.
+@app.get("/api/coach/population")
+async def get_coach_population(request: Request, token: str = ""):
+    """Whole-customer-base + coaching-platform aggregates for the coach dashboard.
+
+    Returns stats (customer base), coaching (coaching-platform KPIs), and a
+    lightweight roster. No journal/step content, no API keys — identity +
+    status only. Same CF-Access / legacy-token gate as the rest of the portal.
+    """
+    if not request_has_coach_portal_access(token, request):
+        raise HTTPException(status_code=401, detail="Unauthorized access token.")
+
+    now = datetime.now(timezone.utc)
+    async with async_session_factory() as session:
+        users = (
+            await session.execute(select(User).order_by(User.created_at.asc()))
+        ).scalars().all()
+        bots = (await session.execute(select(BotInstance))).scalars().all()
+        bot_by_user = {b.user_id: b for b in bots}
+
+    # Customer-base stats
+    by_sub: dict[str, int] = {}
+    by_access: dict[str, int] = {}
+    for u in users:
+        by_sub[u.subscription_status or "inactive"] = by_sub.get(u.subscription_status or "inactive", 0) + 1
+        by_access[u.access_status or "unknown"] = by_access.get(u.access_status or "unknown", 0) + 1
+    containers_by_status: dict[str, int] = {}
+    for b in bots:
+        containers_by_status[b.status] = containers_by_status.get(b.status, 0) + 1
+
+    # Coaching-platform KPIs
+    active_clients = 0
+    never_expire = 0
+    expiring_14d = 0
+    suspended_clients = 0
+    consented_pipeline = 0
+    for u in users:
+        is_active_client = (
+            u.is_premium
+            and u.subscription_status == "active"
+            and u.coach_review_consent
+            and u.coach_review_consent_revoked_at is None
+        )
+        if is_active_client:
+            active_clients += 1
+            if u.coaching_container_end is None:
+                never_expire += 1
+            elif u.coaching_container_end < now:
+                # consented + premium but window lapsed -> treat as suspended
+                suspended_clients += 1
+            elif u.coaching_container_end <= now + timedelta(days=14):
+                expiring_14d += 1
+        elif u.coach_review_consent and u.coach_review_consent_revoked_at is None:
+            # gave consent but not yet an active premium client = pipeline
+            consented_pipeline += 1
+
+    stats = {
+        "total_accounts": len(users),
+        "by_subscription": by_sub,
+        "by_access": by_access,
+        "premium": sum(1 for u in users if u.is_premium),
+        "onboarded_containers": len(bots),
+        "containers_by_status": containers_by_status,
+    }
+    coaching = {
+        "active_clients": active_clients,
+        "never_expire": never_expire,
+        "expiring_14d": expiring_14d,
+        "suspended_clients": suspended_clients,
+        "consented_pipeline": consented_pipeline,
+    }
+    roster = [
+        {
+            "id": u.id,
+            "email": u.email,
+            "guide_name": u.guide_name,
+            "subscription_status": u.subscription_status or "inactive",
+            "access_status": u.access_status or "unknown",
+            "is_premium": u.is_premium,
+            "consented": bool(u.coach_review_consent and u.coach_review_consent_revoked_at is None),
+            "coaching_container_end": u.coaching_container_end.isoformat() if u.coaching_container_end else None,
+            "container_status": (bot_by_user.get(u.id).status if u.id in bot_by_user else "not_onboarded"),
+            "container_name": (bot_by_user.get(u.id).container_name if u.id in bot_by_user else None),
+            "created_at": u.created_at.isoformat() if u.created_at else None,
+        }
+        for u in users
+    ]
+    return {"stats": stats, "coaching": coaching, "roster": roster, "generated_at": now.isoformat()}
 
 
 if __name__ == "__main__":

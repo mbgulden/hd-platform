@@ -2,13 +2,13 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>HDE Coach Dashboard</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <title>HDE Coach Portal</title>
   <!-- Google Fonts -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Playfair+Display:ital,wght@0,400;0,600;1,400&display=swap" rel="stylesheet">
-  
+
   <style>
     :root {
       --cream-light: #F7F5F0;
@@ -24,363 +24,374 @@
       --radius-lg: 12px;
       --transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
       --shadow: 0 4px 20px rgba(31, 36, 33, 0.04);
+      --danger: #C5221F;
+      --warn-bg: #FFF8E8;
+      --warn-border: #E9D7A8;
+      --warn-text: #735A1C;
+      --ok-bg: #E6F4EA;
+      --ok-text: #137333;
     }
 
-    * {
-      box-sizing: border-box;
-      margin: 0;
-      padding: 0;
-    }
-
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    html, body { height: 100%; }
     body {
       font-family: 'Inter', sans-serif;
-      background-color: var(--cream-light);
+      background: var(--cream-light);
       color: var(--charcoal);
-      height: 100vh;
-      display: flex;
-      overflow: hidden;
+      -webkit-font-smoothing: antialiased;
     }
 
-    /* ---- AUTH DIALOG ---- */
+    /* ================= AUTH DIALOG ================= */
     #authOverlay {
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100vw;
-      height: 100vh;
-      background: rgba(31, 36, 33, 0.7);
+      position: fixed; inset: 0;
+      background: rgba(31, 36, 33, 0.72);
       backdrop-filter: blur(8px);
-      display: flex;
-      justify-content: center;
-      align-items: center;
+      display: flex; justify-content: center; align-items: center;
       z-index: 1000;
+      padding: 16px;
       transition: var(--transition);
     }
-    #authOverlay.hidden {
-      opacity: 0;
-      pointer-events: none;
-    }
+    #authOverlay.hidden { opacity: 0; pointer-events: none; }
     .auth-card {
       background: var(--card-bg);
       border-radius: var(--radius-lg);
-      padding: 40px;
-      width: 100%;
-      max-width: 400px;
-      box-shadow: 0 10px 40px rgba(0,0,0,0.15);
+      padding: 28px 22px;
+      width: 100%; max-width: 400px;
+      box-shadow: 0 10px 40px rgba(0,0,0,0.18);
       text-align: center;
     }
-    .auth-card h2 {
-      font-family: 'Playfair Display', serif;
-      color: var(--sage-deep);
-      font-size: 1.75rem;
-      margin-bottom: 12px;
-    }
-    .auth-card p {
-      font-size: 0.9rem;
-      color: var(--text-secondary);
-      margin-bottom: 24px;
-      line-height: 1.4;
-    }
+    .auth-card h2 { font-family: 'Playfair Display', serif; color: var(--sage-deep); font-size: 1.5rem; margin-bottom: 10px; }
+    .auth-card p { font-size: 0.88rem; color: var(--text-secondary); margin-bottom: 18px; line-height: 1.45; }
     .auth-input {
-      width: 100%;
-      padding: 14px;
-      border: 1px solid var(--card-border);
-      border-radius: var(--radius);
-      font-size: 0.95rem;
-      margin-bottom: 16px;
-      text-align: center;
-      background: var(--cream-light);
-      outline: none;
+      width: 100%; padding: 13px; min-height: 46px;
+      border: 1px solid var(--card-border); border-radius: var(--radius);
+      font-size: 0.95rem; margin-bottom: 14px; text-align: center;
+      background: var(--cream-light); outline: none;
     }
-    .auth-input:focus {
-      border-color: var(--sage-deep);
-    }
+    .auth-input:focus { border-color: var(--sage-deep); }
     .auth-btn {
-      width: 100%;
-      padding: 14px;
-      background: var(--sage-deep);
-      color: #fff;
-      border: none;
-      border-radius: var(--radius);
-      font-size: 1rem;
-      font-weight: 600;
-      cursor: pointer;
-      transition: var(--transition);
+      width: 100%; padding: 13px; min-height: 46px;
+      background: var(--sage-deep); color: #fff; border: none;
+      border-radius: var(--radius); font-size: 0.98rem; font-weight: 600;
+      cursor: pointer; transition: var(--transition);
     }
-    .auth-btn:hover {
-      background: var(--sage-mid);
-    }
+    .auth-btn:active { transform: scale(0.99); }
+    .auth-btn:hover { background: var(--sage-mid); }
     .auth-status {
-      background: #FDFBF7;
-      border: 1px solid var(--card-border);
-      border-radius: var(--radius);
-      color: var(--text-secondary);
-      font-size: 0.82rem;
-      line-height: 1.45;
-      margin: 0 0 16px;
-      padding: 12px;
-      text-align: left;
+      background: #FDFBF7; border: 1px solid var(--card-border); border-radius: var(--radius);
+      color: var(--text-secondary); font-size: 0.8rem; line-height: 1.45;
+      margin: 0 0 16px; padding: 11px; text-align: left;
     }
-    .auth-status.ok {
-      background: rgba(95, 114, 97, 0.10);
-      border-color: rgba(95, 114, 97, 0.25);
-      color: var(--sage-deep);
-    }
-    .auth-status.warn {
-      background: #FFF8E8;
-      border-color: #E9D7A8;
-      color: #735A1C;
-    }
+    .auth-status.ok { background: rgba(95,114,97,0.10); border-color: rgba(95,114,97,0.25); color: var(--sage-deep); }
+    .auth-status.warn { background: var(--warn-bg); border-color: var(--warn-border); color: var(--warn-text); }
 
-    /* ---- MAIN DASHBOARD ---- */
-    .sidebar {
-      width: 320px;
-      border-right: 1px solid var(--card-border);
+    /* ================= APP SHELL (mobile-first) ================= */
+    .app { display: flex; flex-direction: column; height: 100vh; height: 100dvh; }
+    .main-col { flex: 1; display: flex; flex-direction: column; min-height: 0; min-width: 0; }
+
+    .topbar {
+      display: flex; align-items: center; gap: 10px;
+      padding: 10px 14px;
+      padding-top: calc(10px + env(safe-area-inset-top));
       background: var(--card-bg);
-      display: flex;
-      flex-direction: column;
-      height: 100%;
-    }
-    .sidebar-header {
-      padding: 24px;
       border-bottom: 1px solid var(--card-border);
+      flex: 0 0 auto;
     }
-    .sidebar-header h1 {
-      font-family: 'Playfair Display', serif;
-      font-size: 1.4rem;
-      color: var(--sage-deep);
-      font-weight: 600;
+    .topbar-titles { min-width: 0; }
+    .topbar h1 { font-family: 'Playfair Display', serif; font-size: 1.12rem; color: var(--sage-deep); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .topbar p { font-size: 0.68rem; color: var(--text-muted); letter-spacing: 0.04em; text-transform: uppercase; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .back-btn {
+      display: none;
+      width: 42px; height: 42px; flex: 0 0 auto;
+      align-items: center; justify-content: center;
+      background: none; border: 1px solid var(--card-border); border-radius: 50%;
+      color: var(--sage-deep); cursor: pointer;
     }
-    .sidebar-header p {
-      font-size: 0.75rem;
-      color: var(--text-muted);
-      text-transform: uppercase;
-      letter-spacing: 0.05em;
-      margin-top: 4px;
+    body.detail-open .back-btn { display: flex; }
+    .session-chip {
+      margin-left: auto; flex: 0 0 auto;
+      max-width: 44%;
+      font-size: 0.68rem; color: var(--sage-deep);
+      background: rgba(95,114,97,0.10); border: 1px solid rgba(95,114,97,0.22);
+      border-radius: 12px; padding: 4px 10px;
+      white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
     }
-    .client-list {
-      flex: 1;
-      overflow-y: auto;
-      padding: 16px;
+
+    /* Views container */
+    .views { flex: 1; overflow: hidden; position: relative; background: var(--cream-light); min-height: 0; }
+    .view { height: 100%; }
+    .view[hidden] { display: none !important; }
+    .view-scroll { height: 100%; overflow-y: auto; -webkit-overflow-scrolling: touch; padding: 14px; padding-bottom: calc(14px + env(safe-area-inset-bottom)); }
+
+    /* Bottom tab bar (mobile) */
+    .tabbar {
+      display: flex; flex: 0 0 auto;
+      background: var(--card-bg);
+      border-top: 1px solid var(--card-border);
+      padding-bottom: env(safe-area-inset-bottom);
     }
+    .tab {
+      flex: 1; display: flex; flex-direction: column; align-items: center; gap: 3px;
+      padding: 9px 0 7px; min-height: 54px;
+      font-size: 0.62rem; font-weight: 600; letter-spacing: 0.03em;
+      color: var(--text-muted); background: none; border: none; cursor: pointer;
+    }
+    .tab svg { width: 21px; height: 21px; }
+    .tab.active { color: var(--sage-deep); }
+
+    /* Left nav rail (desktop) */
+    .nav-rail { display: none; }
+
+    /* ================= CLIENTS VIEW ================= */
+    #view-clients { display: flex; flex-direction: column; }
+    .client-list-pane { flex: 1; overflow-y: auto; -webkit-overflow-scrolling: touch; padding: 14px; }
+    .pane-head {
+      display: flex; justify-content: space-between; align-items: center;
+      font-size: 0.7rem; text-transform: uppercase; letter-spacing: 0.06em;
+      color: var(--text-muted); font-weight: 600; margin-bottom: 12px;
+    }
+    .count-pill {
+      background: rgba(95,114,97,0.12); color: var(--sage-deep);
+      border-radius: 10px; padding: 2px 8px; font-size: 0.68rem;
+    }
+    .client-list { display: flex; flex-direction: column; gap: 10px; }
     .client-item {
-      padding: 16px;
-      border-radius: var(--radius);
-      border: 1px solid transparent;
-      cursor: pointer;
-      transition: var(--transition);
-      margin-bottom: 12px;
-    }
-    .client-item:hover {
-      background: var(--cream-light);
-      border-color: var(--card-border);
-    }
-    .client-item.active {
-      background: var(--cream-light);
-      border-color: var(--sage-light);
-    }
-    .client-email {
-      font-weight: 500;
-      font-size: 0.9rem;
-      color: var(--charcoal);
-    }
-    .client-meta {
-      font-size: 0.75rem;
-      color: var(--text-secondary);
-      margin-top: 4px;
-      display: flex;
-      justify-content: space-between;
-    }
-    .status-badge {
-      font-size: 0.7rem;
-      padding: 2px 8px;
-      border-radius: 12px;
-      font-weight: 600;
-      text-transform: uppercase;
-    }
-    .status-active { background: #E6F4EA; color: #137333; }
-    .status-suspended { background: #FCE8E6; color: #C5221F; }
-
-    /* ---- MAIN PANEL ---- */
-    .main-content {
-      flex: 1;
-      display: flex;
-      flex-direction: column;
-      height: 100%;
-      background: var(--cream-light);
-      padding: 40px;
-      overflow-y: auto;
-    }
-    .empty-state {
-      margin: auto;
-      text-align: center;
-      max-width: 400px;
-    }
-    .empty-state h3 {
-      font-family: 'Playfair Display', serif;
-      font-size: 1.5rem;
-      color: var(--sage-deep);
-      margin-bottom: 12px;
-    }
-    .empty-state p {
-      font-size: 0.9rem;
-      color: var(--text-secondary);
-      line-height: 1.5;
-    }
-
-    /* ---- CLIENT DETAILS PANEL ---- */
-    .details-grid {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 32px;
-      width: 100%;
-      max-width: 1200px;
-      margin: 0 auto;
-    }
-    .details-card {
       background: var(--card-bg);
       border: 1px solid var(--card-border);
-      border-radius: var(--radius-lg);
-      padding: 32px;
-      box-shadow: var(--shadow);
-      display: flex;
-      flex-direction: column;
+      border-radius: var(--radius);
+      padding: 14px 16px; min-height: 56px;
+      cursor: pointer; transition: var(--transition);
+    }
+    .client-item:active { transform: scale(0.99); }
+    .client-item:hover { border-color: var(--sage-light); }
+    .client-item.active { background: var(--cream-light); border-color: var(--sage-deep); }
+    .client-email { font-weight: 500; font-size: 0.92rem; color: var(--charcoal); word-break: break-all; }
+    .client-meta { font-size: 0.74rem; color: var(--text-secondary); margin-top: 6px; display: flex; justify-content: space-between; align-items: center; gap: 8px; }
+
+    .status-badge {
+      font-size: 0.66rem; padding: 3px 9px; border-radius: 12px; font-weight: 600;
+      text-transform: uppercase; letter-spacing: 0.03em; white-space: nowrap;
+    }
+    .status-active { background: var(--ok-bg); color: var(--ok-text); }
+    .status-suspended { background: #FCE8E6; color: var(--danger); }
+    .status-neutral { background: #EEF1EF; color: var(--text-secondary); }
+
+    /* Detail pane */
+    .detail-pane { display: none; overflow: hidden; }
+    body.detail-open .client-list-pane { display: none; }
+    body.detail-open .detail-pane { display: block; flex: 1; }
+    .detail-scroll { height: 100%; overflow-y: auto; -webkit-overflow-scrolling: touch; padding: 14px; padding-bottom: calc(20px + env(safe-area-inset-bottom)); }
+    .detail-head { margin-bottom: 14px; }
+    .detail-head .dh-name { font-size: 1.05rem; font-weight: 600; word-break: break-all; }
+    .detail-head .dh-sub { font-size: 0.74rem; color: var(--text-muted); margin-top: 4px; display: flex; gap: 8px; align-items: center; flex-wrap: wrap; }
+
+    .empty-state { margin: auto; text-align: center; max-width: 380px; padding: 24px; }
+    .empty-state h3 { font-family: 'Playfair Display', serif; font-size: 1.4rem; color: var(--sage-deep); margin-bottom: 10px; }
+    .empty-state p { font-size: 0.88rem; color: var(--text-secondary); line-height: 1.5; }
+
+    /* Dossier cards */
+    .details-grid { display: flex; flex-direction: column; gap: 14px; }
+    .details-card {
+      background: var(--card-bg); border: 1px solid var(--card-border);
+      border-radius: var(--radius-lg); padding: 18px; box-shadow: var(--shadow);
+      display: flex; flex-direction: column;
     }
     .card-heading {
-      font-family: 'Playfair Display', serif;
-      font-size: 1.25rem;
-      color: var(--sage-deep);
-      margin-bottom: 20px;
-      border-bottom: 1px solid var(--cream-light);
-      padding-bottom: 10px;
-    }
-    
-    /* HD Table */
-    .hd-property {
-      display: flex;
-      justify-content: space-between;
-      padding: 12px 0;
-      border-bottom: 1px dashed var(--card-border);
-      font-size: 0.9rem;
-    }
-    .hd-label {
-      color: var(--text-secondary);
-      font-weight: 500;
-    }
-    .hd-val {
-      color: var(--charcoal);
-      font-weight: 600;
+      font-family: 'Playfair Display', serif; font-size: 1.05rem; color: var(--sage-deep);
+      margin-bottom: 14px; padding-bottom: 8px; border-bottom: 1px solid var(--cream-light);
     }
 
-    /* Journal Timeline */
-    .timeline {
-      position: relative;
-      padding-left: 24px;
-      margin-top: 10px;
-      max-height: 400px;
-      overflow-y: auto;
-    }
-    .timeline::before {
-      content: '';
-      position: absolute;
-      left: 7px;
-      top: 0;
-      bottom: 0;
-      width: 2px;
-      background: var(--sage-light);
-    }
-    .timeline-item {
-      position: relative;
-      margin-bottom: 24px;
-    }
+    .hd-property { display: flex; justify-content: space-between; gap: 12px; padding: 11px 0; border-bottom: 1px dashed var(--card-border); font-size: 0.88rem; }
+    .hd-property:last-child { border-bottom: none; }
+    .hd-label { color: var(--text-secondary); font-weight: 500; }
+    .hd-val { color: var(--charcoal); font-weight: 600; text-align: right; word-break: break-word; }
+
+    .timeline { position: relative; padding-left: 22px; margin-top: 8px; }
+    .timeline::before { content: ''; position: absolute; left: 7px; top: 0; bottom: 0; width: 2px; background: var(--sage-light); }
+    .timeline-item { position: relative; margin-bottom: 18px; }
     .timeline-item::before {
-      content: '';
-      position: absolute;
-      left: -22px;
-      top: 4px;
-      width: 10px;
-      height: 10px;
-      border-radius: 50%;
-      background: var(--sage-deep);
-      border: 2px solid var(--card-bg);
+      content: ''; position: absolute; left: -21px; top: 3px;
+      width: 10px; height: 10px; border-radius: 50%;
+      background: var(--sage-deep); border: 2px solid var(--card-bg);
     }
-    .timeline-date {
-      font-size: 0.75rem;
-      color: var(--text-muted);
-      font-weight: 600;
-      margin-bottom: 4px;
+    .timeline-date { font-size: 0.72rem; color: var(--text-muted); font-weight: 600; margin-bottom: 4px; }
+    .timeline-body { font-size: 0.84rem; color: var(--text-secondary); line-height: 1.45; background: var(--cream-light); padding: 11px; border-radius: var(--radius); white-space: pre-wrap; word-break: break-word; }
+
+    .card-note { font-size: 0.8rem; color: var(--text-secondary); margin-bottom: 14px; line-height: 1.45; }
+    .task-item { display: flex; align-items: center; gap: 8px; margin-bottom: 10px; }
+    .task-input {
+      flex: 1; min-width: 0; padding: 12px 13px; min-height: 44px;
+      border: 1px solid var(--card-border); border-radius: var(--radius);
+      font-size: 0.9rem; outline: none; background: var(--cream-light);
     }
-    .timeline-body {
-      font-size: 0.85rem;
-      color: var(--text-secondary);
-      line-height: 1.4;
-      background: var(--cream-light);
-      padding: 12px;
-      border-radius: var(--radius);
+    .task-input:focus { border-color: var(--sage-deep); background: #fff; }
+    .remove-task-btn {
+      width: 42px; height: 42px; flex: 0 0 auto;
+      display: flex; align-items: center; justify-content: center;
+      background: none; border: none; color: var(--danger);
+      cursor: pointer; font-size: 1.4rem; border-radius: var(--radius);
+    }
+    .remove-task-btn:active { background: #FCE8E6; }
+    .add-task-btn {
+      background: none; border: 1px dashed var(--sage-deep); color: var(--sage-deep);
+      padding: 12px; min-height: 46px; border-radius: var(--radius);
+      font-size: 0.85rem; font-weight: 600; cursor: pointer; width: 100%;
+      margin-bottom: 12px; transition: var(--transition);
+    }
+    .add-task-btn:active { background: rgba(95,114,97,0.06); }
+    .save-btn {
+      padding: 13px; min-height: 48px;
+      background: var(--sage-deep); color: #fff; border: none;
+      border-radius: var(--radius); font-size: 0.95rem; font-weight: 600;
+      cursor: pointer; transition: var(--transition); margin-top: 6px; width: 100%;
+    }
+    .save-btn:active { transform: scale(0.995); }
+    .save-btn:hover { background: var(--sage-mid); }
+
+    /* ================= STAT / KPI CARDS ================= */
+    .stat-strip { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; margin-bottom: 14px; }
+    .stat-card {
+      background: var(--card-bg); border: 1px solid var(--card-border);
+      border-radius: var(--radius); padding: 12px 14px; box-shadow: var(--shadow);
+    }
+    .stat-num { font-size: 1.45rem; font-weight: 700; color: var(--sage-deep); line-height: 1.1; }
+    .stat-label { font-size: 0.68rem; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.05em; margin-top: 4px; font-weight: 600; }
+
+    .filter-bar { display: flex; gap: 8px; margin-bottom: 12px; }
+    .filter-bar input {
+      flex: 1; min-width: 0; padding: 11px 13px; min-height: 44px;
+      border: 1px solid var(--card-border); border-radius: var(--radius);
+      font-size: 0.9rem; background: var(--card-bg); outline: none;
+    }
+    .filter-bar select {
+      padding: 10px; min-height: 44px;
+      border: 1px solid var(--card-border); border-radius: var(--radius);
+      font-size: 0.82rem; background: var(--card-bg); color: var(--text-secondary);
+      max-width: 46%;
     }
 
-    /* Homework Portal */
-    .task-item {
-      display: flex;
-      align-items: center;
-      gap: 12px;
-      margin-bottom: 12px;
+    /* Roster */
+    .roster { display: flex; flex-direction: column; gap: 8px; }
+    .roster-head { display: none; } /* desktop table-header; shown via min-width:900px */
+    .roster-row {
+      background: var(--card-bg); border: 1px solid var(--card-border);
+      border-radius: var(--radius); padding: 12px 14px;
     }
-    .task-input {
-      flex: 1;
-      padding: 10px 14px;
-      border: 1px solid var(--card-border);
-      border-radius: var(--radius);
-      font-size: 0.9rem;
-      outline: none;
-      background: var(--cream-light);
+    .rr-mobile { display: block; }
+    .rr-desktop { display: none; }
+    .rr-top { display: flex; justify-content: space-between; align-items: flex-start; gap: 8px; flex-wrap: wrap; }
+    .rr-name { font-weight: 500; font-size: 0.9rem; overflow-wrap: anywhere; min-width: 0; flex: 1 1 auto; }
+    .rr-badges { display: flex; gap: 5px; flex-wrap: wrap; justify-content: flex-end; flex-shrink: 0; }
+    .rr-sub { font-size: 0.72rem; color: var(--text-muted); margin-top: 6px; }
+    .chip {
+      font-size: 0.62rem; padding: 2px 8px; border-radius: 10px; font-weight: 600;
+      text-transform: uppercase; letter-spacing: 0.03em; white-space: nowrap;
     }
-    .task-input:focus {
-      border-color: var(--sage-deep);
-      background: #fff;
+    .chip-premium { background: rgba(95,114,97,0.14); color: var(--sage-deep); }
+    .chip-consent { background: var(--ok-bg); color: var(--ok-text); }
+    .chip-plain { background: #EEF1EF; color: var(--text-secondary); }
+
+    /* Platform view */
+    .platform-section { margin-bottom: 18px; }
+    .platform-section h3 {
+      font-family: 'Playfair Display', serif; font-size: 1rem; color: var(--sage-deep);
+      margin-bottom: 10px;
     }
-    .remove-task-btn {
-      background: none;
-      border: none;
-      color: #C5221F;
-      cursor: pointer;
-      font-size: 1.2rem;
-      padding: 4px;
-      transition: var(--transition);
+    .kpi-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; }
+    .kpi-card {
+      background: var(--card-bg); border: 1px solid var(--card-border);
+      border-radius: var(--radius); padding: 14px; box-shadow: var(--shadow);
     }
-    .remove-task-btn:hover {
-      transform: scale(1.1);
+    .kpi-num { font-size: 1.6rem; font-weight: 700; color: var(--charcoal); }
+    .kpi-num.accent { color: var(--sage-deep); }
+    .kpi-label { font-size: 0.68rem; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.05em; margin-top: 4px; font-weight: 600; }
+    .break-list { list-style: none; }
+    .break-row {
+      display: flex; justify-content: space-between; align-items: center; gap: 10px;
+      padding: 10px 0; border-bottom: 1px dashed var(--card-border); font-size: 0.85rem;
     }
-    .add-task-btn {
-      background: none;
-      border: 1px dashed var(--sage-deep);
-      color: var(--sage-deep);
-      padding: 10px;
-      border-radius: var(--radius);
-      font-size: 0.85rem;
-      font-weight: 600;
-      cursor: pointer;
-      width: 100%;
-      margin-bottom: 20px;
-      transition: var(--transition);
-    }
-    .add-task-btn:hover {
-      background: rgba(95, 114, 97, 0.05);
-    }
-    .save-btn {
-      padding: 14px;
-      background: var(--sage-deep);
-      color: #fff;
-      border: none;
-      border-radius: var(--radius);
-      font-size: 0.95rem;
-      font-weight: 600;
-      cursor: pointer;
-      transition: var(--transition);
-      margin-top: auto;
-    }
-    .save-btn:hover {
-      background: var(--sage-mid);
+    .break-row:last-child { border-bottom: none; }
+    .break-row .bl-label { color: var(--text-secondary); }
+    .break-row .bl-val { font-weight: 600; }
+    .bar-track { flex: 1; height: 6px; background: #EDF1EE; border-radius: 3px; overflow: hidden; max-width: 45%; }
+    .bar-fill { height: 100%; background: var(--sage-mid); border-radius: 3px; }
+    .break-row .bl-barwrap { display: flex; align-items: center; gap: 8px; flex: 1; }
+
+    .muted-note { color: var(--text-muted); font-size: 0.8rem; font-style: italic; }
+    .error-note { color: var(--danger); font-size: 0.85rem; }
+    .center-note { text-align: center; color: var(--text-secondary); font-size: 0.88rem; padding: 20px 0; }
+
+    /* ================= DESKTOP (>= 900px) ================= */
+    @media (min-width: 900px) {
+      .app { flex-direction: row; }
+      .tabbar { display: none; }
+      .nav-rail {
+        display: flex; flex-direction: column;
+        width: 232px; flex: 0 0 auto;
+        background: var(--card-bg); border-right: 1px solid var(--card-border);
+      }
+      .rail-brand { padding: 20px 18px; border-bottom: 1px solid var(--card-border); display: flex; align-items: center; gap: 10px; }
+      .rail-logo {
+        width: 38px; height: 38px; border-radius: 10px;
+        background: var(--sage-deep); color: #fff;
+        display: flex; align-items: center; justify-content: center;
+        font-weight: 700; font-size: 0.8rem; letter-spacing: 0.03em;
+      }
+      .rail-name { font-family: 'Playfair Display', serif; font-size: 1.02rem; color: var(--sage-deep); font-weight: 600; }
+      .rail-nav { flex: 1; padding: 12px 10px; display: flex; flex-direction: column; gap: 4px; }
+      .nav-item {
+        display: flex; align-items: center; gap: 10px;
+        padding: 12px 12px; min-height: 44px;
+        background: none; border: none; border-radius: var(--radius);
+        font-size: 0.9rem; font-weight: 500; color: var(--text-secondary);
+        cursor: pointer; text-align: left;
+      }
+      .nav-item svg { width: 19px; height: 19px; flex: 0 0 auto; }
+      .nav-item:hover { background: var(--cream-light); }
+      .nav-item.active { background: rgba(95,114,97,0.12); color: var(--sage-deep); font-weight: 600; }
+      .nav-count { margin-left: auto; font-size: 0.7rem; background: var(--cream-light); border: 1px solid var(--card-border); border-radius: 10px; padding: 1px 8px; color: var(--text-secondary); }
+      .rail-foot { padding: 14px 16px; border-top: 1px solid var(--card-border); }
+      .rail-session { font-size: 0.72rem; color: var(--text-muted); word-break: break-all; }
+
+      .topbar { padding: 12px 24px; }
+      .topbar h1 { font-size: 1.3rem; }
+
+      #view-clients { flex-direction: row; }
+      .client-list-pane {
+        width: 340px; min-width: 300px; flex: 0 0 auto;
+        border-right: 1px solid var(--card-border); background: var(--card-bg);
+        padding: 20px;
+      }
+      body.detail-open .client-list-pane { display: block; }
+      .detail-pane { flex: 1; overflow-y: auto; }
+      .detail-scroll { padding: 28px; max-width: 1100px; }
+      .details-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; align-items: start; }
+      .details-card { padding: 26px; }
+      .card-heading { font-size: 1.2rem; }
+      .view-scroll { padding: 24px; max-width: 1200px; }
+      .stat-strip { grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); }
+      .kpi-grid { grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); }
+
+      /* Desktop roster: tabular rows */
+      .roster-row { display: block; padding: 0; }
+      .rr-mobile { display: none; }
+      .rr-desktop {
+        display: grid;
+        grid-template-columns: 1.5fr 0.9fr 0.8fr 0.7fr 0.7fr 0.9fr 1fr;
+        gap: 8px; align-items: center;
+        padding: 11px 14px; font-size: 0.82rem;
+      }
+      .rr-desktop .rr-name { font-size: 0.85rem; }
+      .roster-head {
+        display: none;
+        grid-template-columns: 1.5fr 0.9fr 0.8fr 0.7fr 0.7fr 0.9fr 1fr;
+        gap: 8px; padding: 8px 14px;
+        font-size: 0.66rem; text-transform: uppercase; letter-spacing: 0.05em;
+        color: var(--text-muted); font-weight: 700;
+        border-bottom: 1px solid var(--card-border);
+      }
+      @media (min-width: 900px) { .roster-head { display: grid; } }
+      .roster { gap: 6px; }
     }
   </style>
 </head>
@@ -389,68 +400,193 @@
   <!-- Auth Dialog Overlay -->
   <div id="authOverlay">
     <div class="auth-card">
-      <h2>Becca's Coach Portal</h2>
+      <h2>HDE Coach Portal</h2>
       <p>Sign in through Cloudflare Access, or enter the legacy access token if you are working locally.</p>
       <div id="authStatus" class="auth-status">Checking Cloudflare Access session…</div>
-      <input type="password" id="tokenInput" class="auth-input" placeholder="Legacy Access Token">
+      <input type="password" id="tokenInput" class="auth-input" placeholder="Legacy Access Token" autocomplete="current-password">
       <button class="auth-btn" onclick="submitAuth()">Enter Dashboard</button>
     </div>
   </div>
 
-  <!-- Left Sidebar -->
-  <aside class="sidebar">
-    <div class="sidebar-header">
-      <h1>Coach Portal</h1>
-      <p>Sovereign Container Management</p>
-    </div>
-    <div class="client-list" id="clientListContainer">
-      <!-- Clients loaded dynamically -->
-    </div>
-  </aside>
+  <div class="app">
+    <!-- Desktop nav rail -->
+    <aside class="nav-rail" id="navRail">
+      <div class="rail-brand">
+        <div class="rail-logo">HDE</div>
+        <div class="rail-name">Coach Portal</div>
+      </div>
+      <nav class="rail-nav">
+        <button class="nav-item active" data-view="clients">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="8" r="4"/><path d="M4 21c0-4 3.6-7 8-7s8 3 8 7"/></svg>
+          <span>Clients</span>
+          <span class="nav-count" id="navClientCount"></span>
+        </button>
+        <button class="nav-item" data-view="population">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="9" cy="8" r="3.2"/><path d="M2.5 20c0-3.4 2.9-6 6.5-6s6.5 2.6 6.5 6"/><circle cx="17.5" cy="9" r="2.6"/><path d="M17 14.5c2.9.3 5 2.5 5 5.5"/></svg>
+          <span>Population</span>
+        </button>
+        <button class="nav-item" data-view="platform">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M4 20V10"/><path d="M10 20V4"/><path d="M16 20v-6"/><path d="M21 20H3"/></svg>
+          <span>Platform</span>
+        </button>
+      </nav>
+      <div class="rail-foot">
+        <div class="rail-session" id="railSession">Not signed in</div>
+      </div>
+    </aside>
 
-  <!-- Main Panel -->
-  <main class="main-content" id="mainPanel">
-    <div class="empty-state">
-      <h3>Dismantling the Not-Self</h3>
-      <p>Select a client from the list to inspect their somatic de-programming metrics, daily journal feeds, and update active design experiments.</p>
+    <div class="main-col">
+      <!-- Top bar -->
+      <header class="topbar">
+        <button id="backBtn" class="back-btn" aria-label="Back to client list">
+          <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M15 19l-7-7 7-7"/></svg>
+        </button>
+        <div class="topbar-titles">
+          <h1 id="viewTitle">Clients</h1>
+          <p id="viewSubtitle">Premium coaching clients</p>
+        </div>
+        <div class="session-chip" id="sessionChip" hidden></div>
+      </header>
+
+      <main class="views">
+        <!-- CLIENTS -->
+        <section id="view-clients" class="view">
+          <div class="client-list-pane">
+            <div class="pane-head">
+              <span>Your clients</span>
+              <span class="count-pill" id="clientCount">–</span>
+            </div>
+            <div id="clientListContainer" class="client-list"></div>
+          </div>
+          <div class="detail-pane" id="detailPane">
+            <div class="detail-scroll">
+              <div class="detail-head" id="detailHead" hidden></div>
+              <div class="empty-state" id="emptyState">
+                <h3>Dismantling the Not-Self</h3>
+                <p>Select a client to inspect their somatic de-programming metrics, daily journal feed, and update active design experiments.</p>
+              </div>
+              <div id="detailContent"></div>
+            </div>
+          </div>
+        </section>
+
+        <!-- POPULATION -->
+        <section id="view-population" class="view" hidden>
+          <div class="view-scroll">
+            <div class="stat-strip" id="popStats"></div>
+            <div class="filter-bar">
+              <input id="rosterSearch" type="search" placeholder="Filter by name or email…" autocomplete="off">
+              <select id="rosterFilter" aria-label="Filter roster">
+                <option value="all">All</option>
+                <option value="active">Active subscription</option>
+                <option value="premium">Premium</option>
+                <option value="consented">Consented</option>
+                <option value="onboarded">Has container</option>
+                <option value="suspended">Suspended container</option>
+              </select>
+            </div>
+            <div class="roster-head">
+              <span>Customer</span><span>Subscription</span><span>Access</span>
+              <span>Premium</span><span>Consent</span><span>Container</span><span>Since</span>
+            </div>
+            <div class="roster" id="rosterList"></div>
+          </div>
+        </section>
+
+        <!-- PLATFORM -->
+        <section id="view-platform" class="view" hidden>
+          <div class="view-scroll" id="platformView"></div>
+        </section>
+      </main>
     </div>
-  </main>
+
+    <!-- Mobile bottom tab bar -->
+    <nav class="tabbar">
+      <button class="tab active" data-view="clients">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="8" r="4"/><path d="M4 21c0-4 3.6-7 8-7s8 3 8 7"/></svg>
+        <span>Clients</span>
+      </button>
+      <button class="tab" data-view="population">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="9" cy="8" r="3.2"/><path d="M2.5 20c0-3.4 2.9-6 6.5-6s6.5 2.6 6.5 6"/><circle cx="17.5" cy="9" r="2.6"/><path d="M17 14.5c2.9.3 5 2.5 5 5.5"/></svg>
+        <span>Population</span>
+      </button>
+      <button class="tab" data-view="platform">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M4 20V10"/><path d="M10 20V4"/><path d="M16 20v-6"/><path d="M21 20H3"/></svg>
+        <span>Platform</span>
+      </button>
+    </nav>
+  </div>
 
   <script>
     let coachToken = sessionStorage.getItem("COACH_ACCESS_TOKEN") || "";
+    let activeClientId = null;
+    let activeClientEmail = "";
+    let populationData = null;
+    const isDesktop = () => window.matchMedia("(min-width: 900px)").matches;
 
+    const $ = (sel) => document.querySelector(sel);
+    function esc(s) {
+      return String(s ?? "").replace(/[&<>"']/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
+    }
+    function fmtDate(iso) {
+      if (!iso) return "—";
+      try { return new Date(iso).toLocaleDateString(undefined, { year: "numeric", month: "short", day: "numeric" }); }
+      catch { return iso; }
+    }
+    function fmtDateTime(iso) {
+      if (!iso) return "Unknown";
+      try { return new Date(iso).toLocaleString(); } catch { return iso; }
+    }
+
+    /* ---------- Navigation ---------- */
+    const TITLES = {
+      clients: ["Clients", "Premium coaching clients"],
+      population: ["Population", "Whole HDE customer base"],
+      platform: ["Platform", "Coaching platform overview"]
+    };
+    function setView(view) {
+      document.querySelectorAll(".view").forEach(v => v.hidden = (v.id !== "view-" + view));
+      document.querySelectorAll(".tab, .nav-item").forEach(t => t.classList.toggle("active", t.dataset.view === view));
+      $("#viewTitle").textContent = TITLES[view][0];
+      $("#viewSubtitle").textContent = TITLES[view][1];
+      if (view !== "clients") {
+        closeDetail();
+      }
+      if (view === "population" && !populationData) loadPopulation();
+    }
+    document.querySelectorAll(".tab, .nav-item").forEach(btn => {
+      btn.addEventListener("click", () => setView(btn.dataset.view));
+    });
+    $("#backBtn").addEventListener("click", closeDetail);
+
+    /* ---------- Auth ---------- */
     window.addEventListener("load", initializeAuth);
-
     async function initializeAuth() {
-      const status = document.getElementById("authStatus");
+      const status = $("#authStatus");
       if (coachToken) {
-        if (status) {
-          status.className = "auth-status ok";
-          status.textContent = "Using stored legacy token for this browser session.";
-        }
-        document.getElementById("authOverlay").classList.add("hidden");
-        loadClients();
+        status.className = "auth-status ok";
+        status.textContent = "Using stored legacy token for this browser session.";
+        $("#authOverlay").classList.add("hidden");
+        startApp();
         return;
       }
       try {
         const resp = await fetch("/api/coach/session", { credentials: "same-origin" });
         if (resp.ok) {
           const session = await resp.json();
-          coachToken = "";
           if (status) {
             status.className = "auth-status ok";
-            status.textContent = `Cloudflare Access detected for ${session.email || "approved coach"}. Loading clients…`;
+            status.textContent = `Cloudflare Access detected for ${session.email || "approved coach"}. Loading…`;
           }
-          document.getElementById("authOverlay").classList.add("hidden");
-          const subtitle = document.querySelector(".sidebar-header p");
-          if (subtitle && session.email) subtitle.textContent = `Cloudflare Access: ${session.email}`;
-          loadClients();
+          $("#authOverlay").classList.add("hidden");
+          setSessionChip(session.email || "approved coach");
+          startApp();
           return;
         }
         if (status) {
           status.className = "auth-status warn";
           status.textContent = resp.status === 401
-            ? "Cloudflare Access identity was not detected on this request. If you expected email login, the Access policy for /coach/* and /api/coach/* is not matching yet. Legacy token fallback remains available."
+            ? "Cloudflare Access identity was not detected on this request. Legacy token fallback remains available."
             : `Cloudflare session check returned HTTP ${resp.status}. Legacy token fallback remains available.`;
         }
       } catch (err) {
@@ -461,72 +597,80 @@
         }
       }
     }
-
+    function setSessionChip(email) {
+      $("#sessionChip").textContent = email;
+      $("#sessionChip").hidden = false;
+      $("#railSession").textContent = "Cloudflare Access: " + email;
+    }
     function submitAuth() {
-      const val = document.getElementById("tokenInput").value.trim();
+      const val = $("#tokenInput").value.trim();
       if (!val) return;
       coachToken = val;
       sessionStorage.setItem("COACH_ACCESS_TOKEN", coachToken);
-      document.getElementById("authOverlay").classList.add("hidden");
-      loadClients();
+      $("#authOverlay").classList.add("hidden");
+      startApp();
     }
+    function startApp() { loadClients(); }
 
+    function apiQuery() { return coachToken ? `?token=${encodeURIComponent(coachToken)}` : ""; }
+
+    /* ---------- Clients ---------- */
     async function loadClients() {
-      const container = document.getElementById("clientListContainer");
-      container.innerHTML = `<div style="text-align: center; color: var(--text-secondary); font-size: 0.9rem;">Loading client profiles...</div>`;
-      
+      const container = $("#clientListContainer");
+      container.innerHTML = `<div class="center-note">Loading client profiles…</div>`;
       try {
-        const resp = await fetch(coachToken ? `/api/coach/clients?token=${encodeURIComponent(coachToken)}` : "/api/coach/clients");
+        const resp = await fetch(`/api/coach/clients${apiQuery()}`);
         if (resp.status === 401) {
           alert("Invalid Access Token.");
           sessionStorage.removeItem("COACH_ACCESS_TOKEN");
-          document.getElementById("authOverlay").classList.remove("hidden");
+          $("#authOverlay").classList.remove("hidden");
           return;
         }
         if (!resp.ok) {
-          container.innerHTML = `<div style="color: #C5221F; font-size: 0.85rem;">Failed to retrieve clients list.</div>`;
+          container.innerHTML = `<div class="error-note">Failed to retrieve clients list (HTTP ${resp.status}).</div>`;
           return;
         }
-        
         const clients = await resp.json();
-        if (clients.length === 0) {
-          container.innerHTML = `<div style="color: var(--text-muted); font-size: 0.85rem; text-align: center; margin-top: 20px;">No premium clients found.</div>`;
+        const n = clients.length;
+        $("#clientCount").textContent = n;
+        $("#navClientCount").textContent = n;
+        if (n === 0) {
+          container.innerHTML = `<div class="center-note">No premium clients found.</div>`;
           return;
         }
-
         container.innerHTML = "";
         clients.forEach(client => {
           const item = document.createElement("div");
           item.className = "client-item";
-          item.onclick = () => selectClient(client.id, item);
-          
-          const badgeClass = client.subscription_status === "active" ? "status-badge status-active" : "status-badge status-suspended";
+          item.dataset.id = client.id;
+          item.onclick = () => selectClient(client.id, client.email, item);
+          const badgeClass = client.subscription_status === "active" ? "status-active" : "status-suspended";
           const displayStatus = client.subscription_status === "active" ? "Active" : "Suspended";
-          
           item.innerHTML = `
-            <div class="client-email">${client.email}</div>
+            <div class="client-email">${esc(client.email)}</div>
             <div class="client-meta">
               <span>ID: ${client.id}</span>
-              <span class="${badgeClass}">${displayStatus}</span>
-            </div>
-          `;
+              <span class="status-badge ${badgeClass}">${displayStatus}</span>
+            </div>`;
           container.appendChild(item);
         });
       } catch (err) {
         console.error(err);
-        container.innerHTML = `<div style="color: #C5221F; font-size: 0.85rem;">Network error fetching clients.</div>`;
+        container.innerHTML = `<div class="error-note">Network error fetching clients.</div>`;
       }
     }
 
-    let activeClientId = null;
-
-    async function selectClient(clientId, element) {
+    async function selectClient(clientId, email, element) {
       document.querySelectorAll(".client-item").forEach(item => item.classList.remove("active"));
       if (element) element.classList.add("active");
-      
       activeClientId = clientId;
-      const mainPanel = document.getElementById("mainPanel");
-      mainPanel.innerHTML = `<div style="margin: auto; color: var(--text-secondary);">Loading client deconditioning dossier...</div>`;
+      activeClientEmail = email;
+      document.body.classList.add("detail-open");
+      $("#emptyState").hidden = true;
+      $("#detailContent").innerHTML = `<div class="center-note">Loading deconditioning dossier…</div>`;
+      const head = $("#detailHead");
+      head.hidden = false;
+      head.innerHTML = `<div class="dh-name">${esc(email)}</div><div class="dh-sub"><span>ID: ${clientId}</span></div>`;
 
       try {
         const resp = await fetch("/api/coach/review", {
@@ -534,27 +678,30 @@
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({ client_user_id: clientId, token: coachToken || "" })
         });
-        
         if (!resp.ok) {
-          mainPanel.innerHTML = `<div style="margin: auto; color: #C5221F;">Failed to retrieve client data.</div>`;
+          $("#detailContent").innerHTML = `<div class="error-note">Failed to retrieve client data (HTTP ${resp.status}).</div>`;
           return;
         }
-
-        const data = await resp.json();
-        renderClientDossier(data);
+        renderClientDossier(await resp.json());
       } catch (err) {
         console.error(err);
-        mainPanel.innerHTML = `<div style="margin: auto; color: #C5221F;">Error loading client deconditioning feed.</div>`;
+        $("#detailContent").innerHTML = `<div class="error-note">Error loading client deconditioning feed.</div>`;
       }
+    }
+    function closeDetail() {
+      document.body.classList.remove("detail-open");
+      activeClientId = null;
+      $("#emptyState").hidden = false;
+      $("#detailHead").hidden = true;
+      $("#detailContent").innerHTML = "";
+      document.querySelectorAll(".client-item").forEach(item => item.classList.remove("active"));
     }
 
     function renderClientDossier(data) {
-      const mainPanel = document.getElementById("mainPanel");
       const chart = data.chart || {};
       const journal = data.journal || [];
       const tasks = data.tasks?.steps || [];
 
-      // Build HD Properties List
       const hdProps = [
         { label: "Type", val: chart.type || "Undefined" },
         { label: "Profile", val: chart.profile || "Undefined" },
@@ -563,122 +710,213 @@
       ];
       const hdListHtml = hdProps.map(p => `
         <div class="hd-property">
-          <span class="hd-label">${p.label}</span>
-          <span class="hd-val">${p.val}</span>
-        </div>
-      `).join("");
+          <span class="hd-label">${esc(p.label)}</span>
+          <span class="hd-val">${esc(p.val)}</span>
+        </div>`).join("");
 
-      // Build Journal Timeline
-      let journalHtml = "";
+      let journalHtml;
       if (journal.length === 0) {
-        journalHtml = `<div style="color: var(--text-muted); font-size: 0.85rem; font-style: italic;">No somatic entries found in guest journal.</div>`;
+        journalHtml = `<div class="muted-note">No somatic entries found in guest journal.</div>`;
       } else {
-        journalHtml = `
-          <div class="timeline">
-            ${journal.map(entry => {
-              const rawDate = entry.created_at || entry.timestamp || "";
-              const formattedDate = rawDate ? new Date(rawDate).toLocaleString() : "Unknown Checkin Time";
-              return `
-                <div class="timeline-item">
-                  <div class="timeline-date">${formattedDate}</div>
-                  <div class="timeline-body">${entry.entry || entry.text || JSON.stringify(entry)}</div>
-                </div>
-              `;
-            }).join("")}
-          </div>
-        `;
+        journalHtml = `<div class="timeline">` + journal.map(entry => {
+          const rawDate = entry.created_at || entry.timestamp || "";
+          const formattedDate = fmtDateTime(rawDate);
+          const body = entry.entry || entry.text || JSON.stringify(entry);
+          return `
+            <div class="timeline-item">
+              <div class="timeline-date">${esc(formattedDate)}</div>
+              <div class="timeline-body">${esc(body)}</div>
+            </div>`;
+        }).join("") + `</div>`;
       }
 
-      mainPanel.innerHTML = `
+      $("#detailContent").innerHTML = `
         <div class="details-grid">
-          <!-- Left Dossier Card (HD & Journal) -->
-          <div style="display: flex; flex-direction: column; gap: 32px;">
+          <div style="display:flex; flex-direction:column; gap:14px;">
             <div class="details-card">
               <h3 class="card-heading">Somatic Configuration</h3>
               ${hdListHtml}
             </div>
-            
             <div class="details-card">
               <h3 class="card-heading">Journal Timeline (Last 15 Checkins)</h3>
               ${journalHtml}
             </div>
           </div>
-
-          <!-- Right Dossier Card (Homework Portal) -->
           <div class="details-card">
             <h3 class="card-heading">Active Deconditioning Experiments</h3>
-            <p style="font-size: 0.85rem; color: var(--text-secondary); margin-bottom: 20px; line-height: 1.4;">
-              Assign specific, actionable somatic experiments. The client's Telegram bot will reference these next steps in conversations.
-            </p>
-            
-            <div id="taskListContainer">
-              <!-- Tasks rendered here -->
-            </div>
-            
+            <p class="card-note">Assign specific, actionable somatic experiments. The client's Telegram bot will reference these next steps in conversations.</p>
+            <div id="taskListContainer"></div>
             <button class="add-task-btn" onclick="addNewTaskInput()">+ Add New Experiment</button>
             <button class="save-btn" onclick="saveHomeworkTasks()">Publish Design Experiment</button>
           </div>
-        </div>
-      `;
-
-      // Render Task Inputs
+        </div>`;
       renderTaskInputs(tasks);
     }
-
     function renderTaskInputs(tasks) {
-      const container = document.getElementById("taskListContainer");
+      const container = $("#taskListContainer");
       container.innerHTML = "";
-      
-      if (tasks.length === 0) {
-        addNewTaskInput();
-      } else {
-        tasks.forEach(task => addNewTaskInput(task));
-      }
+      if (tasks.length === 0) addNewTaskInput();
+      else tasks.forEach(t => addNewTaskInput(t));
     }
-
     function addNewTaskInput(value = "") {
-      const container = document.getElementById("taskListContainer");
+      const container = $("#taskListContainer");
       const wrapper = document.createElement("div");
       wrapper.className = "task-item";
-      
-      wrapper.innerHTML = `
-        <input type="text" class="task-input" placeholder="e.g. Pause 3 seconds before responding" value="${value.replace(/"/g, '&quot;')}">
-        <button class="remove-task-btn" onclick="this.parentElement.remove()">×</button>
-      `;
+      const input = document.createElement("input");
+      input.type = "text";
+      input.className = "task-input";
+      input.placeholder = "e.g. Pause 3 seconds before responding";
+      input.value = value;
+      const btn = document.createElement("button");
+      btn.className = "remove-task-btn";
+      btn.innerHTML = "&times;";
+      btn.setAttribute("aria-label", "Remove experiment");
+      btn.onclick = () => wrapper.remove();
+      wrapper.appendChild(input);
+      wrapper.appendChild(btn);
       container.appendChild(wrapper);
     }
-
     async function saveHomeworkTasks() {
-      const inputs = document.querySelectorAll(".task-input");
-      const steps = [];
-      inputs.forEach(input => {
-        const val = input.value.trim();
-        if (val) steps.push(val);
-      });
-
+      const steps = [...document.querySelectorAll(".task-input")].map(i => i.value.trim()).filter(Boolean);
       if (!activeClientId) return;
-
       try {
         const resp = await fetch("/api/coach/update_steps", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({
-            client_user_id: activeClientId,
-            token: coachToken || "",
-            steps: steps
-          })
+          body: JSON.stringify({ client_user_id: activeClientId, token: coachToken || "", steps })
         });
-
-        if (resp.ok) {
-          alert("Somatic homework tasks published successfully!");
-        } else {
-          alert("Failed to save tasks. Check access token.");
-        }
+        if (resp.ok) alert("Somatic homework tasks published successfully!");
+        else alert("Failed to save tasks. Check access token.");
       } catch (err) {
         console.error(err);
         alert("Network error updating somatic experiments.");
       }
     }
+
+    /* ---------- Population ---------- */
+    async function loadPopulation() {
+      const roster = $("#rosterList");
+      roster.innerHTML = `<div class="center-note">Loading customer base…</div>`;
+      $("#popStats").innerHTML = "";
+      try {
+        const resp = await fetch(`/api/coach/population${apiQuery()}`);
+        if (!resp.ok) {
+          roster.innerHTML = `<div class="error-note">Failed to load population (HTTP ${resp.status}).</div>`;
+          return;
+        }
+        populationData = await resp.json();
+        renderPopStats(populationData.stats);
+        renderRoster();
+      } catch (err) {
+        console.error(err);
+        roster.innerHTML = `<div class="error-note">Network error loading population.</div>`;
+      }
+    }
+    function renderPopStats(s) {
+      const cards = [
+        { n: s.total_accounts, l: "Customers" },
+        { n: s.premium, l: "Premium" },
+        { n: (s.by_subscription && s.by_subscription.active) || 0, l: "Active subs" },
+        { n: s.onboarded_containers, l: "Containers" }
+      ];
+      $("#popStats").innerHTML = cards.map(c => `
+        <div class="stat-card"><div class="stat-num">${c.n}</div><div class="stat-label">${esc(c.l)}</div></div>`).join("");
+    }
+    function filteredRoster() {
+      if (!populationData) return [];
+      let rows = populationData.roster || [];
+      const q = ($("#rosterSearch").value || "").trim().toLowerCase();
+      const f = $("#rosterFilter").value;
+      if (q) rows = rows.filter(r => (r.email || "").toLowerCase().includes(q) || (r.guide_name || "").toLowerCase().includes(q));
+      switch (f) {
+        case "active": rows = rows.filter(r => r.subscription_status === "active"); break;
+        case "premium": rows = rows.filter(r => r.is_premium); break;
+        case "consented": rows = rows.filter(r => r.consented); break;
+        case "onboarded": rows = rows.filter(r => r.container_status !== "not_onboarded"); break;
+        case "suspended": rows = rows.filter(r => r.container_status === "suspended"); break;
+      }
+      return rows;
+    }
+    function renderRoster() {
+      const rows = filteredRoster();
+      const el = $("#rosterList");
+      if (rows.length === 0) { el.innerHTML = `<div class="center-note">No customers match this filter.</div>`; return; }
+      el.innerHTML = rows.map(r => {
+        const containerBadge = r.container_status === "active" ? "status-active" : (r.container_status === "suspended" ? "status-suspended" : "status-neutral");
+        const since = r.created_at ? fmtDate(r.created_at) : "—";
+        return `
+          <div class="roster-row">
+            <div class="rr-mobile">
+              <div class="rr-top">
+                <div class="rr-name">${esc(r.guide_name || r.email)}</div>
+                <div class="rr-badges">
+                  ${r.is_premium ? '<span class="chip chip-premium">Premium</span>' : ""}
+                  ${r.consented ? '<span class="chip chip-consent">Consent</span>' : ""}
+                  <span class="chip ${containerBadge}">${esc(r.container_status)}</span>
+                </div>
+              </div>
+              <div class="rr-sub">${esc(r.email)}</div>
+              <div class="rr-sub">Sub: <b>${esc(r.subscription_status)}</b> · Access: <b>${esc(r.access_status)}</b> · Since ${esc(since)}${r.coaching_container_end ? ` · Coaching ends ${esc(fmtDate(r.coaching_container_end))}` : " · Coaching: never expires"}</div>
+            </div>
+            <div class="rr-desktop">
+              <div class="rr-name" title="${esc(r.email)}">${esc(r.guide_name || r.email)}</div>
+              <div>${esc(r.subscription_status)}</div>
+              <div>${esc(r.access_status)}</div>
+              <div>${r.is_premium ? '<span class="chip chip-premium">Premium</span>' : '<span class="chip chip-plain">—</span>'}</div>
+              <div>${r.consented ? '<span class="chip chip-consent">Yes</span>' : '<span class="chip chip-plain">No</span>'}</div>
+              <div><span class="chip ${containerBadge}">${esc(r.container_status)}</span></div>
+              <div class="rr-sub">${esc(since)}</div>
+            </div>
+          </div>`;
+      }).join("");
+    }
+    $("#rosterSearch").addEventListener("input", renderRoster);
+    $("#rosterFilter").addEventListener("change", renderRoster);
+
+    /* ---------- Platform ---------- */
+    function renderPlatform() {
+      if (!populationData) { loadPopulation().then(() => renderPlatform()); return; }
+      const s = populationData.stats, c = populationData.coaching;
+      const kpi = (n, l, accent) => `<div class="kpi-card"><div class="kpi-num ${accent ? "accent" : ""}">${n}</div><div class="kpi-label">${esc(l)}</div></div>`;
+      const breakdown = (obj) => Object.entries(obj || {}).map(([k, v]) => {
+        const total = Object.values(obj || {}).reduce((a, b) => a + b, 0) || 1;
+        const pct = Math.round((v / total) * 100);
+        return `<div class="break-row"><span class="bl-label">${esc(k)}</span><span class="bl-barwrap"><span class="bar-track"><span class="bar-fill" style="width:${pct}%"></span></span><span class="bl-val">${v}</span></span></div>`;
+      }).join("");
+      $("#platformView").innerHTML = `
+        <div class="platform-section">
+          <h3>Coaching Platform</h3>
+          <div class="kpi-grid">
+            ${kpi(c.active_clients, "Active coaching clients", true)}
+            ${kpi(c.never_expire, "Never expire", true)}
+            ${kpi(c.expiring_14d, "Expiring ≤ 14d")}
+            ${kpi(c.suspended_clients, "Lapsed window")}
+            ${kpi(c.consented_pipeline, "Consented (pipeline)")}
+          </div>
+        </div>
+        <div class="platform-section">
+          <h3>Customer Base</h3>
+          <div class="kpi-grid" style="margin-bottom:14px;">
+            ${kpi(s.total_accounts, "Total accounts", true)}
+            ${kpi(s.premium, "Premium")}
+            ${kpi(s.onboarded_containers, "Onboarded containers")}
+          </div>
+          <div class="details-card">
+            <h3 class="card-heading">By Subscription</h3>
+            <ul class="break-list">${breakdown(s.by_subscription)}</ul>
+          </div>
+        </div>
+        <div class="platform-section">
+          <div class="details-card">
+            <h3 class="card-heading">Containers by Status</h3>
+            <ul class="break-list">${breakdown(s.containers_by_status)}</ul>
+          </div>
+        </div>`;
+    }
+    /* Re-render platform view on tab change (data may be fresh) */
+    new MutationObserver(() => {
+      if (!$("#view-platform").hidden && populationData) renderPlatform();
+    }).observe($("#view-platform"), { attributes: true, attributeFilter: ["hidden"] });
   </script>
 </body>
 </html>
