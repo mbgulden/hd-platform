@@ -703,6 +703,12 @@ class UpdateStepsRequest(BaseModel):
     steps: list[str]
 
 
+class ConsentToggleRequest(BaseModel):
+    """Per-client consent toggle from the coach population view."""
+    granted: bool
+    token: str = ""
+
+
 @app.post("/api/coach/update_steps")
 async def coach_update_steps(payload: UpdateStepsRequest, request: Request):
     """Writes updated deconditioning homework directly to the user's workspace json file."""
@@ -812,6 +818,49 @@ async def get_coach_population(request: Request, token: str = ""):
         for u in users
     ]
     return {"stats": stats, "coaching": coaching, "roster": roster, "generated_at": now.isoformat()}
+
+
+@app.post("/api/coach/clients/{client_id}/consent")
+async def toggle_client_consent(client_id: int, payload: ConsentToggleRequest, request: Request):
+    """Per-client consent toggle from the population view.
+
+    grant  -> coach_review_consent=True, consent_at=now, source=coach_dashboard_toggle,
+              revoked_at cleared (client re-enters the consented pipeline / active list).
+    revoke -> coach_review_consent=False, revoked_at=now (audit trail kept).
+
+    Same portal-level gate as /api/coach/population. Deliberately NOT the
+    per-client review gate: the whole point of the toggle is to move a
+    client into (or out of) the consented set.
+    """
+    if not request_has_coach_portal_access(payload.token, request):
+        raise HTTPException(status_code=401, detail="Unauthorized access token.")
+
+    now = datetime.now(timezone.utc)
+    async with async_session_factory() as session:
+        result = await session.execute(select(User).where(User.id == client_id))
+        user = result.scalar_one_or_none()
+        if user is None:
+            raise HTTPException(status_code=404, detail="Client not found.")
+        if payload.granted:
+            user.coach_review_consent = True
+            user.coach_review_consent_at = now
+            user.coach_review_consent_source = "coach_dashboard_toggle"
+            user.coach_review_consent_revoked_at = None
+        else:
+            user.coach_review_consent = False
+            user.coach_review_consent_at = now
+            user.coach_review_consent_source = "coach_dashboard_toggle"
+            user.coach_review_consent_revoked_at = now
+        await session.commit()
+        logger.info("Coach dashboard consent toggle: user %d -> %s", client_id, "granted" if payload.granted else "revoked")
+        return {
+            "id": user.id,
+            "email": user.email,
+            "consented": bool(user.coach_review_consent and user.coach_review_consent_revoked_at is None),
+            "granted": bool(payload.granted),
+            "consent_at": user.coach_review_consent_at.isoformat() if user.coach_review_consent_at else None,
+            "consent_source": user.coach_review_consent_source,
+        }
 
 
 if __name__ == "__main__":

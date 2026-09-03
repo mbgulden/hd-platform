@@ -291,6 +291,40 @@
     .chip-consent { background: var(--ok-bg); color: var(--ok-text); }
     .chip-plain { background: #EEF1EF; color: var(--text-secondary); }
 
+    /* Per-client consent toggle switch */
+    .ct {
+      --ct-w: 44px; --ct-h: 26px;
+      position: relative; width: var(--ct-w); height: var(--ct-h);
+      border: none; border-radius: 13px; cursor: pointer;
+      background: #CBD5CF; padding: 0; flex-shrink: 0;
+      transition: background 0.2s ease;
+    }
+    .ct-knob {
+      position: absolute; top: 3px; left: 3px;
+      width: calc(var(--ct-h) - 6px); height: calc(var(--ct-h) - 6px);
+      border-radius: 50%; background: #fff;
+      transition: left 0.2s ease;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.25);
+    }
+    .ct.on { background: var(--sage-mid); }
+    .ct.on .ct-knob { left: calc(var(--ct-w) - var(--ct-h) + 3px); }
+    .ct.off .ct-knob { left: 3px; }
+    .ct[disabled] { opacity: .45; cursor: wait; }
+    @media (min-width:900px) { .ct { --ct-w: 40px; --ct-h: 22px; border-radius: 11px; } }
+
+    /* Toast feedback */
+    .ct-toast {
+      position: fixed; left: 50%; transform: translateX(-50%) translateY(20px);
+      bottom: calc(20px + env(safe-area-inset-bottom));
+      background: var(--charcoal); color: #fff;
+      padding: 10px 16px; border-radius: 8px; font-size: 0.8rem;
+      opacity: 0; pointer-events: none; transition: all 0.25s ease; z-index: 9999;
+      max-width: 90vw; text-align: center;
+    }
+    .ct-toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+    .ct-toast.err { background: var(--danger); }
+    @media (min-width:900px) { .ct-toast { bottom: 24px; } }
+
     /* Platform view */
     .platform-section { margin-bottom: 18px; }
     .platform-section h3 {
@@ -851,8 +885,8 @@
                 <div class="rr-name">${esc(r.guide_name || r.email)}</div>
                 <div class="rr-badges">
                   ${r.is_premium ? '<span class="chip chip-premium">Premium</span>' : ""}
-                  ${r.consented ? '<span class="chip chip-consent">Consent</span>' : ""}
                   <span class="chip ${containerBadge}">${esc(r.container_status)}</span>
+                  <button class="ct ${r.consented ? "on" : "off"}" data-cid="${r.id}" title="${r.consented ? "Revoke review consent" : "Grant review consent"}" aria-label="Toggle review consent for ${esc(r.email)}" aria-pressed="${r.consented}"><span class="ct-knob"></span></button>
                 </div>
               </div>
               <div class="rr-sub">${esc(r.email)}</div>
@@ -863,7 +897,7 @@
               <div>${esc(r.subscription_status)}</div>
               <div>${esc(r.access_status)}</div>
               <div>${r.is_premium ? '<span class="chip chip-premium">Premium</span>' : '<span class="chip chip-plain">—</span>'}</div>
-              <div>${r.consented ? '<span class="chip chip-consent">Yes</span>' : '<span class="chip chip-plain">No</span>'}</div>
+              <div><button class="ct ${r.consented ? "on" : "off"}" data-cid="${r.id}" title="${r.consented ? "Revoke review consent" : "Grant review consent"}" aria-label="Toggle review consent for ${esc(r.email)}" aria-pressed="${r.consented}"><span class="ct-knob"></span></button></div>
               <div><span class="chip ${containerBadge}">${esc(r.container_status)}</span></div>
               <div class="rr-sub">${esc(since)}</div>
             </div>
@@ -872,6 +906,56 @@
     }
     $("#rosterSearch").addEventListener("input", renderRoster);
     $("#rosterFilter").addEventListener("change", renderRoster);
+
+    /* ---------- Consent toggle ---------- */
+    function showToast(msg, isErr) {
+      let t = document.getElementById("ctToast");
+      if (!t) {
+        t = document.createElement("div");
+        t.id = "ctToast";
+        t.className = "ct-toast";
+        document.body.appendChild(t);
+      }
+      t.textContent = msg;
+      t.classList.toggle("err", !!isErr);
+      t.classList.add("show");
+      clearTimeout(t._hide);
+      t._hide = setTimeout(() => t.classList.remove("show"), 2600);
+    }
+    async function handleConsentToggle(btn, row) {
+      if (btn.disabled) return;
+      const id = parseInt(btn.dataset.cid, 10);
+      const grant = !row.consented;
+      btn.disabled = true;
+      try {
+        const resp = await fetch(`/api/coach/clients/${id}/consent`, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ granted: grant, token: coachToken || "" })
+        });
+        const data = await resp.json().catch(() => ({}));
+        if (!resp.ok) throw new Error(data.detail || `HTTP ${resp.status}`);
+        // Update local state, then refresh stats + KPIs from the source of truth.
+        row.consented = data.consented;
+        renderRoster();
+        showToast(`${row.guide_name || row.email}: consent ${grant ? "granted" : "revoked"}.`, false);
+        loadPopulation();
+      } catch (err) {
+        console.error("Consent toggle failed", err);
+        showToast(`Could not update consent: ${err.message || err}`, true);
+        renderRoster();
+      } finally {
+        btn.disabled = false;
+      }
+    }
+    // Event delegation: roster rows are re-rendered on every filter/search change.
+    $("#rosterList").addEventListener("click", (e) => {
+      const btn = e.target.closest(".ct");
+      if (!btn || !populationData) return;
+      const id = parseInt(btn.dataset.cid, 10);
+      const row = (populationData.roster || []).find(r => r.id === id);
+      if (row) handleConsentToggle(btn, row);
+    });
 
     /* ---------- Platform ---------- */
     function renderPlatform() {
