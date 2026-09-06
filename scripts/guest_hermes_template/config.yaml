@@ -1,7 +1,22 @@
 # Hardened Guest Hermes Configuration
+providers:
+  qwen27b-fred-local:
+    api: http://192.168.1.230:8000/v1
+    # GRO-4929: env-driven key, never a literal. The :8000 vLLM server is keyed
+    # with VLLM_FRED_API_KEY (single-key vLLM — no multi-key). Injected into the
+    # guest .env as GUEST_VLLM_API_KEY and resolved here. Do NOT hardcode a key.
+    api_key_env: GUEST_VLLM_API_KEY
+    context_length: 262144
+    default_model: local-qwen-27b-q8-fred
+    model: local-qwen-27b-q8-fred
+    models:
+      local-qwen-27b-q8-fred:
+        context_length: 262144
+    name: Qwen 3.8 27B local (HDE)
+    request_timeout_seconds: 600
 model:
-  provider: minimax
-  default: MiniMax-M3
+  provider: qwen27b-fred-local
+  default: local-qwen-27b-q8-fred
 approvals:
   mode: deny
   rules: []

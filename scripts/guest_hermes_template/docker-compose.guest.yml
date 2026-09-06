@@ -34,6 +34,10 @@ services:
       - TELEGRAM_ALLOWED_USERS=${GUEST_TELEGRAM_ALLOWED_USERS}
       - OHDMCP_FAMILY_JSON=/workspace/guest_family.json
       - HDE_API_KEY=${REPORTS_API_KEY}
+      # GRO-4929: vLLM :8000 key for the guest LLM provider (env-driven; the
+      # guest config.yaml references it via api_key_env: GUEST_VLLM_API_KEY).
+      - VLLM_API_KEY=${GUEST_VLLM_API_KEY}
+      - GUEST_VLLM_API_KEY=${GUEST_VLLM_API_KEY}
     volumes:
       # Mount the dedicated host directory as the workspace root
       - ${GUEST_WORKSPACE_PATH}:/workspace
