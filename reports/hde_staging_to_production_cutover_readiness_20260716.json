@@ -1,0 +1,106 @@
+{
+  "date": "20260716",
+  "recommendation": "HOLD",
+  "scope": "HDE staging-to-production cutover readiness",
+  "services": [
+    {
+      "service": "hde_api_staging.service",
+      "status": "active",
+      "working_directory": "/home/ubuntu/work/hd-platform-staging",
+      "exec": "/home/ubuntu/work/hd-platform/.venv/bin/python3 -m uvicorn api.main:app --host 127.0.0.1 --port 8010",
+      "assessment": "staging checkout/api code path"
+    },
+    {
+      "service": "hde_router.service",
+      "status": "active",
+      "working_directory": "/home/ubuntu/work/hd-platform-staging",
+      "exec": "/home/ubuntu/work/hd-platform/.venv/bin/python3 scripts/hde_tenant_router.py",
+      "assessment": "staging router code path"
+    },
+    {
+      "service": "hde-reports.service",
+      "status": "active",
+      "working_directory": "/home/ubuntu/work/hd-platform",
+      "exec": "/usr/bin/python3 /home/ubuntu/work/hd-platform/reports/server.py",
+      "assessment": "source/live checkout, not staging checkout"
+    },
+    {
+      "service": "hde-payment.service",
+      "status": "active",
+      "working_directory": "/home/ubuntu/work/hd-platform",
+      "exec": "/usr/bin/python3 /home/ubuntu/work/hd-platform/payment/server.py",
+      "assessment": "source/live checkout, not staging checkout"
+    }
+  ],
+  "verification": {
+    "canonical": [
+      {
+        "command": "npm run build",
+        "result": "pass",
+        "evidence": "10 Astro pages built; route-complete preserved legacy docs and generated redirects."
+      },
+      {
+        "command": "npm run pwp:verify",
+        "result": "pass",
+        "evidence": "visual 36 passed; a11y 12 passed; local flows 6 passed/4 staging-gated skipped; lighthouse passed; links 124 checked/0 broken."
+      },
+      {
+        "command": "PWP_STAGING_URL=https://staging.humandesignengine.com npm run qa:flows -- --reporter=list",
+        "result": "pass",
+        "evidence": "10 passed including staging checkout URL creation and known paid success Telegram CTA."
+      }
+    ],
+    "adhoc": {
+      "script": "/tmp/hermes-verify-hde-cutover-route-api-repeat-*.py",
+      "result": "pass",
+      "note": "script removed after run; proof JSON preserved at /tmp/hde-cutover-route-api-proof-repeat/route_api_verification.json",
+      "launch_recommendation": "HOLD"
+    }
+  },
+  "blockers": [
+    {
+      "id": "production-route-fallback",
+      "severity": "critical",
+      "evidence": "https://humandesignengine.com/deconditioning/, /privacy/, and /terms return HTTP 200 with homepage title instead of intended route content.",
+      "impact": "Production cutover would expose wrong content while health checks appear green.",
+      "next_fix": "Deploy freshly built dist/ to the production host/Cloudflare Pages target and re-smoke route title/body content."
+    },
+    {
+      "id": "cloudflare-access-api",
+      "severity": "critical",
+      "evidence": "https://api.humandesignengine.com/health redirects to Cloudflare Access sign-in.",
+      "impact": "Public checkout/API browser paths may fail unless intentionally routed through staging host or a public-safe API path.",
+      "next_fix": "Choose Option A public-safe API exceptions or Option B keep API gated and prove browser checkout does not need it."
+    },
+    {
+      "id": "cloudflare-deploy-token-missing",
+      "severity": "critical",
+      "evidence": "wrangler reported CLOUDFLARE_API_TOKEN is required and not set.",
+      "impact": "Ned cannot deploy production route fix or inspect Pages projects non-interactively.",
+      "next_fix": "Provide Cloudflare token/owner or route deploy to Cloudflare owner."
+    },
+    {
+      "id": "human-telegram-proof-pending",
+      "severity": "critical",
+      "evidence": "Staging process flow is server/browser verified, but no real tester has tapped Telegram CTA and sent /start in this run.",
+      "impact": "Cannot prove paid onboarding works end-to-end for a human.",
+      "next_fix": "Run controlled Stripe test purchase, tap success-page Telegram CTA, send /start, verify invitation used/user linked/media delivered."
+    },
+    {
+      "id": "report-server-lane-preservation",
+      "severity": "warning",
+      "evidence": "Local source report-server commit 420979e is live but was blocked from push by lane guard.",
+      "impact": "A clean redeploy may revert augmented report/chart_overrides behavior.",
+      "next_fix": "Correct lane owner must promote/cherry-pick 420979e or equivalent."
+    },
+    {
+      "id": "service-split",
+      "severity": "warning",
+      "evidence": "API/router run from hd-platform-staging; reports/payment run from hd-platform.",
+      "impact": "Staging behavior can drift from source/live services.",
+      "next_fix": "Create dedicated staging reports/payment services or intentionally promote source path as the staging runtime."
+    }
+  ],
+  "redaction": "All credential-shaped values are omitted or [REDACTED].",
+  "next_decision": "Do not cut over production. Proceed only with controlled staging/family testing after human Telegram proof, and production deployment only after route/API blockers are fixed."
+}

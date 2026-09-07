@@ -1,0 +1,106 @@
+{
+  "timestamp_utc": "2026-07-15T19:00:00Z",
+  "branch": "ned/hde-onboarding-payment-ux-audit-2026-07-15",
+  "audit_scope": [
+    "humandesignengine.com live website routing",
+    "payment/Stripe checkout workflow",
+    "post-payment success to Telegram onboarding workflow",
+    "Telegram head-bot router and guest container configuration",
+    "conversation routing and PDF media generation",
+    "UX/UI readiness via PWP visual QA and bot PDF visual checks"
+  ],
+  "overall_status": "YELLOW",
+  "summary": "Bot runtime is green, but public website/payment readiness is not yet robust: root site is live, several product/legal routes currently return homepage content, public API routes are either SPA fallback or Cloudflare Access, and payment checkout fails locally with an invalid Stripe key placeholder plus unhandled empty reply.",
+  "evidence": {
+    "bot_runtime": {
+      "router_service": "active",
+      "api_service": "active",
+      "guest_hermes_23": "healthy",
+      "router_metrics_status": "ok",
+      "redis_pending": {"chat": 0, "media": 0, "wake": 0},
+      "guest_canary": "pass",
+      "live_telegram_media_proof": "pass",
+      "controlled_traffic_report": "reports/hde_controlled_public_bot_traffic_20260715.md"
+    },
+    "website_live_routes": {
+      "https://humandesignengine.com/": {"http": 200, "title": "Human Design Engine — The Engine Behind Every Chart", "bytes": 56439},
+      "https://humandesignengine.com/deconditioning/": {"http": 200, "observed_issue": "returned homepage title/content instead of Somatic Experiment Station route"},
+      "https://humandesignengine.com/privacy/": {"http": 200, "observed_issue": "returned homepage title/content instead of privacy route"},
+      "https://humandesignengine.com/terms/": {"http": 200, "observed_issue": "returned homepage title/content instead of terms route"},
+      "https://humandesignengine.com/academy/": {"http": 200, "observed_issue": "returned homepage title/content instead of academy route"},
+      "https://humandesignengine.com/success/": {"http": 200, "title": "Sanctuary Awaits — Human Design Engine", "contains_open_telegram": true}
+    },
+    "payment_workflow": {
+      "hde_payment_service": "active",
+      "local_api_ping": "http://127.0.0.1:8002/api/ping returned 200 hde-payment-server",
+      "local_checkout_smoke": "POST /create-checkout returned empty reply because Stripe returned 401 invalid API key placeholder",
+      "public_root_api_paths": "https://humandesignengine.com/api/* returned homepage HTML instead of JSON API",
+      "public_api_subdomain": "https://api.humandesignengine.com/* returned Cloudflare Access sign-in HTML",
+      "pwp_staging_checkout_flow": "failed because configured staging URL route /api/checkout/create-session did not return OK"
+    },
+    "pwp_visual_qa": {
+      "npm_build": "passed in /home/ubuntu/work/hd-platform",
+      "pwp_verify": "blocked/failing because Playwright Chromium executable is missing in Ned profile cache",
+      "qa_flows": "blocked for browser-based tests by missing Chromium; staging API checkout test also returned non-OK before browser launch was needed"
+    },
+    "pdf_generation_visual": {
+      "live_telegram_proof_documents_sent": 2,
+      "sample_pdf_pages": 3,
+      "sample_pdf_page_size": "letter 612 x 792 pts",
+      "sample_pdf_creator": "wkhtmltopdf 0.12.6",
+      "machine_text_extraction": "pdftotext returned almost no usable text, implying image-heavy PDF or inaccessible text layer",
+      "page1_png_render": "/tmp/hde-pdf-proof/michael_report_page1.png"
+    }
+  },
+  "primary_risks": [
+    "Public website route/deploy mismatch can send users to homepage instead of product, legal, or academy pages.",
+    "Payment checkout is not robust: Stripe key appears placeholder/invalid and server returns empty reply on Stripe 401 instead of controlled JSON error.",
+    "Public API routing is inconsistent: root-domain /api paths fall through to static homepage; api subdomain is behind Cloudflare Access, which blocks public checkout/API flow unless intentional.",
+    "PWP visual proof harness is present but currently not runnable until Playwright Chromium is installed/fixed in the Ned environment.",
+    "Generated bot PDFs need visual/brand/accessibility QA; current sample PDFs are valid but not text-accessible via pdftotext. Typical wkhtmltopdf nonsense, but still needs fixing if we care about polish."
+  ],
+  "phased_execution_plan": [
+    {
+      "phase": 0,
+      "name": "Freeze and map the funnel",
+      "goal": "Define the canonical public journey and stop accidental broad traffic until route/payment blockers are fixed.",
+      "tasks": ["Map exact canonical URLs for landing, product, checkout, success, Telegram invite, and bot start", "Decide whether api.humandesignengine.com is public, Access-protected, or split public/private", "Keep current controlled bot traffic only"],
+      "exit_gate": "One approved route map and no uncontrolled public links pointing at broken checkout routes."
+    },
+    {
+      "phase": 1,
+      "name": "Website and route correctness",
+      "goal": "Make humandesignengine.com route users to the intended pages consistently.",
+      "tasks": ["Fix static deployment/Cloudflare/Nginx route behavior for /deconditioning/, /privacy/, /terms/, /academy/", "Verify route-complete output matches live Cloudflare deployment", "Add route smoke checks to watchdog/report"],
+      "exit_gate": "curl/Playwright confirm every public route returns expected title/required text, not homepage fallback."
+    },
+    {
+      "phase": 2,
+      "name": "Payment and post-payment onboarding hardening",
+      "goal": "Make payment failures controlled and successful payments produce exactly one usable Telegram next step.",
+      "tasks": ["Fix Stripe environment/key deployment or intentionally switch to Payment Links/test mode", "Handle Stripe 4xx/5xx errors as JSON responses; no empty replies", "Align frontend checkout endpoint with public API route", "Verify webhook creates/updates user, invitation, premium status, and success page link", "Run a no-charge/test-mode checkout session and webhook simulation"],
+      "exit_gate": "PWP staging checkout creates Stripe URL, webhook smoke creates invitation, success page shows one Open Telegram CTA."
+    },
+    {
+      "phase": 3,
+      "name": "Bot container and conversation routing robustness",
+      "goal": "Guarantee paid/onboarded users land in the right guest container and the right conversation rail.",
+      "tasks": ["Verify Telegram identity/token sources across systemd/env/router without printing tokens", "Verify /start token invalid/used/inactive/active cases", "Verify orchestrator provisioning idempotency and duplicate Telegram user handling", "Verify guest config MiniMax provider, guide-neutral Soul, skills, workspace mounts, and media return paths", "Add comparison/PDF live watcher to cohort monitoring"],
+      "exit_gate": "Server-side canary + one real Telegram onboarding canary pass with queues drained and no duplicate BotInstance confusion."
+    },
+    {
+      "phase": 4,
+      "name": "UX/UI and brand visual readiness",
+      "goal": "Prove the website, checkout, success page, Telegram handoff, and generated PDFs all look like one Human Design Engine product.",
+      "tasks": ["Run npm run build", "Install/fix Playwright Chromium", "Run npm run qa:update-screenshots then npm run pwp:verify", "Run PWP staging process flows with correct PWP_STAGING_URL/API base", "Create bot PDF visual baselines by rendering PDFs to PNG", "Review PDF pages for navy/gold HDE palette, typography, spacing, chart clarity, and Sanctuary tone", "Add semantic image QA/manual checklist for PDFs and key website routes"],
+      "exit_gate": "PWP visual/a11y/flow checks pass or have approved diffs; PDF visual baselines accepted; brand inconsistencies either fixed or tracked."
+    },
+    {
+      "phase": 5,
+      "name": "Controlled rollout and monitoring",
+      "goal": "Move from internal testers to 3-5 external users with rollback gates.",
+      "tasks": ["Invite Phase 0 internal testers", "Monitor router metrics, media sends, DB counts, payment/webhook logs, and backup freshness", "Invite 3-5 external users only after internal pass", "Record cohort report and issues"],
+      "exit_gate": "No sustained Redis backlog, failed Telegram sends, unhealthy containers, restart loops, onboarding errors, payment failures, or spend spikes."
+    }
+  ]
+}

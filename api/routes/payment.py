@@ -23,6 +23,7 @@ from fastapi import APIRouter, BackgroundTasks, HTTPException, Request, Response
 from sqlalchemy import select
 
 from shared.database import User, async_session_factory
+from shared.hde_email_theme import attach_themed_alternative, build_report_email
 
 logger = logging.getLogger(__name__)
 

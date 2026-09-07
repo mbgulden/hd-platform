@@ -1,0 +1,129 @@
+{
+  "timestamp_utc": "2026-07-15T17:55:00Z",
+  "branch": "ned/hde-controlled-public-traffic-2026-07-15",
+  "base_commit_checked": "f153b59",
+  "recommendation": {
+    "status": "PROCEED",
+    "reason": "All controlled-traffic gates are green: services active, router metrics ok, Redis pending queues 0, Telegram identity correct, guest canary passes, launch report GREEN, watchdogs/backups enabled and quiet."
+  },
+  "launch_report": {
+    "markdown": "reports/hde_launch_verification_summary_20260715.md",
+    "json": "reports/hde_launch_verification_summary_20260715.json",
+    "status": "GREEN",
+    "live_telegram_media_proof": "pass",
+    "latest_green_commit": "f153b59",
+    "summary": "Live Telegram media proof passed with two successful sendDocument calls for Compare me and Becca; router metrics ok, Redis pending queues 0, guest container healthy."
+  },
+  "service_health": {
+    "hde_router_service": "active",
+    "hde_api_staging_service": "active",
+    "guest_hermes_23_health": "healthy"
+  },
+  "router_metrics": {
+    "status": "ok",
+    "database_backend": "postgres",
+    "users": 23,
+    "invitations": 32,
+    "bot_instances": 2,
+    "active_bot_instances": 2,
+    "redis_enabled": true,
+    "redis_ok": true,
+    "queues": {
+      "chat_pending": 0,
+      "media_pending": 0,
+      "wake_pending": 0,
+      "chat_consumers": 228,
+      "media_consumers": 60,
+      "wake_consumers": 76
+    },
+    "docker_guest_containers_healthy": 2,
+    "docker_guest_containers_running": 3,
+    "max_concurrent_chats": 1000,
+    "task_queue_limit": 5000
+  },
+  "telegram_identity": {
+    "ok": true,
+    "id": 8376584335,
+    "username": "Humandesigncompanionbot",
+    "first_name": "Human Design Bot",
+    "token_redacted": true
+  },
+  "guest_canary": {
+    "command": "python3 scripts/hde_guest_canary.py --guest-id 23 --pretty",
+    "exit_code": 0,
+    "status": "pass",
+    "errors": []
+  },
+  "watchdogs_and_backups": {
+    "hde_head_bot_router_watchdog": {
+      "job_id": "ab9ff7e5e197",
+      "enabled": true,
+      "last_status": "ok",
+      "schedule": "every 5m",
+      "deliver": "origin"
+    },
+    "hde_postgres_daily_backup": {
+      "job_id": "de96b1a3f144",
+      "enabled": true,
+      "last_status": "ok",
+      "schedule": "0 3 * * *",
+      "deliver": "local",
+      "latest_backup": "hde-postgres-20260715T030008Z.dump",
+      "latest_backup_mtime_utc": "2026-07-15T03:00:08.608511+00:00",
+      "latest_backup_size_bytes": 18555
+    },
+    "hde_postgres_backup_watchdog": {
+      "job_id": "7244203a53a0",
+      "enabled": true,
+      "last_status": "ok",
+      "schedule": "every 360m",
+      "deliver": "origin"
+    }
+  },
+  "fresh_router_error_scan": {
+    "window": "30 minutes",
+    "critical_error_count": 0,
+    "tokens_redacted": true
+  },
+  "controlled_cohort": {
+    "phase_0": "Michael/internal testers only",
+    "phase_1": "3-5 external users",
+    "phase_2": "broader public traffic only after phase 1 completes without backlog, failed sends, unhealthy containers, restart loops, onboarding failures, or spend anomalies"
+  },
+  "rollout_gates": [
+    "router service active",
+    "API service active or intentionally not applicable",
+    "guest container healthy",
+    "router metrics status ok",
+    "Redis pending queues are 0 or clearly draining",
+    "Telegram identity is Humandesigncompanionbot",
+    "guest canary passes",
+    "launch report is GREEN",
+    "watchdogs/backups enabled and quiet",
+    "no fresh critical router errors"
+  ],
+  "rollback_criteria": [
+    "stop adding new users/invitations if router/API restarts or goes unhealthy",
+    "pause public entry links if Redis pending backlog grows and does not drain",
+    "capture redacted logs and metrics for Telegram send failures or onboarding errors",
+    "keep existing user sessions available if safe",
+    "do not rotate bot tokens or restart broad infrastructure without explicit approval unless service is already down and the safe fix is narrow/documented"
+  ],
+  "monitoring_commands": [
+    "systemctl is-active hde_router.service",
+    "systemctl is-active hde_api_staging.service || true",
+    "sudo docker inspect -f '{{.State.Health.Status}}' guest-hermes-23",
+    "/home/ubuntu/work/hd-platform/.venv/bin/python3 scripts/hde_router_metrics.py --pretty",
+    "python3 scripts/hde_guest_canary.py --guest-id 23 --pretty",
+    "journalctl -u hde_router.service --since '30 minutes ago' --no-pager | sed -E 's/[0-9]+:[A-Za-z0-9_-]+/[REDACTED_TOKEN]/g; s#bot[0-9]+:[A-Za-z0-9_-]+#bot[REDACTED]#g'"
+  ],
+  "remaining_risks": [
+    "Start with controlled cohort only; do not jump directly to broad public traffic.",
+    "Frontend build is still a branch-shape caveat on this checkout because package.json is missing; verify frontend-bearing checkout separately before frontend launch claims.",
+    "Watch token/model spend during first external users; current gates prove runtime health, not cost ceiling under public volume."
+  ],
+  "secrets": {
+    "contains_secrets": false,
+    "redaction_policy": "No bot tokens, API keys, database URLs, Redis URLs, cookies, or raw connection strings included."
+  }
+}

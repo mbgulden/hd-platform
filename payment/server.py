@@ -13,6 +13,8 @@ from urllib.parse import urlparse, parse_qs
 import urllib.request
 import urllib.error
 
+from shared.hde_email_theme import attach_themed_alternative, build_report_email
+
 import printful
 
 STRIPE_KEY = os.environ.get("STRIPE_SECRET_KEY", "")
@@ -31,9 +33,10 @@ UNCHAINED_DIGITAL_PRICE_ID = os.environ.get("UNCHAINED_DIGITAL_PRICE_ID", "")
 UNCHAINED_RETREAT_PRICE_ID = os.environ.get("UNCHAINED_RETREAT_PRICE_ID", "")
 PORT = int(os.environ.get("PORT", "8000"))
 AFFILIATES_FILE = "/tmp/hde-reports/affiliates.json"
+USE_CONFIGURED_PRICE_IDS = bool(STRIPE_KEY) and not STRIPE_KEY.startswith("sk_test_") and not STRIPE_KEY.startswith("__SET_IN_") and not STRIPE_KEY.startswith("***")
 
 # Commission rates per report type (30% of report price)
-COMMISSION_RATES = {"natal": 5.70, "synastry": 8.70, "transit": 8.70, "bundle": 17.70}
+COMMISSION_RATES = {"natal": 2.70, "synastry": 4.20, "transit": 4.20, "bundle": 8.70}
 
 def _load_affiliates():
     try:
@@ -90,9 +93,9 @@ class Handler(BaseHTTPRequestHandler):
         length = int(self.headers.get('Content-Length', 0))
         body = self.rfile.read(length) if length else b''
 
-        if self.path in ('/checkout', '/create-checkout', '/create-checkout-session'):
+        if self.path in ('/checkout', '/create-checkout', '/create-checkout-session', '/api/checkout/create-session'):
             self._handle_checkout(body)
-        elif self.path in ('/webhook', '/stripe-webhook'):
+        elif self.path in ('/webhook', '/stripe-webhook', '/api/webhooks/stripe'):
             self._handle_webhook(body)
         elif self.path == '/api/affiliate-signup':
             self._handle_affiliate_signup(body)
@@ -167,6 +170,18 @@ class Handler(BaseHTTPRequestHandler):
             }
         else:
             data = json.loads(body)
+            # FastAPI/Pages checkout callers send customer data under metadata
+            # with product_name/price_cents at top level. Normalize that shape so
+            # /api/checkout/create-session can be routed here and still create a
+            # real Stripe Checkout session instead of the old mock fallback.
+            if isinstance(data.get('metadata'), dict):
+                meta_in = data.get('metadata') or {}
+                normalized = dict(meta_in)
+                normalized.setdefault('email', data.get('email', ''))
+                normalized.setdefault('price', data.get('price_cents', 900))
+                normalized.setdefault('product_name', data.get('product_name', ''))
+                normalized.setdefault('product_description', data.get('product_description', ''))
+                data = normalized
 
         name = data.get('name', '')
         email = data.get('email', '')
@@ -247,8 +262,10 @@ class Handler(BaseHTTPRequestHandler):
             product_name = f"Human Design {report.title()} Report"
             product_desc = f"Personalized HD report for {name}"
 
-        # Build line_items — use Stripe price ID when available
-        if price_id:
+        # Build line_items — use Stripe price IDs only in live mode. Staging/test
+        # keys cannot use live Price IDs, so fall back to price_data to keep every
+        # checkout form testable and priced exactly as the site displays.
+        if price_id and USE_CONFIGURED_PRICE_IDS:
             line_items = [{"price": price_id, "quantity": 1}]
         else:
             product_data: dict[str, object] = {"name": product_name, "description": product_desc}
@@ -645,24 +662,12 @@ humandesignengine.com"""
 
     def _email_report(self, to_email, name, report, pdf_path):
         """Send the PDF report via email"""
-        msg = MIMEMultipart()
+        msg = MIMEMultipart('mixed')
         msg['From'] = FROM_EMAIL
         msg['To'] = to_email
-        msg['Subject'] = f"Your Human Design {report.title()} Report is Ready, {name}!"
-
-        body = f"""Hi {name},
-
-Your Human Design {report.title()} Report is attached as a PDF.
-
-This report was computed using verified, open-source calculations — the same engine trusted by developers and practitioners worldwide.
-
-If you have any questions about your chart, we're here to help. Just reply to this email.
-
-With gratitude,
-The Human Design Engine Team
-humandesignengine.com"""
-
-        msg.attach(MIMEText(body, 'plain'))
+        subject, body, html = build_report_email(name, report)
+        msg['Subject'] = subject
+        attach_themed_alternative(msg, body, html)
 
         with open(pdf_path, 'rb') as f:
             attachment = MIMEApplication(f.read(), _subtype='pdf')
