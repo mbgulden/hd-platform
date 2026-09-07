@@ -1,0 +1,115 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8" />
+  <title>Human Design Engine Family Test Guide</title>
+  <style>
+    @page { size: Letter; margin: 0.55in; }
+    :root { --sage:#2f3a33; --moss:#63745f; --cream:#faf7f0; --paper:#fffdf8; --line:#ddd4c5; --gold:#c59f55; --ink:#2d302b; }
+    * { box-sizing: border-box; }
+    body { margin:0; background:var(--cream); color:var(--ink); font-family: Inter, "Segoe UI", Arial, sans-serif; line-height:1.45; }
+    .page { background:var(--paper); border:1px solid var(--line); border-radius:28px; padding:34px 38px; min-height:9.7in; }
+    .brand { display:flex; justify-content:space-between; align-items:flex-start; border-bottom:2px solid var(--line); padding-bottom:18px; margin-bottom:24px; }
+    .brandmark { color:var(--sage); font-weight:800; letter-spacing:.11em; text-transform:uppercase; font-size:12px; }
+    h1 { font-family: Georgia, "Times New Roman", serif; color:var(--sage); font-size:42px; line-height:1.02; margin:8px 0 8px; }
+    h2 { font-family: Georgia, "Times New Roman", serif; color:var(--sage); font-size:24px; margin:24px 0 8px; }
+    h3 { color:var(--sage); font-size:15px; margin:16px 0 6px; text-transform:uppercase; letter-spacing:.06em; }
+    .sub { color:#6b6f66; max-width:650px; font-size:16px; }
+    .pill { display:inline-block; border-radius:999px; padding:6px 12px; background:#eef2e8; color:var(--sage); font-weight:700; font-size:12px; }
+    .callout { border:1px solid var(--line); background:#fbf7ed; border-left:5px solid var(--gold); border-radius:16px; padding:14px 16px; margin:16px 0; }
+    .grid { display:grid; grid-template-columns:1fr 1fr; gap:14px; }
+    table { width:100%; border-collapse:collapse; margin:10px 0 16px; background:white; border:1px solid var(--line); border-radius:12px; overflow:hidden; }
+    th,td { border-bottom:1px solid var(--line); padding:8px 10px; vertical-align:top; text-align:left; }
+    th { background:#f1eadf; color:var(--sage); font-size:11px; text-transform:uppercase; letter-spacing:.06em; }
+    code { background:#f1eadf; border-radius:6px; padding:1px 5px; font-size:12px; }
+    ol, ul { padding-left:21px; }
+    li { margin:5px 0; }
+    .small { font-size:12px; color:#696e65; }
+    .checklist li { list-style:none; margin:7px 0; }
+    .checklist li::before { content:"□"; color:var(--moss); font-weight:800; margin-right:8px; }
+    .footer { margin-top:28px; border-top:1px solid var(--line); padding-top:12px; color:#777; font-size:11px; }
+  </style>
+</head>
+<body>
+  <main class="page">
+    <div class="brand">
+      <div>
+        <div class="brandmark">Human Design Engine Sanctuary</div>
+        <h1>Family Test Guide</h1>
+        <p class="sub">A simple walkthrough for testing the signup, Telegram onboarding, and first Human Design bot experience in staging.</p>
+      </div>
+      <span class="pill">Staging test</span>
+    </div>
+
+    <section class="callout">
+      <strong>Privacy note:</strong> This is a family/beta test. Michael and the support agent may review operational status and, only with your consent, conversation summaries/transcripts to improve the bot. Do not share private details you do not want reviewed during testing.
+    </section>
+
+    <h2>1. What you need</h2>
+    <ul>
+      <li>A Telegram account installed on your phone or desktop.</li>
+      <li>Your regular email address, or a test-friendly email you can receive messages at.</li>
+      <li>About 10-15 minutes.</li>
+    </ul>
+
+    <h2>2. Sign up through Stripe test checkout</h2>
+    <ol>
+      <li>Open the staging signup page Michael sends you. Usually this is <code>https://staging.humandesignengine.com/deconditioning/</code>.</li>
+      <li>Choose the test offer Michael asks you to try.</li>
+      <li>Enter your email address.</li>
+      <li>Stripe will open in test mode. Use the card below.</li>
+    </ol>
+
+    <table>
+      <tr><th>Stripe test field</th><th>Use this value</th></tr>
+      <tr><td>Card number</td><td><code>4242 4242 4242 4242</code></td></tr>
+      <tr><td>Expiration</td><td>Any future date, e.g. <code>12/34</code></td></tr>
+      <tr><td>CVC</td><td>Any 3 digits, e.g. <code>123</code></td></tr>
+      <tr><td>ZIP/postal</td><td>Any valid ZIP, e.g. <code>83702</code></td></tr>
+    </table>
+
+    <h2>3. Open your Telegram Sanctuary</h2>
+    <ol>
+      <li>After checkout, the success page should show one clear button: <strong>Open Telegram</strong>.</li>
+      <li>Tap it. Telegram should open the Human Design Companion bot.</li>
+      <li>Press <strong>Start</strong> if Telegram asks.</li>
+      <li>The bot will ask what simple name the space should answer to. Try <code>Ember</code>, <code>Mira</code>, <code>George</code>, or a short custom name.</li>
+      <li>Wait for the bot to say the space is open. Cold setup can take a minute or two. If it says contact support, tell Michael exactly what you saw.</li>
+    </ol>
+
+    <h2>4. Test the first conversation</h2>
+    <p>Use normal human language. The point is not to be polite to the software. Try a real question or one of these prompts:</p>
+    <div class="grid">
+      <div class="callout"><strong>Gentle start</strong><br/>“I’m here. What can you help me with?”</div>
+      <div class="callout"><strong>Real life</strong><br/>“I keep getting stuck in the same pattern with work/family. What should I look at?”</div>
+      <div class="callout"><strong>Chart request</strong><br/>“Can you help me build my Human Design chart?”</div>
+      <div class="callout"><strong>Memory check</strong><br/>“Can you remember what we talked about if I come back later?”</div>
+    </div>
+
+    <h2>5. What to watch for</h2>
+    <ul class="checklist">
+      <li>Signup felt simple and one-click.</li>
+      <li>The Telegram link opened the right bot.</li>
+      <li>The guide-name choice felt natural.</li>
+      <li>The bot asked one question at a time.</li>
+      <li>The bot did not overwhelm you with a giant wall of text.</li>
+      <li>The bot did not immediately demand birth data unless you asked for a chart.</li>
+      <li>The bot sounded like a grounded Human Design practice room, not a fake friend or generic chatbot.</li>
+      <li>If you asked for a chart, it handled missing birth time gracefully.</li>
+    </ul>
+
+    <h2>6. Send feedback to Michael</h2>
+    <p>Please send Michael:</p>
+    <ul>
+      <li>What worked smoothly.</li>
+      <li>Where you got stuck.</li>
+      <li>Any exact bot message that felt weird, too long, fake, confusing, or surprisingly good.</li>
+      <li>Your device: iPhone, Android, desktop Telegram, etc.</li>
+    </ul>
+
+    <div class="footer">
+      Human Design Engine Sanctuary · staging family test guide · Test payments use Stripe sandbox and do not move real funds.
+    </div>
+  </main>
+</body>
+</html>

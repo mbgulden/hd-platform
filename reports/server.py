@@ -49,6 +49,11 @@ from transit_engine import (
 init_ephemeris()
 log.info("Ephemeris initialized — engine ready.")
 
+REPO_ROOT = Path(__file__).resolve().parents[1]
+if str(REPO_ROOT) not in sys.path:
+    sys.path.insert(0, str(REPO_ROOT))
+from shared.hde_email_theme import attach_themed_alternative, build_report_email
+
 # ── Config ───────────────────────────────────────────────────────────
 PORT = int(os.environ.get("REPORTS_PORT", "8081"))
 API_KEY = os.environ.get("HDE_API_KEY", "hde-dev-key-change-me")
@@ -189,6 +194,9 @@ CSS = """
   tr:nth-child(even) td { background: #FDFBF7; }
   .footer { text-align: center; padding: 40px; color: #808682; font-size: 9pt; }
   .footer a { color: #5F7261; }
+  .next-step-cta { background:#FFFFFF; border:1px solid rgba(95,114,97,.18); border-radius:16px; padding:26px; margin:26px 0; box-shadow:0 8px 30px rgba(47,54,49,.03); }
+  .next-step-cta h2 { margin-top:0; border-bottom:none; padding-bottom:0; }
+  .next-step-cta ul { margin:12px 0 0 20px; }
   .badge { display: inline-block; background: #2F3631; color: #FAF7F0; padding: 2px 10px; border-radius: 12px; font-size: 9pt; margin-left: 8px; vertical-align: middle; }
   .cert-badge { text-align: center; margin: 30px 0; padding: 12px; background: #FFFFFF; border: 1px solid rgba(95,114,97,.15); border-radius: 12px; font-size: 9pt; color: #808682; }
   @media print { body { -webkit-print-color-adjust: exact; print-color-adjust: exact; } }
@@ -711,6 +719,17 @@ def build_natal_report(chart: dict, branding: dict | None = None) -> str:
   <div class="experiment-box">
     <h3>Experiment 3: Observe Your Open Centers</h3>
     <p>Notice when you're amplifying energy from others. Ask: is this mine, or am I picking it up?</p>
+  </div>
+
+  <div class="next-step-cta">
+    <h2>🌿 Your chart is a snapshot. Your life is moving.</h2>
+    <p>This report names the mechanics. The deeper answers come from applying them to your relationships, choices, emotional waves, transits, nervous system, and current-life context.</p>
+    <ul>
+      <li><strong>Human Design Sanctuary:</strong> daily support for living the experiment, not just reading the map.</li>
+      <li><strong>Coaching Container:</strong> guided deconditioning and integration over time.</li>
+      <li><strong>Human Design Consultations:</strong> focused help for the real situation in front of you.</li>
+    </ul>
+    <p><a href="https://humandesignengine.com/deconditioning/">Enter the Human Design Sanctuary</a> · <a href="https://humandesignengine.com/becca-coaching.html">Explore coaching</a> · <a href="mailto:team@humandesignengine.com?subject=Human%20Design%20Consultation">Book a consultation</a></p>
   </div>
 
   <div class="cert-badge">
@@ -1271,6 +1290,17 @@ def build_transit_report(natal: dict, overlay: dict, solar_forecast: list = None
   <div class="experiment-box">
     <h3>🌿 A Note on Timing</h3>
     <p>Remember: transits are temporary. The energy you feel today will shift within days. Don't make permanent decisions based on temporary conditioning — especially if you're a <strong>Reflector</strong> (wait 28 days) or <strong>Projector</strong> (wait for the invitation). Use transits as a spotlight: they show you what's available to learn, not what you must become.</p>
+  </div>
+
+  <div class="next-step-cta">
+    <h2>🌿 Your chart is a snapshot. Your life is moving.</h2>
+    <p>This report names the mechanics. The deeper answers come from applying them to your relationships, choices, emotional waves, transits, nervous system, and current-life context.</p>
+    <ul>
+      <li><strong>Human Design Sanctuary:</strong> daily support for living the experiment, not just reading the map.</li>
+      <li><strong>Coaching Container:</strong> guided deconditioning and integration over time.</li>
+      <li><strong>Human Design Consultations:</strong> focused help for the real situation in front of you.</li>
+    </ul>
+    <p><a href="https://humandesignengine.com/deconditioning/">Enter the Human Design Sanctuary</a> · <a href="https://humandesignengine.com/becca-coaching.html">Explore coaching</a> · <a href="mailto:team@humandesignengine.com?subject=Human%20Design%20Consultation">Book a consultation</a></p>
   </div>
 
   <div class="cert-badge">

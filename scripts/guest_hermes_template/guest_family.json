@@ -1,0 +1,25 @@
+{
+  "family": {
+    "alice": {
+      "name": "Alice",
+      "year": 1995, "month": 5, "day": 15, "hour": 8.5,
+      "location": "Denver CO",
+      "lat": 39.7392, "lon": -104.9903,
+      "timezone": "America/Denver",
+      "hd_type": "Generator",
+      "profile": "2/4",
+      "authority": "Sacral"
+    },
+    "bob": {
+      "name": "Bob",
+      "year": 1993, "month": 11, "day": 22, "hour": 14.25,
+      "location": "Boston MA",
+      "lat": 42.3601, "lon": -71.0589,
+      "timezone": "America/New_York",
+      "hd_type": "Projector",
+      "profile": "3/5",
+      "authority": "Emotional"
+    }
+  },
+  "active": "alice"
+}

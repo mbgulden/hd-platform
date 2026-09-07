@@ -32,13 +32,15 @@ from sqlalchemy.orm import DeclarativeBase, Mapped, mapped_column, relationship
 
 DATABASE_URL: str = os.getenv(
     "DATABASE_URL",
-    "postgresql+asyncpg://hduser:hdpassword@localhost:5432/hdplatform",
+    "__SET_DATABASE_URL__",
 )
 
 
 def _create_engine() -> Optional[AsyncEngine]:
     """Create and return an async SQLAlchemy engine, or None if DB unavailable."""
     try:
+        if not DATABASE_URL or DATABASE_URL.startswith("__SET_"):
+            return None
         kwargs = {}
         if not DATABASE_URL.startswith("sqlite"):
             kwargs["pool_size"] = 20
@@ -85,11 +87,23 @@ class User(Base):
         String(50), nullable=True, default="inactive"
     )
     is_premium: Mapped[bool] = mapped_column(Boolean, nullable=False, default=False)
+    access_status: Mapped[str] = mapped_column(String(50), nullable=False, default="paid")
+    trial_expires_at: Mapped[Optional[datetime]] = mapped_column(DateTime(timezone=True), nullable=True)
+    deactivated_at: Mapped[Optional[datetime]] = mapped_column(DateTime(timezone=True), nullable=True)
+    deletion_scheduled_at: Mapped[Optional[datetime]] = mapped_column(DateTime(timezone=True), nullable=True)
+    demo_started_at: Mapped[Optional[datetime]] = mapped_column(DateTime(timezone=True), nullable=True)
+    demo_renewal_count: Mapped[int] = mapped_column(Integer, nullable=False, default=0)
+    demo_last_source: Mapped[Optional[str]] = mapped_column(String(100), nullable=True)
+    demo_deleted_at: Mapped[Optional[datetime]] = mapped_column(DateTime(timezone=True), nullable=True)
+    is_premium: Mapped[bool] = mapped_column(Boolean, nullable=False, default=False)
+    coaching_container_end: Mapped[Optional[datetime]] = mapped_column(DateTime(timezone=True), nullable=True)
     coach_review_consent: Mapped[bool] = mapped_column(Boolean, nullable=False, default=False)
     coach_review_consent_at: Mapped[Optional[datetime]] = mapped_column(DateTime(timezone=True), nullable=True)
     coach_review_consent_source: Mapped[Optional[str]] = mapped_column(String(100), nullable=True)
     coach_review_consent_revoked_at: Mapped[Optional[datetime]] = mapped_column(DateTime(timezone=True), nullable=True)
     coaching_container_end: Mapped[Optional[datetime]] = mapped_column(DateTime(timezone=True), nullable=True)
+    guide_name: Mapped[Optional[str]] = mapped_column(String(80), nullable=True)
+    guide_name_source: Mapped[Optional[str]] = mapped_column(String(50), nullable=True)
     created_at: Mapped[datetime] = mapped_column(
         DateTime(timezone=True),
         server_default=func.now(),
@@ -211,6 +225,58 @@ async def init_db() -> None:
                 await conn.execute(text(ddl))
             except Exception:
                 pass
+        try:
+            await conn.execute(text("ALTER TABLE users ADD COLUMN access_status VARCHAR(50) DEFAULT 'paid' NOT NULL"))
+        except Exception:
+            pass
+        try:
+            await conn.execute(text("ALTER TABLE users ADD COLUMN trial_expires_at TIMESTAMP WITH TIME ZONE"))
+        except Exception:
+            pass
+        try:
+            await conn.execute(text("ALTER TABLE users ADD COLUMN deactivated_at TIMESTAMP WITH TIME ZONE"))
+        except Exception:
+            pass
+        try:
+            await conn.execute(text("ALTER TABLE users ADD COLUMN deletion_scheduled_at TIMESTAMP WITH TIME ZONE"))
+        except Exception:
+            pass
+        try:
+            await conn.execute(text("ALTER TABLE users ADD COLUMN demo_started_at TIMESTAMP WITH TIME ZONE"))
+        except Exception:
+            pass
+        try:
+            await conn.execute(text("ALTER TABLE users ADD COLUMN demo_renewal_count INTEGER DEFAULT 0 NOT NULL"))
+        except Exception:
+            pass
+        try:
+            await conn.execute(text("ALTER TABLE users ADD COLUMN demo_last_source VARCHAR(100)"))
+        except Exception:
+            pass
+        try:
+            await conn.execute(text("ALTER TABLE users ADD COLUMN demo_deleted_at TIMESTAMP WITH TIME ZONE"))
+        except Exception:
+            pass
+        try:
+            await conn.execute(text("ALTER TABLE users ADD COLUMN coaching_container_end TIMESTAMP WITH TIME ZONE"))
+        except Exception:
+            pass
+        try:
+            await conn.execute(text("ALTER TABLE users ADD COLUMN coach_review_consent BOOLEAN DEFAULT FALSE NOT NULL"))
+        except Exception:
+            pass
+        try:
+            await conn.execute(text("ALTER TABLE users ADD COLUMN coach_review_consent_at TIMESTAMP WITH TIME ZONE"))
+        except Exception:
+            pass
+        try:
+            await conn.execute(text("ALTER TABLE users ADD COLUMN coach_review_consent_source VARCHAR(100)"))
+        except Exception:
+            pass
+        try:
+            await conn.execute(text("ALTER TABLE users ADD COLUMN coach_review_consent_revoked_at TIMESTAMP WITH TIME ZONE"))
+        except Exception:
+            pass
 
 
 async def close_db() -> None:

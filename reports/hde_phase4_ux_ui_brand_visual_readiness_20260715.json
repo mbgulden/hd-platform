@@ -1,0 +1,95 @@
+{
+  "report": "hde_phase4_ux_ui_brand_visual_readiness_20260715",
+  "status": "YELLOW",
+  "date": "2026-07-15",
+  "branch": "ned/hde-phase4-paid-bot-onboarding-quality-2026-07-15",
+  "summary": "PWP website build, visual, accessibility, Lighthouse, link, and staging flow checks passed. PDF mechanical/OCR baselines were rendered and accepted for controlled staging, but semantic image QA tooling was unavailable and the PDF does not yet strongly express the requested navy/gold premium HDE palette; final design approval remains tracked rather than green.",
+  "commands": {
+    "build": "cd /home/ubuntu/work/hd-platform && npm run build",
+    "playwright_chromium": "cd /home/ubuntu/work/hd-platform && npx playwright install chromium",
+    "screenshots_and_pwp": "cd /home/ubuntu/work/hd-platform && npm run qa:update-screenshots && npm run pwp:verify",
+    "staging_flows": "cd /home/ubuntu/work/hd-platform && PWP_STAGING_URL=https://staging.humandesignengine.com PWP_API_BASE=https://staging.humandesignengine.com npm run qa:flows",
+    "pdf_baseline": "pdfinfo + pdftoppm -png -r 160 + tesseract OCR for /home/ubuntu/users/guest_23/charts/personal/slot_canary/report_Slot_Canary_20260715_211830.pdf"
+  },
+  "results": {
+    "npm_build": {
+      "status": "pass",
+      "pages_built": 10,
+      "postbuild": "preserved 246 legacy files, generated 173 sitemap routes, 537 redirects, and 301 redirect pages; skipped 9 directory collisions"
+    },
+    "playwright_chromium": {
+      "status": "pass",
+      "command_exit": 0
+    },
+    "qa_update_screenshots": {
+      "status": "pass",
+      "tests": "36 passed"
+    },
+    "pwp_verify": {
+      "status": "pass",
+      "visual": "36 passed",
+      "a11y": "12 passed; no serious or critical axe violations",
+      "flows_local": "6 passed, 4 skipped because staging env vars are intentionally absent during local verify",
+      "lighthouse": "5 URLs processed; reports written to okf/output/pwp-visual-qa/lighthouse",
+      "links": "ok=true; route_count=6; checked_count=124; broken_count=0"
+    },
+    "staging_process_flows": {
+      "status": "pass",
+      "tests": "10 passed",
+      "base": "https://staging.humandesignengine.com",
+      "api_base": "https://staging.humandesignengine.com"
+    },
+    "pdf_baselines": {
+      "status": "controlled_staging_acceptance",
+      "pdf": "/home/ubuntu/users/guest_23/charts/personal/slot_canary/report_Slot_Canary_20260715_211830.pdf",
+      "baseline_dir": "/tmp/hde-phase4-ux-visual-readiness/pdf-baselines/slot_canary_20260715_211830",
+      "pages": 3,
+      "page_size": "612 x 792 pts letter",
+      "rendered_png_size": "1360 x 1760 each",
+      "ocr_found": [
+        "Manifestor",
+        "Emotional",
+        "To Inform",
+        "Defined Centers",
+        "Open Centers",
+        "Incarnation Cross"
+      ],
+      "semantic_image_qa": "unavailable; vision tooling returned Cloudflare challenge HTML, so this is manual/OCR/mechanical proof, not final semantic design approval"
+    },
+    "email_branding": {
+      "status": "partial",
+      "scope": "checkout/onboarding email template only; PDF report delivery email lives in reports/server.py and is outside Ned push lane for the canonical repo",
+      "proof": "/tmp/hde-phase4-email-brand-proof-source/onboarding_email.html",
+      "checks": "source checkout email fake-SMTP proof passed; PDF report email redesign needs correct-lane owner",
+      "plain_text_signature": "Human Design Engine / Your private Human Design sanctuary / https://humandesignengine.com",
+      "html_brand_system": "navy #08111f + gold #d8b86a, rounded card, single clear Telegram CTA",
+      "artifacts": [
+        "/tmp/hde-phase4-email-brand-proof-source/onboarding_email.html"
+      ]
+    }
+  },
+  "manual_pdf_checklist": {
+    "navy_gold_palette": "partial; representative sampled colors skew purple/blue with no meaningful gold bucket; track stronger navy/gold HDE system before final brand approval",
+    "typography": "legible but generic; OCR title confusion suggests header/brand typography needs polish",
+    "spacing": "acceptable for controlled staging; page 2 dense gate/channel lists need more breathing room",
+    "chart_clarity": "summary facts readable; chart/art/header area needs semantic design review",
+    "sanctuary_tone": "calm explanatory tone; no fake companion behavior observed in OCR/manual text sample",
+    "website_routes": "PWP screenshots/a11y/Lighthouse/link checks passed for home, deconditioning, success, privacy, terms, academy routes"
+  },
+  "exit_gate": {
+    "pwp_visual_a11y_flow_checks": "pass",
+    "pwp_staging_process_flows": "pass",
+    "pdf_visual_baselines": "accepted_for_controlled_staging",
+    "brand_inconsistencies": "tracked",
+    "final_design_approval": "not_yet",
+    "broad_launch_ready": false,
+    "email_brand_consistency": "partial_pdf_report_email_out_of_lane"
+  },
+  "remaining_risk": [
+    "PDF semantic image QA tool was unavailable; baseline is mechanical/OCR/manual only.",
+    "PDF is not yet a strong navy/gold premium HDE brand artifact.",
+    "Paid Telegram /start path from Phase 3/4 still requires human tester proof before broad launch.",
+    "SMTP delivery is verified with fake SMTP only; no live customer email was sent during this proof.",
+    "Generated PDF report delivery email still needs correct-lane owner update in reports/server.py."
+  ]
+}

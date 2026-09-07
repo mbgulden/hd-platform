@@ -17,3 +17,7 @@ build/
 *.db
 node_modules/
 .astro/
+# Generated HDE staging artifacts
+staging_database.db
+docs/hde-family-test-monitor.html
+docs/hde-family-test-monitor.json

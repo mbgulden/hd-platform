@@ -47,6 +47,57 @@ CENTER_MAP = {
 
 ALL_CENTERS = ["head","ajna","throat","g","heart","sacral","spleen","solar_plexus","root"]
 
+FIELD_DESCRIPTIONS = {
+    "profile": "Conscious/unconscious role pattern for learning, relating, and projection.",
+    "type": "Aura mechanics and the broad way energy engages with life.",
+    "definition": "How defined centers connect internally and where relationship bridges matter.",
+    "environment": "The setting where the nervous system tends to regulate best.",
+    "view_perspective": "The way the mind sees clearly when it is not controlling decisions.",
+    "signature": "The felt signal that the mechanics are working.",
+    "variables": "Four-arrow orientation for digestion, environment, mind, and motivation.",
+    "distraction": "The mental lure that pulls perspective off track.",
+    "strategy": "The cleanest way to meet life with less resistance.",
+    "not_self": "The early warning light that the person is forcing or moving off-pattern.",
+    "sense": "The sensory emphasis the body may use to orient.",
+    "trajectory": "The directional arc cognition and environment are tuned to follow.",
+    "authority": "The body’s decision-making signal to trust before mental explanation.",
+    "cognition": "The specific sense channel that can operate as body intelligence.",
+    "motivation": "The deeper motive that keeps the mind clean and useful.",
+    "transference": "The compensating motive the mind can slide into.",
+    "determination": "How the body best digests food, information, and experience.",
+    "incarnation_cross": "The life-theme frame carried by the Sun/Earth gates.",
+    "bridging_gates": "Gates that can bridge split definition or become relational connectors.",
+    "melancholy": "Individual-circuit gates where mood, timing, and creative pulse may need space.",
+    "fears": "Splenic fear themes that can mature into wisdom when named.",
+    "penta_qualities": "Family, group, and business qualities visible in team fields.",
+    "genetic_trauma": "A trauma lens for wound-pattern integration.",
+    "astrohd_star_archetype": "A star/archetype layer for mythic language and coaching content.",
+}
+
+PLANET_SIGNIFICANCE = {
+    "Sun": "core life-force and visible theme",
+    "Earth": "grounding, balance, and integration point",
+    "Moon": "emotional pull and recurring need",
+    "Mercury": "communication, naming, and mental processing",
+    "Venus": "values, aesthetics, and relational standards",
+    "Mars": "maturation edge, assertion, and raw drive",
+    "Jupiter": "growth, protection, and natural opportunity",
+    "Saturn": "discipline, consequence, and life lessons",
+    "Uranus": "disruption, originality, and individuation",
+    "Neptune": "mystery, sensitivity, and spiritual atmosphere",
+    "Pluto": "depth, transformation, and evolutionary pressure",
+    "True Node": "directional environment and life path orientation",
+    "South Node": "familiar patterning and early-life orientation",
+}
+
+
+def _safe_chart_value(chart: Dict[str, Any], *keys: str) -> Any:
+    for key in keys:
+        value = chart.get(key)
+        if value not in (None, "", [], {}):
+            return value
+    return None
+
 
 # ── Request / Response schemas ────────────────────────────────────────
 
@@ -115,6 +166,23 @@ def _build_bodygraph_payload(chart: Dict[str, Any]) -> Dict[str, Any]:
         "not_self": chart.get("not_self_theme", ""),
         "definition": chart.get("definition", ""),
         "incarnation_cross": chart.get("incarnation_cross", {}),
+        "environment": _safe_chart_value(chart, "environment"),
+        "view_perspective": _safe_chart_value(chart, "perspective", "view"),
+        "variables": _safe_chart_value(chart, "variables", "variable", "variable_code"),
+        "distraction": _safe_chart_value(chart, "distraction"),
+        "sense": _safe_chart_value(chart, "sense"),
+        "trajectory": _safe_chart_value(chart, "trajectory"),
+        "cognition": _safe_chart_value(chart, "cognition"),
+        "motivation": _safe_chart_value(chart, "motivation"),
+        "transference": _safe_chart_value(chart, "transference"),
+        "determination": _safe_chart_value(chart, "determination", "digestion"),
+        "bridging_gates": _safe_chart_value(chart, "bridging_gates"),
+        "melancholy": _safe_chart_value(chart, "melancholy_gates"),
+        "fears": _safe_chart_value(chart, "fear_gates", "fears"),
+        "penta_qualities": _safe_chart_value(chart, "penta_qualities"),
+        "genetic_trauma": _safe_chart_value(chart, "genetic_trauma"),
+        "astrohd_star_archetype": _safe_chart_value(chart, "star_archetype", "astrohd_star_archetype"),
+        "field_descriptions": FIELD_DESCRIPTIONS,
     }
 
     # ── Centers ──
@@ -166,7 +234,12 @@ def _build_bodygraph_payload(chart: Dict[str, Any]) -> Dict[str, Any]:
     # ── Channels ──
     channels: Dict[str, Dict[str, Any]] = {}
     for channel_id, ch_data in CHANNELS.items():
-        gate_a, gate_b = ch_data["gates"]
+        if isinstance(ch_data, dict):
+            gate_a, gate_b = ch_data.get("gates", channel_id)
+            channel_name = ch_data.get("name", "")
+        else:
+            gate_a, gate_b = channel_id
+            channel_name = str(ch_data)
         both_active = gate_a in all_active_gates and gate_b in all_active_gates
         one_active = (gate_a in all_active_gates) != (gate_b in all_active_gates)
         is_defined = (gate_a, gate_b) in defined_channel_pairs
@@ -183,11 +256,12 @@ def _build_bodygraph_payload(chart: Dict[str, Any]) -> Dict[str, Any]:
         ch_entry: Dict[str, Any] = {
             "state": state,
             "gates": [gate_a, gate_b],
-            "name": ch_data.get("name", ""),
+            "name": channel_name,
         }
         if state == "hanging":
             ch_entry["hanging_gate"] = gate_a if gate_a in all_active_gates else gate_b
-        channels[channel_id] = ch_entry
+        channel_key = f"{gate_a}-{gate_b}"
+        channels[channel_key] = ch_entry
 
     # ── Variables ──
     variables = {}
@@ -204,12 +278,35 @@ def _build_bodygraph_payload(chart: Dict[str, Any]) -> Dict[str, Any]:
                     "base": pdata.get("base"),
                 }
 
+    activations: List[Dict[str, Any]] = []
+    for side, source in (("personality", chart.get("personality_planets", {})),
+                         ("design", chart.get("design_planets", {}))):
+        if not isinstance(source, dict):
+            continue
+        for planet, pdata in source.items():
+            if not isinstance(pdata, dict) or not pdata.get("gate"):
+                continue
+            gate_num = pdata.get("gate")
+            activations.append({
+                "side": side,
+                "planet": planet,
+                "gate": gate_num,
+                "line": pdata.get("line"),
+                "color": pdata.get("color"),
+                "tone": pdata.get("tone"),
+                "base": pdata.get("base"),
+                "gate_name": GATE_NAMES.get(int(gate_num), f"Gate {gate_num}") if isinstance(gate_num, int) else f"Gate {gate_num}",
+                "center": CENTER_MAP.get(GATE_CENTER.get(int(gate_num), ""), "unknown") if isinstance(gate_num, int) else "unknown",
+                "significance": PLANET_SIGNIFICANCE.get(planet, "chart-specific planetary emphasis"),
+            })
+
     return {
         "meta": meta,
         "centers": centers,
         "gates": gates,
         "channels": channels,
         "variables": variables,
+        "activations": activations,
     }
 
 
