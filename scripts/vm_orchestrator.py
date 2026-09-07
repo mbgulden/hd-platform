@@ -226,12 +226,16 @@ providers:
     # is injected into the guest .env as GUEST_VLLM_API_KEY (see below) and
     # resolved here at provision time. Do NOT hardcode a key.
     api_key_env: GUEST_VLLM_API_KEY
-    context_length: 262144
+    # Guardrail: shared Fred pool on 192.168.1.230 = ~383K KV tokens (fp8).
+    # 65536 per tenant => ~6 concurrent tenant conversations. Do not raise
+    # to 262144: pool would only fit ~1.4 full-length conversations and
+    # every other tenant/agent would preempt. (Aligned with prod, 2026-09-07.)
+    context_length: 65536
     default_model: local-qwen-27b-q8-fred
     model: local-qwen-27b-q8-fred
     models:
       local-qwen-27b-q8-fred:
-        context_length: 262144
+        context_length: 65536
     name: Qwen 3.8 27B local (HDE)
     request_timeout_seconds: 600
 model:
