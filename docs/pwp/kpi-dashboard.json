@@ -1,0 +1,681 @@
+{
+  "kind": "daily",
+  "windowStartISO": "2026-09-12T04:23:15Z",
+  "windowEndISO": "2026-09-13T04:23:15Z",
+  "generatedAt": "2026-09-13T04:23:15.360Z",
+  "data_source": {
+    "stripe": "live",
+    "ga4": "fixture"
+  },
+  "metrics": {
+    "funnel_top.free_reading_page_view": {
+      "id": "funnel_top.free_reading_page_view",
+      "label": "Free reading page views",
+      "value": 412,
+      "prior": 0,
+      "format": "number"
+    },
+    "funnel_top.free_chart_generated_total": {
+      "id": "funnel_top.free_chart_generated_total",
+      "label": "Charts generated",
+      "value": 298,
+      "prior": 0,
+      "format": "number"
+    },
+    "funnel_top.free_chart_generated_rate": {
+      "id": "funnel_top.free_chart_generated_rate",
+      "label": "Generation rate",
+      "value": 0.7233009708737864,
+      "prior": null,
+      "format": "percent"
+    },
+    "funnel_top.practice_started_total": {
+      "id": "funnel_top.practice_started_total",
+      "label": "Nervous-system practices started",
+      "value": 273,
+      "prior": 0,
+      "format": "number"
+    },
+    "funnel_top.practice_completed_total": {
+      "id": "funnel_top.practice_completed_total",
+      "label": "Nervous-system practices completed",
+      "value": 91,
+      "prior": 0,
+      "format": "number"
+    },
+    "funnel_top.practice_completion_rate": {
+      "id": "funnel_top.practice_completion_rate",
+      "label": "Practice completion rate",
+      "value": 0.3333333333333333,
+      "prior": null,
+      "format": "percent"
+    },
+    "funnel_sanctuary.sanctuary_page_view": {
+      "id": "funnel_sanctuary.sanctuary_page_view",
+      "label": "Sanctuary page views",
+      "value": 188,
+      "prior": 0,
+      "format": "number"
+    },
+    "funnel_sanctuary.sanctuary_cta_clicked_total": {
+      "id": "funnel_sanctuary.sanctuary_cta_clicked_total",
+      "label": "Package card clicks",
+      "value": 71,
+      "prior": 0,
+      "format": "number"
+    },
+    "funnel_sanctuary.sanctuary_cta_conversion": {
+      "id": "funnel_sanctuary.sanctuary_cta_conversion",
+      "label": "CTA click → modal page views",
+      "value": 0,
+      "prior": 0,
+      "format": "percent"
+    },
+    "funnel_sanctuary.sanctuary_checkout_started": {
+      "id": "funnel_sanctuary.sanctuary_checkout_started",
+      "label": "Modal submitted (Stripe session)",
+      "value": 38,
+      "prior": 0,
+      "format": "number"
+    },
+    "funnel_sanctuary.sanctuary_session_created": {
+      "id": "funnel_sanctuary.sanctuary_session_created",
+      "label": "Stripe checkout sessions created",
+      "value": 0,
+      "prior": 0,
+      "format": "number"
+    },
+    "funnel_sanctuary.sanctuary_purchase_total": {
+      "id": "funnel_sanctuary.sanctuary_purchase_total",
+      "label": "Sanctuary purchases",
+      "value": 0,
+      "prior": 0,
+      "format": "number"
+    },
+    "funnel_sanctuary.sanctuary_revenue_usd": {
+      "id": "funnel_sanctuary.sanctuary_revenue_usd",
+      "label": "Sanctuary gross revenue (USD)",
+      "value": 0,
+      "prior": 0,
+      "format": "number"
+    },
+    "funnel_sanctuary.sanctuary_arr_usd": {
+      "id": "funnel_sanctuary.sanctuary_arr_usd",
+      "label": "Sanctuary ARR (USD)",
+      "value": 0,
+      "prior": 0,
+      "format": "number"
+    },
+    "funnel_buy_report.buy_report_page_view": {
+      "id": "funnel_buy_report.buy_report_page_view",
+      "label": "Buy-report page views",
+      "value": 412,
+      "prior": 0,
+      "format": "number"
+    },
+    "funnel_buy_report.buy_report_selected_total": {
+      "id": "funnel_buy_report.buy_report_selected_total",
+      "label": "Report selected",
+      "value": 187,
+      "prior": 0,
+      "format": "number"
+    },
+    "funnel_buy_report.buy_report_cta_total": {
+      "id": "funnel_buy_report.buy_report_cta_total",
+      "label": "CTA clicks",
+      "value": 187,
+      "prior": 0,
+      "format": "number"
+    },
+    "funnel_buy_report.buy_report_session_total": {
+      "id": "funnel_buy_report.buy_report_session_total",
+      "label": "Stripe checkout sessions",
+      "value": 142,
+      "prior": 0,
+      "format": "number"
+    },
+    "funnel_buy_report.buy_report_session_started": {
+      "id": "funnel_buy_report.buy_report_session_started",
+      "label": "Stripe session creation started",
+      "value": 142,
+      "prior": 0,
+      "format": "number"
+    },
+    "funnel_buy_report.buy_report_redirect_total": {
+      "id": "funnel_buy_report.buy_report_redirect_total",
+      "label": "Stripe redirects",
+      "value": 142,
+      "prior": 0,
+      "format": "number"
+    },
+    "funnel_buy_report.buy_report_purchase_total": {
+      "id": "funnel_buy_report.buy_report_purchase_total",
+      "label": "Stripe purchases (completed)",
+      "value": 0,
+      "prior": 0,
+      "format": "number"
+    },
+    "funnel_buy_report.buy_report_revenue_usd": {
+      "id": "funnel_buy_report.buy_report_revenue_usd",
+      "label": "Gross revenue (USD)",
+      "value": 0,
+      "prior": 0,
+      "format": "number"
+    },
+    "funnel_buy_report.buy_report_conversion_rate": {
+      "id": "funnel_buy_report.buy_report_conversion_rate",
+      "label": "End-to-end conversion rate",
+      "value": 0,
+      "prior": null,
+      "format": "percent"
+    },
+    "funnel_buy_report.buy_report_refund_total": {
+      "id": "funnel_buy_report.buy_report_refund_total",
+      "label": "Refunds",
+      "value": 0,
+      "prior": 0,
+      "format": "number"
+    },
+    "funnel_buy_report.buy_report_error_total": {
+      "id": "funnel_buy_report.buy_report_error_total",
+      "label": "Checkout errors (client-reported)",
+      "value": 1,
+      "prior": 0,
+      "format": "number"
+    },
+    "delivery_onboarding.success_page_view_total": {
+      "id": "delivery_onboarding.success_page_view_total",
+      "label": "Success page views",
+      "value": 117,
+      "prior": 0,
+      "format": "number"
+    },
+    "delivery_onboarding.purchase_confirmed_total": {
+      "id": "delivery_onboarding.purchase_confirmed_total",
+      "label": "Purchase confirmed (lookup OK)",
+      "value": 91,
+      "prior": 0,
+      "format": "number"
+    },
+    "delivery_onboarding.lookup_error_total": {
+      "id": "delivery_onboarding.lookup_error_total",
+      "label": "Lookup errors on /success/",
+      "value": 0,
+      "prior": 0,
+      "format": "number"
+    },
+    "delivery_onboarding.deep_link_clicked_total": {
+      "id": "delivery_onboarding.deep_link_clicked_total",
+      "label": "Telegram deep-link clicks (parsed from bot)",
+      "value": 0,
+      "prior": 0,
+      "format": "number"
+    },
+    "delivery_onboarding.deep_link_to_pdf_total": {
+      "id": "delivery_onboarding.deep_link_to_pdf_total",
+      "label": "PDF delivered",
+      "value": 0,
+      "prior": 0,
+      "format": "number"
+    },
+    "aggregates_growth.weekly_visitors_total": {
+      "id": "aggregates_growth.weekly_visitors_total",
+      "label": "Weekly unique visitors",
+      "value": 0,
+      "prior": 0,
+      "format": "number"
+    },
+    "aggregates_growth.weekly_engaged_visitors": {
+      "id": "aggregates_growth.weekly_engaged_visitors",
+      "label": "Weekly engaged sessions",
+      "value": 0,
+      "prior": 0,
+      "format": "number"
+    },
+    "aggregates_growth.weekly_conversions_total": {
+      "id": "aggregates_growth.weekly_conversions_total",
+      "label": "Weekly conversions",
+      "value": 0,
+      "prior": 0,
+      "format": "number"
+    },
+    "aggregates_growth.weekly_revenue_usd": {
+      "id": "aggregates_growth.weekly_revenue_usd",
+      "label": "Weekly gross revenue (USD)",
+      "value": 0,
+      "prior": 0,
+      "format": "number"
+    },
+    "aggregates_growth.weekly_refund_usd": {
+      "id": "aggregates_growth.weekly_refund_usd",
+      "label": "Weekly refunds (USD)",
+      "value": 0,
+      "prior": 0,
+      "format": "number"
+    },
+    "aggregates_growth.weekly_arr_usd": {
+      "id": "aggregates_growth.weekly_arr_usd",
+      "label": "Weekly ARR proxy (sum of recurring charges * 4.33)",
+      "value": 0,
+      "prior": 0,
+      "format": "number"
+    },
+    "aggregates_growth.weekly_churn_pct": {
+      "id": "aggregates_growth.weekly_churn_pct",
+      "label": "Subscription cancellations",
+      "value": 0,
+      "prior": 0,
+      "format": "number"
+    },
+    "site_hygiene.sitemap_coverage_pct": {
+      "id": "site_hygiene.sitemap_coverage_pct",
+      "label": "Sitemap coverage of GA4 loader",
+      "value": 0,
+      "prior": 0,
+      "format": "number"
+    },
+    "site_hygiene.converting_pages_total": {
+      "id": "site_hygiene.converting_pages_total",
+      "label": "Tracked pages (converting funnel events)",
+      "value": 0,
+      "prior": 0,
+      "format": "number"
+    },
+    "site_hygiene.duplicate_snippet_pct": {
+      "id": "site_hygiene.duplicate_snippet_pct",
+      "label": "Duplicate GA4/GTM snippets",
+      "value": 0,
+      "prior": 0,
+      "format": "number"
+    },
+    "site_hygiene.build_status": {
+      "id": "site_hygiene.build_status",
+      "label": "Last npm run build",
+      "value": 0,
+      "prior": 0,
+      "format": "number"
+    }
+  },
+  "collections": {
+    "funnel_top": {
+      "title": "Top of funnel (free reading)",
+      "source_urls": [
+        "https://humandesignengine.com/free-human-design-reading-generator/"
+      ],
+      "metrics": [
+        {
+          "id": "free_reading_page_view",
+          "label": "Free reading page views",
+          "value": 412,
+          "prior": 0,
+          "formatted": "412",
+          "delta_pct": "NEW"
+        },
+        {
+          "id": "free_chart_generated_total",
+          "label": "Charts generated",
+          "value": 298,
+          "prior": 0,
+          "formatted": "298",
+          "delta_pct": "NEW"
+        },
+        {
+          "id": "free_chart_generated_rate",
+          "label": "Generation rate",
+          "value": 0.7233009708737864,
+          "prior": null,
+          "formatted": "72.3%",
+          "delta_pct": "NEW",
+          "format": "percent"
+        },
+        {
+          "id": "practice_started_total",
+          "label": "Nervous-system practices started",
+          "value": 273,
+          "prior": 0,
+          "formatted": "273",
+          "delta_pct": "NEW"
+        },
+        {
+          "id": "practice_completed_total",
+          "label": "Nervous-system practices completed",
+          "value": 91,
+          "prior": 0,
+          "formatted": "91",
+          "delta_pct": "NEW"
+        },
+        {
+          "id": "practice_completion_rate",
+          "label": "Practice completion rate",
+          "value": 0.3333333333333333,
+          "prior": null,
+          "formatted": "33.3%",
+          "delta_pct": "NEW",
+          "format": "percent"
+        }
+      ]
+    },
+    "funnel_sanctuary": {
+      "title": "Sanctuary (deconditioning → Stripe → Telegram)",
+      "source_urls": [
+        "https://humandesignengine.com/deconditioning/",
+        "https://humandesignengine.com/landing-sheplantedatree/"
+      ],
+      "metrics": [
+        {
+          "id": "sanctuary_page_view",
+          "label": "Sanctuary page views",
+          "value": 188,
+          "prior": 0,
+          "formatted": "188",
+          "delta_pct": "NEW"
+        },
+        {
+          "id": "sanctuary_cta_clicked_total",
+          "label": "Package card clicks",
+          "value": 71,
+          "prior": 0,
+          "formatted": "71",
+          "delta_pct": "NEW"
+        },
+        {
+          "id": "sanctuary_cta_conversion",
+          "label": "CTA click → modal page views",
+          "value": 0,
+          "prior": 0,
+          "formatted": "0.0%",
+          "delta_pct": "0%",
+          "format": "percent"
+        },
+        {
+          "id": "sanctuary_checkout_started",
+          "label": "Modal submitted (Stripe session)",
+          "value": 38,
+          "prior": 0,
+          "formatted": "38",
+          "delta_pct": "NEW"
+        },
+        {
+          "id": "sanctuary_session_created",
+          "label": "Stripe checkout sessions created",
+          "value": 0,
+          "prior": 0,
+          "formatted": "0",
+          "delta_pct": "0%"
+        },
+        {
+          "id": "sanctuary_purchase_total",
+          "label": "Sanctuary purchases",
+          "value": 0,
+          "prior": 0,
+          "formatted": "0",
+          "delta_pct": "0%"
+        },
+        {
+          "id": "sanctuary_revenue_usd",
+          "label": "Sanctuary gross revenue (USD)",
+          "value": 0,
+          "prior": 0,
+          "formatted": "0",
+          "delta_pct": "0%"
+        },
+        {
+          "id": "sanctuary_arr_usd",
+          "label": "Sanctuary ARR (USD)",
+          "value": 0,
+          "prior": 0,
+          "formatted": "0",
+          "delta_pct": "0%"
+        }
+      ]
+    },
+    "funnel_buy_report": {
+      "title": "Report purchase funnel (natal / synastry / transit / bundle)",
+      "source_urls": [
+        "https://humandesignengine.com/buy-report/",
+        "https://humandesignengine.com/checkout/pay/",
+        "https://humandesignengine.com/success/"
+      ],
+      "metrics": [
+        {
+          "id": "buy_report_page_view",
+          "label": "Buy-report page views",
+          "value": 412,
+          "prior": 0,
+          "formatted": "412",
+          "delta_pct": "NEW"
+        },
+        {
+          "id": "buy_report_selected_total",
+          "label": "Report selected",
+          "value": 187,
+          "prior": 0,
+          "formatted": "187",
+          "delta_pct": "NEW"
+        },
+        {
+          "id": "buy_report_cta_total",
+          "label": "CTA clicks",
+          "value": 187,
+          "prior": 0,
+          "formatted": "187",
+          "delta_pct": "NEW"
+        },
+        {
+          "id": "buy_report_session_total",
+          "label": "Stripe checkout sessions",
+          "value": 142,
+          "prior": 0,
+          "formatted": "142",
+          "delta_pct": "NEW"
+        },
+        {
+          "id": "buy_report_session_started",
+          "label": "Stripe session creation started",
+          "value": 142,
+          "prior": 0,
+          "formatted": "142",
+          "delta_pct": "NEW"
+        },
+        {
+          "id": "buy_report_redirect_total",
+          "label": "Stripe redirects",
+          "value": 142,
+          "prior": 0,
+          "formatted": "142",
+          "delta_pct": "NEW"
+        },
+        {
+          "id": "buy_report_purchase_total",
+          "label": "Stripe purchases (completed)",
+          "value": 0,
+          "prior": 0,
+          "formatted": "0",
+          "delta_pct": "0%"
+        },
+        {
+          "id": "buy_report_revenue_usd",
+          "label": "Gross revenue (USD)",
+          "value": 0,
+          "prior": 0,
+          "formatted": "0",
+          "delta_pct": "0%"
+        },
+        {
+          "id": "buy_report_conversion_rate",
+          "label": "End-to-end conversion rate",
+          "value": 0,
+          "prior": null,
+          "formatted": "0.0%",
+          "delta_pct": "0%",
+          "format": "percent"
+        },
+        {
+          "id": "buy_report_refund_total",
+          "label": "Refunds",
+          "value": 0,
+          "prior": 0,
+          "formatted": "0",
+          "delta_pct": "0%"
+        },
+        {
+          "id": "buy_report_error_total",
+          "label": "Checkout errors (client-reported)",
+          "value": 1,
+          "prior": 0,
+          "formatted": "1",
+          "delta_pct": "NEW"
+        }
+      ]
+    },
+    "delivery_onboarding": {
+      "title": "Post-purchase: Telegram deep link → bot onboarding → PDF delivery",
+      "source_urls": [
+        "https://humandesignengine.com/success/"
+      ],
+      "metrics": [
+        {
+          "id": "success_page_view_total",
+          "label": "Success page views",
+          "value": 117,
+          "prior": 0,
+          "formatted": "117",
+          "delta_pct": "NEW"
+        },
+        {
+          "id": "purchase_confirmed_total",
+          "label": "Purchase confirmed (lookup OK)",
+          "value": 91,
+          "prior": 0,
+          "formatted": "91",
+          "delta_pct": "NEW"
+        },
+        {
+          "id": "lookup_error_total",
+          "label": "Lookup errors on /success/",
+          "value": 0,
+          "prior": 0,
+          "formatted": "0",
+          "delta_pct": "0%"
+        },
+        {
+          "id": "deep_link_clicked_total",
+          "label": "Telegram deep-link clicks (parsed from bot)",
+          "value": 0,
+          "prior": 0,
+          "formatted": "0",
+          "delta_pct": "0%"
+        },
+        {
+          "id": "deep_link_to_pdf_total",
+          "label": "PDF delivered",
+          "value": 0,
+          "prior": 0,
+          "formatted": "0",
+          "delta_pct": "0%"
+        }
+      ]
+    },
+    "aggregates_growth": {
+      "title": "Growth aggregates",
+      "source_urls": [],
+      "metrics": [
+        {
+          "id": "weekly_visitors_total",
+          "label": "Weekly unique visitors",
+          "value": 0,
+          "prior": 0,
+          "formatted": "0",
+          "delta_pct": "0%"
+        },
+        {
+          "id": "weekly_engaged_visitors",
+          "label": "Weekly engaged sessions",
+          "value": 0,
+          "prior": 0,
+          "formatted": "0",
+          "delta_pct": "0%"
+        },
+        {
+          "id": "weekly_conversions_total",
+          "label": "Weekly conversions",
+          "value": 0,
+          "prior": 0,
+          "formatted": "0",
+          "delta_pct": "0%"
+        },
+        {
+          "id": "weekly_revenue_usd",
+          "label": "Weekly gross revenue (USD)",
+          "value": 0,
+          "prior": 0,
+          "formatted": "0",
+          "delta_pct": "0%"
+        },
+        {
+          "id": "weekly_refund_usd",
+          "label": "Weekly refunds (USD)",
+          "value": 0,
+          "prior": 0,
+          "formatted": "0",
+          "delta_pct": "0%"
+        },
+        {
+          "id": "weekly_arr_usd",
+          "label": "Weekly ARR proxy (sum of recurring charges * 4.33)",
+          "value": 0,
+          "prior": 0,
+          "formatted": "0",
+          "delta_pct": "0%"
+        },
+        {
+          "id": "weekly_churn_pct",
+          "label": "Subscription cancellations",
+          "value": 0,
+          "prior": 0,
+          "formatted": "0",
+          "delta_pct": "0%"
+        }
+      ]
+    },
+    "site_hygiene": {
+      "title": "Site hygiene (operational KPIs)",
+      "source_urls": [],
+      "metrics": [
+        {
+          "id": "sitemap_coverage_pct",
+          "label": "Sitemap coverage of GA4 loader",
+          "value": 0,
+          "prior": 0,
+          "formatted": "0",
+          "delta_pct": "0%"
+        },
+        {
+          "id": "converting_pages_total",
+          "label": "Tracked pages (converting funnel events)",
+          "value": 0,
+          "prior": 0,
+          "formatted": "0",
+          "delta_pct": "0%"
+        },
+        {
+          "id": "duplicate_snippet_pct",
+          "label": "Duplicate GA4/GTM snippets",
+          "value": 0,
+          "prior": 0,
+          "formatted": "0",
+          "delta_pct": "0%"
+        },
+        {
+          "id": "build_status",
+          "label": "Last npm run build",
+          "value": 0,
+          "prior": 0,
+          "formatted": "0",
+          "delta_pct": "0%"
+        }
+      ]
+    }
+  },
+  "html": "<!doctype html><html><head><meta charset=\"utf-8\"><title>[HDE KPI] daily report — 2026-09-12</title></head>\n    <body style=\"background:#FAF7F0;margin:0;padding:24px;font-family:-apple-system,Inter,sans-serif;color:#2F3631;\">\n      <h1 style=\"margin:0 0 4px 0;\">HDE — daily KPI report</h1>\n      <p style=\"margin:0;color:#5C625E;\">Window 2026-09-12T04:23 → 2026-09-13T04:23 UTC</p>\n      \n    <h2 style=\"margin-top:24px;font-family:-apple-system,Inter,sans-serif;color:#2F3631;\">Top of funnel (free reading)</h2>\n    <table style=\"border-collapse:collapse;font-family:-apple-system,Inter,sans-serif;width:100%;max-width:640px;\">\n      \n        <tr>\n          <td style=\"padding:6px 8px;border-bottom:1px solid #eee;color:#5C625E;font-size:14px;\">Free reading page views</td>\n          <td style=\"padding:6px 8px;border-bottom:1px solid #eee;font-size:14px;font-weight:600;text-align:right;\">412</td>\n          <td style=\"padding:6px 8px;border-bottom:1px solid #eee;font-size:12px;color:#8C8275;text-align:right;\">NEW</td>\n        </tr>\n      \n        <tr>\n          <td style=\"padding:6px 8px;border-bottom:1px solid #eee;color:#5C625E;font-size:14px;\">Charts generated</td>\n          <td style=\"padding:6px 8px;border-bottom:1px solid #eee;font-size:14px;font-weight:600;text-align:right;\">298</td>\n          <td style=\"padding:6px 8px;border-bottom:1px solid #eee;font-size:12px;color:#8C8275;text-align:right;\">NEW</td>\n        </tr>\n      \n        <tr>\n          <td style=\"padding:6px 8px;border-bottom:1px solid #eee;color:#5C625E;font-size:14px;\">Generation rate</td>\n          <td style=\"padding:6px 8px;border-bottom:1px solid #eee;font-size:14px;font-weight:600;text-align:right;\">72.3%</td>\n          <td style=\"padding:6px 8px;border-bottom:1px solid #eee;font-size:12px;color:#8C8275;text-align:right;\">NEW</td>\n        </tr>\n      \n        <tr>\n          <td style=\"padding:6px 8px;border-bottom:1px solid #eee;color:#5C625E;font-size:14px;\">Nervous-system practices started</td>\n          <td style=\"padding:6px 8px;border-bottom:1px solid #eee;font-size:14px;font-weight:600;text-align:right;\">273</td>\n          <td style=\"padding:6px 8px;border-bottom:1px solid #eee;font-size:12px;color:#8C8275;text-align:right;\">NEW</td>\n        </tr>\n      \n        <tr>\n          <td style=\"padding:6px 8px;border-bottom:1px solid #eee;color:#5C625E;font-size:14px;\">Nervous-system practices completed</td>\n          <td style=\"padding:6px 8px;border-bottom:1px solid #eee;font-size:14px;font-weight:600;text-align:right;\">91</td>\n          <td style=\"padding:6px 8px;border-bottom:1px solid #eee;font-size:12px;color:#8C8275;text-align:right;\">NEW</td>\n        </tr>\n      \n        <tr>\n          <td style=\"padding:6px 8px;border-bottom:1px solid #eee;color:#5C625E;font-size:14px;\">Practice completion rate</td>\n          <td style=\"padding:6px 8px;border-bottom:1px solid #eee;font-size:14px;font-weight:600;text-align:right;\">33.3%</td>\n          <td style=\"padding:6px 8px;border-bottom:1px solid #eee;font-size:12px;color:#8C8275;text-align:right;\">NEW</td>\n        </tr>\n      \n    </table>\n  \n    <h2 style=\"margin-top:24px;font-family:-apple-system,Inter,sans-serif;color:#2F3631;\">Sanctuary (deconditioning → Stripe → Telegram)</h2>\n    <table style=\"border-collapse:collapse;font-family:-apple-system,Inter,sans-serif;width:100%;max-width:640px;\">\n      \n        <tr>\n          <td style=\"padding:6px 8px;border-bottom:1px solid #eee;color:#5C625E;font-size:14px;\">Sanctuary page views</td>\n          <td style=\"padding:6px 8px;border-bottom:1px solid #eee;font-size:14px;font-weight:600;text-align:right;\">188</td>\n          <td style=\"padding:6px 8px;border-bottom:1px solid #eee;font-size:12px;color:#8C8275;text-align:right;\">NEW</td>\n        </tr>\n      \n        <tr>\n          <td style=\"padding:6px 8px;border-bottom:1px solid #eee;color:#5C625E;font-size:14px;\">Package card clicks</td>\n          <td style=\"padding:6px 8px;border-bottom:1px solid #eee;font-size:14px;font-weight:600;text-align:right;\">71</td>\n          <td style=\"padding:6px 8px;border-bottom:1px solid #eee;font-size:12px;color:#8C8275;text-align:right;\">NEW</td>\n        </tr>\n      \n        <tr>\n          <td style=\"padding:6px 8px;border-bottom:1px solid #eee;color:#5C625E;font-size:14px;\">CTA click → modal page views</td>\n          <td style=\"padding:6px 8px;border-bottom:1px solid #eee;font-size:14px;font-weight:600;text-align:right;\">0.0%</td>\n          <td style=\"padding:6px 8px;border-bottom:1px solid #eee;font-size:12px;color:#8C8275;text-align:right;\">0%</td>\n        </tr>\n      \n        <tr>\n          <td style=\"padding:6px 8px;border-bottom:1px solid #eee;color:#5C625E;font-size:14px;\">Modal submitted (Stripe session)</td>\n          <td style=\"padding:6px 8px;border-bottom:1px solid #eee;font-size:14px;font-weight:600;text-align:right;\">38</td>\n          <td style=\"padding:6px 8px;border-bottom:1px solid #eee;font-size:12px;color:#8C8275;text-align:right;\">NEW</td>\n        </tr>\n      \n        <tr>\n          <td style=\"padding:6px 8px;border-bottom:1px solid #eee;color:#5C625E;font-size:14px;\">Stripe checkout sessions created</td>\n          <td style=\"padding:6px 8px;border-bottom:1px solid #eee;font-size:14px;font-weight:600;text-align:right;\">0</td>\n          <td style=\"padding:6px 8px;border-bottom:1px solid #eee;font-size:12px;color:#8C8275;text-align:right;\">0%</td>\n        </tr>\n      \n        <tr>\n          <td style=\"padding:6px 8px;border-bottom:1px solid #eee;color:#5C625E;font-size:14px;\">Sanctuary purchases</td>\n          <td style=\"padding:6px 8px;border-bottom:1px solid #eee;font-size:14px;font-weight:600;text-align:right;\">0</td>\n          <td style=\"padding:6px 8px;border-bottom:1px solid #eee;font-size:12px;color:#8C8275;text-align:right;\">0%</td>\n        </tr>\n      \n        <tr>\n          <td style=\"padding:6px 8px;border-bottom:1px solid #eee;color:#5C625E;font-size:14px;\">Sanctuary gross revenue (USD)</td>\n          <td style=\"padding:6px 8px;border-bottom:1px solid #eee;font-size:14px;font-weight:600;text-align:right;\">0</td>\n          <td style=\"padding:6px 8px;border-bottom:1px solid #eee;font-size:12px;color:#8C8275;text-align:right;\">0%</td>\n        </tr>\n      \n        <tr>\n          <td style=\"padding:6px 8px;border-bottom:1px solid #eee;color:#5C625E;font-size:14px;\">Sanctuary ARR (USD)</td>\n          <td style=\"padding:6px 8px;border-bottom:1px solid #eee;font-size:14px;font-weight:600;text-align:right;\">0</td>\n          <td style=\"padding:6px 8px;border-bottom:1px solid #eee;font-size:12px;color:#8C8275;text-align:right;\">0%</td>\n        </tr>\n      \n    </table>\n  \n    <h2 style=\"margin-top:24px;font-family:-apple-system,Inter,sans-serif;color:#2F3631;\">Report purchase funnel (natal / synastry / transit / bundle)</h2>\n    <table style=\"border-collapse:collapse;font-family:-apple-system,Inter,sans-serif;width:100%;max-width:640px;\">\n      \n        <tr>\n          <td style=\"padding:6px 8px;border-bottom:1px solid #eee;color:#5C625E;font-size:14px;\">Buy-report page views</td>\n          <td style=\"padding:6px 8px;border-bottom:1px solid #eee;font-size:14px;font-weight:600;text-align:right;\">412</td>\n          <td style=\"padding:6px 8px;border-bottom:1px solid #eee;font-size:12px;color:#8C8275;text-align:right;\">NEW</td>\n        </tr>\n      \n        <tr>\n          <td style=\"padding:6px 8px;border-bottom:1px solid #eee;color:#5C625E;font-size:14px;\">Report selected</td>\n          <td style=\"padding:6px 8px;border-bottom:1px solid #eee;font-size:14px;font-weight:600;text-align:right;\">187</td>\n          <td style=\"padding:6px 8px;border-bottom:1px solid #eee;font-size:12px;color:#8C8275;text-align:right;\">NEW</td>\n        </tr>\n      \n        <tr>\n          <td style=\"padding:6px 8px;border-bottom:1px solid #eee;color:#5C625E;font-size:14px;\">CTA clicks</td>\n          <td style=\"padding:6px 8px;border-bottom:1px solid #eee;font-size:14px;font-weight:600;text-align:right;\">187</td>\n          <td style=\"padding:6px 8px;border-bottom:1px solid #eee;font-size:12px;color:#8C8275;text-align:right;\">NEW</td>\n        </tr>\n      \n        <tr>\n          <td style=\"padding:6px 8px;border-bottom:1px solid #eee;color:#5C625E;font-size:14px;\">Stripe checkout sessions</td>\n          <td style=\"padding:6px 8px;border-bottom:1px solid #eee;font-size:14px;font-weight:600;text-align:right;\">142</td>\n          <td style=\"padding:6px 8px;border-bottom:1px solid #eee;font-size:12px;color:#8C8275;text-align:right;\">NEW</td>\n        </tr>\n      \n        <tr>\n          <td style=\"padding:6px 8px;border-bottom:1px solid #eee;color:#5C625E;font-size:14px;\">Stripe session creation started</td>\n          <td style=\"padding:6px 8px;border-bottom:1px solid #eee;font-size:14px;font-weight:600;text-align:right;\">142</td>\n          <td style=\"padding:6px 8px;border-bottom:1px solid #eee;font-size:12px;color:#8C8275;text-align:right;\">NEW</td>\n        </tr>\n      \n        <tr>\n          <td style=\"padding:6px 8px;border-bottom:1px solid #eee;color:#5C625E;font-size:14px;\">Stripe redirects</td>\n          <td style=\"padding:6px 8px;border-bottom:1px solid #eee;font-size:14px;font-weight:600;text-align:right;\">142</td>\n          <td style=\"padding:6px 8px;border-bottom:1px solid #eee;font-size:12px;color:#8C8275;text-align:right;\">NEW</td>\n        </tr>\n      \n        <tr>\n          <td style=\"padding:6px 8px;border-bottom:1px solid #eee;color:#5C625E;font-size:14px;\">Stripe purchases (completed)</td>\n          <td style=\"padding:6px 8px;border-bottom:1px solid #eee;font-size:14px;font-weight:600;text-align:right;\">0</td>\n          <td style=\"padding:6px 8px;border-bottom:1px solid #eee;font-size:12px;color:#8C8275;text-align:right;\">0%</td>\n        </tr>\n      \n        <tr>\n          <td style=\"padding:6px 8px;border-bottom:1px solid #eee;color:#5C625E;font-size:14px;\">Gross revenue (USD)</td>\n          <td style=\"padding:6px 8px;border-bottom:1px solid #eee;font-size:14px;font-weight:600;text-align:right;\">0</td>\n          <td style=\"padding:6px 8px;border-bottom:1px solid #eee;font-size:12px;color:#8C8275;text-align:right;\">0%</td>\n        </tr>\n      \n        <tr>\n          <td style=\"padding:6px 8px;border-bottom:1px solid #eee;color:#5C625E;font-size:14px;\">End-to-end conversion rate</td>\n          <td style=\"padding:6px 8px;border-bottom:1px solid #eee;font-size:14px;font-weight:600;text-align:right;\">0.0%</td>\n          <td style=\"padding:6px 8px;border-bottom:1px solid #eee;font-size:12px;color:#8C8275;text-align:right;\">0%</td>\n        </tr>\n      \n        <tr>\n          <td style=\"padding:6px 8px;border-bottom:1px solid #eee;color:#5C625E;font-size:14px;\">Refunds</td>\n          <td style=\"padding:6px 8px;border-bottom:1px solid #eee;font-size:14px;font-weight:600;text-align:right;\">0</td>\n          <td style=\"padding:6px 8px;border-bottom:1px solid #eee;font-size:12px;color:#8C8275;text-align:right;\">0%</td>\n        </tr>\n      \n        <tr>\n          <td style=\"padding:6px 8px;border-bottom:1px solid #eee;color:#5C625E;font-size:14px;\">Checkout errors (client-reported)</td>\n          <td style=\"padding:6px 8px;border-bottom:1px solid #eee;font-size:14px;font-weight:600;text-align:right;\">1</td>\n          <td style=\"padding:6px 8px;border-bottom:1px solid #eee;font-size:12px;color:#8C8275;text-align:right;\">NEW</td>\n        </tr>\n      \n    </table>\n  \n    <h2 style=\"margin-top:24px;font-family:-apple-system,Inter,sans-serif;color:#2F3631;\">Post-purchase: Telegram deep link → bot onboarding → PDF delivery</h2>\n    <table style=\"border-collapse:collapse;font-family:-apple-system,Inter,sans-serif;width:100%;max-width:640px;\">\n      \n        <tr>\n          <td style=\"padding:6px 8px;border-bottom:1px solid #eee;color:#5C625E;font-size:14px;\">Success page views</td>\n          <td style=\"padding:6px 8px;border-bottom:1px solid #eee;font-size:14px;font-weight:600;text-align:right;\">117</td>\n          <td style=\"padding:6px 8px;border-bottom:1px solid #eee;font-size:12px;color:#8C8275;text-align:right;\">NEW</td>\n        </tr>\n      \n        <tr>\n          <td style=\"padding:6px 8px;border-bottom:1px solid #eee;color:#5C625E;font-size:14px;\">Purchase confirmed (lookup OK)</td>\n          <td style=\"padding:6px 8px;border-bottom:1px solid #eee;font-size:14px;font-weight:600;text-align:right;\">91</td>\n          <td style=\"padding:6px 8px;border-bottom:1px solid #eee;font-size:12px;color:#8C8275;text-align:right;\">NEW</td>\n        </tr>\n      \n        <tr>\n          <td style=\"padding:6px 8px;border-bottom:1px solid #eee;color:#5C625E;font-size:14px;\">Lookup errors on /success/</td>\n          <td style=\"padding:6px 8px;border-bottom:1px solid #eee;font-size:14px;font-weight:600;text-align:right;\">0</td>\n          <td style=\"padding:6px 8px;border-bottom:1px solid #eee;font-size:12px;color:#8C8275;text-align:right;\">0%</td>\n        </tr>\n      \n        <tr>\n          <td style=\"padding:6px 8px;border-bottom:1px solid #eee;color:#5C625E;font-size:14px;\">Telegram deep-link clicks (parsed from bot)</td>\n          <td style=\"padding:6px 8px;border-bottom:1px solid #eee;font-size:14px;font-weight:600;text-align:right;\">0</td>\n          <td style=\"padding:6px 8px;border-bottom:1px solid #eee;font-size:12px;color:#8C8275;text-align:right;\">0%</td>\n        </tr>\n      \n        <tr>\n          <td style=\"padding:6px 8px;border-bottom:1px solid #eee;color:#5C625E;font-size:14px;\">PDF delivered</td>\n          <td style=\"padding:6px 8px;border-bottom:1px solid #eee;font-size:14px;font-weight:600;text-align:right;\">0</td>\n          <td style=\"padding:6px 8px;border-bottom:1px solid #eee;font-size:12px;color:#8C8275;text-align:right;\">0%</td>\n        </tr>\n      \n    </table>\n  \n    <h2 style=\"margin-top:24px;font-family:-apple-system,Inter,sans-serif;color:#2F3631;\">Growth aggregates</h2>\n    <table style=\"border-collapse:collapse;font-family:-apple-system,Inter,sans-serif;width:100%;max-width:640px;\">\n      \n        <tr>\n          <td style=\"padding:6px 8px;border-bottom:1px solid #eee;color:#5C625E;font-size:14px;\">Weekly unique visitors</td>\n          <td style=\"padding:6px 8px;border-bottom:1px solid #eee;font-size:14px;font-weight:600;text-align:right;\">0</td>\n          <td style=\"padding:6px 8px;border-bottom:1px solid #eee;font-size:12px;color:#8C8275;text-align:right;\">0%</td>\n        </tr>\n      \n        <tr>\n          <td style=\"padding:6px 8px;border-bottom:1px solid #eee;color:#5C625E;font-size:14px;\">Weekly engaged sessions</td>\n          <td style=\"padding:6px 8px;border-bottom:1px solid #eee;font-size:14px;font-weight:600;text-align:right;\">0</td>\n          <td style=\"padding:6px 8px;border-bottom:1px solid #eee;font-size:12px;color:#8C8275;text-align:right;\">0%</td>\n        </tr>\n      \n        <tr>\n          <td style=\"padding:6px 8px;border-bottom:1px solid #eee;color:#5C625E;font-size:14px;\">Weekly conversions</td>\n          <td style=\"padding:6px 8px;border-bottom:1px solid #eee;font-size:14px;font-weight:600;text-align:right;\">0</td>\n          <td style=\"padding:6px 8px;border-bottom:1px solid #eee;font-size:12px;color:#8C8275;text-align:right;\">0%</td>\n        </tr>\n      \n        <tr>\n          <td style=\"padding:6px 8px;border-bottom:1px solid #eee;color:#5C625E;font-size:14px;\">Weekly gross revenue (USD)</td>\n          <td style=\"padding:6px 8px;border-bottom:1px solid #eee;font-size:14px;font-weight:600;text-align:right;\">0</td>\n          <td style=\"padding:6px 8px;border-bottom:1px solid #eee;font-size:12px;color:#8C8275;text-align:right;\">0%</td>\n        </tr>\n      \n        <tr>\n          <td style=\"padding:6px 8px;border-bottom:1px solid #eee;color:#5C625E;font-size:14px;\">Weekly refunds (USD)</td>\n          <td style=\"padding:6px 8px;border-bottom:1px solid #eee;font-size:14px;font-weight:600;text-align:right;\">0</td>\n          <td style=\"padding:6px 8px;border-bottom:1px solid #eee;font-size:12px;color:#8C8275;text-align:right;\">0%</td>\n        </tr>\n      \n        <tr>\n          <td style=\"padding:6px 8px;border-bottom:1px solid #eee;color:#5C625E;font-size:14px;\">Weekly ARR proxy (sum of recurring charges * 4.33)</td>\n          <td style=\"padding:6px 8px;border-bottom:1px solid #eee;font-size:14px;font-weight:600;text-align:right;\">0</td>\n          <td style=\"padding:6px 8px;border-bottom:1px solid #eee;font-size:12px;color:#8C8275;text-align:right;\">0%</td>\n        </tr>\n      \n        <tr>\n          <td style=\"padding:6px 8px;border-bottom:1px solid #eee;color:#5C625E;font-size:14px;\">Subscription cancellations</td>\n          <td style=\"padding:6px 8px;border-bottom:1px solid #eee;font-size:14px;font-weight:600;text-align:right;\">0</td>\n          <td style=\"padding:6px 8px;border-bottom:1px solid #eee;font-size:12px;color:#8C8275;text-align:right;\">0%</td>\n        </tr>\n      \n    </table>\n  \n    <h2 style=\"margin-top:24px;font-family:-apple-system,Inter,sans-serif;color:#2F3631;\">Site hygiene (operational KPIs)</h2>\n    <table style=\"border-collapse:collapse;font-family:-apple-system,Inter,sans-serif;width:100%;max-width:640px;\">\n      \n        <tr>\n          <td style=\"padding:6px 8px;border-bottom:1px solid #eee;color:#5C625E;font-size:14px;\">Sitemap coverage of GA4 loader</td>\n          <td style=\"padding:6px 8px;border-bottom:1px solid #eee;font-size:14px;font-weight:600;text-align:right;\">0</td>\n          <td style=\"padding:6px 8px;border-bottom:1px solid #eee;font-size:12px;color:#8C8275;text-align:right;\">0%</td>\n        </tr>\n      \n        <tr>\n          <td style=\"padding:6px 8px;border-bottom:1px solid #eee;color:#5C625E;font-size:14px;\">Tracked pages (converting funnel events)</td>\n          <td style=\"padding:6px 8px;border-bottom:1px solid #eee;font-size:14px;font-weight:600;text-align:right;\">0</td>\n          <td style=\"padding:6px 8px;border-bottom:1px solid #eee;font-size:12px;color:#8C8275;text-align:right;\">0%</td>\n        </tr>\n      \n        <tr>\n          <td style=\"padding:6px 8px;border-bottom:1px solid #eee;color:#5C625E;font-size:14px;\">Duplicate GA4/GTM snippets</td>\n          <td style=\"padding:6px 8px;border-bottom:1px solid #eee;font-size:14px;font-weight:600;text-align:right;\">0</td>\n          <td style=\"padding:6px 8px;border-bottom:1px solid #eee;font-size:12px;color:#8C8275;text-align:right;\">0%</td>\n        </tr>\n      \n        <tr>\n          <td style=\"padding:6px 8px;border-bottom:1px solid #eee;color:#5C625E;font-size:14px;\">Last npm run build</td>\n          <td style=\"padding:6px 8px;border-bottom:1px solid #eee;font-size:14px;font-weight:600;text-align:right;\">0</td>\n          <td style=\"padding:6px 8px;border-bottom:1px solid #eee;font-size:12px;color:#8C8275;text-align:right;\">0%</td>\n        </tr>\n      \n    </table>\n  \n      <p style=\"margin-top:32px;color:#8C8275;font-size:12px;\">Open the Google Sheet for pivots: <a href=\"#\">#</a></p>\n    </body></html>"
+}
