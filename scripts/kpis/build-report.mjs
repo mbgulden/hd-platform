@@ -18,7 +18,6 @@ const collections = JSON.parse(fs.readFileSync(COLL_PATH, 'utf8'));
 
 const STRIPE_ENABLED = !!process.env.STRIPE_SECRET_KEY;
 const GA4_ENABLED = !!process.env.HDE_GOOGLE_SERVICE_ACCOUNT_JSON;
-let STRIPE_LIVE_OK = false; // set true when a live Stripe events fetch succeeds
 const FIXTURE_PATH = path.join(HERE, 'fixtures', 'kpi-fixtures.json');
 const fixtures = fs.existsSync(FIXTURE_PATH) ? JSON.parse(fs.readFileSync(FIXTURE_PATH, 'utf8')) : {};
 
@@ -26,32 +25,26 @@ async function fetchStripeEvents({ windowStartISO, windowEndISO }) {
   if (!STRIPE_ENABLED) {
     return (fixtures.stripe_events || []).filter((e) => e.created_iso >= windowStartISO && e.created_iso < windowEndISO);
   }
-  try {
-    const key = process.env.STRIPE_SECRET_KEY;
-    const auth = Buffer.from(`${key}:`).toString('base64');
-    const start = Math.floor(Date.parse(windowStartISO) / 1000);
-    const end = Math.floor(Date.parse(windowEndISO) / 1000);
-    const url1 = `https://api.stripe.com/v1/events?created[gte]=${start}&created[lt]=${end}&limit=200`;
-    const res = await fetch(url1, { headers: { Authorization: `Basic ${auth}` } });
-    if (!res.ok) throw new Error(`stripe events fetch failed: ${res.status}`);
-    const data = await res.json();
-    STRIPE_LIVE_OK = true;
-    return (data.data || []).map((e) => {
-      const obj = e.data?.object || {};
-      return {
-        event_id: e.id,
-        event_type: e.type,
-        created_iso: new Date(e.created * 1000).toISOString(),
-        amount_usd: (obj.amount_total || 0) / 100,
-        metadata: obj.metadata || {},
-        metadata_funnel: obj.metadata?.funnel || '',
-        customer_email: obj.customer_details?.email || obj.customer_email || '',
-      };
-    });
-  } catch (err) {
-    console.warn(`[kpi] Stripe fetch failed (${err.message}); falling back to fixture stripe events`);
-    return (fixtures.stripe_events || []).filter((e) => e.created_iso >= windowStartISO && e.created_iso < windowEndISO);
-  }
+  const key = process.env.STRIPE_SECRET_KEY;
+  const auth = Buffer.from(`${key}:`).toString('base64');
+  const start = Math.floor(Date.parse(windowStartISO) / 1000);
+  const end = Math.floor(Date.parse(windowEndISO) / 1000);
+  const url1 = `https://api.stripe.com/v1/events?created[gte]=${start}&created[lt]=${end}&limit=200`;
+  const res = await fetch(url1, { headers: { Authorization: `Bearer ${auth}` } });
+  if (!res.ok) throw new Error(`stripe events fetch failed: ${res.status}`);
+  const data = await res.json();
+  return (data.data || []).map((e) => {
+    const obj = e.data?.object || {};
+    return {
+      event_id: e.id,
+      event_type: e.type,
+      created_iso: new Date(e.created * 1000).toISOString(),
+      amount_usd: (obj.amount_total || 0) / 100,
+      metadata: obj.metadata || {},
+      metadata_funnel: obj.metadata?.funnel || '',
+      customer_email: obj.customer_details?.email || obj.customer_email || '',
+    };
+  });
 }
 
 async function fetchGa4Metrics({ windowStartISO, windowEndISO }) {
@@ -122,7 +115,7 @@ async function build({ kind, windowStartISO, windowEndISO, priorWindowStartISO, 
     fetchGa4Metrics({ windowStartISO, windowEndISO }),
   ]);
 
-  const report = { kind, windowStartISO, windowEndISO, generatedAt: new Date().toISOString(), data_source: { stripe: STRIPE_LIVE_OK ? 'live' : (STRIPE_ENABLED ? 'fixture_fallback' : 'fixture'), ga4: GA4_ENABLED ? 'live' : 'fixture' }, metrics: {}, collections: {} };
+  const report = { kind, windowStartISO, windowEndISO, generatedAt: new Date().toISOString(), metrics: {}, collections: {} };
 
   for (const coll of collections.collections) {
     report.collections[coll.id] = {

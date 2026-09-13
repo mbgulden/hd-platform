@@ -185,10 +185,6 @@ function writeSitemap() {
     if (route === '/buy-report.html' || route === '/success.html' || route === '/privacy.html' || route === '/terms.html') {
       return false;
     }
-    // Exclude internal/operational pages (noindex) from the public sitemap
-    if (route === '/pwp/kpi-dashboard.html' || route === '/pwp/kpi-dashboard' || route === '/pwp/kpi-dashboard/') {
-      return false;
-    }
     // Exclude non-canonical duplicates (no trailing slash when trailing slash version exists)
     if (route !== '/' && !route.endsWith('/') && routes.has(route + '/')) {
       return false;
